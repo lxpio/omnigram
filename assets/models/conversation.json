@@ -1,0 +1,10 @@
+{
+  "id": 0,
+  "name": "New Chat",
+  "edit_name": "chat",
+  "timeout": 60,
+  "max_tokens": 8192,
+  "promptId": "",
+  "group_id": 0,
+  "create_at": 1
+}
