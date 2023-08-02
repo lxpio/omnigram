@@ -1,0 +1,14 @@
+[
+    {
+        "id": "open_ai_chat_gpt",
+        "name": "Chat GPT",
+        "avatar": "assets/images/open_ai_chat_gpt.svg",
+        "group_id": 0,
+        "official_url": "https://api.openai.com/",
+        "api_url": "https://api.openai.com/v1/chat/completions",
+        "help": "chat_gpt_help",
+        "help_url": "https://www.exppii.com/answer/help/chat_gpt.html",
+        "hello": "open_ai_hello",
+        "token": ""
+    }
+]
