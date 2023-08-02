@@ -1,5 +1,5 @@
-
 import "package:omnigram/app/core/app_http.dart";
+import "package:omnigram/app/data/models/model.dart";
 import "package:omnigram/app/data/providers/provider.dart";
 import "package:omnigram/app/providers/service_provider_manager.dart";
 
@@ -35,6 +35,8 @@ class BuildConfig {
     await AppHttp.instantiate(
       httpOverrides: envConfig.httpOverrides,
     );
+    await AppStore.initialize('gramdb');
+
     await AppManager.initialize();
     await AppProvider.initialize();
     await ServiceProviderManager.initialize();

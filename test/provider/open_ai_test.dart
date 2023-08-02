@@ -19,7 +19,7 @@ void main() {
         enableLog: true);
 
     final messages = [
-      Messages(
+      ChatMessages(
         role: Role.user,
         content: 'Hello',
         name: 'function_name',

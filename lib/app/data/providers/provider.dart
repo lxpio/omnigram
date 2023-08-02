@@ -38,7 +38,7 @@ class AppProvider {
   // 如果是本地模式则适用sqlite 进行数据存储
   late final Database database;
 
-  late final MessageProvider messageProvider = MessageProvider(database);
+  late final MessageProvider messages = MessageProvider();
 
   late final ConversationProvider conversations = ConversationProvider();
 
@@ -65,7 +65,7 @@ class AppProvider {
   }
 
   FutureOr<void> _onCreate(Database db, int version) async {
-    await MessagesDao.onCreate(db);
+    // await MessagesDao.onCreate(db);
     // await PromptDao.onCreate(db);
     // await ServiceTokensDao.onCreate(db);
     // await ServiceVendorsDao.onCreate(db);
@@ -75,7 +75,7 @@ class AppProvider {
   }
 
   FutureOr<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    await MessagesDao.onUpgrade(db, oldVersion, newVersion);
+    // await MessagesDao.onUpgrade(db, oldVersion, newVersion);
 
     // if (oldVersion < 3) {
     //   await ServiceVendorsDao.onCreate(db);

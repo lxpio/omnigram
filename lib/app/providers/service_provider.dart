@@ -200,7 +200,7 @@ class ServiceProvider {
         // serviceId: id,
         fromType: MessageFromType.receive,
         createAt: DateTime.now(),
-        requestMessage: requestMessage,
+        // requestMessage: requestMessage,
         conversationId: requestMessage.conversationId,
       ),
     );
@@ -219,7 +219,7 @@ class ServiceProvider {
         content: error.toString(),
         fromType: MessageFromType.receive,
         createAt: DateTime.now(),
-        requestMessage: requestMessage,
+        // requestMessage: requestMessage,
         conversationId: requestMessage.conversationId,
       ),
     );
@@ -240,8 +240,8 @@ class ServiceProvider {
         content: content?.trim(),
         fromType: MessageFromType.receive,
         createAt: DateTime.now(),
-        requestMessage: requestMessage,
-        conversationId: conversationId ?? requestMessage?.conversationId,
+        // requestMessage: requestMessage,
+        conversationId: conversationId ?? 0,
       ),
     );
   }
@@ -259,7 +259,7 @@ class ServiceProvider {
         content: content?.trim(),
         fromType: MessageFromType.receive,
         createAt: DateTime.now(),
-        conversationId: conversationId,
+        conversationId: conversationId ?? 0,
       ),
     );
   }
