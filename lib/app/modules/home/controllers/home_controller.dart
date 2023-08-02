@@ -196,7 +196,7 @@ class HomeController extends GetxController
     currentQuotedMessage = null;
 
     messages.clear();
-    final list = await AppProvider.instance.messageProvider.list(
+    final list = AppProvider.instance.messages.query(
       conversationId: conversations[index].id,
     );
     messages.addAll(list);
@@ -275,7 +275,7 @@ class HomeController extends GetxController
   Future<void> onEndScroll() async {
     if (currentConversation?.id == null) return;
 
-    final list = await AppProvider.instance.messageProvider.list(
+    final list = AppProvider.instance.messages.query(
       conversationId: currentConversation!.id,
       offset: messages.length,
     );

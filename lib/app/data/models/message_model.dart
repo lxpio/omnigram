@@ -29,7 +29,9 @@ class Message {
 
   @Id()
   int id;
-  final int? conversationId;
+
+  @Index()
+  final int conversationId;
 
   @Transient()
   MessageType? type;
@@ -129,7 +131,7 @@ class Message {
       // quoteMessage:
       //     quoteMessage == null ? null : Message.fromRawJson(quoteMessage),
       responseData: serializer.fromJson<String?>(json["response_data"]),
-      conversationId: serializer.fromJson<int?>(json['conversation_id']),
+      conversationId: serializer.fromJson<int>(json['conversation_id']),
     );
   }
 

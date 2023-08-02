@@ -10,7 +10,9 @@ import 'package:omnigram/app/providers/service_provider_manager.dart';
 
 class ConversationController extends GetxController with AppControllerMixin {
   //TODO: Implement ConversationController
-  late Conversation conversation = Get.arguments['conversation'];
+  // late args = Get.arguments
+
+  late Conversation conversation = Get.arguments;
 
   late LLMChain? service;
   // late final nameTextEditing = TextEditingController(
@@ -28,13 +30,12 @@ class ConversationController extends GetxController with AppControllerMixin {
 
   @override
   void onInit() {
+    service = ServiceProviderManager.instance.get(id: conversation.serviceId);
     super.onInit();
   }
 
   @override
   void onReady() {
-    service = ServiceProviderManager.instance.get(id: conversation.serviceId);
-
     if (conversation.name != null) {
       conversationNameTextEditingController.text = conversation.name!;
     }

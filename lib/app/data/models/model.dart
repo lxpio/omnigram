@@ -15,11 +15,11 @@ class AppStore {
 
     instance._lock = true;
 
-    instance._store = await openStore(directory: dbName);
+    // instance._store = await openStore(directory: dbName);
 
-    // final docsDir = await getApplicationDocumentsDirectory();
+    final docsDir = await getApplicationDocumentsDirectory();
 
-    // instance._store = await openStore(directory: p.join(docsDir.path, dbName));
+    instance._store = await openStore(directory: p.join(docsDir.path, dbName));
   }
 
   void close() {

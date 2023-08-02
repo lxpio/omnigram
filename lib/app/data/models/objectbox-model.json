@@ -142,7 +142,9 @@
         {
           "id": "2:8309603961355963781",
           "name": "conversationId",
-          "type": 6
+          "type": 6,
+          "flags": 8,
+          "indexId": "2:5211212862323413826"
         },
         {
           "id": "3:6843553560918575028",
@@ -184,7 +186,7 @@
     }
   ],
   "lastEntityId": "3:5596640792982476441",
-  "lastIndexId": "1:1826582600833193628",
+  "lastIndexId": "2:5211212862323413826",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

@@ -108,41 +108,41 @@ class ChatGpt extends ServiceProvider {
     //   }
     // }
 
-    Message? quoteMessage = message.quoteMessage;
+    // Message? quoteMessage = message.quoteMessage;
     bool quoted = false;
-    while (quoteMessage != null) {
-      messages.add({
-        'role': 'user',
-        'content': quoteMessage.requestMessage!.content!,
-      });
-      messages.add({
-        'role': 'assistant',
-        'content': quoteMessage.content!,
-      });
-      quoteMessage = quoteMessage.quoteMessage;
-      quoted = true;
-    }
+    // while (quoteMessage != null) {
+    //   messages.add({
+    //     'role': 'user',
+    //     // 'content': quoteMessage.requestMessage!.content!,
+    //   });
+    //   messages.add({
+    //     'role': 'assistant',
+    //     'content': quoteMessage.content!,
+    //   });
+    //   // quoteMessage = quoteMessage.quoteMessage;
+    //   quoted = true;
+    // }
 
     if (!quoted && conversation.autoQuote > 0) {
       //这里从本地sqlite 里面获取历史聊天记录并合并
-      final list = await AppProvider.instance.messageProvider.list(
-        conversationId: message.conversationId!,
-        serviceId: id,
+      final list = await AppProvider.instance.messages.query(
+        conversationId: message.conversationId,
+        // serviceId: id,
         type: MessageType.text,
         limit: conversation.autoQuote,
       );
-      for (final item in list) {
-        if (item.requestMessage != null) {
-          messages.add({
-            'role': 'user',
-            'content': item.requestMessage!.content!,
-          });
-          messages.add({
-            'role': 'assistant',
-            'content': item.content!,
-          });
-        }
-      }
+      // for (final item in list) {
+      //   if (item.requestMessage != null) {
+      //     messages.add({
+      //       'role': 'user',
+      //       'content': item.requestMessage!.content!,
+      //     });
+      //     messages.add({
+      //       'role': 'assistant',
+      //       'content': item.content!,
+      //     });
+      //   }
+      // }
     }
     messages.add({'role': 'user', 'content': message.content!});
     return messages;
