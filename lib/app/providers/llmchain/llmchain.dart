@@ -12,6 +12,7 @@ import 'package:omnigram/flavors/build_config.dart';
 import 'package:dio/dio.dart';
 
 import 'package:omnigram/app/data/models/conversation_model.dart';
+import 'package:omnigram/openai/chat/message.dart';
 
 class LLMChain extends LLMService {
   final List<Map<String, String>> messages = [];
@@ -35,7 +36,12 @@ class LLMChain extends LLMService {
     required Conversation conversation,
     required List<Message> messages,
   }) async {
+    final chats = messages
+        .map((e) => ChatMessage(role: e., content: e.content))
+        .toList();
+
     return true;
+    //change message to chatmessages
   }
 
   // void send(

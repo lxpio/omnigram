@@ -47,7 +47,7 @@ class HomeView extends StatelessWidget with AppViewMixin<HomeController> {
         IconButton(
           onPressed: controller.toConversation,
           icon: const Icon(
-            Icons.more_horiz,
+            Icons.add,
             size: 25,
           ),
         ),

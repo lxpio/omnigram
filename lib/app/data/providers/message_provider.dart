@@ -45,17 +45,17 @@ class MessageBox implements MessageProvider {
       MessageType? type,
       int offset = 0,
       int limit = 16}) {
-    final query = (_box.query(Message_.conversationId.equals(conversationId))
-          ..order(Message_.id))
+    final q = (_box.query(Message_.conversationId.equals(conversationId))
+          ..order(Message_.id, flags: Order.descending))
         .build();
 
-    query
+    q
       ..offset = offset
       ..limit = limit;
 
-    final result = query.find();
+    final result = q.find();
 
-    query.close();
+    q.close();
 
     return result;
   }

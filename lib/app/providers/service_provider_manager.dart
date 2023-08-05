@@ -131,8 +131,8 @@ class ServiceProviderManager extends GetxController {
   Future<void> changeConversation({
     required Conversation conversation,
   }) async {
-    //获取第一个有效的provider
-    final provider = get(id: conversation.serviceId);
+    //获取第一个有效的 llm
+    final llm = get(id: conversation.serviceId);
 
     final key =
         AppHiveKeys.serviceProviderIsSendHello + conversation.id.toString();
@@ -140,14 +140,14 @@ class ServiceProviderManager extends GetxController {
       key: key,
     );
     if (sent == null || !sent) {
-      if (provider.hello != null && provider.hello!.isNotEmpty) {
+      if (llm.hello != null && llm.hello!.isNotEmpty) {
         HomeController.to.onReceived(
           Message(
             type: MessageType.vendor,
-            serviceAvatar: provider.avatar,
-            serviceName: provider.name,
+            serviceAvatar: llm.avatar,
+            serviceName: llm.name,
             // serviceId: provider.id,
-            content: provider.hello?.tr,
+            content: llm.hello?.tr,
             fromType: MessageFromType.receive,
             createAt: DateTime.now(),
             conversationId: conversation.id,
@@ -165,14 +165,14 @@ class ServiceProviderManager extends GetxController {
       // final emptyValueTokens = tokens.where(
       //   (element) => element.value.isEmpty,
       // );
-      if (provider.token.isNotEmpty) {
+      if (llm.token.isEmpty) {
         HomeController.to.onReceived(
           Message(
             type: MessageType.vendor,
-            serviceAvatar: provider.avatar,
-            serviceName: provider.name,
+            serviceAvatar: llm.avatar,
+            serviceName: llm.name,
             // serviceId: provider.id,
-            content: provider.help?.tr,
+            content: llm.help?.tr,
             fromType: MessageFromType.receive,
             createAt: DateTime.now(),
             conversationId: conversation.id,
