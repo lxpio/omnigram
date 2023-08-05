@@ -8,6 +8,7 @@ import 'package:omnigram/app/core/refresh_mixin.dart';
 
 import 'package:omnigram/app/data/models/conversation_model.dart';
 import 'package:omnigram/app/data/models/message_model.dart';
+import 'package:omnigram/app/data/models/model.dart';
 import 'package:omnigram/app/data/providers/provider.dart';
 import 'package:omnigram/app/providers/service_provider_manager.dart';
 import 'package:flutter/cupertino.dart';
@@ -79,7 +80,9 @@ class HomeController extends GetxController
       createAt: DateTime.now(),
       conversationId: currentConversation!.id,
     );
-    // await AppDatabase.instance.messagesDao.create(message);
+
+    AppProvider.instance.messages.create(message);
+
     messages.insert(0, message);
 
     currentQuotedMessage = null;
@@ -97,7 +100,7 @@ class HomeController extends GetxController
 
   Future<void> onReceived(Message message) async {
     if (message.type != MessageType.loading) {
-      // await AppDatabase.instance.messagesDao.create(message);
+      AppProvider.instance.messages.create(message);
     }
 
     final loadingIndex = messages.indexWhere(
@@ -221,8 +224,6 @@ class HomeController extends GetxController
     AppProvider.instance.conversations.create(
       conversation,
     );
-
-    // id == null: create conversation
 
     conversations.add(conversation);
   }

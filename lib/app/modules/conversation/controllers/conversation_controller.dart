@@ -52,7 +52,7 @@ class ConversationController extends GetxController with AppControllerMixin {
   }
 
   void onEdited() {
-    // editing = true;
+    editing = true;
     // for (final token in tokens) {
     //   tokenControllers[token.id]?.text = token.value;
     // }
