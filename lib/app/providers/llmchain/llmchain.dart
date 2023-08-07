@@ -36,9 +36,10 @@ class LLMChain extends LLMService {
     required Conversation conversation,
     required List<Message> messages,
   }) async {
-    final chats = messages
-        .map((e) => ChatMessage(role: e., content: e.content))
-        .toList();
+    // final chats = messages
+    //     .map((e) =>
+    //         ChatMessage(role: e.fromType.toString(), content: e.content ?? ""))
+    //     .toList();
 
     return true;
     //change message to chatmessages

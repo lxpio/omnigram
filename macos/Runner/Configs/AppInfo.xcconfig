@@ -8,7 +8,7 @@
 PRODUCT_NAME = omnigram
 
 // The application"s bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.exppii.omnigram
+PRODUCT_BUNDLE_IDENTIFIER = com.nexptr.omnigram
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2023 com.exppii. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2023 com.nexptr. All rights reserved.
