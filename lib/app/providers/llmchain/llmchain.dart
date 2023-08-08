@@ -1,17 +1,7 @@
-import 'dart:io';
-
-import 'package:omnigram/app/core/app_http.dart';
 import 'package:omnigram/app/data/models/llm_service.dart';
 
 import 'package:omnigram/app/data/models/message_model.dart';
-import 'package:omnigram/app/data/providers/provider.dart';
-import 'package:omnigram/app/modules/home/controllers/home_controller.dart';
-import 'package:omnigram/app/providers/open_ai/chat_gpt_model.dart';
 import 'package:omnigram/app/providers/open_ai_compatible.dart';
-import 'package:omnigram/app/providers/service_provider.dart';
-import 'package:omnigram/app/providers/service_provider_manager.dart';
-import 'package:omnigram/flavors/build_config.dart';
-import 'package:dio/dio.dart';
 
 import 'package:omnigram/app/data/models/conversation_model.dart';
 import 'package:omnigram/openai/chat/chat_complate_text.dart';
@@ -61,7 +51,7 @@ class LLMChain extends LLMService {
 
     final chats = messages
         .where((e) => e.role == Role.assistant || e.role == Role.user)
-        .map((e) => ChatMessages(role: e.role, content: e.content ?? ""))
+        .map((e) => ChatMessages(role: e.role, content: e.content))
         .toList();
 
     final chatCompleteText = ChatCompleteText(

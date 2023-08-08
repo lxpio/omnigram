@@ -1,7 +1,5 @@
 import 'dart:core';
 
-import 'package:flutter/material.dart';
-import 'package:highlight/languages/fortran.dart';
 import 'package:omnigram/app/core/app_controller_mixin.dart';
 import 'package:omnigram/app/core/app_hive_keys.dart';
 import 'package:omnigram/app/core/app_manager.dart';
@@ -10,7 +8,6 @@ import 'package:omnigram/app/core/refresh_mixin.dart';
 
 import 'package:omnigram/app/data/models/conversation_model.dart';
 import 'package:omnigram/app/data/models/message_model.dart';
-import 'package:omnigram/app/data/models/model.dart';
 import 'package:omnigram/app/data/providers/provider.dart';
 import 'package:omnigram/app/providers/llmchain/llmchain.dart';
 import 'package:omnigram/app/providers/service_provider_manager.dart';
@@ -56,8 +53,6 @@ class HomeController extends GetxController
   late final focusNode = FocusNode();
   late final textEditing = TextEditingController();
 
-  // late OverlayEntry? _overlayEntry;
-
   int currentGroupIndex = 0;
 
   String get title =>
@@ -67,24 +62,26 @@ class HomeController extends GetxController
   Future<void> onInit() async {
     await loadConversations(1024);
 
-    // textEditing.addListener(_handleTextChange);
-
     // Remove splash after home page update
     FlutterNativeSplash.remove();
 
     super.onInit();
   }
 
-  Future<void> onSubmitted(String value) async {
-    if (value.isEmpty) {
+  Future<void> onSubmitted() async {
+    final text = textEditing.text;
+
+    if (text.isEmpty) {
       AppToast.show(msg: 'unable_send'.tr);
       return;
     }
 
+    textEditing.clear();
+
     final message = Message(
       type: MessageType.text,
       role: Role.user,
-      content: value,
+      content: text,
       createAt: DateTime.now(),
       conversationId: currentConversation!.id,
     );
@@ -393,7 +390,13 @@ class HomeController extends GetxController
     });
   }
 
-  Future<void> onCommand() async {
-    textEditing.text = "/";
+  Future<void> changeInputText(String text) async {
+    textEditing.value = TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
+    // textEditing.selection = TextSelection.collapsed(offset: text.length);
+
+    update();
   }
 }

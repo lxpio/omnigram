@@ -1,5 +1,4 @@
 import 'package:omnigram/app/providers/llmchain/llmchain.dart';
-import 'package:omnigram/openai/chat/enum.dart';
 
 class LongChat extends LLMChain {
   LongChat({

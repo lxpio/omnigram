@@ -50,7 +50,7 @@ flutter_native_splash:
   image: assets/images/logo-white.png
 
 flutter_icons:
-  android: "launcher_icon"
+  android: true
   ios: true
   remove_alpha_ios: true
   image_path: "assets/images/logo-green.png"

@@ -1,18 +1,16 @@
 import 'package:omnigram/app/data/models/conversation_model.dart';
-import 'package:omnigram/app/data/models/llm_service.dart';
 
 import 'package:omnigram/app/data/models/request_parameter.dart';
 import 'package:omnigram/app/data/providers/provider.dart';
 import 'package:omnigram/app/modules/home/controllers/home_controller.dart';
-import 'package:omnigram/app/providers/llmchain/chat_gpt_3.dart';
 import 'package:omnigram/app/providers/llmchain/llmchain.dart';
 import 'package:omnigram/app/providers/llmchain/longchat.dart';
-import 'package:omnigram/app/providers/service_provider.dart';
+
 import 'package:get/get.dart';
 
 import 'package:omnigram/app/core/app_hive_keys.dart';
 import 'package:omnigram/app/core/app_manager.dart';
-import 'package:omnigram/app/core/app_uuid.dart';
+
 import 'package:omnigram/app/data/models/message_model.dart';
 import 'package:omnigram/app/data/models/service_token.dart';
 import 'package:omnigram/openai/chat/enum.dart';
@@ -120,14 +118,14 @@ class ServiceProviderManager extends GetxController {
     // );
   }
 
-  Future<void> block(ServiceProvider? provider, bool isBlocked) async {
-    if (provider == null) return;
+  // Future<void> block(ServiceProvider? provider, bool isBlocked) async {
+  //   if (provider == null) return;
 
-    provider.block = isBlocked;
+  //   provider.block = isBlocked;
 
-    // replace block value
-    await AppProvider.instance.serviceProviders.create(provider);
-  }
+  //   // replace block value
+  //   await AppProvider.instance.serviceProviders.create(provider);
+  // }
 
   Future<void> changeConversation({
     required Conversation conversation,

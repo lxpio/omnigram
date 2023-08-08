@@ -140,7 +140,7 @@ class Message {
     return <String, dynamic>{
       'id': serializer.toJson<int?>(id),
       'type': serializer.toJson<int?>(type?.index),
-      'role': serializer.toJson<int?>(role?.index),
+      'role': serializer.toJson<int?>(role.index),
       'service_name': serializer.toJson<String?>(serviceName),
       'service_avatar': serializer.toJson<String?>(serviceAvatar),
       'content': serializer.toJson<String?>(content),

@@ -36,5 +36,8 @@
     "official_url": "官网",
     "administrator": "系统管理员",
     "model": "模型",
-    "auto_quote": "自动引用"
+    "auto_quote": "自动引用",
+    "command_using_help": "获取帮助",
+    "command_using_translate": "翻译",
+    "command_using_note": "笔记"
 }

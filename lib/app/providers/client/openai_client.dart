@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:omnigram/logger/logger.dart';
-import 'package:omnigram/utils/constants.dart';
 
 import 'model.dart';
 import 'utils.dart';

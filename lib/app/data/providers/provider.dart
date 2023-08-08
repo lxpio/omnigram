@@ -1,11 +1,8 @@
 import 'dart:async';
 
-import 'package:get/get.dart';
 import 'package:omnigram/app/core/app_manager.dart';
 import 'package:omnigram/app/data/providers/conversation_provider.dart';
 import 'package:omnigram/app/data/providers/message_provider.dart';
-import 'package:flutter/foundation.dart';
-import 'package:omnigram/app/data/providers/service_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 // class Provider extends GetConnect {
@@ -35,41 +32,25 @@ class AppProvider {
   static final AppProvider instance = AppProvider._internal();
   AppProvider._internal();
 
-  // 如果是本地模式则适用sqlite 进行数据存储
-  late final Database database;
-
   late final MessageProvider messages = MessageProvider();
 
   late final ConversationProvider conversations = ConversationProvider();
 
-  late final ServiceProviders serviceProviders = ServiceProviders(database);
+  // late final ServiceProviders serviceProviders = ServiceProviders(database);
   // late final ServiceVendorsDao serviceVendorsDao = ServiceVendorsDao(database);
   // late final ServiceTokensDao serviceTokensDao = ServiceTokensDao(database);
   // late final PromptDao promptDao = PromptDao(database);
   // late final RequestParametersDao requestParametersDao =
   //     RequestParametersDao(database);
 
-  static Future<void> initialize() async {
-    // 这里判断如果是本地模式则出生后sqlite数据库，否则出生后apiclient
-    if (AppManager.to.appMode == null) {
-      var databasesPath = await getDatabasesPath();
-      var path = join(databasesPath, 'dbName');
-
-      instance.database = await openDatabase(
-        path,
-        onCreate: instance._onCreate,
-        onUpgrade: instance._onUpgrade,
-        version: 4,
-      );
-    }
-  }
+  static Future<void> initialize() async {}
 
   FutureOr<void> _onCreate(Database db, int version) async {
     // await MessagesDao.onCreate(db);
     // await PromptDao.onCreate(db);
     // await ServiceTokensDao.onCreate(db);
     // await ServiceVendorsDao.onCreate(db);
-    await ServiceProvidersDao.onCreate(db);
+    // await ServiceProvidersDao.onCreate(db);
     // await ConversationsDao.onCreate(db);
     // await RequestParametersDao.onCreate(db);
   }
@@ -89,7 +70,7 @@ class AppProvider {
     // await ServiceTokensDao.onUpgrade(db, oldVersion, newVersion);
     // await ServiceVendorsDao.onUpgrade(db, oldVersion, newVersion);
     // await PromptDao.onUpgrade(db, oldVersion, newVersion);
-    await ServiceProvidersDao.onUpgrade(db, oldVersion, newVersion);
+    // await ServiceProvidersDao.onUpgrade(db, oldVersion, newVersion);
 
     // await ConversationsDao.onUpgrade(db, oldVersion, newVersion);
   }
