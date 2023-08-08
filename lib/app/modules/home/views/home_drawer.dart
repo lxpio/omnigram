@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-
-
 class HomeDrawer extends GetView<HomeController> {
   const HomeDrawer({Key? key}) : super(key: key);
 
@@ -24,7 +22,7 @@ class HomeDrawer extends GetView<HomeController> {
               content: Row(
                 children: [
                   const ChatAvatar(
-                    path: 'assets/images/logo-white.png',
+                    source: 'assets/images/logo-white.png',
                     radius: Radius.circular(8),
                     width: 54,
                     height: 54,

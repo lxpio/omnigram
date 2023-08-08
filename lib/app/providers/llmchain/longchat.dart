@@ -1,10 +1,11 @@
 import 'package:omnigram/app/providers/llmchain/llmchain.dart';
+import 'package:omnigram/openai/chat/enum.dart';
 
 class LongChat extends LLMChain {
   LongChat({
-    super.model = 'gpt-3.5-turbo-0301',
     super.name = 'longchat',
-    // super.id = 'open_ai_chat_gpt',
+    super.model = 'vicuna-13b-v1.5-16k',
     super.avatar = 'assets/images/ai_avatar.png',
+    super.apiUrl = 'http://127.0.0.1:8088/v1/',
   });
 }

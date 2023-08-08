@@ -4,8 +4,8 @@ class AppTheme {
   late final ThemeData light = _getTheme(Brightness.light);
   late final ThemeData dark = _getTheme(Brightness.dark);
 
-  static const lightPrimaryColor = Color(0xFF97EB68);
-  static const darkPrimaryColor = Color(0xFF00B859);
+  static const lightPrimaryColor = Color(0xFFECF3FE);
+  static const darkPrimaryColor = Color(0xFF3F4870);
 
   Color _getPrimaryColor(Brightness brightness) =>
       brightness == Brightness.light ? lightPrimaryColor : darkPrimaryColor;

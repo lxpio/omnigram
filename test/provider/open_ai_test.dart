@@ -6,6 +6,7 @@ import 'package:omnigram/app/providers/open_ai_compatible.dart';
 import 'package:omnigram/openai/chat/chat_complate_text.dart';
 import 'package:omnigram/openai/chat/enum.dart';
 import 'package:omnigram/openai/chat/message.dart';
+import 'package:omnigram/utils/constants.dart';
 
 import 'package:test/test.dart';
 
@@ -27,7 +28,7 @@ void main() {
     ];
 
     final chatCompleteText = ChatCompleteText(
-      model: GptTurbo0631Model(),
+      model: kChatGptTurbo0613,
       messages: messages,
       temperature: 0.5,
       topP: 0.9,
@@ -68,7 +69,7 @@ void main() {
 
   test('simple get should be created', () async {
     final dio = Dio();
-    final onGetResponse = await dio.get("http://192.168.11.121:33088/api/v2/",
+    final onGetResponse = await dio.get("http://127.0.0.1/v1/",
         options: Options(responseType: ResponseType.stream));
     print(onGetResponse.data); // {message: Successfully mocked GET!}
   });

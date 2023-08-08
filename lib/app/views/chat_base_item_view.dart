@@ -4,12 +4,11 @@ import 'package:omnigram/app/views/chat_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:omnigram/openai/chat/enum.dart';
 import 'package:share_plus/share_plus.dart';
 
-
-
 abstract class ChatBaseItemView extends StatelessWidget {
-  static const avatarWidth = 36.0;
+  static const avatarWidth = 16.0;
 
   final Message message;
   final ValueChanged<Message>? onRetried;
@@ -27,7 +26,7 @@ abstract class ChatBaseItemView extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.all(8),
-        child: message.fromType == MessageFromType.receive
+        child: message.role != Role.user
             ? buildReceiveRow(context)
             : buildSendRow(context),
       );
@@ -43,7 +42,7 @@ abstract class ChatBaseItemView extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).unselectedWidgetColor,
         borderRadius: const BorderRadius.all(
-          Radius.circular(8),
+          Radius.circular(6),
         ),
       ),
       child: buildContent(context),
@@ -178,7 +177,7 @@ abstract class ChatBaseItemView extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
                 borderRadius: const BorderRadius.all(
-                  Radius.circular(8),
+                  Radius.circular(6),
                 ),
               ),
               child: buildContent(context),
@@ -194,10 +193,11 @@ abstract class ChatBaseItemView extends StatelessWidget {
   Widget _buildAvatar(BuildContext context) => GestureDetector(
         onTap: () => onAvatarClicked?.call(message),
         child: ChatAvatar(
-          path: message.serviceAvatar ?? 'assets/images/logo-white.png',
+          source: message.serviceAvatar ?? Icons.person,
           width: avatarWidth,
           height: avatarWidth,
           radius: const Radius.circular(8),
+          backgroundColor: Colors.white,
         ),
       );
 }

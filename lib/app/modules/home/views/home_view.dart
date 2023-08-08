@@ -72,6 +72,7 @@ class HomeView extends StatelessWidget with AppViewMixin<HomeController> {
             focusNode: controller.focusNode,
             controller: controller.textEditing,
             onSubmitted: controller.onSubmitted,
+            onCommand: controller.onCommand,
             quoteMessage: controller.currentQuotedMessage,
             onCleared: controller.onCleared,
           ),

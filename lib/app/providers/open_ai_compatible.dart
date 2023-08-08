@@ -27,7 +27,11 @@ class OpenAI {
     bool enableLog = false,
   }) {
     _baseUrl = baseUrl;
-    if ("$token".isEmpty || token == null) throw MissingTokenException();
+
+    if ("$token".isEmpty || token == null) {
+      //todo
+    }
+
     final setup = baseOption ?? HttpSetup();
 
     final dio = Dio(BaseOptions(

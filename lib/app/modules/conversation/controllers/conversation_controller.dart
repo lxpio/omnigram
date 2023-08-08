@@ -12,7 +12,7 @@ class ConversationController extends GetxController with AppControllerMixin {
   //TODO: Implement ConversationController
   // late args = Get.arguments
 
-  late Conversation conversation = Get.arguments;
+  late Conversation conversation = Get.arguments['conversation'];
 
   late LLMChain? service;
   // late final nameTextEditing = TextEditingController(
@@ -40,13 +40,9 @@ class ConversationController extends GetxController with AppControllerMixin {
       conversationNameTextEditingController.text = conversation.name!;
     }
 
-    // if (service?.max_tokens != null) {
-    //   maxTokensTextEditingController.text = service!.max_tokens!;
-    // }
+    maxTokensTextEditingController.text = conversation.maxTokens.toString();
 
-    // if (service?.timeout != null) {
-    //   timeoutTextEditingController.text = service!.timeout!;
-    // }
+    timeoutTextEditingController.text = conversation.timeout.toString();
 
     super.onReady();
   }
@@ -58,13 +54,21 @@ class ConversationController extends GetxController with AppControllerMixin {
     // }
     update();
     // delay is working
-    // Future.delayed(const Duration(milliseconds: 100), () {
-    //   apiUrlFocusNode.requestFocus();
-    // });
+    Future.delayed(const Duration(milliseconds: 100), () {
+      nameFocusNode.requestFocus();
+    });
   }
 
   Future<void> onSaved() async {
     if (conversation == null) return;
+
+    if (conversation.name != conversationNameTextEditingController.text) {
+      conversation.name = conversationNameTextEditingController.text;
+    }
+
+    conversation.maxTokens =
+        int.tryParse(maxTokensTextEditingController.text) ?? 0;
+    conversation.timeout = int.tryParse(timeoutTextEditingController.text) ?? 0;
 
     // for (int index = 0; index < tokens.length; index++) {
     //   final token = tokens[index];
