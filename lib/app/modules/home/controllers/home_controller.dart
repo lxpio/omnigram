@@ -1,5 +1,7 @@
 import 'dart:core';
 
+import 'package:flutter/material.dart';
+import 'package:highlight/languages/fortran.dart';
 import 'package:omnigram/app/core/app_controller_mixin.dart';
 import 'package:omnigram/app/core/app_hive_keys.dart';
 import 'package:omnigram/app/core/app_manager.dart';
@@ -10,12 +12,14 @@ import 'package:omnigram/app/data/models/conversation_model.dart';
 import 'package:omnigram/app/data/models/message_model.dart';
 import 'package:omnigram/app/data/models/model.dart';
 import 'package:omnigram/app/data/providers/provider.dart';
+import 'package:omnigram/app/providers/llmchain/llmchain.dart';
 import 'package:omnigram/app/providers/service_provider_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 
 import 'package:omnigram/app/routes/app_pages.dart';
+import 'package:omnigram/openai/chat/enum.dart';
 
 class HomeController extends GetxController
     with AppControllerMixin, RefreshMixin {
@@ -52,6 +56,8 @@ class HomeController extends GetxController
   late final focusNode = FocusNode();
   late final textEditing = TextEditingController();
 
+  // late OverlayEntry? _overlayEntry;
+
   int currentGroupIndex = 0;
 
   String get title =>
@@ -60,6 +66,8 @@ class HomeController extends GetxController
   @override
   Future<void> onInit() async {
     await loadConversations(1024);
+
+    // textEditing.addListener(_handleTextChange);
 
     // Remove splash after home page update
     FlutterNativeSplash.remove();
@@ -75,12 +83,13 @@ class HomeController extends GetxController
 
     final message = Message(
       type: MessageType.text,
-      fromType: MessageFromType.send,
+      role: Role.user,
       content: value,
       createAt: DateTime.now(),
       conversationId: currentConversation!.id,
     );
 
+//存储聊天记录
     AppProvider.instance.messages.create(message);
 
     messages.insert(0, message);
@@ -92,9 +101,96 @@ class HomeController extends GetxController
     final llm = ServiceProviderManager.instance.get(
       id: currentConversation!.serviceId,
     );
-    llm.send(
-      conversation: currentConversation!,
-      messages: messages,
+
+    try {
+      int index = messages.indexWhere((e) => e.role == Role.system);
+
+      final stream = llm.send(
+        conversation: currentConversation!,
+        messages: messages.sublist(0, index),
+      );
+
+      stream.listen(
+        (data) {
+          // This is called whenever new data is received from the SSE stream
+          // Do something with the data, e.g., write it to another variable
+          // For example, if you have a variable called 'myData', you can do this:
+          // myData = data;
+
+          final msg = data.choices?[0].message?.content;
+          if (msg != null && msg.isNotEmpty) {
+            receiveChatMessage(
+                content: msg,
+                llm: llm,
+                conversationId: currentConversation!.id);
+          }
+
+          // print(data.choices?[0].message);
+        },
+        onError: (error) {
+          // Handle errors from the SSE stream if necessary
+
+          receiveErrorMessage(
+              llm: llm, conversationId: currentConversation!.id, error: error);
+          // print("error: $error");
+        },
+        onDone: () {
+          // This is called when the SSE stream is closed or no more data is available
+          // Perform any cleanup or closing operations here if needed
+          AppProvider.instance.messages.create(messages.first);
+        },
+      );
+    } catch (e) {
+      AppToast.show(msg: 'unable_send'.tr);
+    }
+
+    // return true;
+    //change message to chatmessages
+  }
+
+  Future<void> receiveChatMessage({
+    required int conversationId,
+    required LLMChain llm,
+    required String content,
+  }) async {
+    // assert(requestMessage != null || conversationId != null);
+
+    if (messages.first.role != Role.assistant) {
+      messages.insert(
+          0,
+          Message(
+            conversationId: conversationId,
+            role: Role.assistant,
+            type: MessageType.text,
+            serviceAvatar: llm.avatar,
+            serviceName: llm.name,
+            content: content,
+          ));
+      update();
+      return;
+    }
+    messages.first.content = content;
+    // messages.first.content = messages.first.content + content;
+    update();
+  }
+
+  Future<void> receiveErrorMessage({
+    required LLMChain llm,
+    required int conversationId,
+    dynamic error,
+  }) async {
+    onReceived(
+      Message(
+        type: MessageType.error,
+        serviceAvatar: llm.avatar,
+        serviceName: llm.name,
+        // serviceId: id,
+        content: error.toString(),
+        role: Role.system,
+        createAt: DateTime.now(),
+        // requestMessage: requestMessage,
+        conversationId: conversationId,
+      ),
     );
   }
 
@@ -157,14 +253,15 @@ class HomeController extends GetxController
     if (message.type == MessageType.vendor) {
       Get.toNamed(
         Routes.CONVERSATION,
-        arguments: currentConversation,
+        arguments: {
+          'conversation': currentConversation,
+        },
       );
     } else if (message.type != MessageType.vendor &&
-        message.fromType != MessageFromType.send) {
-      Get.toNamed(
-        Routes.CONVERSATION,
-        arguments: currentConversation,
-      );
+        message.role != Role.user) {
+      Get.toNamed(Routes.CONVERSATION, arguments: {
+        'conversation': currentConversation,
+      });
     }
   }
 
@@ -294,5 +391,9 @@ class HomeController extends GetxController
     Get.toNamed(Routes.CONVERSATION, arguments: {
       'conversation': conversation ?? currentConversation,
     });
+  }
+
+  Future<void> onCommand() async {
+    textEditing.text = "/";
   }
 }

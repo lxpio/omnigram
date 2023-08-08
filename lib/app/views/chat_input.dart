@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:omnigram/app/data/models/message_model.dart';
-
 
 class ChatInput extends StatelessWidget {
   final bool? enabled;
   final ValueChanged<String>? onSubmitted;
+  final Function()? onCommand;
   final TextEditingController controller;
   final FocusNode focusNode;
 
@@ -16,6 +17,7 @@ class ChatInput extends StatelessWidget {
     Key? key,
     required this.controller,
     this.onSubmitted,
+    this.onCommand,
     this.enabled,
     required this.focusNode,
     this.quoteMessage,
@@ -41,7 +43,7 @@ class ChatInput extends StatelessWidget {
         top: 8,
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: quoteMessage == null
@@ -137,6 +139,22 @@ class ChatInput extends StatelessWidget {
       maxLines: null,
       keyboardType: TextInputType.multiline,
       decoration: InputDecoration(
+        suffixIcon: GestureDetector(
+          onTap: onCommand,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: ColorFiltered(
+              colorFilter: const ColorFilter.mode(
+                Colors.grey, // Change the color here
+                BlendMode.srcIn,
+              ),
+              child: SvgPicture.asset(
+                  'assets/images/terminal.svg', // Replace with your SVG file path
+                  width: 20,
+                  height: 20),
+            ),
+          ),
+        ), // Add the icon here
         border: InputBorder.none,
         isCollapsed: true,
         filled: true,
@@ -149,7 +167,7 @@ class ChatInput extends StatelessWidget {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: const BorderRadius.all(
-            Radius.circular(16),
+            Radius.circular(12),
           ),
           borderSide: BorderSide(
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -162,7 +180,7 @@ class ChatInput extends StatelessWidget {
             width: 1,
           ),
           borderRadius: const BorderRadius.all(
-            Radius.circular(16),
+            Radius.circular(12),
           ),
         ),
       ),

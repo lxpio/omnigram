@@ -37,7 +37,7 @@ class ChatCTResponse {
 
 class ChatResponseSSE {
   final String id;
-  final String object;
+  final String? object;
   final int? created;
   final List<ChatChoiceSSE>? choices;
   final Usage? usage;
@@ -46,7 +46,7 @@ class ChatResponseSSE {
 
   ChatResponseSSE({
     required this.id,
-    required this.object,
+    this.object,
     required this.created,
     required this.choices,
     required this.usage,

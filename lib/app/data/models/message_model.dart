@@ -14,12 +14,13 @@ import 'dart:convert';
 
 import 'package:omnigram/app/data/models/value_serializer.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:omnigram/openai/chat/enum.dart';
 
 import 'objectbox.g.dart';
 
 enum MessageType { text, image, loading, error, vendor }
 
-enum MessageFromType { receive, send }
+// enum MessageFromType { receive, send }
 
 // Annotate a Dart class to create a box
 @Entity()
@@ -36,10 +37,10 @@ class Message {
   @Transient()
   MessageType? type;
   @Transient()
-  MessageFromType? fromType;
+  Role role;
   final String? serviceName;
   final String? serviceAvatar;
-  final String? content;
+  String content;
   @Property(type: PropertyType.date)
   final DateTime? createAt;
   final String? responseData;
@@ -69,20 +70,20 @@ class Message {
 
   int? get dbMessageFromType {
     // _ensureStableEnumValues();
-    return fromType?.index;
+    return role.index;
   }
 
   set dbMessageFromType(int? value) {
     // _ensureStableEnumValues();
     if (value == null) {
-      fromType = null;
+      role = Role.system;
     } else {
       // type = MessageType.values[value]; // throws a RangeError if not found
 
       // or if you want to handle unknown values gracefully:
-      fromType = value >= 0 && value < MessageFromType.values.length
-          ? MessageFromType.values[value]
-          : MessageFromType.receive;
+      role = value >= 0 && value < Role.values.length
+          ? Role.values[value]
+          : Role.system;
     }
   }
 
@@ -92,10 +93,10 @@ class Message {
   Message({
     this.id = 0,
     this.type,
-    this.fromType,
+    this.role = Role.system,
     this.serviceName,
     this.serviceAvatar,
-    this.content,
+    this.content = '',
     this.createAt,
     // this.requestMessage,
     this.responseData,
@@ -110,20 +111,19 @@ class Message {
 
   factory Message.fromJson(Map<String, dynamic> json) {
     const serializer = ValueSerializer();
-    final requestMessageJson = serializer.fromJson<String?>(
-      json["request_message"],
-    );
-    final quoteMessage = serializer.fromJson<String?>(
-      json["quote_message"],
-    );
+    // final requestMessageJson = serializer.fromJson<String?>(
+    //   json["request_message"],
+    // );
+    // final quoteMessage = serializer.fromJson<String?>(
+    //   json["quote_message"],
+    // );
     return Message(
       id: serializer.fromJson<int>(json['id']),
       type: MessageType.values[serializer.fromJson<int?>(json['type']) ?? 0],
-      fromType: MessageFromType
-          .values[serializer.fromJson<int?>(json['from_type']) ?? 0],
+      role: Role.values[serializer.fromJson<int?>(json['from_type']) ?? 0],
       serviceName: serializer.fromJson<String?>(json['service_name']),
       serviceAvatar: serializer.fromJson<String?>(json['service_avatar']),
-      content: serializer.fromJson<String?>(json['content']),
+      content: serializer.fromJson<String>(json['content']),
       createAt: serializer.fromJson<DateTime?>(json['create_at']),
       // requestMessage: requestMessageJson == null
       //     ? null
@@ -140,7 +140,7 @@ class Message {
     return <String, dynamic>{
       'id': serializer.toJson<int?>(id),
       'type': serializer.toJson<int?>(type?.index),
-      'from_type': serializer.toJson<int?>(fromType?.index),
+      'role': serializer.toJson<int?>(role?.index),
       'service_name': serializer.toJson<String?>(serviceName),
       'service_avatar': serializer.toJson<String?>(serviceAvatar),
       'content': serializer.toJson<String?>(content),
@@ -156,7 +156,7 @@ class Message {
   Message copyWith({
     int? id,
     MessageType? type,
-    MessageFromType? fromType,
+    Role? role,
     String? serviceName,
     String? serviceAvatar,
     String? content,
@@ -170,7 +170,7 @@ class Message {
       Message(
         id: id ?? this.id,
         type: type ?? this.type,
-        fromType: fromType ?? this.fromType,
+        role: role ?? this.role,
         serviceName: serviceName ?? this.serviceName,
         serviceAvatar: serviceAvatar ?? this.serviceAvatar,
         content: content ?? this.content,
@@ -186,7 +186,7 @@ class Message {
     return (StringBuffer('MessageMetadata(')
           ..write('id: $id, ')
           ..write('type: $type, ')
-          ..write('fromType: $fromType, ')
+          ..write('role: $role, ')
           ..write('serviceName: $serviceName, ')
           ..write('serviceAvatar: $serviceAvatar, ')
           ..write('content: $content, ')
@@ -203,7 +203,7 @@ class Message {
   int get hashCode => Object.hash(
         id,
         type,
-        fromType,
+        role,
         serviceName,
         serviceAvatar,
         content,
@@ -220,7 +220,7 @@ class Message {
       (other is Message &&
           other.id == id &&
           other.type == type &&
-          other.fromType == fromType &&
+          other.role == role &&
           other.serviceName == serviceName &&
           other.serviceAvatar == serviceAvatar &&
           other.content == content &&

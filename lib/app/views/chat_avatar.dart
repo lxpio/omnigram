@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ChatAvatar extends StatelessWidget {
-  final String? path;
+  final dynamic source;
   final double width;
   final double height;
   final Radius? radius;
@@ -15,7 +15,7 @@ class ChatAvatar extends StatelessWidget {
   final Color? color;
   const ChatAvatar({
     Key? key,
-    required this.path,
+    required this.source,
     this.width = 44,
     this.height = 44,
     this.radius = const Radius.circular(8),
@@ -28,29 +28,42 @@ class ChatAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget? widget;
-    if (path != null && path!.startsWith('assets/images/')) {
-      if (path!.endsWith('.svg')) {
-        widget = SvgPicture.asset(
-          path!,
-          width: width - (padding?.horizontal ?? 0),
-          height: height - (padding?.vertical ?? 0),
-          colorFilter:
-              color != null ? ColorFilter.mode(color!, BlendMode.srcIn) : null,
-          placeholderBuilder: (context) => _buildPlaceholder(context),
-        );
-      } else {
-        widget = Image.asset(path!);
-      }
-    } else if (path != null && path!.startsWith('http')) {
-      widget = CachedNetworkImage(
-        imageUrl: path!,
-        fit: fit,
-        width: width,
-        height: height,
-        placeholder: (context, url) => _buildPlaceholder(context),
-        errorWidget: (context, url, error) => _buildPlaceholder(context),
+
+    if (source is IconData) {
+      widget = Icon(
+        source,
+        size: width * 0.9,
+        color: Colors.blue,
+        // backgroundColor: Colors.blue,
+        // color: color,
       );
+    } else if (source is String) {
+      if (source!.startsWith('assets/images/')) {
+        if (source!.endsWith('.svg')) {
+          widget = SvgPicture.asset(
+            source!,
+            width: width - (padding?.horizontal ?? 0),
+            height: height - (padding?.vertical ?? 0),
+            colorFilter: color != null
+                ? ColorFilter.mode(color!, BlendMode.srcIn)
+                : null,
+            placeholderBuilder: (context) => _buildPlaceholder(context),
+          );
+        } else {
+          widget = Image.asset(source!);
+        }
+      } else if (source!.startsWith('http')) {
+        widget = CachedNetworkImage(
+          imageUrl: source!,
+          fit: fit,
+          width: width,
+          height: height,
+          placeholder: (context, url) => _buildPlaceholder(context),
+          errorWidget: (context, url, error) => _buildPlaceholder(context),
+        );
+      }
     }
+
     widget ??= _buildPlaceholder(context);
 
     return Container(
@@ -59,7 +72,8 @@ class ChatAvatar extends StatelessWidget {
       padding: padding,
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
-        borderRadius: radius == null ? null : BorderRadius.all(radius!),
+        // borderRadius: radius == null ? null : BorderRadius.all(radius!),
+        shape: BoxShape.circle,
         color: backgroundColor,
       ),
       child: widget,

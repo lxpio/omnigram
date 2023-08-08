@@ -1,3 +1,5 @@
+import 'package:omnigram/utils/constants.dart';
+
 import 'enum.dart';
 import 'message.dart';
 
@@ -16,7 +18,7 @@ class ChatCompleteText {
   /// - Gpt432k0314ChatModel();
   /// - ChatModelFromValue(model: 'your-model-name')
   ///
-  final ChatModel model;
+  final String model;
 
   ///The messages to generate chat completions for,
   /// in the chat format. [messages]
@@ -113,9 +115,9 @@ class ChatCompleteText {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json;
-    json = model is Gpt40631ChatModel || model is GptTurbo0631Model
+    json = model == kChatGpt40631 || model == kChatGptTurbo0613
         ? Map.of({
-            "model": model.model,
+            "model": model,
             "messages": messages.map((e) => e.toJsonFunctionStruct()).toList(),
             "functions": functions?.map((e) => e.toJson()).toList(),
             "function_call": functionCall?.name,
@@ -130,7 +132,7 @@ class ChatCompleteText {
             "user": user,
           })
         : Map.of({
-            "model": model.model,
+            "model": model,
             "messages": messages.map((e) => e.toJson()).toList(),
             "temperature": temperature,
             "top_p": topP,

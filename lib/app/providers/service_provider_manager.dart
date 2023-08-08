@@ -15,6 +15,7 @@ import 'package:omnigram/app/core/app_manager.dart';
 import 'package:omnigram/app/core/app_uuid.dart';
 import 'package:omnigram/app/data/models/message_model.dart';
 import 'package:omnigram/app/data/models/service_token.dart';
+import 'package:omnigram/openai/chat/enum.dart';
 
 class ServiceProviderManager extends GetxController {
   static final instance = ServiceProviderManager._internal();
@@ -23,7 +24,7 @@ class ServiceProviderManager extends GetxController {
   //内置的 LLM 模型 services
   late final Map<String, LLMChain> services = {
     'chat-gpt-3': LongChat(),
-    'chat-gpt-4': ChatGPT3(),
+    // 'chat-gpt-4': ChatGPT3(),
   };
 
   // late final vendors = <ServiceVendor>[];
@@ -147,8 +148,8 @@ class ServiceProviderManager extends GetxController {
             serviceAvatar: llm.avatar,
             serviceName: llm.name,
             // serviceId: provider.id,
-            content: llm.hello?.tr,
-            fromType: MessageFromType.receive,
+            content: llm.hello?.tr ?? "",
+            role: Role.system,
             createAt: DateTime.now(),
             conversationId: conversation.id,
           ),
@@ -172,8 +173,8 @@ class ServiceProviderManager extends GetxController {
             serviceAvatar: llm.avatar,
             serviceName: llm.name,
             // serviceId: provider.id,
-            content: llm.help?.tr,
-            fromType: MessageFromType.receive,
+            content: llm.help?.tr ?? "",
+            role: Role.system,
             createAt: DateTime.now(),
             conversationId: conversation.id,
           ),

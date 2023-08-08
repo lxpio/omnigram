@@ -23,10 +23,10 @@ import 'dart:convert';
 
 import 'package:omnigram/app/core/app_hive_keys.dart';
 import 'package:omnigram/app/core/app_manager.dart';
-import 'package:omnigram/app/core/app_uuid.dart';
 import 'package:omnigram/app/data/models/conversation_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:omnigram/openai/chat/enum.dart';
 
 import '../data/models/message_model.dart';
 import '../data/models/value_serializer.dart';
@@ -148,7 +148,7 @@ class ServiceProvider {
     if (sent == null || !sent) {
       if (hello != null && hello!.isNotEmpty) {
         receiveTextMessage(
-          content: hello?.tr,
+          content: hello?.tr ?? "",
           conversationId: conversation.id,
         );
       }
@@ -161,7 +161,7 @@ class ServiceProvider {
 
       if (token.isNotEmpty) {
         return receiveTextMessage(
-          content: help?.tr,
+          content: help?.tr ?? "",
           conversationId: conversation.id,
         );
       }
@@ -198,7 +198,7 @@ class ServiceProvider {
         serviceAvatar: avatar,
         serviceName: name,
         // serviceId: id,
-        fromType: MessageFromType.receive,
+        role: Role.assistant,
         createAt: DateTime.now(),
         // requestMessage: requestMessage,
         conversationId: requestMessage.conversationId,
@@ -217,7 +217,7 @@ class ServiceProvider {
         serviceName: name,
         // serviceId: id,
         content: error.toString(),
-        fromType: MessageFromType.receive,
+        role: Role.system,
         createAt: DateTime.now(),
         // requestMessage: requestMessage,
         conversationId: requestMessage.conversationId,
@@ -227,7 +227,7 @@ class ServiceProvider {
 
   Future<void> receiveTextMessage({
     Message? requestMessage,
-    String? content,
+    String content = '',
     int? conversationId,
   }) async {
     assert(requestMessage != null || conversationId != null);
@@ -237,8 +237,8 @@ class ServiceProvider {
         serviceAvatar: avatar,
         serviceName: name,
         // serviceId: id,
-        content: content?.trim(),
-        fromType: MessageFromType.receive,
+        content: content.trim(),
+        role: Role.assistant,
         createAt: DateTime.now(),
         // requestMessage: requestMessage,
         conversationId: conversationId ?? 0,
@@ -247,7 +247,7 @@ class ServiceProvider {
   }
 
   Future<void> receiveSystemMessage({
-    String? content,
+    String content = '',
     int? conversationId,
   }) async {
     HomeController.to.onReceived(
@@ -256,8 +256,8 @@ class ServiceProvider {
         serviceAvatar: avatar,
         serviceName: name,
         // serviceId: id,
-        content: content?.trim(),
-        fromType: MessageFromType.receive,
+        content: content.trim(),
+        role: Role.system,
         createAt: DateTime.now(),
         conversationId: conversationId ?? 0,
       ),

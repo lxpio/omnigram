@@ -9,12 +9,13 @@ import 'objectbox.g.dart';
 class Conversation {
   @Id(assignable: true)
   int id = 0;
-  final String? name;
+  String? name;
+  int timeout;
+  int maxTokens;
   final String? editName;
   final String serviceId;
   final int autoQuote;
-  final int timeout;
-  final int maxTokens;
+
   final String? promptId;
 
   String? get displayName => name ?? editName;
