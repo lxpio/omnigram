@@ -5,8 +5,9 @@ import 'package:omnigram/app/data/models/message_model.dart';
 
 class ChatInput extends StatelessWidget {
   final bool? enabled;
-  final ValueChanged<String>? onSubmitted;
+  final Function()? onSubmitted;
   final Function()? onCommand;
+  final ValueChanged<String>? onChanged;
   final TextEditingController controller;
   final FocusNode focusNode;
 
@@ -18,6 +19,7 @@ class ChatInput extends StatelessWidget {
     required this.controller,
     this.onSubmitted,
     this.onCommand,
+    this.onChanged,
     this.enabled,
     required this.focusNode,
     this.quoteMessage,
@@ -66,10 +68,7 @@ class ChatInput extends StatelessWidget {
             backgroundColor: Theme.of(context).primaryColorDark,
             child: IconButton(
               // padding: EdgeInsets.zero,
-              onPressed: () {
-                onSubmitted?.call(controller.text);
-                controller.clear();
-              },
+              onPressed: onSubmitted,
               color: Theme.of(context).cardColor,
               icon: const Icon(
                 Icons.north,
@@ -129,9 +128,11 @@ class ChatInput extends StatelessWidget {
 
   TextField _buildTextField(BuildContext context) {
     return TextField(
+      // key: textKey,
       enabled: enabled,
       focusNode: focusNode,
       controller: controller,
+      onChanged: onChanged,
       cursorColor: Theme.of(context).focusColor,
       textAlignVertical: TextAlignVertical.center,
       // textInputAction: TextInputAction.send,

@@ -8,7 +8,6 @@ import 'package:omnigram/openai/chat/response.dart';
 import 'package:omnigram/utils/constants.dart';
 
 import 'package:dio/io.dart';
-import 'client/err.dart';
 
 class OpenAI {
   ///instance of openai [instance]

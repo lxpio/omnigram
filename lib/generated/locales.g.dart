@@ -49,6 +49,9 @@ class LocaleKeys {
   static const administrator = 'administrator';
   static const model = 'model';
   static const auto_quote = 'auto_quote';
+  static const command_using_help = 'command_using_help';
+  static const command_using_translate = 'command_using_translate';
+  static const command_using_note = 'command_using_note';
 }
 
 class Locales {
@@ -93,6 +96,9 @@ class Locales {
     'administrator': '系统管理员',
     'model': '模型',
     'auto_quote': '自动引用',
+    'command_using_help': '获取帮助',
+    'command_using_translate': '翻译',
+    'command_using_note': '笔记',
   };
   static const en_US = {
     'app_name': 'Chat Answer',
@@ -136,5 +142,8 @@ class Locales {
     'administrator': 'Administrator',
     'model': 'Model',
     'auto_quote': 'Auto Quote',
+    'command_using_help': 'Help',
+    'command_using_translate': 'Translate',
+    'command_using_note': 'Help me note someting',
   };
 }

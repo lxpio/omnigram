@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 import 'package:omnigram/app/core/app_controller_mixin.dart';
 import 'package:omnigram/app/core/app_toast.dart';
 import 'package:omnigram/app/data/models/conversation_model.dart';
-import 'package:omnigram/app/data/models/llm_service.dart';
+
 import 'package:omnigram/app/providers/llmchain/llmchain.dart';
-import 'package:omnigram/app/providers/service_provider.dart';
+// import 'package:omnigram/app/providers/service_provider.dart';
 import 'package:omnigram/app/providers/service_provider_manager.dart';
 
 class ConversationController extends GetxController with AppControllerMixin {

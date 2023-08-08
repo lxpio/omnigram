@@ -36,5 +36,8 @@
     "official_url": "Official URL",
     "administrator": "Administrator",
     "model": "Model",
-    "auto_quote": "Auto Quote"
+    "auto_quote": "Auto Quote",
+    "command_using_help": "Help",
+    "command_using_translate": "Translate",
+    "command_using_note": "Help me note someting"
 }

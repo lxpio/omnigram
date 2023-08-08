@@ -1,8 +1,7 @@
-import 'package:get/get.dart';
 import 'package:omnigram/app/data/models/model.dart';
 import 'package:omnigram/app/data/models/objectbox.g.dart';
 
-import '../models/conversation_model.dart';
+import 'package:omnigram/app/data/models/conversation_model.dart';
 import 'package:objectbox/objectbox.dart';
 
 abstract class ConversationProvider {

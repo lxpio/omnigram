@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/home_controller.dart';
+import 'home_cmd.dart';
 
 class HomeView extends StatelessWidget with AppViewMixin<HomeController> {
   @override
@@ -15,7 +16,9 @@ class HomeView extends StatelessWidget with AppViewMixin<HomeController> {
   Color? get systemNavigationBarColor =>
       Theme.of(context).appBarTheme.backgroundColor;
 
-  const HomeView({Key? key}) : super(key: key);
+  final GlobalKey _textFieldKey = GlobalKey();
+
+  HomeView({Key? key}) : super(key: key);
 
   @override
   PreferredSizeWidget? buildAppBar(BuildContext context) {
@@ -68,11 +71,23 @@ class HomeView extends StatelessWidget with AppViewMixin<HomeController> {
               onQuoted: controller.onQuoted,
             ),
           ),
+          // CommandMenuWidget(isMenuVisible: controller.isMenuVisible),
           ChatInput(
+            key: _textFieldKey,
             focusNode: controller.focusNode,
             controller: controller.textEditing,
             onSubmitted: controller.onSubmitted,
-            onCommand: controller.onCommand,
+            onChanged: (String text) {
+              if (text == '/') {
+                _showMenuOverlay(context);
+              } else {
+                removeHighlightOverlay();
+              }
+            },
+            onCommand: () {
+              controller.changeInputText('/');
+              _showMenuOverlay(context);
+            },
             quoteMessage: controller.currentQuotedMessage,
             onCleared: controller.onCleared,
           ),
@@ -81,4 +96,47 @@ class HomeView extends StatelessWidget with AppViewMixin<HomeController> {
 
   @override
   Widget? buildDrawer() => const HomeDrawer();
+
+  OverlayEntry? overlayEntry;
+
+  // Remove the OverlayEntry.
+  void removeHighlightOverlay() {
+    overlayEntry?.remove();
+    overlayEntry = null;
+  }
+
+  void _showMenuOverlay(BuildContext context) {
+    final RenderBox textFieldRenderBox =
+        _textFieldKey.currentContext!.findRenderObject() as RenderBox;
+    final textFieldPosition = textFieldRenderBox.localToGlobal(Offset.zero);
+    removeHighlightOverlay();
+    // commandController.showMenu(textFieldPosition.dy + textFieldRenderBox.size.height);
+    overlayEntry = OverlayEntry(
+        builder: (context) => GestureDetector(
+            onTap: () {
+              removeHighlightOverlay();
+            },
+            behavior: HitTestBehavior.opaque,
+            child: Stack(
+              children: [
+                Positioned(
+                  left: textFieldPosition.dx,
+                  top: (textFieldPosition.dy) - 32 * 2 - 65,
+                  width: textFieldRenderBox.size.width,
+                  child: CommandMenuView(onCommand: _handleCommand),
+                ),
+              ],
+            )));
+
+    Overlay.of(context).insert(overlayEntry!);
+  }
+
+  Future<void> _handleCommand(String commandTitle) async {
+    controller.changeInputText(commandTitle);
+    // Implement your logic to handle the selected command
+    print('Command tapped: $commandTitle');
+    removeHighlightOverlay();
+
+    controller.onSubmitted();
+  }
 }
