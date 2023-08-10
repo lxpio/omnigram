@@ -35,6 +35,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.4.6
   objectbox_generator: any
+  flutter_launcher_icons: "^0.13.1"
 
 
 flutter: 
@@ -48,8 +49,13 @@ flutter:
 flutter_native_splash:
   color: "#ffffff"
   image: assets/images/logo-white.png
+  image_dark: assets/images/logo-white.png
+  android: true
+  ios: true
+  android_12: 
+    image: assets/images/logo-white.png
 
-flutter_icons:
+flutter_launcher_icons:
   android: true
   ios: true
   remove_alpha_ios: true

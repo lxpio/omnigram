@@ -36,7 +36,7 @@ class ConversationView extends StatelessWidget
 
   @override
   Widget buildBody(BuildContext context) {
-    if (controller.conversation == null) return Container();
+    if (controller.service == null) return Container();
 
     return ListView(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
