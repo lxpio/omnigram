@@ -274,6 +274,24 @@ class HomeController extends GetxController
     changeConversation(index: conversationIndex);
   }
 
+  Future<void> addConversation(Conversation conversation) async {
+    if (focusNode.hasFocus) {
+      focusNode.unfocus();
+    }
+
+    conversations.add(conversation);
+
+    messages.clear();
+
+    // canFetchTop = list.length >= AppDatabase.defaultLimit;
+
+    update();
+    //TODO 这里 不需要放在在ServiceProviderManager 里面，而是直接在 当前class 处理
+    await ServiceProviderManager.instance.changeConversation(
+      conversation: currentConversation!,
+    );
+  }
+
   Future<Conversation?> changeConversation({int? index}) async {
     if (focusNode.hasFocus) {
       focusNode.unfocus();
@@ -309,11 +327,20 @@ class HomeController extends GetxController
     return currentConversation;
   }
 
-  Future<void> _createConversation({String? name}) async {
-    final conversation = Conversation(
+  Conversation _newConversation({String? name}) {
+    return Conversation(
       name: name ?? '${'new_chat'.tr} ${conversations.length + 1}',
     );
+  }
 
+  void toConversation({Conversation? conversation}) {
+    Get.toNamed(Routes.CONVERSATION, arguments: {
+      'conversation': conversation ?? _newConversation(),
+    });
+  }
+
+  Future<void> _createConversation({String? name}) async {
+    final conversation = _newConversation(name: name);
     // create or replace
     AppProvider.instance.conversations.create(
       conversation,
@@ -383,12 +410,6 @@ class HomeController extends GetxController
 
   @override
   Future<void> onTopScroll() async {}
-
-  void toConversation({Conversation? conversation}) {
-    Get.toNamed(Routes.CONVERSATION, arguments: {
-      'conversation': conversation ?? currentConversation,
-    });
-  }
 
   Future<void> changeInputText(String text) async {
     textEditing.value = TextEditingValue(

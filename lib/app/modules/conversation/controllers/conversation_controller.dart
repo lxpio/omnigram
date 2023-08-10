@@ -3,16 +3,22 @@ import 'package:get/get.dart';
 import 'package:omnigram/app/core/app_controller_mixin.dart';
 import 'package:omnigram/app/core/app_toast.dart';
 import 'package:omnigram/app/data/models/conversation_model.dart';
+import 'package:omnigram/app/data/providers/provider.dart';
+import 'package:omnigram/app/modules/home/controllers/home_controller.dart';
+import 'package:omnigram/app/modules/home/views/home_view.dart';
 
 import 'package:omnigram/app/providers/llmchain/llmchain.dart';
 // import 'package:omnigram/app/providers/service_provider.dart';
 import 'package:omnigram/app/providers/service_provider_manager.dart';
+import 'package:omnigram/app/routes/app_pages.dart';
 
 class ConversationController extends GetxController with AppControllerMixin {
   //TODO: Implement ConversationController
   // late args = Get.arguments
 
   late Conversation conversation = Get.arguments['conversation'];
+
+  late bool editing = Get.arguments['editing'] ?? false;
 
   late LLMChain? service;
   // late final nameTextEditing = TextEditingController(
@@ -26,11 +32,13 @@ class ConversationController extends GetxController with AppControllerMixin {
   final maxTokensTextEditingController = TextEditingController();
   final timeoutTextEditingController = TextEditingController();
 
-  bool editing = false;
-
   @override
   void onInit() {
-    service = ServiceProviderManager.instance.get(id: conversation.serviceId);
+    service = ServiceProviderManager.instance
+        .get(id: conversation.serviceId); //conversation.serviceId
+    if (conversation.id == 0) {
+      editing = true;
+    }
     super.onInit();
   }
 
@@ -70,27 +78,9 @@ class ConversationController extends GetxController with AppControllerMixin {
         int.tryParse(maxTokensTextEditingController.text) ?? 0;
     conversation.timeout = int.tryParse(timeoutTextEditingController.text) ?? 0;
 
-    // for (int index = 0; index < tokens.length; index++) {
-    //   final token = tokens[index];
-    //   if (token.value != tokenControllers[token.id]?.text) {
-    //     tokens[index] = token.copyWith(
-    //       value: tokenControllers[token.id]?.text,
-    //     );
-    //     await ServiceProviderManager.instance.saveToken(tokens[index]);
-    //   }
-    // }
-
-    // for (int index = 0; index < parameters.length; index++) {
-    //   final parameter = parameters[index];
-    //   if (parameter.value != parameterControllers[parameter.key]?.text) {
-    //     parameters[index] = parameter.copyWith(
-    //       value: parameterControllers[parameter.key]?.text,
-    //     );
-    //     await ServiceProviderManager.instance.saveParameter(parameters[index]);
-    //   }
-    // }
-
-    // vendor?.editApiUrl = apiUrlTextEditingController.text;
+    AppProvider.instance.conversations.create(
+      conversation,
+    );
 
     editing = false;
 
@@ -99,6 +89,12 @@ class ConversationController extends GetxController with AppControllerMixin {
     // await AppDatabase.instance.serviceVendorsDao.create(vendor!);
 
     AppToast.show(msg: 'saved_successfully'.tr);
+
+    HomeController.to.addConversation(conversation);
+
+    Get.toNamed(
+      Routes.HOME,
+    );
   }
   // void increment() => count.value++;
 }

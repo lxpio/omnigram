@@ -19,4 +19,6 @@ objectbox:
 	@echo "gen i18n locales"
 	@dart run build_runner build
 omnigram: i18n objectbox
-	@flutter pub get
+	# @flutter pub get
+	@dart run flutter_native_splash:create
+	@dart run flutter_launcher_icons:main
