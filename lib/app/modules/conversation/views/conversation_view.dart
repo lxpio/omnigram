@@ -89,6 +89,7 @@ class ConversationView extends StatelessWidget
           controller: controller.timeoutTextEditingController,
           textInputAction: TextInputAction.next,
         ),
+        // AppSection(title: Text('vendor'.tr)),
         const SizedBox(
           height: 8,
         ),

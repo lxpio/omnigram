@@ -280,7 +280,7 @@ class HomeController extends GetxController
     }
 
     conversations.add(conversation);
-
+    currentConversationIndex = conversations.length - 1;
     messages.clear();
 
     // canFetchTop = list.length >= AppDatabase.defaultLimit;

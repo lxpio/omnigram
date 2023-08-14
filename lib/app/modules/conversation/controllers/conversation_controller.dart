@@ -5,7 +5,6 @@ import 'package:omnigram/app/core/app_toast.dart';
 import 'package:omnigram/app/data/models/conversation_model.dart';
 import 'package:omnigram/app/data/providers/provider.dart';
 import 'package:omnigram/app/modules/home/controllers/home_controller.dart';
-import 'package:omnigram/app/modules/home/views/home_view.dart';
 
 import 'package:omnigram/app/providers/llmchain/llmchain.dart';
 // import 'package:omnigram/app/providers/service_provider.dart';
@@ -13,9 +12,6 @@ import 'package:omnigram/app/providers/service_provider_manager.dart';
 import 'package:omnigram/app/routes/app_pages.dart';
 
 class ConversationController extends GetxController with AppControllerMixin {
-  //TODO: Implement ConversationController
-  // late args = Get.arguments
-
   late Conversation conversation = Get.arguments['conversation'];
 
   late bool editing = Get.arguments['editing'] ?? false;
@@ -68,8 +64,6 @@ class ConversationController extends GetxController with AppControllerMixin {
   }
 
   Future<void> onSaved() async {
-    if (conversation == null) return;
-
     if (conversation.name != conversationNameTextEditingController.text) {
       conversation.name = conversationNameTextEditingController.text;
     }
@@ -84,14 +78,12 @@ class ConversationController extends GetxController with AppControllerMixin {
 
     editing = false;
 
-    update();
-
     // await AppDatabase.instance.serviceVendorsDao.create(vendor!);
 
     AppToast.show(msg: 'saved_successfully'.tr);
 
     HomeController.to.addConversation(conversation);
-
+    update();
     Get.toNamed(
       Routes.HOME,
     );
