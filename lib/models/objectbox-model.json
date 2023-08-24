@@ -1,0 +1,199 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:80950761842185345",
+      "lastPropertyId": "8:4848210303336672154",
+      "name": "Conversation",
+      "properties": [
+        {
+          "id": "1:1787823378864097468",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:4114891020343445072",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:1559698755058536099",
+          "name": "timeout",
+          "type": 6
+        },
+        {
+          "id": "4:4383163405051891296",
+          "name": "maxTokens",
+          "type": 6
+        },
+        {
+          "id": "5:5748703415952596021",
+          "name": "editName",
+          "type": 9
+        },
+        {
+          "id": "6:2498743953382109495",
+          "name": "serviceId",
+          "type": 9
+        },
+        {
+          "id": "7:8972074864565165689",
+          "name": "autoQuote",
+          "type": 6
+        },
+        {
+          "id": "8:4848210303336672154",
+          "name": "promptId",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:1270905593409274732",
+      "lastPropertyId": "13:612301247529537563",
+      "name": "LLMService",
+      "properties": [
+        {
+          "id": "1:2627143471976359448",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:4186221729847837975",
+          "name": "name",
+          "type": 9,
+          "flags": 2080,
+          "indexId": "1:397366210671023296"
+        },
+        {
+          "id": "3:8740133207519370614",
+          "name": "model",
+          "type": 9
+        },
+        {
+          "id": "4:7215088522695154231",
+          "name": "avatar",
+          "type": 9
+        },
+        {
+          "id": "5:362567894328451657",
+          "name": "token",
+          "type": 9
+        },
+        {
+          "id": "6:1308254369758018906",
+          "name": "desc",
+          "type": 9
+        },
+        {
+          "id": "7:8476730422210288617",
+          "name": "apiUrl",
+          "type": 9
+        },
+        {
+          "id": "8:5340329209810821538",
+          "name": "officialUrl",
+          "type": 9
+        },
+        {
+          "id": "9:5789927094404279676",
+          "name": "editApiUrl",
+          "type": 9
+        },
+        {
+          "id": "10:8516242196382591850",
+          "name": "hello",
+          "type": 9
+        },
+        {
+          "id": "11:7585360590853708133",
+          "name": "help",
+          "type": 9
+        },
+        {
+          "id": "12:1167646403618176241",
+          "name": "helpUrl",
+          "type": 9
+        },
+        {
+          "id": "13:612301247529537563",
+          "name": "block",
+          "type": 1
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:3795651414970324358",
+      "lastPropertyId": "9:7265225629115756413",
+      "name": "Message",
+      "properties": [
+        {
+          "id": "1:4196744234746369015",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1196940915996705053",
+          "name": "conversationId",
+          "type": 6,
+          "flags": 8,
+          "indexId": "2:6486424172691553910"
+        },
+        {
+          "id": "3:635886363459341526",
+          "name": "serviceName",
+          "type": 9
+        },
+        {
+          "id": "4:7822552577144891826",
+          "name": "serviceAvatar",
+          "type": 9
+        },
+        {
+          "id": "5:6497504556329156884",
+          "name": "content",
+          "type": 9
+        },
+        {
+          "id": "6:2298084954242694788",
+          "name": "createAt",
+          "type": 10
+        },
+        {
+          "id": "7:2333217528992308657",
+          "name": "responseData",
+          "type": 9
+        },
+        {
+          "id": "8:7083410947965013552",
+          "name": "dbMessageType",
+          "type": 6
+        },
+        {
+          "id": "9:7265225629115756413",
+          "name": "dbMessageFromType",
+          "type": 6
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "3:3795651414970324358",
+  "lastIndexId": "2:6486424172691553910",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}
