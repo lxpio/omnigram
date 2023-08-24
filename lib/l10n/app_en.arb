@@ -1,0 +1,11 @@
+{
+  "nav_name": "{name,select, read{Reader} chat{Chat} music{Music} picture{Picture} other {Other} }",
+  "@nav_name": {
+    "description": "The conventional newborn programmer greeting",
+    "placeholders": {
+       "name": { "type": "String" }
+     }
+  },
+  "keepreading": "Keep Reading",
+  "viewmore": "view all"
+}

@@ -1,9 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
-import 'package:omnigram/app/data/models/conversation_model.dart';
-import 'package:omnigram/app/data/models/model.dart';
-import 'package:omnigram/app/data/providers/conversation_provider.dart';
+import 'package:omnigram/providers/service/chat/conversation_model.dart';
+import 'package:omnigram/models/model.dart';
+import 'package:omnigram/providers/service/chat/conversation_provider.dart';
 
 import 'package:test/test.dart';
 

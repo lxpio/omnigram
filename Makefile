@@ -11,14 +11,12 @@ BUILD_HASH=$(shell git rev-parse HEAD)
 
 all : omnigram
 
-i18n:
-	@echo "gen i18n locales"
-	@get generate locales assets/locales
+
 
 objectbox:
 	@echo "gen i18n locales"
 	@dart run build_runner build
-omnigram: i18n objectbox
+omnigram: objectbox
 	# @flutter pub get
 	@dart run flutter_native_splash:create
 	@dart run flutter_launcher_icons:main

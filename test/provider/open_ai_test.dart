@@ -2,10 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-import 'package:omnigram/app/providers/open_ai_compatible.dart';
-import 'package:omnigram/openai/chat/chat_complate_text.dart';
-import 'package:omnigram/openai/chat/enum.dart';
-import 'package:omnigram/openai/chat/message.dart';
+import 'package:omnigram/providers/openai/chat/chat_complate_text.dart';
+import 'package:omnigram/providers/openai/chat/enum.dart';
+import 'package:omnigram/providers/openai/chat/message.dart';
+import 'package:omnigram/providers/service/chat/open_ai_compatible.dart';
 import 'package:omnigram/utils/constants.dart';
 
 import 'package:test/test.dart';
