@@ -7,5 +7,7 @@
      }
   },
   "keepreading": "Keep Reading",
-  "viewmore": "view all"
+  "viewmore": "view all",
+  "book_start_reading": "Reading",
+  "book_start_listening": "Listen"
 }

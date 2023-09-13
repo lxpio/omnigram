@@ -1,39 +1,117 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:omnigram/core/pages/book_detail/detail_view.dart';
-import "package:riverpod_annotation/riverpod_annotation.dart";
+import 'package:omnigram/components/root_layout.dart';
+import 'package:omnigram/providers/service/chat/conversation_model.dart';
+import 'package:omnigram/providers/service/reader/book_model.dart';
+import 'package:omnigram/screens/chat/chat_screen.dart';
+
+import 'package:omnigram/screens/photo.dart';
+import 'package:omnigram/screens/reader/reader_mobile_screen.dart';
+import 'package:omnigram/utils/constants.dart';
 import 'package:go_router/go_router.dart';
 
-import '../screens/chat.dart';
-import '../screens/home.dart';
+import '../screens/chat/chat.dart';
+import '../screens/home/home_small_screen.dart';
 import '../screens/login.dart';
 
-part 'router.g.dart';
+// part 'router.g.dart';
 
-@riverpod
-GoRouter appRouter(AppRouterRef ref) {
+// const _pageKey = ValueKey('_pageKey');
+
+// const _scaffoldKey = ValueKey('_scaffoldKey');
+
+// @riverpod
+GoRouter appRouter() {
   return GoRouter(
     // navigatorKey: _key,
     debugLogDiagnostics: true,
-    initialLocation: DetailView.routeLocation,
+    initialLocation: kHomePath,
     routes: [
       GoRoute(
-        path: DetailView.routeLocation,
-        name: DetailView.routeName,
-        builder: (context, state) {
-          return const DetailView();
-        },
+        path: kHomePath,
+        name: kHomePage,
+        pageBuilder: (context, state) => const MaterialPage(
+          // key: _pageKey,
+          child: RootLayout(
+            // key: _scaffoldKey,
+            currentIndex: 0,
+            child: ReaderSmallScreen(),
+          ),
+        ),
       ),
       GoRoute(
-        path: HomePage.routeLocation,
-        name: HomePage.routeName,
-        builder: (context, state) {
-          return const HomePage();
+        path: kReaderPath,
+        name: kReaderPage,
+        pageBuilder: (context, state) {
+          final Book book = state.extra as Book;
+
+          return MaterialPage(
+            // key: _pageKey,
+            child: ReaderMobileScreen(
+              book: book,
+            ),
+          );
         },
+        routes: [
+          GoRoute(
+              path: kReaderDetailPath,
+              name: kReaderDetailPage,
+              pageBuilder: (context, GoRouterState state) {
+                final bookPath = state.extra as String;
+                // ? state.extra as Conversation
+                // : Conversation();
+
+                return MaterialPage(
+                  child: RootLayout(
+                    // key: _scaffoldKey,
+                    currentIndex: 0,
+                    child: ChatPageBody(),
+                  ),
+                );
+              }),
+        ],
       ),
       GoRoute(
-        path: LoginPage.routeLocation,
-        name: LoginPage.routeName,
+        path: kChatPath,
+        name: kChatPage,
+        pageBuilder: (context, state) => const MaterialPage(
+          // key: _pageKey,
+          child: RootLayout(
+            // key: _scaffoldKey,
+            currentIndex: 1,
+            child: ChatPageBody(),
+          ),
+        ),
+        routes: [
+          GoRoute(
+            path: "feed",
+            name: "chat_feed",
+            pageBuilder: (context, state) {
+              final Conversation conversation = state.extra is Conversation
+                  ? state.extra as Conversation
+                  : Conversation();
+
+              return MaterialPage(
+                child: ChatScreen(conversation: conversation),
+              );
+            },
+          ),
+        ],
+      ),
+      GoRoute(
+        path: kMusicPath,
+        name: kMusicPage,
+        pageBuilder: (context, state) => const MaterialPage(
+          // key: _pageKey,
+          child: RootLayout(
+            // key: _scaffoldKey,
+            currentIndex: 2,
+            child: PhotoPageBody(),
+          ),
+        ),
+      ),
+      GoRoute(
+        path: kLoginPath,
+        name: kLoginPage,
         builder: (context, state) {
           return const LoginPage();
         },
@@ -58,7 +136,8 @@ GoRouter appRouter(AppRouterRef ref) {
       // if (isLoggingIn) return isAuth ? HomePage.routeLocation : null;
 
       // return isAuth ? null : SplashPage.routeLocation;
-      return HomePage.routeLocation;
+      // return kHomePath;
+      return null;
     },
   );
 }

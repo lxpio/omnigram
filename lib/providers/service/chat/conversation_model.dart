@@ -14,10 +14,11 @@ class Conversation {
   final String? editName;
   final String serviceId;
   final int autoQuote;
+  DateTime lastActive;
 
   final String? promptId;
 
-  String? get displayName => name ?? editName;
+  String get displayName => name ?? editName ?? "new_chat";
 
   Conversation({
     this.id = 0,
@@ -28,7 +29,8 @@ class Conversation {
     this.timeout = 60,
     this.maxTokens = 800,
     this.promptId,
-  });
+    // this.lastActive = DateTime.now(),
+  }) : lastActive = DateTime.now();
 
   factory Conversation.fromJson(Map<String, dynamic> json) {
     const serializer = ValueSerializer();

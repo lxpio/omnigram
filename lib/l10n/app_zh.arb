@@ -1,5 +1,5 @@
 {
-  "nav_name": "{name,select, read{阅读} chat{音乐} music{碎念} picture{图片} other {其他} }",
+  "nav_name": "{name,select, read{阅读} chat{碎念} music{音乐} picture{图片} other {其他} }",
   "@nav_name": {
     "description": "The conventional newborn programmer greeting",
     "placeholders": {
@@ -9,5 +9,7 @@
     }
   },
    "keepreading": "继续阅读",
-  "viewmore": "查看所有"
+  "viewmore": "查看所有",
+   "book_start_reading": "阅读",
+  "book_start_listening": "听书"
 }

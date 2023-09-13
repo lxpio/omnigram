@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:omnigram/flavors/app_config.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 class APIService {
   late final Dio _dio;
@@ -12,12 +15,10 @@ class APIService {
   Map<String, dynamic>? _queries;
   Map<String, dynamic>? _bodies;
 
-  static final singleton = APIService._internal();
+  late final String baseUrl;
 
-  APIService._internal();
-
-  APIService build(
-      {String baseUrl = "https://127.0.0.1:8080",
+  APIService(
+      {this.baseUrl = "https://127.0.0.1:8080",
       Map<String, dynamic>? serviceHeader,
       Map<String, dynamic>? serviceQuery,
       Map<String, dynamic>? serviceBody}) {
@@ -33,7 +34,7 @@ class APIService {
         responseType: ResponseType.json);
 
     _dio = Dio(options);
-
+    print(' APIService init once');
     if (proxy != null) {
       _dio.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
         final client = HttpClient();
@@ -48,8 +49,6 @@ class APIService {
 
     // 设置拦截器
     _dio.interceptors.add(LogInterceptor(responseBody: true));
-
-    return singleton;
   }
 
   Future<ApiResponse<T>> request<T>(String method, String path,
@@ -66,20 +65,54 @@ class APIService {
 
     Options options = Options(headers: headerParams, method: method);
 
-    final response = await _dio.request(path,
-        data: bodyParams,
-        queryParameters: queryParams,
-        cancelToken: cancelToken,
-        options: options);
+    try {
+      final response = await _dio.request(path,
+          queryParameters: queryParams,
+          data: bodyParams,
+          options: options,
+          cancelToken: cancelToken);
 
-    if (response.statusCode == 200) {
-      return ApiResponse.fromJson(response.data, fromJsonT);
-    } else {
-      throw (
-        response: response,
-        error: 'Request failed with status code ${response.statusCode}',
-      );
+      if (response.statusCode == 200) {
+        return ApiResponse.fromJson(response.data, fromJsonT);
+      } else {
+        throw (
+          response: response,
+          error: 'Request failed with status code ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      throw e;
     }
+  }
+
+  //download file to local dir
+  Future<void> downloadFile(String url, String path,
+      {Map<String, dynamic>? query,
+      Map<String, dynamic>? body,
+      Map<String, dynamic>? header,
+      CancelToken? cancelToken}) async {
+    Map<String, dynamic> queryParams = _getQueryParams(query);
+
+    Map<String, dynamic> headerParams = _getHeaderParams(header);
+
+    Map<String, dynamic>? bodyParams = _getBodyParams(body);
+
+    Options options = Options(
+        headers: headerParams,
+        responseType: ResponseType.bytes,
+        followRedirects: false,
+        validateStatus: (status) {
+          return status! < 500;
+        });
+
+    final response = await _dio.get(url,
+        queryParameters: queryParams,
+        data: bodyParams,
+        options: options,
+        cancelToken: cancelToken);
+
+    File file = File(path);
+    await file.writeAsBytes(response.data);
   }
 
   Map<String, dynamic> _getHeaderParams(Map<String, dynamic>? header) {
@@ -116,7 +149,26 @@ class APIService {
     }
     return bodyParams;
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is APIService && other.hashCode == hashCode;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        _headers,
+        _queries,
+        _bodies,
+        baseUrl,
+      );
 }
+
+//bookAPIServiceProvider 是全局有效的所以这了不要 autoDispose
+final bookAPIServiceProvider = Provider<APIService>((ref) {
+  final baseUrl = ref.watch(appConfigProvider).bookBaseUrl;
+  return APIService(baseUrl: baseUrl);
+});
 
 class ApiResponse<T> {
   final int code;

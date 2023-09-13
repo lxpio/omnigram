@@ -1,3 +1,5 @@
+String globalEpubPath = '';
+
 const kOpenAI = 'OpenAI';
 
 /// Base ChatGPT Url
@@ -110,3 +112,21 @@ String translateThaiToEng({required String word}) =>
     "Translate this into English : $word";
 String translateToJapanese({required String word}) =>
     "Translate this into Japanese : $word";
+
+//router
+
+const kHomePath = '/';
+const kChatPath = '/chat';
+const kReaderDetailPath = 'detail';
+const kReaderPath = '/reader/books/:id';
+const kMusicPath = '/music';
+const kPhotoPath = '/photo';
+const kLoginPath = '/';
+
+const kHomePage = 'home';
+const kChatPage = 'chat';
+const kReaderPage = 'reader';
+const kReaderDetailPage = 'reader_detail';
+const kMusicPage = 'music';
+const kPhotoPage = 'photo';
+const kLoginPage = 'login';

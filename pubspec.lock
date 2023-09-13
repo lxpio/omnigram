@@ -9,6 +9,30 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "61.0.0"
+  adaptive_breakpoints:
+    dependency: transitive
+    description:
+      name: adaptive_breakpoints
+      sha256: "3aa6ef09074fe7824dfdc9a6d9f955c8a3bae0fb71c495cbd72f471a87699b4f"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.6"
+  adaptive_components:
+    dependency: "direct main"
+    description:
+      name: adaptive_components
+      sha256: "13a3a8db9c4aa7c25dbd28ea7ba0df4443218e04d251b6999f9bba968cac5d4f"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.9"
+  adaptive_navigation:
+    dependency: transitive
+    description:
+      name: adaptive_navigation
+      sha256: "271d3e54147ce37b389c3d7d19777b4340e4ccd440d0349457c8b8db197b1c41"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.9"
   analyzer:
     dependency: transitive
     description:
@@ -342,6 +366,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_adaptive_scaffold:
+    dependency: "direct main"
+    description:
+      name: flutter_adaptive_scaffold
+      sha256: "3e78be8b9c95b1c9832b2f8ec4a845adac205c4bb5e7bd3fb204b07990229167"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.7+1"
   flutter_blurhash:
     dependency: transitive
     description:
@@ -374,6 +406,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.7.0"
+  flutter_highlighter:
+    dependency: "direct main"
+    description:
+      name: flutter_highlighter
+      sha256: "93173afd47a9ada53f3176371755e7ea4a1065362763976d06d6adfb4d946e10"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.1"
   flutter_hooks:
     dependency: transitive
     description:
@@ -517,6 +557,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.7.0"
+  highlighter:
+    dependency: transitive
+    description:
+      name: highlighter
+      sha256: "92180c72b9da8758e1acf39a45aa305a97dcfe2fdc8f3d1d2947c23f2772bfbc"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.1"
   hive:
     dependency: transitive
     description:

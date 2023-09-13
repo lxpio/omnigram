@@ -1,39 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/components/home_body.dart';
 import 'package:omnigram/components/destinations.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:adaptive_components/adaptive_components.dart';
+import 'epub_body.dart';
 
-import 'chat.dart';
-import 'photo.dart';
-
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
-
-  static String get routeName => 'home';
-  static String get routeLocation => '/reader';
+class ReaderSmallScreen extends StatefulHookConsumerWidget {
+  const ReaderSmallScreen({super.key});
 
   @override
-  State createState() => _HomePageState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _ReaderSmallScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
-
-  final List<Widget> _pages = [
-    EpubPageBody(),
-    ChatPageBody(),
-    PhotoPageBody(),
-    PhotoPageBody(),
-  ];
-
+class _ReaderSmallScreenState extends ConsumerState<ReaderSmallScreen> {
   @override
   Widget build(BuildContext context) {
-    // final name = ref.watch(authProvider.select(
-    //   (value) => value.valueOrNull?.displayName,
-    // ));
-
     return Scaffold(
       appBar: AppBar(
         // bottom: PreferredSize(
@@ -84,23 +67,7 @@ class _HomePageState extends State<HomePage> {
           // const SizedBox(width: 16),
         ],
       ),
-      body: _pages[_currentIndex],
-      bottomNavigationBar: NavigationBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        destinations: destinations.map<NavigationDestination>((d) {
-          return NavigationDestination(
-            icon: Icon(d.icon),
-            label: AppLocalizations.of(context)!.nav_name(d.label),
-          );
-        }).toList(),
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-      ),
+      body: const EpubPageBody(),
     );
   }
 }
