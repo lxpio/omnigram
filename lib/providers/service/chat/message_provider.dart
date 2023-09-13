@@ -34,7 +34,7 @@ abstract class MessageProvider {
 class MessageBox implements MessageProvider {
   late final Box<Message> _box;
 
-  MessageBox() : _box = AppStore.instance.create<Message>();
+  MessageBox() : _box = AppStore.instance.box<Message>();
 
   @override
   int create(Message message) {

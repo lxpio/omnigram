@@ -3,8 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class LoginPage extends ConsumerWidget {
   const LoginPage({super.key});
-  static String get routeName => 'login';
-  static String get routeLocation => '/login';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,7 +17,7 @@ class LoginPage extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("Wellcome, name. This is your homepage."),
+            const Text("Wellcome, name. This is your homepage."),
             ElevatedButton(
               onPressed: () async {
                 // await FirebaseAuth.instance.signOut();

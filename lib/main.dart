@@ -12,6 +12,7 @@ import 'package:desktop_window/desktop_window.dart';
 
 import "flavors/app_theme.dart";
 import "flavors/build_config.dart";
+import "flavors/color_schemes.g.dart";
 import "flavors/environment.dart";
 
 Future setDesktopWindow() async {
@@ -49,15 +50,15 @@ class OmniApp extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final mode = ref.watch(themeModeProvider);
 
-    final _router = ref.watch(appRouterProvider);
+    // final router = ref.watch(appRouterProvider);
 
     return MaterialApp.router(
       title: 'Omnigram',
       debugShowCheckedModeBanner: false,
       themeMode: mode,
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      routerConfig: _router,
+      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+      darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
+      routerConfig: appRouter(),
       // themeMode: AppManager.to.themeMode,
       // locale: const Locale('zh'),
 
