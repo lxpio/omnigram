@@ -8,8 +8,21 @@
       }
     }
   },
-   "keepreading": "继续阅读",
+  "keepreading": "继续阅读",
+  "recentbooks": "最近添加",
+  "randombooks": "随便看看",
+  "popularbooks": "最近流行",
+  "search": "搜索",
   "viewmore": "查看所有",
    "book_start_reading": "阅读",
-  "book_start_listening": "听书"
+  "book_start_listening": "听书",
+  "new_chat": "新聊天",
+  "type_message_placeholder": "输入信息...",
+  "send": "发送",
+  "open_ai_hello": "您好！我是碎念助手。在会话中，我会通过下面的账号与您对话：\n- [ChatAI](/service?service_id=open_ai_chat_gpt)\n- [ChatAI GPT-4](/service?service_id=open_ai_chat_gpt_4)\n\n我可以完成很多任务：\n- 记录日记\n- 问答\n- 对话\n- 翻译\n- ...\n\n能够与您进行交互，并准确地理解和回答问题。",
+  "chat_gpt_help": "在使用之前,您需要做一个简单的配置。\n\n1. 点击我的头像,进入我的主页;\n2. 填写您的API Key。\n\n如果您还没有申请API Key,请在我的主页点击[获取帮助](https://www.nexptr.com/omnigram/help/chat_gpt.html)来查看如何申请。",
+  "chat_gpt_help_url": "https: //www.nexptr.com/omnigram/help/chat_gpt.html",
+  "type_your_tokens": "请输入您的 @name",
+  "must_type_tokens": "请先点击我的头像，输入您的 @tokens",
+  "network_error": "网络出现了问题，请稍后重试~"
 }

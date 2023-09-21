@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:omnigram/flavors/app_config.dart';
 import 'package:omnigram/providers/service/reader/book_model.dart';
-import 'package:omnigram/providers/service/reader/books.dart';
-import 'package:omnigram/screens/home/book_card.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:omnigram/utils/constants.dart';
+import 'package:omnigram/utils/l10n.dart';
 
 class ReaderMobileScreen extends HookConsumerWidget {
   const ReaderMobileScreen({required this.book, super.key}) : super();
@@ -14,6 +14,8 @@ class ReaderMobileScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final appConfig = ref.read(appConfigProvider);
+
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -64,9 +66,12 @@ class ReaderMobileScreen extends HookConsumerWidget {
                   borderRadius: BorderRadius.circular(16),
                   color: Theme.of(context).colorScheme.surface,
                   image: DecorationImage(
-                    image: AssetImage(book.image),
+                    // image: AssetImage(book.image),
+                    image: NetworkImage(appConfig.bookBaseUrl + book.image,
+                        headers: {
+                          "Authorization": "Bearer ${appConfig.bookToken}"
+                        }),
                   )),
-              // child: BookCard(book: book)
             ),
             const SizedBox(height: 32),
             Text(book.title, style: Theme.of(context).textTheme.titleLarge),
@@ -82,12 +87,12 @@ class ReaderMobileScreen extends HookConsumerWidget {
                   Container(
                     child: Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.star,
                           color: Colors.yellow,
                           size: 20,
                         ),
-                        SizedBox(width: 5),
+                        const SizedBox(width: 5),
                         Text(
                           '4.5',
                           style: TextStyle(
@@ -104,7 +109,7 @@ class ReaderMobileScreen extends HookConsumerWidget {
                           color: Colors.grey.shade600,
                           size: 20,
                         ),
-                        SizedBox(width: 5),
+                        const SizedBox(width: 5),
                         Text(
                           '2h',
                           style: TextStyle(
@@ -113,7 +118,7 @@ class ReaderMobileScreen extends HookConsumerWidget {
                       ],
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     width: MediaQuery.of(context).size.width * 0.2,
                     child: Row(
                       children: [
@@ -122,7 +127,7 @@ class ReaderMobileScreen extends HookConsumerWidget {
                           color: Colors.grey.shade600,
                           size: 20,
                         ),
-                        SizedBox(width: 5),
+                        const SizedBox(width: 5),
                         Text(
                           'Watch',
                           style: TextStyle(
@@ -134,13 +139,13 @@ class ReaderMobileScreen extends HookConsumerWidget {
                 ],
               ),
             ),
-            Container(
+            SizedBox(
               // alignment: Alignment.centerLeft,
               width: MediaQuery.of(context).size.width * 0.7,
               child: Text('book.description',
                   style: Theme.of(context).textTheme.bodyMedium),
             ),
-            SizedBox(height: 32),
+            const SizedBox(height: 32),
             Container(
               padding: const EdgeInsets.all(8),
               width: MediaQuery.of(context).size.width * .7,
@@ -149,19 +154,19 @@ class ReaderMobileScreen extends HookConsumerWidget {
                 children: [
                   FilledButton.tonal(
                     onPressed: () {
-                      context.push('/reader/books/${book.id}/details',
+                      context.push('${kReaderPath}/${kReaderDetailPath}',
                           extra: book);
                       // onPress();
                     },
                     child: Text(
-                      AppLocalizations.of(context)!.book_start_reading,
+                      context.l10n.book_start_reading,
                       // style:
                       //     TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
                     ),
                   ),
                   FilledButton.tonal(
                     child: Text(
-                      AppLocalizations.of(context)!.book_start_listening,
+                      context.l10n.book_start_listening,
                       // style:
                       //     TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
                     ),

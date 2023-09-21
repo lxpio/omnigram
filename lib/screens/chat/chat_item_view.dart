@@ -2,23 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:omnigram/components/chat_base_item_view.dart';
 import 'package:omnigram/providers/service/chat/message_model.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:flutter_highlighter/flutter_highlighter.dart';
 import 'package:flutter_highlight/themes/atom-one-dark.dart';
 import 'package:flutter_highlight/themes/atom-one-light.dart';
 
 import '../../flavors/app_theme.dart';
 import 'code_highlight_view.dart';
 
-class ChatItemView extends HookConsumerWidget {
-  const ChatItemView(this.message, {super.key});
+class ChatItemView extends ChatBaseItemView {
+  // const ChatItemView(this.message, {super.key});
 
-  final Message message;
+  // final Message message;
+
+  const ChatItemView({
+    super.key,
+    required super.message,
+    super.onRetried,
+    required super.onAvatarClicked,
+    super.onQuoted,
+  }) : super();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget buildContent(BuildContext context, WidgetRef ref) {
     final mode = ref.watch(themeModeProvider);
 
     return MarkdownBody(

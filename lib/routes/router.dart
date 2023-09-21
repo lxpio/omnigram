@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:omnigram/components/root_layout.dart';
 import 'package:omnigram/providers/service/chat/conversation_model.dart';
 import 'package:omnigram/providers/service/reader/book_model.dart';
-import 'package:omnigram/screens/chat/chat_screen.dart';
+import 'package:omnigram/screens/chat/chat_page_screen.dart';
 
 import 'package:omnigram/screens/photo.dart';
+import 'package:omnigram/screens/reader/reader_content_screen.dart';
 import 'package:omnigram/screens/reader/reader_mobile_screen.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:go_router/go_router.dart';
 
-import '../screens/chat/chat.dart';
+import '../screens/chat/chat_home_screen.dart';
 import '../screens/home/home_small_screen.dart';
 import '../screens/login.dart';
 
@@ -24,7 +25,8 @@ GoRouter appRouter() {
   return GoRouter(
     // navigatorKey: _key,
     debugLogDiagnostics: true,
-    initialLocation: kHomePath,
+    // initialLocation: kHomePath,
+    initialLocation: '$kChatPath/$kChatPagePath',
     routes: [
       GoRoute(
         path: kHomePath,
@@ -56,15 +58,14 @@ GoRouter appRouter() {
               path: kReaderDetailPath,
               name: kReaderDetailPage,
               pageBuilder: (context, GoRouterState state) {
-                final bookPath = state.extra as String;
+                // final bookPath = state.extra as String;
+                final Book book = state.extra as Book;
                 // ? state.extra as Conversation
                 // : Conversation();
 
                 return MaterialPage(
-                  child: RootLayout(
-                    // key: _scaffoldKey,
-                    currentIndex: 0,
-                    child: ChatPageBody(),
+                  child: ReaderContentScreen(
+                    book: book,
                   ),
                 );
               }),
@@ -78,20 +79,20 @@ GoRouter appRouter() {
           child: RootLayout(
             // key: _scaffoldKey,
             currentIndex: 1,
-            child: ChatPageBody(),
+            child: ChatHomeScreen(),
           ),
         ),
         routes: [
           GoRoute(
-            path: "feed",
-            name: "chat_feed",
+            path: kChatPagePath,
+            name: kChatPagePath,
             pageBuilder: (context, state) {
               final Conversation conversation = state.extra is Conversation
                   ? state.extra as Conversation
                   : Conversation();
 
               return MaterialPage(
-                child: ChatScreen(conversation: conversation),
+                child: ChatPageScreen(conversation: conversation),
               );
             },
           ),

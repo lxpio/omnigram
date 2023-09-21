@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/providers/service/chat/message_model.dart';
 import 'package:omnigram/providers/openai/chat/enum.dart';
 import 'package:omnigram/utils/app_toast.dart';
@@ -7,7 +8,7 @@ import 'package:share_plus/share_plus.dart';
 
 import 'chat_avatar.dart';
 
-abstract class ChatBaseItemView extends StatelessWidget {
+abstract class ChatBaseItemView extends HookConsumerWidget {
   static const avatarWidth = 16.0;
 
   final Message message;
@@ -24,28 +25,28 @@ abstract class ChatBaseItemView extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context, WidgetRef ref) => Container(
         padding: const EdgeInsets.all(8),
         child: message.role != Role.user
-            ? buildReceiveRow(context)
-            : buildSendRow(context),
+            ? buildReceiveRow(context, ref)
+            : buildSendRow(context, ref),
       );
 
-  Widget buildContent(BuildContext context);
+  Widget buildContent(BuildContext context, WidgetRef ref);
 
-  Widget buildReceiveRow(BuildContext context) {
+  Widget buildReceiveRow(BuildContext context, WidgetRef ref) {
     final container = Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
         vertical: 12,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).unselectedWidgetColor,
+        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.7),
         borderRadius: const BorderRadius.all(
-          Radius.circular(6),
+          Radius.circular(8),
         ),
       ),
-      child: buildContent(context),
+      child: buildContent(context, ref),
     );
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,8 +93,7 @@ abstract class ChatBaseItemView extends StatelessWidget {
                       ],
                     )
                   : container,
-              if ((message.type == MessageType.text &&
-                      message.content != null) ||
+              if ((message.type == MessageType.text) ||
                   message.type == MessageType.image)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -115,7 +115,7 @@ abstract class ChatBaseItemView extends StatelessWidget {
                       onPressed: () {
                         if (message.type == MessageType.text) {
                           Share.share(
-                            message.content!,
+                            message.content,
                             subject: message.serviceName,
                           );
                         }
@@ -161,7 +161,7 @@ abstract class ChatBaseItemView extends StatelessWidget {
     );
   }
 
-  Widget buildSendRow(BuildContext context) => Row(
+  Widget buildSendRow(BuildContext context, WidgetRef ref) => Row(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -175,12 +175,12 @@ abstract class ChatBaseItemView extends StatelessWidget {
                 vertical: 12,
               ),
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.surfaceVariant,
                 borderRadius: const BorderRadius.all(
-                  Radius.circular(6),
+                  Radius.circular(8),
                 ),
               ),
-              child: buildContent(context),
+              child: buildContent(context, ref),
             ),
           ),
           const SizedBox(

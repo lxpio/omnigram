@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:omnigram/providers/service/chat/conversation_model.dart';
+import 'package:omnigram/screens/chat/conversation_list_view.dart';
+import 'package:omnigram/utils/constants.dart';
 
-import 'epub_index_view.dart';
-
-class ReaderSmallScreen extends StatefulHookConsumerWidget {
-  const ReaderSmallScreen({super.key});
+class ChatHomeScreen extends StatefulHookConsumerWidget {
+  const ChatHomeScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _ReaderSmallScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ChatHomeScreenState();
 }
 
-class _ReaderSmallScreenState extends ConsumerState<ReaderSmallScreen> {
+class _ChatHomeScreenState extends ConsumerState<ChatHomeScreen> {
+  late final colorScheme = Theme.of(context).colorScheme;
+  late final backgroundColor = Color.alphaBlend(
+      colorScheme.primary.withOpacity(0.14), colorScheme.surface);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,12 +31,6 @@ class _ReaderSmallScreenState extends ConsumerState<ReaderSmallScreen> {
             icon: const Icon(Icons.menu),
           );
         }),
-        // title: Text(
-
-        //   // controller.currentConversation?.displayName ?? 'new_chat'.tr,
-        //   overflow: TextOverflow.ellipsis,
-        //   maxLines: 1,
-        // ),
         centerTitle: true,
         titleSpacing: 0,
         actions: [
@@ -58,7 +57,18 @@ class _ReaderSmallScreenState extends ConsumerState<ReaderSmallScreen> {
           // const SizedBox(width: 16),
         ],
       ),
-      body: const EpubIndexView(),
+      body: const ConversationListView(),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: colorScheme.tertiaryContainer,
+        foregroundColor: colorScheme.onTertiaryContainer,
+        onPressed: () {
+          // context.push('$kReaderPage/$kReaderDetailPage');
+          context.pushNamed(
+            kChatPagePath,
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

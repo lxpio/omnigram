@@ -34,6 +34,8 @@ class AppStore {
 
       instance._store =
           await openStore(directory: p.join(docsDir.path, dbName));
+
+      // instance._store = await openStore(directory: p.join('./build', dbName));
     }
   }
 

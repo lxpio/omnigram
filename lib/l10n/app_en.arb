@@ -7,7 +7,20 @@
      }
   },
   "keepreading": "Keep Reading",
-  "viewmore": "view all",
+  "recentbooks": "Recent Books",
+  "randombooks": "Random Books",
+  "popularbooks": "Popular Books",
+  "search": "Search",
+  "viewmore": "View More",
   "book_start_reading": "Reading",
-  "book_start_listening": "Listen"
+  "book_start_listening": "Listen",
+  "new_chat": "New Chat",
+  "type_message_placeholder": "Type a message",
+  "send": "Send",
+  "open_ai_hello": "Hi, I'm Omnigram, an artificial intelligence research organization dedicated to advancing the development and application of AI.  \nDuring the conversation, I will talk to you through the following account:\n- [ChatAI](/service?service_id=open_ai_chat_gpt)\n- [ChatAI GPT-4](/service?service_id=open_ai_chat_gpt_4)\n\n I can complete many tasks:\n - text generation\n- question\n- answer\n- dialogue\n- translation\n- ...\n\nBe able to interact with you and understand and answer questions as accurately as possible.",
+  "chat_gpt_help": "You need to make a simple configuration for me before using it.\n1. click on my avatar, go to my home page;\n2. fill in your API Key.\n\nIf you haven't applied for an API Key, please click [Get Help](https://www.nexptr.com/omnigram/help/chat_gpt.html) on my home page to see how to apply.",
+  "chat_gpt_help_url": "https: //www.nexptr.com/omnigram/help/chat_gpt.html",
+  "type_your_tokens": "Type your @name",
+  "must_type_tokens": "Please click on my avatar，type your @tokens",
+  "network_error": "Oops! The network is unavailable. \n\nPlease try again later."
 }

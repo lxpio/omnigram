@@ -18,7 +18,7 @@ class Conversation {
 
   final String? promptId;
 
-  String get displayName => name ?? editName ?? "new_chat";
+  String? get displayName => name ?? editName;
 
   Conversation({
     this.id = 0,

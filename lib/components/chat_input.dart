@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:omnigram/utils/l10n.dart';
 
 import '../providers/service/chat/message_model.dart';
 
@@ -33,20 +34,34 @@ class ChatInput extends StatelessWidget {
         border: Border(
           top: BorderSide(
             color: Theme.of(context).dividerColor,
-            width: 1,
+            width: 0.5,
           ),
         ),
-        color: Theme.of(context).appBarTheme.backgroundColor,
+        color: Theme.of(context).colorScheme.surfaceVariant,
       ),
       padding: const EdgeInsets.only(
-        left: 16,
-        right: 16,
-        bottom: 8,
+        left: 8,
+        right: 8,
+        bottom: 40,
         top: 8,
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          IconButton(
+            // padding: EdgeInsets.zero,
+            onPressed: () {
+              print('on attached file');
+            },
+            // color: Theme.of(context).colorScheme.primary,
+            icon: const Icon(
+              Icons.attach_file,
+              size: 24,
+            ),
+          ),
+          const SizedBox(
+            width: 8,
+          ),
           Expanded(
             child: quoteMessage == null
                 ? _buildTextField(context)
@@ -63,19 +78,15 @@ class ChatInput extends StatelessWidget {
           const SizedBox(
             width: 8,
           ),
-          CircleAvatar(
-            radius: 17.5,
-            backgroundColor: Theme.of(context).primaryColorDark,
-            child: IconButton(
-              // padding: EdgeInsets.zero,
-              onPressed: onSubmitted,
-              color: Theme.of(context).cardColor,
-              icon: const Icon(
-                Icons.north,
-                size: 18,
-              ),
+          IconButton(
+            // padding: EdgeInsets.zero,
+            onPressed: onSubmitted,
+            // color: Theme.of(context).colorScheme.primary,
+            icon: const Icon(
+              Icons.send,
+              size: 24,
             ),
-          )
+          ),
         ],
       ),
     );
@@ -107,7 +118,7 @@ class ChatInput extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              quoteMessage?.content?.replaceAll('\n', '') ?? '',
+              quoteMessage?.content.replaceAll('\n', '') ?? '',
               style: Theme.of(context).textTheme.bodySmall,
               maxLines: 2,
             ),
@@ -137,7 +148,8 @@ class ChatInput extends StatelessWidget {
       textAlignVertical: TextAlignVertical.center,
       // textInputAction: TextInputAction.send,
       cursorRadius: const Radius.circular(5),
-      maxLines: null,
+      maxLines: 10,
+      minLines: 1,
       keyboardType: TextInputType.multiline,
       decoration: InputDecoration(
         suffixIcon: GestureDetector(
@@ -159,8 +171,9 @@ class ChatInput extends StatelessWidget {
         border: InputBorder.none,
         isCollapsed: true,
         filled: true,
-        fillColor: Theme.of(context).unselectedWidgetColor,
-        hintText: 'typing_a_message',
+        fillColor: Theme.of(context).colorScheme.onSecondary,
+        // hintText: 'typing_a_message',
+        hintText: context.l10n.type_message_placeholder,
         contentPadding: const EdgeInsets.only(
           top: 8,
           bottom: 8,
