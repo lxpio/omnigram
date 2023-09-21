@@ -7,16 +7,13 @@ import 'package:universal_platform/universal_platform.dart';
 
 import 'message_model.dart';
 
-part 'message_provider.g.dart';
-
-@riverpod
-MessageProvider message(MessageRef ref) {
+final messageProvider = Provider<MessageProvider>((ref) {
   if (UniversalPlatform.isWeb) {
     return MessageAPI(ref);
   }
 
   return MessageBox();
-}
+});
 
 abstract class MessageProvider {
   List<Message> query({
@@ -54,7 +51,7 @@ class MessageBox implements MessageProvider {
       int offset = 0,
       int limit = 16}) {
     final q = (_box.query(Message_.conversationId.equals(conversationId))
-          ..order(Message_.id, flags: Order.descending))
+          ..order(Message_.id))
         .build();
 
     q

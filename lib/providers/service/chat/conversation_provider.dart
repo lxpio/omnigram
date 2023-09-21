@@ -7,10 +7,6 @@ import 'package:universal_platform/universal_platform.dart';
 import '../../../flavors/app_config.dart';
 
 abstract class ConversationProvider {
-  factory ConversationProvider() {
-    return ConversationBox();
-  }
-
   List<Conversation> query({required int max});
 
   List<Conversation> getAll();
@@ -39,9 +35,11 @@ class ConversationBox implements ConversationProvider {
 
   @override
   List<Conversation> query({required int max}) {
-    final query = (_box.query()..order(Conversation_.id)).build();
+    final query = (_box.query()
+          ..order(Conversation_.id, flags: Order.descending))
+        .build();
 
-    query.limit = 5;
+    query.limit = max;
 
     final result = query.find();
 

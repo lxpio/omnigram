@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
@@ -32,6 +34,7 @@ class Book {
   String? publisherUrl;
   int? countVisit;
   int? countDownload;
+  double? progress;
 
   Book({
     required this.id,
@@ -60,14 +63,14 @@ class Book {
     this.publisherUrl,
     this.countVisit,
     this.countDownload,
+    this.progress = 0.0,
   });
 
   get isDownloaded => path == null || path!.isEmpty ? false : true;
 
-  String get image => "assets/images/logo-green.png";
+  // String get image => "assets/images/logo-green.png";
 
-  // get image =>
-  //     "/book/covers/${this.identifier}/${this.coverUrl ?? 'default_cover_url'}";
+  get image => "/book/covers/$identifier$coverUrl";
 
   factory Book.fromJson(Map<String, dynamic> json) => Book(
         id: json['id'] as int,
@@ -96,6 +99,7 @@ class Book {
         publisherUrl: json['publisher_url'] as String?,
         countVisit: json['count_visit'] as int?,
         countDownload: json['count_download'] as int?,
+        progress: json['progress'] as double?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -125,5 +129,6 @@ class Book {
         'publisher_url': publisherUrl,
         'count_visit': countVisit,
         'count_download': countDownload,
+        'progress': progress,
       };
 }

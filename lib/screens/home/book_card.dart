@@ -2,17 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/components/outlined_card.dart';
+import 'package:omnigram/flavors/app_config.dart';
 import 'package:omnigram/providers/service/reader/book_model.dart';
 // import '../../../shared/classes/classes.dart';
 // import '../../../shared/extensions.dart';
 // import '../../../shared/views/outlined_card.dart';
 // import '../../../shared/views/views.dart';
 
-class BookCard extends StatelessWidget {
+class BookCard extends HookConsumerWidget {
   const BookCard({
     super.key,
     required this.book,
@@ -21,8 +21,10 @@ class BookCard extends StatelessWidget {
   final Book book;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // Song nowPlaying = artist.songs[Random().nextInt(artist.songs.length)];
+
+    final appConfig = ref.read(appConfigProvider);
 
     return OutlinedCard(
       child: LayoutBuilder(
@@ -33,7 +35,11 @@ class BookCard extends StatelessWidget {
                 borderRadius: const BorderRadiusDirectional.only(
                     topStart: Radius.circular(16), topEnd: Radius.circular(16)),
                 image: DecorationImage(
-                  image: AssetImage(book.image),
+                  image: NetworkImage(appConfig.bookBaseUrl + book.image,
+                      headers: {
+                        "Authorization": "Bearer ${appConfig.bookToken}"
+                      }),
+                  // ),
                   fit: BoxFit.fill,
                 ),
               ),

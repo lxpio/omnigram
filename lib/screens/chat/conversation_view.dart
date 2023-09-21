@@ -106,7 +106,7 @@ class _ConversationHeadlineState extends State<ConversationHeadline> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.conversation.displayName,
+                      widget.conversation.displayName ?? '',
                       maxLines: 1,
                       overflow: TextOverflow.fade,
                       style: const TextStyle(
@@ -225,7 +225,7 @@ class _ConversationContentState extends State<ConversationContent> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'widget.email.sender.name.fullName',
+                        widget.conversation.name ?? 'new chat',
                         overflow: TextOverflow.fade,
                         maxLines: 1,
                         style: widget.isSelected
@@ -259,7 +259,7 @@ class _ConversationContentState extends State<ConversationContent> {
             children: [
               if (widget.isPreview) ...[
                 Text(
-                  widget.conversation.displayName,
+                  widget.conversation.displayName ?? "",
                   style: const TextStyle(fontSize: 18)
                       .copyWith(color: _colorScheme.onSurface),
                 ),

@@ -117,13 +117,15 @@ String translateToJapanese({required String word}) =>
 
 const kHomePath = '/';
 const kChatPath = '/chat';
-const kReaderDetailPath = 'detail';
-const kReaderPath = '/reader/books/:id';
+const kChatPagePath = 'detailpage';
+const kReaderDetailPath = 'read';
+const kReaderPath = '/epub/books/summary';
 const kMusicPath = '/music';
 const kPhotoPath = '/photo';
 const kLoginPath = '/';
 
 const kHomePage = 'home';
+
 const kChatPage = 'chat';
 const kReaderPage = 'reader';
 const kReaderDetailPage = 'reader_detail';

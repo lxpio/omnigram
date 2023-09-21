@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:omnigram/flavors/app_config.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -81,7 +80,7 @@ class APIService {
         );
       }
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -166,8 +165,11 @@ class APIService {
 
 //bookAPIServiceProvider 是全局有效的所以这了不要 autoDispose
 final bookAPIServiceProvider = Provider<APIService>((ref) {
-  final baseUrl = ref.watch(appConfigProvider).bookBaseUrl;
-  return APIService(baseUrl: baseUrl);
+  final appConfig = ref.watch(appConfigProvider);
+
+  return APIService(baseUrl: appConfig.bookBaseUrl, serviceHeader: {
+    'Authorization': "Bearer ${appConfig.bookToken}",
+  });
 });
 
 class ApiResponse<T> {

@@ -1,78 +1,63 @@
-import 'package:dio/dio.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/flavors/app_config.dart';
 import 'package:omnigram/models/model.dart';
+import 'package:omnigram/models/objectbox.g.dart';
 import 'package:omnigram/providers/service/api_service.dart';
 import 'package:omnigram/utils/constants.dart';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'book_model.dart';
-// part 'books.g.dart';
+part 'books.g.dart';
+part 'books.freezed.dart';
 
-class BookNav {
-  final List<Book> recent = [];
-  final List<Book> random = [];
-  final List<Book> pop = [];
+@freezed
+class BookNav with _$BookNav {
+  const factory BookNav({
+    List<Book>? recent,
+    List<Book>? random,
+    List<Book>? reading,
+  }) = _BookNav;
+
+  factory BookNav.fromJson(Map<String, Object?> json) =>
+      _$BookNavFromJson(json);
 }
 
-// @riverpod
-// class Books extends _$Books {
-//   late final APIService _service;
+@freezed
+class BookSearch with _$BookSearch {
+  const factory BookSearch({
+    String? search,
+    String? author,
+    String? publisher,
+    String? tags,
+  }) = _BookSearch;
 
-//   @override
-//   Future<BookNav> build() async {
-//     final baseUrl = (ref.watch(appConfigProvider).bookBaseUrl);
+  factory BookSearch.fromJson(Map<String, Object?> json) =>
+      _$BookSearchFromJson(json);
+}
 
-//     _service = ref.watch(bookAPIServiceProvider);
+@riverpod
+class Books extends _$Books {
+  @override
+  Future<BookNav> build() async {
+    final bookApi = ref.watch(bookAPIServiceProvider);
 
-//     final ApiResponse<BookNav> result =
-//         await _service.request('GET', "/reader/nav/books");
+    final args = ref.watch(bookIndexSearchProvider);
 
-//     if (result.code == 0) {
-//       return result.data!;
-//     } else {
-//       throw Exception(result.message);
-//     }
-//   }
+    final ApiResponse<BookNav> result = await bookApi.request(
+        'GET', "/book/index",
+        body: args.toJson(), fromJsonT: BookNav.fromJson);
 
-//   Future<void> freshRandom() async {
-//     // await http.post(
-//     //   Uri.https('your_api.com', '/todos'),
-//     //   // We serialize our Todo object and POST it to the server.
-//     //   headers: {'Content-Type': 'application/json'},
-//     //   body: jsonEncode(todo.toJson()),
-//     // );
+    if (result.code == 200) {
+      return result.data!;
+    } else {
+      throw Exception(result.message);
+    }
+  }
+}
 
-//     // final previousState = await future;
-
-//     ref.notifyListeners();
-
-//     // await future;
-//   }
-// }
-
-// @riverpod
-// Future<Book> getBook(GetBookRef ref, int id) async {
-//   final box = AppStore.instance.box<Book>();
-
-//   final book = box.get(id);
-
-//   if (book != null) {
-//     return book;
-//   }
-
-//   //from objectbox to get book
-//   final bookApi = ref.watch(bookAPIServiceProvider);
-
-//   final resp = await bookApi.request<Book>('GET', "/books/$id");
-
-//   if (resp.code == 200) {
-//     return resp.data!;
-//   }
-
-//   throw Exception(resp.message);
-// }
+final bookIndexSearchProvider = Provider.autoDispose<BookSearch>((ref) {
+  return const BookSearch();
+});
 
 final bookAPIProvider = Provider(BookAPI.new);
 

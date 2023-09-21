@@ -1,5 +1,5 @@
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/providers/service/chat/conversation_model.dart';
 import 'package:omnigram/models/model.dart';
 import 'package:omnigram/providers/service/chat/conversation_provider.dart';
@@ -12,9 +12,11 @@ void main() {
 
     WidgetsFlutterBinding.ensureInitialized();
 
-    await AppStore.initialize('./db');
+    await AppStore.initialize('db');
 
-    final ConversationProvider p = ConversationProvider();
+    final ref = ProviderContainer();
+
+    final p = ref.read(conversationProvider);
 
     final chat = Conversation(name: 'test', editName: 'editName1');
     final chat2 = Conversation(name: 'test2', editName: 'editName2');
@@ -23,6 +25,9 @@ void main() {
     // expect(p.create(chat2), 2);
     p.create(chat);
     p.create(chat2);
+
+    expect(chat.id, 1);
+    expect(chat2.id, 2);
   });
 
   test('chat should be query', () async {
@@ -32,7 +37,9 @@ void main() {
 
     await AppStore.initialize('./build');
 
-    final ConversationProvider p = ConversationProvider();
+    final ref = ProviderContainer();
+
+    final p = ref.read(conversationProvider);
 
     final chats = p.query(max: 3);
 

@@ -5,12 +5,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart' as go;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/routes/router.dart';
-import 'package:universal_platform/universal_platform.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
+import 'package:omnigram/utils/l10n.dart';
 
-import 'adaptive_navigation.dart';
 import 'destinations.dart';
 // import 'views.dart';
 
@@ -23,8 +20,6 @@ class RootLayout extends HookConsumerWidget {
 
   final Widget child;
   final int currentIndex;
-  static const _switcherKey = ValueKey('switcherKey');
-  static const _navigationRailKey = ValueKey('navigationRailKey');
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,7 +37,7 @@ class RootLayout extends HookConsumerWidget {
       destinations: destinations
           .map((e) => NavigationDestination(
                 icon: e.icon,
-                label: AppLocalizations.of(context)!.nav_name(e.label),
+                label: context.l10n.nav_name(e.label),
               ))
           .toList(),
       selectedIndex: currentIndex,

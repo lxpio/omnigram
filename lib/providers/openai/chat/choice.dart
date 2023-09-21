@@ -40,7 +40,7 @@ class ChatChoiceSSE {
         message:
             json["delta"] == null ? null : ChatMessage.fromJson(json["delta"]),
         finishReason:
-            json["finish_reason"] == null ? "" : json["finish_reason"],
+            json["finish_reason"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {

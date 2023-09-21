@@ -39,7 +39,10 @@ dependencies:
   adaptive_components: ^0.0.9
   flutter_adaptive_scaffold: ^0.1.7+1
   flutter_highlighter: ^0.1.1
-  epub_view: ^3.2.0
+  flutter_epub:
+    git: 
+      url: https://github.com/nexptr/flutter_epub.git
+      ref: '347602228'
 
 
 dev_dependencies: 

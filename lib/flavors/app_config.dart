@@ -21,19 +21,10 @@ class AppConfig with _$AppConfig {
       _$AppConfigFromJson(json);
 }
 
-// @riverpod
-// AppConfig appConfig(AppConfigRef ref) {
-//   return const AppConfig(
-//       appName: 'Omnigram',
-//       bookBaseUrl: 'http://127.0.0.1:8889',
-//       bookToken: 'empty token',
-//       shouldCollectCrashLog: false);
-// }
-
 final appConfigProvider = Provider<AppConfig>((ref) {
   return const AppConfig(
       appName: 'Omnigram',
-      bookBaseUrl: 'http://127.0.0.1:8889',
-      bookToken: 'empty token',
+      bookBaseUrl: 'http://127.0.0.1:8888',
+      bookToken: 'hfEcxoywfGgmiingtYfcDhjvZisGgDMxnBScPuqW',
       shouldCollectCrashLog: false);
 });
