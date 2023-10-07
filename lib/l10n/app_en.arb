@@ -22,5 +22,12 @@
   "chat_gpt_help_url": "https: //www.nexptr.com/omnigram/help/chat_gpt.html",
   "type_your_tokens": "Type your @name",
   "must_type_tokens": "Please click on my avatar，type your @tokens",
-  "network_error": "Oops! The network is unavailable. \n\nPlease try again later."
+  "coming_soon": "Coming soon...",
+  "network_error": "Oops! The network is unavailable. \n\nPlease try again later.",
+  "server_address_label": "Server",
+  "server_address_hint_text": "Your self-host address, https://127.0.0.1:8888",
+  "server_apikey_label": "API Token",
+  "server_apikey_hint_text": "Your API Token",
+  "next": "Next",
+  "need_help": "Need help?"
 }

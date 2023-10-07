@@ -6,7 +6,7 @@ import 'package:omnigram/providers/openai/chat/chat_complate_text.dart';
 import 'package:omnigram/providers/openai/chat/enum.dart';
 import 'package:omnigram/providers/openai/chat/message.dart';
 import 'package:omnigram/providers/openai/chat/response.dart';
-import 'package:omnigram/providers/service/chat/open_ai_compatible.dart';
+import 'package:omnigram/providers/service/open_ai_compatible_service.dart';
 import 'package:omnigram/utils/constants.dart';
 
 class LLMChain extends LLMService {

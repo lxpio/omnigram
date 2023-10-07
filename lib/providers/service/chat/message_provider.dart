@@ -1,6 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/flavors/app_config.dart';
-import 'package:omnigram/models/model.dart';
+import 'package:omnigram/flavors/provider.dart';
+import 'package:omnigram/flavors/app_store.dart';
 import 'package:omnigram/models/objectbox.g.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:universal_platform/universal_platform.dart';

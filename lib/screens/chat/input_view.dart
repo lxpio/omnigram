@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:omnigram/utils/l10n.dart';
 
-import '../providers/service/chat/message_model.dart';
+import 'package:omnigram/providers/service/chat/message_model.dart';
 
 class ChatInput extends StatelessWidget {
   final bool? enabled;

@@ -16,6 +16,8 @@ class Conversation {
   final int autoQuote;
   DateTime lastActive;
 
+  bool isActive = false;
+
   final String? promptId;
 
   String? get displayName => name ?? editName;
@@ -29,6 +31,7 @@ class Conversation {
     this.timeout = 60,
     this.maxTokens = 800,
     this.promptId,
+    this.isActive = false,
     // this.lastActive = DateTime.now(),
   }) : lastActive = DateTime.now();
 
@@ -43,6 +46,7 @@ class Conversation {
       timeout: serializer.fromJson<int?>(json['timeout']) ?? 60,
       maxTokens: serializer.fromJson<int?>(json['max_tokens']) ?? 800,
       promptId: serializer.fromJson<String?>(json['prompt_id']),
+      isActive: serializer.fromJson<bool>(json['is_active']),
     );
   }
 
@@ -57,6 +61,7 @@ class Conversation {
       'timeout': serializer.toJson<int?>(timeout),
       'max_tokens': serializer.toJson<int?>(maxTokens),
       'prompt_id': serializer.toJson<String?>(promptId),
+      'is_active': serializer.toJson<bool>(isActive),
     };
   }
 
@@ -70,6 +75,7 @@ class Conversation {
     int? autoQuote,
     int? timeout,
     int? maxTokens,
+    bool? isActive,
     String? promptId,
   }) =>
       Conversation(
@@ -81,6 +87,7 @@ class Conversation {
         timeout: timeout ?? this.timeout,
         maxTokens: maxTokens ?? this.maxTokens,
         promptId: promptId ?? this.promptId,
+        isActive: isActive ?? this.isActive,
       );
   @override
   String toString() {
@@ -93,6 +100,7 @@ class Conversation {
           ..write('timeout: $timeout')
           ..write('maxTokens: $maxTokens')
           ..write('promptId: $promptId')
+          ..write('isActive: $isActive')
           ..write(')'))
         .toString();
   }

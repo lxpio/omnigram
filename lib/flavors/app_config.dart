@@ -20,11 +20,3 @@ class AppConfig with _$AppConfig {
   factory AppConfig.fromJson(Map<String, Object?> json) =>
       _$AppConfigFromJson(json);
 }
-
-final appConfigProvider = Provider<AppConfig>((ref) {
-  return const AppConfig(
-      appName: 'Omnigram',
-      bookBaseUrl: 'http://127.0.0.1:8888',
-      bookToken: 'hfEcxoywfGgmiingtYfcDhjvZisGgDMxnBScPuqW',
-      shouldCollectCrashLog: false);
-});

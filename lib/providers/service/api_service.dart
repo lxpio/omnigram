@@ -2,8 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
-import 'package:omnigram/flavors/app_config.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter/foundation.dart';
 
 class APIService {
   late final Dio _dio;
@@ -18,6 +17,7 @@ class APIService {
 
   APIService(
       {this.baseUrl = "https://127.0.0.1:8080",
+      this.proxy,
       Map<String, dynamic>? serviceHeader,
       Map<String, dynamic>? serviceQuery,
       Map<String, dynamic>? serviceBody}) {
@@ -33,7 +33,11 @@ class APIService {
         responseType: ResponseType.json);
 
     _dio = Dio(options);
-    print(' APIService init once');
+
+    if (kDebugMode) {
+      print(' APIService init once');
+    }
+
     if (proxy != null) {
       _dio.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
         final client = HttpClient();
@@ -162,15 +166,6 @@ class APIService {
         baseUrl,
       );
 }
-
-//bookAPIServiceProvider 是全局有效的所以这了不要 autoDispose
-final bookAPIServiceProvider = Provider<APIService>((ref) {
-  final appConfig = ref.watch(appConfigProvider);
-
-  return APIService(baseUrl: appConfig.bookBaseUrl, serviceHeader: {
-    'Authorization': "Bearer ${appConfig.bookToken}",
-  });
-});
 
 class ApiResponse<T> {
   final int code;

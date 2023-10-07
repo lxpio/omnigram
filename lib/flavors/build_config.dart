@@ -1,23 +1,16 @@
 import "package:flutter_native_splash/flutter_native_splash.dart";
-import "package:omnigram/models/model.dart";
-
-import "environment.dart";
+import 'package:omnigram/flavors/app_store.dart';
 
 class BuildConfig {
-  late final Environment environment;
-
   bool _lock = false;
 
   static final BuildConfig instance = BuildConfig._internal();
 
   BuildConfig._internal();
 
-  static Future<void> initialize({
-    required Environment envType,
-  }) async {
+  static Future<void> initialize() async {
     if (instance._lock) return;
 
-    instance.environment = envType;
     instance._lock = true;
 
     await AppStore.initialize('gramdb');

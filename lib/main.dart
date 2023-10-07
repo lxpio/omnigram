@@ -5,15 +5,14 @@ import "package:flutter/services.dart";
 import "package:flutter_localizations/flutter_localizations.dart";
 import "package:flutter_native_splash/flutter_native_splash.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:omnigram/flavors/provider.dart";
 import "package:omnigram/routes/router.dart";
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import "package:universal_platform/universal_platform.dart";
 import 'package:desktop_window/desktop_window.dart';
 
-import "flavors/app_theme.dart";
 import "flavors/build_config.dart";
 import "flavors/color_schemes.g.dart";
-import "flavors/environment.dart";
 
 Future setDesktopWindow() async {
   await DesktopWindow.setMinWindowSize(const Size(400, 400));
@@ -36,9 +35,7 @@ Future<void> main() async {
     setDesktopWindow();
   }
 
-  await BuildConfig.initialize(
-    envType: Environment.prod,
-  );
+  await BuildConfig.initialize();
 
   runApp(const ProviderScope(child: OmniApp()));
 }
@@ -50,7 +47,7 @@ class OmniApp extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final mode = ref.watch(themeModeProvider);
 
-    // final router = ref.watch(appRouterProvider);
+    final router = ref.watch(appRouterProvider);
 
     return MaterialApp.router(
       title: 'Omnigram',
@@ -58,7 +55,7 @@ class OmniApp extends HookConsumerWidget {
       themeMode: mode,
       theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
       darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
-      routerConfig: appRouter(),
+      routerConfig: router,
       // themeMode: AppManager.to.themeMode,
       // locale: const Locale('zh'),
 

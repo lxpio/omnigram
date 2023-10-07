@@ -122,7 +122,8 @@ const kReaderDetailPath = 'read';
 const kReaderPath = '/epub/books/summary';
 const kMusicPath = '/music';
 const kPhotoPath = '/photo';
-const kLoginPath = '/';
+const kLoginPath = '/login';
+const kSplashPath = '/splash';
 
 const kHomePage = 'home';
 

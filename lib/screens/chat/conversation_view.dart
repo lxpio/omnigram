@@ -210,76 +210,68 @@ class _ConversationContentState extends State<ConversationContent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LayoutBuilder(builder: (context, constraints) {
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (constraints.maxWidth - 200 > 0) ...[
-                  // CircleAvatar(
-                  //   backgroundImage: AssetImage(widget.email.sender.avatarUrl),
-                  // ),
-                  const Padding(padding: EdgeInsets.symmetric(horizontal: 6.0)),
-                ],
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.conversation.name ?? 'new chat',
-                        overflow: TextOverflow.fade,
-                        maxLines: 1,
-                        style: widget.isSelected
-                            ? _textTheme.labelMedium?.copyWith(
-                                color: _colorScheme.onSecondaryContainer)
-                            : _textTheme.labelMedium
-                                ?.copyWith(color: _colorScheme.onSurface),
-                      ),
-                      Text(
-                        lastActiveLabel,
-                        overflow: TextOverflow.fade,
-                        maxLines: 1,
-                        style: widget.isSelected
-                            ? _textTheme.labelMedium?.copyWith(
-                                color: _colorScheme.onSecondaryContainer)
-                            : _textTheme.labelMedium?.copyWith(
-                                color: _colorScheme.onSurfaceVariant),
-                      ),
-                    ],
-                  ),
-                ),
-                // if (constraints.maxWidth - 200 > 0) ...[
-                //   const StarButton(),
-                // ]
-              ],
-            );
-          }),
-          const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (widget.isPreview) ...[
-                Text(
-                  widget.conversation.displayName ?? "",
-                  style: const TextStyle(fontSize: 18)
-                      .copyWith(color: _colorScheme.onSurface),
-                ),
-              ],
-              // if (widget.isThreaded) ...[
-              //   contentSpacer,
-              //   Text(
-              //     "To ${widget.email.recipients.map((recipient) => recipient.name.first).join(", ")}",
-              //     style: _textTheme.bodyMedium,
-              //   )
-              // ],
-              contentSpacer,
-              Text(
-                widget.conversation.name ?? "",
-                maxLines: widget.isPreview ? 2 : 100,
-                overflow: TextOverflow.ellipsis,
-                style: contentTextStyle,
-              ),
-            ],
+          ListTile(
+            dense: true,
+            title: Text(
+              widget.conversation.name ?? 'new chat',
+              overflow: TextOverflow.fade,
+              maxLines: 1,
+              style: widget.isSelected
+                  ? _textTheme.labelMedium
+                      ?.copyWith(color: _colorScheme.onSecondaryContainer)
+                  : _textTheme.labelMedium
+                      ?.copyWith(color: _colorScheme.onSurface),
+            ),
+            // subtitle: Text('TODO'),
+            trailing: Text(
+              lastActiveLabel,
+              overflow: TextOverflow.fade,
+              maxLines: 1,
+              style: widget.isSelected
+                  ? _textTheme.labelMedium
+                      ?.copyWith(color: _colorScheme.onSecondaryContainer)
+                  : _textTheme.labelMedium
+                      ?.copyWith(color: _colorScheme.onSurfaceVariant),
+            ),
           ),
+
+          const SizedBox(width: 8),
+          Text(
+            'lastActiveLabel',
+            overflow: TextOverflow.fade,
+            maxLines: 3,
+            style: widget.isSelected
+                ? _textTheme.labelMedium
+                    ?.copyWith(color: _colorScheme.onSecondaryContainer)
+                : _textTheme.labelMedium
+                    ?.copyWith(color: _colorScheme.onSurfaceVariant),
+          ),
+          // Column(
+          //   crossAxisAlignment: CrossAxisAlignment.start,
+          //   children: [
+          //     if (widget.isPreview) ...[
+          //       Text(
+          //         widget.conversation.displayName ?? "",
+          //         style: const TextStyle(fontSize: 18)
+          //             .copyWith(color: _colorScheme.onSurface),
+          //       ),
+          //     ],
+          //     // if (widget.isThreaded) ...[
+          //     //   contentSpacer,
+          //     //   Text(
+          //     //     "To ${widget.email.recipients.map((recipient) => recipient.name.first).join(", ")}",
+          //     //     style: _textTheme.bodyMedium,
+          //     //   )
+          //     // ],
+          //     contentSpacer,
+          //     Text(
+          //       widget.conversation.name ?? "",
+          //       maxLines: widget.isPreview ? 2 : 100,
+          //       overflow: TextOverflow.ellipsis,
+          //       style: contentTextStyle,
+          //     ),
+          //   ],
+          // ),
           const SizedBox(width: 12),
           // widget.email.attachments.isNotEmpty
           //     ? Container(

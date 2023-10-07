@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   desktop_window
   objectbox_flutter_libs
+  rive_common
   share_plus
   url_launcher_windows
 )
