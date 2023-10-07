@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/flavors/app_config.dart';
+import 'package:omnigram/flavors/provider.dart';
 import 'package:omnigram/providers/service/reader/book_model.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/l10n.dart';

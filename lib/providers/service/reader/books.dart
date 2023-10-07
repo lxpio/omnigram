@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/models/model.dart';
+import 'package:omnigram/flavors/app_config.dart';
+import 'package:omnigram/flavors/provider.dart';
+import 'package:omnigram/flavors/app_store.dart';
 import 'package:omnigram/models/objectbox.g.dart';
 import 'package:omnigram/providers/service/api_service.dart';
 import 'package:omnigram/utils/constants.dart';
@@ -34,6 +36,15 @@ class BookSearch with _$BookSearch {
   factory BookSearch.fromJson(Map<String, Object?> json) =>
       _$BookSearchFromJson(json);
 }
+
+//bookAPIServiceProvider 是全局有效的所以这了不要 autoDispose
+final bookAPIServiceProvider = Provider<APIService>((ref) {
+  final appConfig = ref.watch(appConfigProvider);
+
+  return APIService(baseUrl: appConfig.bookBaseUrl, serviceHeader: {
+    'Authorization': "Bearer ${appConfig.bookToken}",
+  });
+});
 
 @riverpod
 class Books extends _$Books {

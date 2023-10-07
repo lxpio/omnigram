@@ -1,7 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/providers/service/chat/conversation_model.dart';
-import 'package:omnigram/models/model.dart';
+import 'package:omnigram/flavors/app_store.dart';
 import 'package:omnigram/providers/service/chat/conversation_provider.dart';
 
 import 'package:test/test.dart';
@@ -44,7 +46,7 @@ void main() {
     final chats = p.query(max: 3);
 
     for (var cat in chats) {
-      print('The chat1 : ${cat.toString()}');
+      log('The chat1 : ${cat.toString()}');
     }
 
     // final chat = Conversation(name: 'test', editName: 'editName1', groupId: 1);

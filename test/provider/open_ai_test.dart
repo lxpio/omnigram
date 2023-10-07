@@ -1,10 +1,12 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:omnigram/providers/openai/chat/chat_complate_text.dart';
 import 'package:omnigram/providers/openai/chat/enum.dart';
 import 'package:omnigram/providers/openai/chat/message.dart';
-import 'package:omnigram/providers/service/chat/open_ai_compatible.dart';
+import 'package:omnigram/providers/service/open_ai_compatible_service.dart';
 import 'package:omnigram/utils/constants.dart';
 
 import 'package:test/test.dart';
@@ -48,22 +50,22 @@ void main() {
         // Do something with the data, e.g., write it to another variable
         // For example, if you have a variable called 'myData', you can do this:
         // myData = data;
-        print(data.choices?[0].message);
+        log(data.choices![0].message!.content);
       },
       onError: (error) {
         // Handle errors from the SSE stream if necessary
-        print("error: $error");
+        log("error: $error");
       },
       onDone: () {
         // This is called when the SSE stream is closed or no more data is available
         // Perform any cleanup or closing operations here if needed
-        print("done");
+        log("done");
       },
     );
 
     // ignore: prefer_const_constructors
     await Future.delayed(Duration(seconds: 20), () => subscription.cancel());
-    print("exit....");
+    log("exit....");
   });
 
   test('simple get should be created', () async {

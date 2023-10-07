@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
+import 'dart:math' as math;
+
+import 'package:omnigram/utils/l10n.dart';
 
 class PhotoPageBody extends StatefulWidget {
   const PhotoPageBody({Key? key}) : super(key: key);
@@ -10,6 +14,40 @@ class PhotoPageBody extends StatefulWidget {
 class _PhotoPageBodyState extends State<PhotoPageBody> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Scaffold(
+          appBar: AppBar(),
+          // body: Stack(
+          body: Center(
+            child: Container(
+              width: 300,
+              height: 300,
+              child: Column(
+                children: [
+                  Center(
+                    child: Container(
+                      width: 200,
+                      height: 200,
+                      child: RiveAnimation.asset(
+                        "assets/files/4283-8836-developer.riv",
+                        // alignment: Alignment.topCenter,
+                        // fit: BoxFit.contain,
+                        // animation: "coding",
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    context.l10n.coming_soon,
+                    // alignment: Alignment.topCenter,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

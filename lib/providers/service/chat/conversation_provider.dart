@@ -1,5 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/models/model.dart';
+import 'package:omnigram/flavors/provider.dart';
+import 'package:omnigram/flavors/app_store.dart';
 import 'package:omnigram/providers/service/chat/conversation_model.dart';
 import 'package:omnigram/models/objectbox.g.dart';
 import 'package:universal_platform/universal_platform.dart';
@@ -16,6 +17,8 @@ abstract class ConversationProvider {
   int update(Conversation chat);
 
   bool delete(int id);
+
+  int count();
 }
 
 class ConversationBox implements ConversationProvider {
@@ -34,18 +37,26 @@ class ConversationBox implements ConversationProvider {
   }
 
   @override
-  List<Conversation> query({required int max}) {
-    final query = (_box.query()
-          ..order(Conversation_.id, flags: Order.descending))
-        .build();
+  List<Conversation> query({required int max, String? search}) {
+    late final qBuilder = (search != null && search.isNotEmpty)
+        ? _box.query(Conversation_.name.contains(search))
+        : _box.query();
 
-    query.limit = max;
+    qBuilder.order(Conversation_.id, flags: Order.descending);
 
-    final result = query.find();
+    final query = qBuilder.build();
+    query.limit = max ?? 100; // 设置默认的最大值
 
-    query.close();
-
-    return result;
+    try {
+      final result = query.find();
+      return result;
+    } catch (e) {
+      // 处理异常情况
+      print("查询出错：$e");
+      return [];
+    } finally {
+      query.close();
+    }
   }
 
   @override
@@ -60,6 +71,12 @@ class ConversationBox implements ConversationProvider {
       return 0;
     }
     return create(chat);
+  }
+
+  @override
+  int count() {
+    // TODO: implement length
+    return _box.count();
   }
 }
 
@@ -104,6 +121,12 @@ class ConversationAPI implements ConversationProvider {
   @override
   int update(Conversation chat) {
     // TODO: implement update
+    throw UnimplementedError();
+  }
+
+  @override
+  int count() {
+    // TODO: implement count
     throw UnimplementedError();
   }
 }

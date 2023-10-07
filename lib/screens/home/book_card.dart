@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/components/outlined_card.dart';
 import 'package:omnigram/flavors/app_config.dart';
+import 'package:omnigram/flavors/provider.dart';
 import 'package:omnigram/providers/service/reader/book_model.dart';
 // import '../../../shared/classes/classes.dart';
 // import '../../../shared/extensions.dart';

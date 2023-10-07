@@ -3,13 +3,13 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/components/chat_base_item_view.dart';
+import 'package:omnigram/flavors/provider.dart';
 import 'package:omnigram/providers/service/chat/message_model.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:flutter_highlight/themes/atom-one-dark.dart';
 import 'package:flutter_highlight/themes/atom-one-light.dart';
 
-import '../../flavors/app_theme.dart';
 import 'code_highlight_view.dart';
 
 class ChatItemView extends ChatBaseItemView {

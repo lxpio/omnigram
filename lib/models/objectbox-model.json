@@ -146,7 +146,7 @@
     },
     {
       "id": "2:8556179340814587510",
-      "lastPropertyId": "9:3208771392139458188",
+      "lastPropertyId": "10:388885894661441841",
       "name": "Conversation",
       "properties": [
         {
@@ -194,6 +194,11 @@
           "id": "9:3208771392139458188",
           "name": "promptId",
           "type": 9
+        },
+        {
+          "id": "10:388885894661441841",
+          "name": "isActive",
+          "type": 1
         }
       ],
       "relations": []

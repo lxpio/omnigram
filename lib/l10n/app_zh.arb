@@ -24,5 +24,12 @@
   "chat_gpt_help_url": "https: //www.nexptr.com/omnigram/help/chat_gpt.html",
   "type_your_tokens": "请输入您的 @name",
   "must_type_tokens": "请先点击我的头像，输入您的 @tokens",
-  "network_error": "网络出现了问题，请稍后重试~"
+  "coming_soon": "研发中...",
+  "network_error": "网络出现了问题，请稍后重试~",
+  "server_address_label": "服务地址",
+  "server_address_hint_text": "输入服务地址,例如 https://127.0.0.1:8888",
+  "server_apikey_label": "API凭证",
+  "server_apikey_hint_text": "输入您的 API Token",
+  "next": "下一步",
+  "need_help": "需要帮助?"
 }

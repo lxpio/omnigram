@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'chat_page_screen.dart';
+part of 'message_list.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$messageListHash() => r'4dfb732f17adc7b22fa11a4893c57be84e3b128b';
+String _$messageListHash() => r'6577cbe6ba827fa98057d0d9d905a6fc5d280e33';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,10 +30,10 @@ class _SystemHash {
 }
 
 abstract class _$MessageList
-    extends BuildlessAutoDisposeNotifier<List<Message>> {
+    extends BuildlessAutoDisposeAsyncNotifier<List<Message>> {
   late final int id;
 
-  List<Message> build(
+  Future<List<Message>> build(
     int id,
   );
 }
@@ -43,7 +43,7 @@ abstract class _$MessageList
 const messageListProvider = MessageListFamily();
 
 /// See also [MessageList].
-class MessageListFamily extends Family<List<Message>> {
+class MessageListFamily extends Family<AsyncValue<List<Message>>> {
   /// See also [MessageList].
   const MessageListFamily();
 
@@ -82,7 +82,7 @@ class MessageListFamily extends Family<List<Message>> {
 
 /// See also [MessageList].
 class MessageListProvider
-    extends AutoDisposeNotifierProviderImpl<MessageList, List<Message>> {
+    extends AutoDisposeAsyncNotifierProviderImpl<MessageList, List<Message>> {
   /// See also [MessageList].
   MessageListProvider(
     int id,
@@ -113,7 +113,7 @@ class MessageListProvider
   final int id;
 
   @override
-  List<Message> runNotifierBuild(
+  Future<List<Message>> runNotifierBuild(
     covariant MessageList notifier,
   ) {
     return notifier.build(
@@ -138,7 +138,7 @@ class MessageListProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<MessageList, List<Message>>
+  AutoDisposeAsyncNotifierProviderElement<MessageList, List<Message>>
       createElement() {
     return _MessageListProviderElement(this);
   }
@@ -157,13 +157,13 @@ class MessageListProvider
   }
 }
 
-mixin MessageListRef on AutoDisposeNotifierProviderRef<List<Message>> {
+mixin MessageListRef on AutoDisposeAsyncNotifierProviderRef<List<Message>> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
 class _MessageListProviderElement
-    extends AutoDisposeNotifierProviderElement<MessageList, List<Message>>
+    extends AutoDisposeAsyncNotifierProviderElement<MessageList, List<Message>>
     with MessageListRef {
   _MessageListProviderElement(super.provider);
 
