@@ -99,10 +99,11 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
 }
 
 /// @nodoc
-abstract class _$$_AppConfigCopyWith<$Res> implements $AppConfigCopyWith<$Res> {
-  factory _$$_AppConfigCopyWith(
-          _$_AppConfig value, $Res Function(_$_AppConfig) then) =
-      __$$_AppConfigCopyWithImpl<$Res>;
+abstract class _$$AppConfigImplCopyWith<$Res>
+    implements $AppConfigCopyWith<$Res> {
+  factory _$$AppConfigImplCopyWith(
+          _$AppConfigImpl value, $Res Function(_$AppConfigImpl) then) =
+      __$$AppConfigImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -115,11 +116,11 @@ abstract class _$$_AppConfigCopyWith<$Res> implements $AppConfigCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_AppConfigCopyWithImpl<$Res>
-    extends _$AppConfigCopyWithImpl<$Res, _$_AppConfig>
-    implements _$$_AppConfigCopyWith<$Res> {
-  __$$_AppConfigCopyWithImpl(
-      _$_AppConfig _value, $Res Function(_$_AppConfig) _then)
+class __$$AppConfigImplCopyWithImpl<$Res>
+    extends _$AppConfigCopyWithImpl<$Res, _$AppConfigImpl>
+    implements _$$AppConfigImplCopyWith<$Res> {
+  __$$AppConfigImplCopyWithImpl(
+      _$AppConfigImpl _value, $Res Function(_$AppConfigImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -132,7 +133,7 @@ class __$$_AppConfigCopyWithImpl<$Res>
     Object? openAIUrl = freezed,
     Object? openAIApiKey = freezed,
   }) {
-    return _then(_$_AppConfig(
+    return _then(_$AppConfigImpl(
       bookBaseUrl: null == bookBaseUrl
           ? _value.bookBaseUrl
           : bookBaseUrl // ignore: cast_nullable_to_non_nullable
@@ -163,8 +164,8 @@ class __$$_AppConfigCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_AppConfig implements _AppConfig {
-  const _$_AppConfig(
+class _$AppConfigImpl implements _AppConfig {
+  const _$AppConfigImpl(
       {required this.bookBaseUrl,
       required this.bookToken,
       required this.appName,
@@ -172,8 +173,8 @@ class _$_AppConfig implements _AppConfig {
       this.openAIUrl,
       this.openAIApiKey});
 
-  factory _$_AppConfig.fromJson(Map<String, dynamic> json) =>
-      _$$_AppConfigFromJson(json);
+  factory _$AppConfigImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AppConfigImplFromJson(json);
 
   @override
   final String bookBaseUrl;
@@ -199,7 +200,7 @@ class _$_AppConfig implements _AppConfig {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_AppConfig &&
+            other is _$AppConfigImpl &&
             (identical(other.bookBaseUrl, bookBaseUrl) ||
                 other.bookBaseUrl == bookBaseUrl) &&
             (identical(other.bookToken, bookToken) ||
@@ -221,12 +222,12 @@ class _$_AppConfig implements _AppConfig {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_AppConfigCopyWith<_$_AppConfig> get copyWith =>
-      __$$_AppConfigCopyWithImpl<_$_AppConfig>(this, _$identity);
+  _$$AppConfigImplCopyWith<_$AppConfigImpl> get copyWith =>
+      __$$AppConfigImplCopyWithImpl<_$AppConfigImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_AppConfigToJson(
+    return _$$AppConfigImplToJson(
       this,
     );
   }
@@ -239,10 +240,10 @@ abstract class _AppConfig implements AppConfig {
       required final String appName,
       required final bool shouldCollectCrashLog,
       final String? openAIUrl,
-      final String? openAIApiKey}) = _$_AppConfig;
+      final String? openAIApiKey}) = _$AppConfigImpl;
 
   factory _AppConfig.fromJson(Map<String, dynamic> json) =
-      _$_AppConfig.fromJson;
+      _$AppConfigImpl.fromJson;
 
   @override
   String get bookBaseUrl;
@@ -259,6 +260,6 @@ abstract class _AppConfig implements AppConfig {
   String? get openAIApiKey;
   @override
   @JsonKey(ignore: true)
-  _$$_AppConfigCopyWith<_$_AppConfig> get copyWith =>
+  _$$AppConfigImplCopyWith<_$AppConfigImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

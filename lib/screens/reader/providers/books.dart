@@ -5,10 +5,11 @@ import 'package:omnigram/flavors/provider.dart';
 import 'package:omnigram/flavors/app_store.dart';
 import 'package:omnigram/models/objectbox.g.dart';
 import 'package:omnigram/providers/service/api_service.dart';
+import 'package:omnigram/providers/service/provider.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import 'book_model.dart';
+import '../models/book_model.dart';
 part 'books.g.dart';
 part 'books.freezed.dart';
 
@@ -37,20 +38,11 @@ class BookSearch with _$BookSearch {
       _$BookSearchFromJson(json);
 }
 
-//bookAPIServiceProvider 是全局有效的所以这了不要 autoDispose
-final bookAPIServiceProvider = Provider<APIService>((ref) {
-  final appConfig = ref.watch(appConfigProvider);
-
-  return APIService(baseUrl: appConfig.bookBaseUrl, serviceHeader: {
-    'Authorization': "Bearer ${appConfig.bookToken}",
-  });
-});
-
 @riverpod
 class Books extends _$Books {
   @override
   Future<BookNav> build() async {
-    final bookApi = ref.watch(bookAPIServiceProvider);
+    final bookApi = ref.watch(apiServiceProvider);
 
     final args = ref.watch(bookIndexSearchProvider);
 
@@ -87,7 +79,7 @@ class BookAPI {
     }
 
     //from objectbox to get book
-    final bookApi = ref.read(bookAPIServiceProvider);
+    final bookApi = ref.read(apiServiceProvider);
 
     final resp = await bookApi.request<Book>('GET', "/books/$id");
 
@@ -100,7 +92,7 @@ class BookAPI {
 
   //Download book
   Future<void> downloadBook(int id) async {
-    final bookApi = ref.read(bookAPIServiceProvider);
+    final bookApi = ref.read(apiServiceProvider);
     await bookApi.downloadFile(
       "/books/$id/download",
       "$globalEpubPath/$id.pdf",

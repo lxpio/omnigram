@@ -2,19 +2,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/screens/chat/input_view.dart';
+import 'package:omnigram/screens/chat/views/input_view.dart';
 import 'package:omnigram/providers/openai/chat/enum.dart';
-import 'package:omnigram/providers/service/chat/conversation_model.dart';
-import 'package:omnigram/providers/service/chat/conversation_provider.dart';
-
-import 'package:omnigram/screens/chat/chat_item_view.dart';
 
 import 'package:omnigram/utils/l10n.dart';
-import 'package:omnigram/providers/service/chat/message_model.dart';
 
+import 'models/conversation.dart';
+import 'models/message.dart';
 import 'provider/conversation_list.dart';
 import 'provider/message_list.dart';
 import 'provider/openai_service.dart';
+import 'views/message_list_view.dart';
 
 class ChatPageScreen extends StatefulHookConsumerWidget {
   const ChatPageScreen({
@@ -96,46 +94,25 @@ class _ChatPageScreenState extends ConsumerState<ChatPageScreen> {
       return;
     }
 
-//第一次发送则存储回话信息
+    //第一次发送则存储回话信息
     if (!widget.conversation.isActive) {
-      widget.conversation.name = textEditing.text;
-      widget.conversation.isActive = true;
-      //保存会话
-      ref.read(conversationListProvider.notifier).add(widget.conversation);
       if (kDebugMode) {
         print('create new conversion and id ${widget.conversation.id}');
       }
+      widget.conversation.name = textEditing.text.length > 20
+          ? textEditing.text.substring(0, 20)
+          : textEditing.text;
+      widget.conversation.isActive = true;
+      //保存会话
+      await ref
+          .read(conversationListProvider.notifier)
+          .add(widget.conversation);
     }
 
     // 发送消息
-    final msgs = [
-      Message(
-        conversationId: widget.conversation.id,
-        role: Role.user,
-        createAt: DateTime.now(),
-        content: textEditing.text,
-      ),
-      Message(
-        conversationId: widget.conversation.id,
-        role: Role.assistant,
-        createAt: DateTime.now(),
-        content: '',
-      )
-    ];
+    final msgList = await _appendMessages(widget.conversation.id);
 
-    if (kDebugMode) {
-      print(
-          'current conversion id ${widget.conversation.id}, cuurent message: ${textEditing.text}');
-    }
-
-    ref.read(messageListProvider(widget.conversation.id).notifier).create(msgs);
-
-    textEditing.clear();
-
-    _scrollDown();
-
-    final stream =
-        ref.read(openAIServiceProvider).chatSSE(messages: [msgs.first]);
+    final stream = ref.read(openAIServiceProvider).chatSSE(messages: msgList);
 
     stream.listen(
       (data) {
@@ -162,7 +139,9 @@ class _ChatPageScreenState extends ConsumerState<ChatPageScreen> {
       },
       onError: (error) {
         // Handle errors from the SSE stream if necessary
-        print("error: $error");
+        ref
+            .read(messageListProvider(widget.conversation.id).notifier)
+            .markError("error: $error");
       },
       onDone: () {
         // This is called when the SSE stream is closed or no more data is available
@@ -172,9 +151,47 @@ class _ChatPageScreenState extends ConsumerState<ChatPageScreen> {
             .savelast();
 
         _scrollDown();
-        print("done");
       },
     );
+  }
+
+  Future<List<Message>> _appendMessages(int id) async {
+    // 发送消息
+    final msgs = [
+      Message(
+        conversationId: id,
+        role: Role.user,
+        createAt: DateTime.now(),
+        content: textEditing.text,
+        type: MessageType.text,
+      ),
+      Message(
+        conversationId: id,
+        role: Role.assistant,
+        createAt: DateTime.now(),
+        content: '',
+        type: MessageType.text,
+      )
+    ];
+
+    if (kDebugMode) {
+      print('current conversion id $id, cuurent message: ${textEditing.text}');
+    }
+
+    await ref.read(messageListProvider(id).notifier).create(msgs);
+
+    textEditing.clear();
+
+    _scrollDown();
+
+    final msgsList = ref.read(messageListProvider(id)).value;
+
+    //if msgsList is null return msgs
+
+    if (msgsList == null || msgsList.length < 3) {
+      return [msgs.first];
+    }
+    return msgsList.sublist(1, msgsList.length - 1);
   }
 
   //scroll to last message
@@ -186,84 +203,5 @@ class _ChatPageScreenState extends ConsumerState<ChatPageScreen> {
       duration: const Duration(milliseconds: 500),
       curve: Curves.fastOutSlowIn,
     );
-  }
-
-  // void loadMessages() {
-  //   final id = widget.conversation.id;
-
-  //   if (id == 0) {
-  //     //处理新增逻辑
-  //     final msg = Message(
-  //       conversationId: id,
-  //       role: Role.system,
-  //       createAt: DateTime.now(),
-  //       content: context.l10n.open_ai_hello,
-  //     );
-
-  //     messages.add(msg);
-
-  //     return;
-  //   }
-
-  //   final list = ref.read(messageProvider).query(conversationId: id);
-
-  //   if (kDebugMode) {
-  //     print('current conversion id $id, get message counts: ${list.length}');
-  //   }
-
-  //   messages.addAll(list);
-  // }
-}
-
-class MessageListView extends ConsumerWidget {
-  const MessageListView(this.conversationId, this.scrollController,
-      {super.key});
-
-  final int conversationId;
-
-  final ScrollController scrollController;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final messages = ref.watch(messageListProvider(conversationId));
-
-    return messages.when(
-      loading: () => const LinearProgressIndicator(),
-      error: (err, stack) => Center(child: Text(err.toString())),
-      data: (data) {
-        if (data.isEmpty) {
-          sendTipMessage(context, ref, conversationId);
-        }
-
-        return ListView.builder(
-          shrinkWrap: true,
-          controller: scrollController,
-          itemCount: data.length,
-          itemBuilder: (context, index) {
-            // switch(messages[index].role) {
-            //   case Role.user:
-            // }
-            return ProviderScope(
-              overrides: [msgIndexProvider.overrideWith((_) => index)],
-              child: ChatItemView(
-                message: data[index],
-                onAvatarClicked: (value) {},
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  void sendTipMessage(BuildContext context, WidgetRef ref, int id) {
-    final msg = Message(
-      conversationId: id,
-      role: Role.system,
-      createAt: DateTime.now(),
-      content: context.l10n.open_ai_hello,
-    );
-
-    ref.read(messageListProvider(id).notifier).tips(msg);
   }
 }

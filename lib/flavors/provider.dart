@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -14,22 +17,34 @@ final appConfigProvider =
 class AppConfigProvider extends Notifier<AppConfig> {
   @override
   AppConfig build() {
-    final config = AppStore.instance.hive().get('config');
+    if (kDebugMode) {
+      print("app config init...");
+    }
 
-    if (config != null) {
-      return AppConfig.fromJson(config);
+    try {
+      final d = json.decode(AppStore.instance.hive().get('config'));
+
+      if (d != null) {
+        return AppConfig.fromJson(d);
+      }
+    } catch (e) {
+      print("app config init error: $e");
     }
 
     return const AppConfig(
-        appName: 'Omnigram',
-        bookBaseUrl: '',
-        bookToken: '',
-        openAIUrl: '',
-        shouldCollectCrashLog: false);
+      appName: 'Omnigram',
+      bookBaseUrl: '',
+      bookToken: '',
+      openAIUrl: '',
+      shouldCollectCrashLog: false,
+    );
   }
 
-  void update(AppConfig config) {
-    AppStore.instance.hive().put('config', config.toJson());
-    state = config;
+  Future<void> updateSever(String apiserver, String apikey) async {
+    final updated = state.copyWith(bookBaseUrl: apiserver, bookToken: apikey);
+
+    await AppStore.instance.hive().put('config', json.encode(updated.toJson()));
+
+    state = updated;
   }
 }

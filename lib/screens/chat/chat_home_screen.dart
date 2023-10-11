@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/providers/service/chat/conversation_model.dart';
-import 'package:omnigram/screens/chat/conversation_list_view.dart';
+
+import 'package:omnigram/screens/chat/views/conversation_list_view.dart';
 import 'package:omnigram/utils/constants.dart';
 
 class ChatHomeScreen extends StatefulHookConsumerWidget {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:omnigram/providers/user/user_model.dart';
 
-import 'epub_index_view.dart';
+import '../reader/views/epub_index_view.dart';
 
 class ReaderSmallScreen extends StatefulHookConsumerWidget {
   const ReaderSmallScreen({super.key});
@@ -26,12 +27,6 @@ class _ReaderSmallScreenState extends ConsumerState<ReaderSmallScreen> {
             icon: const Icon(Icons.menu),
           );
         }),
-        // title: Text(
-
-        //   // controller.currentConversation?.displayName ?? 'new_chat'.tr,
-        //   overflow: TextOverflow.ellipsis,
-        //   maxLines: 1,
-        // ),
         centerTitle: true,
         titleSpacing: 0,
         actions: [
@@ -52,6 +47,9 @@ class _ReaderSmallScreenState extends ConsumerState<ReaderSmallScreen> {
               size: 24,
             ),
             onPressed: () {
+              
+              ref.read(userProvider.notifier).logout();
+
               print("press person");
             },
           ),

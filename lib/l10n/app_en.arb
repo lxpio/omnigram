@@ -23,11 +23,41 @@
   "type_your_tokens": "Type your @name",
   "must_type_tokens": "Please click on my avatar，type your @tokens",
   "coming_soon": "Coming soon...",
+  "auth_error": "Please enter the correct API Key.",
   "network_error": "Oops! The network is unavailable. \n\nPlease try again later.",
   "server_address_label": "Server",
   "server_address_hint_text": "Your self-host address, https://127.0.0.1:8888",
+  "server_address_error": "Please enter the correct server address.",
   "server_apikey_label": "API Token",
   "server_apikey_hint_text": "Your API Token",
+  "server_apikey_error": "Please enter the correct API Token.",
   "next": "Next",
-  "need_help": "Need help?"
+  "need_help": "Need help?",
+  "delete": "Delete",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "deleted": "{data} has been deleted! ",
+  "@deleted": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "data": {
+        "type": "String",
+        "example": "file1"
+      }
+    }
+  },
+  "deleted_error": "Failed to delete {data}",
+  "@deleted_error": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "data": {
+        "type": "String",
+        "example": "file1"
+      }
+    }
+  },
+  "failed": "Failed",
+  "canceled": "Canceled",
+  "failed": "Failed",
+  "copied": "Copied"
 }

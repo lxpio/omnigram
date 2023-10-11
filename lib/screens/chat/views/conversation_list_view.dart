@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/providers/service/chat/conversation_provider.dart';
 import 'package:omnigram/utils/constants.dart';
+import 'package:omnigram/utils/l10n.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'conversation_view.dart';
-import 'provider/conversation_list.dart';
+import '../provider/conversation_list.dart';
 
 class ConversationListView extends StatefulHookConsumerWidget {
   const ConversationListView({super.key});
@@ -18,8 +19,9 @@ class ConversationListView extends StatefulHookConsumerWidget {
 
 class _ConversationListViewState extends ConsumerState<ConversationListView> {
   final ScrollController _controller = ScrollController();
-  int selectedIndex = 0;
-  ValueChanged<int>? onSelected;
+  final _searchContoller = TextEditingController();
+  // int selectedIndex = 0;
+  // ValueChanged<int>? onSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,13 @@ class _ConversationListViewState extends ConsumerState<ConversationListView> {
           controller: _controller,
           children: [
             const SizedBox(height: 8),
-            const SearchBar(leading: Icon(Icons.search)),
+            SearchBar(
+              leading: const Icon(Icons.search),
+              controller: _searchContoller,
+              onChanged: (value) {
+                // ref.read(conversationSearchProvider).state = value;
+              },
+            ),
             const SizedBox(height: 8),
             ...List.generate(
               data.length,
@@ -44,7 +52,7 @@ class _ConversationListViewState extends ConsumerState<ConversationListView> {
                     onSelected: () {
                       context.pushNamed(kChatPagePath, extra: data[index]);
                     },
-                    isSelected: selectedIndex == index,
+                    // isSelected: selectedIndex == index,
                   ),
                 );
               },
@@ -52,7 +60,7 @@ class _ConversationListViewState extends ConsumerState<ConversationListView> {
           ],
         ),
       ),
-      loading: () => LinearProgressIndicator(),
+      loading: () => const LinearProgressIndicator(),
       error: (err, stack) => Center(child: Text(err.toString())),
     );
   }

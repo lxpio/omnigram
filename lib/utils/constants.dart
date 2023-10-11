@@ -66,6 +66,8 @@ const kChatGptTurbo0613 = 'gpt-3.5-turbo-0613';
 const kChatGptTurbo16k0613 = 'gpt-3.5-turbo-16k-0613';
 const kChatGpt40631 = 'gpt-4-0613';
 
+const kVicuna13B16k = 'vicuna-13b-v1.5-16k';
+
 ///edits
 const kEditsTextModel = 'text-davinci-edit-001';
 const kEditsCoedModel = 'code-davinci-edit-001';

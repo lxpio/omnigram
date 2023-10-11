@@ -3,18 +3,8 @@ import 'package:omnigram/flavors/app_config.dart';
 import 'package:omnigram/flavors/provider.dart';
 import 'package:omnigram/flavors/app_store.dart';
 import 'package:omnigram/models/objectbox.g.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:universal_platform/universal_platform.dart';
 
-import 'message_model.dart';
-
-final messageProvider = Provider<MessageProvider>((ref) {
-  if (UniversalPlatform.isWeb) {
-    return MessageAPI(ref);
-  }
-
-  return MessageBox();
-});
+import 'message.dart';
 
 abstract class MessageProvider {
   List<Message> query({
@@ -27,6 +17,8 @@ abstract class MessageProvider {
   int create(Message message);
 
   bool delete(Message message);
+
+  int removeALL(int conversationId);
 }
 
 class MessageBox implements MessageProvider {
@@ -51,6 +43,7 @@ class MessageBox implements MessageProvider {
       MessageType? type,
       int offset = 0,
       int limit = 16}) {
+    print("query message $conversationId");
     final q = (_box.query(Message_.conversationId.equals(conversationId))
           ..order(Message_.id))
         .build();
@@ -64,6 +57,17 @@ class MessageBox implements MessageProvider {
     q.close();
 
     return result;
+  }
+
+  @override
+  int removeALL(int conversationId) {
+    final q = (_box.query(Message_.conversationId.equals(conversationId))
+          ..order(Message_.id))
+        .build();
+
+    final result = q.findIds();
+
+    return _box.removeMany(result);
   }
 }
 
@@ -96,5 +100,12 @@ class MessageAPI implements MessageProvider {
       int limit = 16}) {
     // TODO: implement query
     throw UnimplementedError();
+  }
+
+  @override
+  int removeALL(int conversationId) {
+    //do nothing
+
+    return 0;
   }
 }

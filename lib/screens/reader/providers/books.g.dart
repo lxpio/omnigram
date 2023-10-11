@@ -6,7 +6,8 @@ part of 'books.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_BookNav _$$_BookNavFromJson(Map<String, dynamic> json) => _$_BookNav(
+_$BookNavImpl _$$BookNavImplFromJson(Map<String, dynamic> json) =>
+    _$BookNavImpl(
       recent: (json['recent'] as List<dynamic>?)
           ?.map((e) => Book.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -18,22 +19,22 @@ _$_BookNav _$$_BookNavFromJson(Map<String, dynamic> json) => _$_BookNav(
           .toList(),
     );
 
-Map<String, dynamic> _$$_BookNavToJson(_$_BookNav instance) =>
+Map<String, dynamic> _$$BookNavImplToJson(_$BookNavImpl instance) =>
     <String, dynamic>{
       'recent': instance.recent,
       'random': instance.random,
       'reading': instance.reading,
     };
 
-_$_BookSearch _$$_BookSearchFromJson(Map<String, dynamic> json) =>
-    _$_BookSearch(
+_$BookSearchImpl _$$BookSearchImplFromJson(Map<String, dynamic> json) =>
+    _$BookSearchImpl(
       search: json['search'] as String?,
       author: json['author'] as String?,
       publisher: json['publisher'] as String?,
       tags: json['tags'] as String?,
     );
 
-Map<String, dynamic> _$$_BookSearchToJson(_$_BookSearch instance) =>
+Map<String, dynamic> _$$BookSearchImplToJson(_$BookSearchImpl instance) =>
     <String, dynamic>{
       'search': instance.search,
       'author': instance.author,
@@ -45,7 +46,7 @@ Map<String, dynamic> _$$_BookSearchToJson(_$_BookSearch instance) =>
 // RiverpodGenerator
 // **************************************************************************
 
-String _$booksHash() => r'2ce06446934451fd6b3571ee123067a305ec6793';
+String _$booksHash() => r'4cbe9a2a0318c9ae7a0e6b8a4196474792727924';
 
 /// See also [Books].
 @ProviderFor(Books)

@@ -5,14 +5,15 @@ import 'package:dio/io.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/flavors/app_config.dart';
 import 'package:omnigram/flavors/provider.dart';
-import 'package:omnigram/providers/client/model.dart';
+import 'package:omnigram/providers/openai/client/model.dart';
 import 'package:omnigram/providers/openai/chat/chat_complate_text.dart';
 import 'package:omnigram/providers/openai/chat/message.dart';
 import 'package:omnigram/providers/openai/chat/response.dart';
-import 'package:omnigram/providers/service/chat/message_model.dart';
+
 import 'package:omnigram/utils/constants.dart';
 
-import '../../../providers/client/openai_client.dart';
+import '../../../providers/openai/client/openai_client.dart';
+import '../models/message.dart';
 
 // final openAIServiceProvider = Provider(OpenAIService.new);
 
@@ -20,9 +21,12 @@ import '../../../providers/client/openai_client.dart';
 final openAIServiceProvider = Provider<OpenAIService>((ref) {
   final appConfig = ref.watch(appConfigProvider);
 
+  final independent =
+      appConfig.openAIUrl != null && appConfig.openAIUrl!.isNotEmpty;
+
   return OpenAIService(
-    baseUrl: appConfig.openAIUrl ?? appConfig.bookBaseUrl,
-    token: appConfig.bookToken,
+    baseUrl: independent ? appConfig.openAIUrl! : appConfig.bookBaseUrl,
+    token: independent ? appConfig.openAIApiKey : appConfig.bookToken,
   );
 });
 
@@ -72,7 +76,8 @@ class OpenAIService {
     required List<Message> messages,
     void Function(CancelData cancelData)? onCancel,
   }) {
-    final request = makeChatCompletionRequest(messages: messages);
+    final request =
+        makeChatCompletionRequest(messages: messages, model: kVicuna13B16k);
     print("$_baseUrl/$kChatGptTurbo");
     return _client.sse(
       "$_baseUrl/$kChatGptTurbo",
@@ -80,6 +85,20 @@ class OpenAIService {
       onCancel: (it) => onCancel != null ? onCancel(it) : null,
       complete: (it) {
         return ChatResponseSSE.fromJson(it);
+      },
+    );
+  }
+
+  Future<ChatCTResponse?> onChatCompletion({
+    required ChatCompleteText request,
+    void Function(CancelData cancelData)? onCancel,
+  }) {
+    return _client.post(
+      "$_baseUrl$kChatGptTurbo",
+      request.toJson(),
+      onCancel: (it) => onCancel != null ? onCancel(it) : null,
+      onSuccess: (it) {
+        return ChatCTResponse.fromJson(it);
       },
     );
   }
@@ -102,13 +121,13 @@ ChatCompleteText makeChatCompletionRequest(
     messages: chats,
     temperature: 0.5,
     topP: 0.9,
-    n: 2,
+    n: 1,
     stream: true,
-    stop: ['User:'],
-    maxToken: 50,
+    // stop: ['User:'],
+    maxToken: 8192,
     presencePenalty: -0.5,
     frequencyPenalty: 0.5,
-    user: 'user123',
+    // user: 'user123',
   );
 
   return request;

@@ -15,12 +15,14 @@ class APIService {
 
   late final String baseUrl;
 
-  APIService(
-      {this.baseUrl = "https://127.0.0.1:8080",
-      this.proxy,
-      Map<String, dynamic>? serviceHeader,
-      Map<String, dynamic>? serviceQuery,
-      Map<String, dynamic>? serviceBody}) {
+  APIService({
+    this.baseUrl = "https://127.0.0.1:8080",
+    this.proxy,
+    Map<String, dynamic>? serviceHeader,
+    Map<String, dynamic>? serviceQuery,
+    Map<String, dynamic>? serviceBody,
+    Interceptor? interceptor,
+  }) {
     _headers = serviceHeader;
     _queries = serviceQuery;
     _bodies = serviceBody;
@@ -49,7 +51,9 @@ class APIService {
         return client;
       });
     }
-
+    if (interceptor != null) {
+      _dio.interceptors.add(interceptor);
+    }
     // 设置拦截器
     _dio.interceptors.add(LogInterceptor(responseBody: true));
   }
@@ -75,7 +79,7 @@ class APIService {
           options: options,
           cancelToken: cancelToken);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 401) {
         return ApiResponse.fromJson(response.data, fromJsonT);
       } else {
         throw (

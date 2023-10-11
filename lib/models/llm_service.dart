@@ -22,8 +22,8 @@
 import 'dart:convert';
 
 import 'package:objectbox/objectbox.dart';
+import 'package:omnigram/screens/chat/models/message.dart';
 
-import '../providers/service/chat/message_model.dart';
 import 'value_serializer.dart';
 
 import 'objectbox.g.dart';

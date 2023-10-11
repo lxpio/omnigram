@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/providers/service/reader/book_model.dart';
+import 'package:omnigram/screens/reader/models/book_model.dart';
 import 'package:omnigram/utils/constants.dart';
 
-import 'book_card.dart';
+import 'book_card_view.dart';
 
 class BookGroup extends HookConsumerWidget {
   const BookGroup(this.title, this.viewmore, this.books, {super.key});

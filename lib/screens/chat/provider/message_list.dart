@@ -1,12 +1,23 @@
 import 'package:flutter/foundation.dart';
-import 'package:omnigram/providers/service/chat/message_model.dart';
-import 'package:omnigram/providers/service/chat/message_provider.dart';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:universal_platform/universal_platform.dart';
+
+import '../models/message.dart';
+import '../models/message_provider.dart';
 
 part 'message_list.g.dart';
 
 final msgIndexProvider = Provider<int>((_) {
   throw UnimplementedError();
+});
+
+final messageProvider = Provider<MessageProvider>((ref) {
+  if (UniversalPlatform.isWeb) {
+    return MessageAPI(ref);
+  }
+
+  return MessageBox();
 });
 
 @riverpod
@@ -45,6 +56,12 @@ class MessageList extends _$MessageList {
   Future<void> append(String msg) async {
     final previousState = await future;
     previousState.last.content += msg;
+    state = AsyncData(previousState);
+  }
+
+  Future<void> markError(String msg) async {
+    final previousState = await future;
+    previousState.last.error = msg;
     state = AsyncData(previousState);
   }
 

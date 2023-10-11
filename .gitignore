@@ -47,3 +47,5 @@ app.*.map.json
 
 # ignore for objectbox genrated files
 lib/models/objectbox.g.dart
+
+/android/key.properies
