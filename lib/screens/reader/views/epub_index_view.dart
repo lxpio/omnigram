@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/providers/service/reader/book_model.dart';
-import 'package:omnigram/providers/service/reader/books.dart';
-import 'package:omnigram/screens/home/book_group_view.dart';
+import 'package:omnigram/screens/reader/models/book_model.dart';
+import 'package:omnigram/screens/reader/providers/books.dart';
+import 'package:omnigram/screens/reader/views/book_group_view.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/l10n.dart';
 
-import 'book_card.dart';
+import 'book_card_view.dart';
 
 class EpubIndexView extends StatefulHookConsumerWidget {
   const EpubIndexView({super.key});

@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:omnigram/providers/service/chat/conversation_model.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:omnigram/utils/l10n.dart';
+import 'package:omnigram/utils/show_snackbar.dart';
 
-class ConversationWidget extends StatefulWidget {
+import '../models/conversation.dart';
+import '../provider/conversation_list.dart';
+
+class ConversationWidget extends StatefulHookConsumerWidget {
   const ConversationWidget({
     super.key,
     required this.conversation,
@@ -20,10 +26,10 @@ class ConversationWidget extends StatefulWidget {
   final Conversation conversation;
 
   @override
-  State<ConversationWidget> createState() => _ConversationWidgetState();
+  ConsumerState<ConversationWidget> createState() => _ConversationWidgetState();
 }
 
-class _ConversationWidgetState extends State<ConversationWidget> {
+class _ConversationWidgetState extends ConsumerState<ConversationWidget> {
   late final ColorScheme _colorScheme = Theme.of(context).colorScheme;
   late Color unselectedColor = Color.alphaBlend(
     _colorScheme.primary.withOpacity(0.08),
@@ -44,23 +50,59 @@ class _ConversationWidgetState extends State<ConversationWidget> {
         elevation: 0,
         color: _surfaceColor,
         clipBehavior: Clip.hardEdge,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (widget.showHeadline) ...[
-              ConversationHeadline(
+        child: Slidable(
+          startActionPane: ActionPane(
+            // A motion is a widget used to control how the pane animates.
+            motion: const ScrollMotion(),
+
+            // A pane can dismiss the Slidable.
+            dismissible: DismissiblePane(onDismissed: () {}),
+
+            // All actions are defined in the children parameter.
+            children: [
+              // A SlidableAction can have an icon and/or a label.
+              SlidableAction(
+                backgroundColor: Theme.of(context).colorScheme.error,
+                foregroundColor: Colors.white,
+                icon: Icons.delete,
+                label: context.l10n.delete,
+                onPressed: (BuildContext context) {
+                  ref
+                      .read(conversationListProvider.notifier)
+                      .remove(widget.conversation)
+                      .then((_) {
+                    showSnackBar(
+                        context,
+                        context.l10n.deleted(
+                            widget.conversation.name ?? 'Conversation'));
+                  }).onError((error, stackTrace) {
+                    showSnackBar(
+                        context,
+                        context.l10n.deleted_error(
+                            widget.conversation.name ?? 'Conversation'));
+                  });
+                },
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (widget.showHeadline) ...[
+                ConversationHeadline(
+                  conversation: widget.conversation,
+                  isSelected: widget.isSelected,
+                ),
+              ],
+              ConversationContent(
                 conversation: widget.conversation,
+                isPreview: widget.isPreview,
+                isThreaded: widget.isThreaded,
                 isSelected: widget.isSelected,
               ),
             ],
-            ConversationContent(
-              conversation: widget.conversation,
-              isPreview: widget.isPreview,
-              isThreaded: widget.isThreaded,
-              isSelected: widget.isSelected,
-            ),
-          ],
+          ),
         ),
       ),
     );

@@ -25,11 +25,41 @@
   "type_your_tokens": "请输入您的 @name",
   "must_type_tokens": "请先点击我的头像，输入您的 @tokens",
   "coming_soon": "研发中...",
+  "auth_error": "请输入正确的API Key.",
   "network_error": "网络出现了问题，请稍后重试~",
   "server_address_label": "服务地址",
   "server_address_hint_text": "输入服务地址,例如 https://127.0.0.1:8888",
+  "server_address_error": "请输入正确的服务地址",
   "server_apikey_label": "API凭证",
   "server_apikey_hint_text": "输入您的 API Token",
+  "server_apikey_error": "API Token 格式不合法",
   "next": "下一步",
-  "need_help": "需要帮助?"
+  "need_help": "需要帮助?",
+  "delete": "删除",
+  "cancel": "取消",
+  "confirm": "确认",
+  "deleted": "{data} 已删除! ",
+  "@deleted": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "data": {
+        "type": "String",
+        "example": "file1"
+      }
+    }
+  },
+  "deleted_error": "{data} 删除失败 ",
+  "@deleted_error": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "data": {
+        "type": "String",
+        "example": "file1"
+      }
+    }
+  },
+  "failed": "失败",
+  "canceled": "已经取消",
+  "copied": "已复制"
 }
+

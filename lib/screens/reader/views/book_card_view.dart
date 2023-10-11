@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/components/outlined_card.dart';
 import 'package:omnigram/flavors/app_config.dart';
 import 'package:omnigram/flavors/provider.dart';
-import 'package:omnigram/providers/service/reader/book_model.dart';
+import 'package:omnigram/screens/reader/models/book_model.dart';
 // import '../../../shared/classes/classes.dart';
 // import '../../../shared/extensions.dart';
 // import '../../../shared/views/outlined_card.dart';
@@ -36,10 +37,15 @@ class BookCard extends HookConsumerWidget {
                 borderRadius: const BorderRadiusDirectional.only(
                     topStart: Radius.circular(16), topEnd: Radius.circular(16)),
                 image: DecorationImage(
-                  image: NetworkImage(appConfig.bookBaseUrl + book.image,
-                      headers: {
-                        "Authorization": "Bearer ${appConfig.bookToken}"
-                      }),
+                  // image: CachedNetworkImageProvider(
+                  //   appConfig.bookBaseUrl + book.image,
+                  //   headers: {"Authorization": "Bearer ${appConfig.bookToken}"},
+                  // ),
+                  // image: NetworkImage(
+                  //   appConfig.bookBaseUrl + book.image,
+                  //   headers: {"Authorization": "Bearer ${appConfig.bookToken}"},
+                  // ),
+                  image: AssetImage('assets/images/logo-white.png'),
                   // ),
                   fit: BoxFit.fill,
                 ),

@@ -1,18 +1,20 @@
-import 'package:omnigram/providers/service/chat/conversation_model.dart';
 import 'package:omnigram/models/llm_service.dart';
-import 'package:omnigram/providers/service/chat/message_model.dart';
 
 import 'package:omnigram/providers/openai/chat/chat_complate_text.dart';
 import 'package:omnigram/providers/openai/chat/enum.dart';
 import 'package:omnigram/providers/openai/chat/message.dart';
 import 'package:omnigram/providers/openai/chat/response.dart';
-import 'package:omnigram/providers/service/open_ai_compatible_service.dart';
+
+import 'package:omnigram/screens/chat/models/conversation.dart';
+import 'package:omnigram/screens/chat/models/message.dart';
 import 'package:omnigram/utils/constants.dart';
+
+import '../client/openai_client.dart';
 
 class LLMChain extends LLMService {
   final List<Map<String, String>> messages = [];
 
-  late OpenAI _client;
+  late OpenAIClient _client;
 
   LLMChain({
     String model = kChatGptTurbo,
@@ -32,13 +34,13 @@ class LLMChain extends LLMService {
     //   throw Exception('Token is null');
     // }
 
-    _client =
-        OpenAI.instance.build(baseUrl: apiUrl, token: token, enableLog: true);
+    // _client =
+    //     OpenAI.instance.build(baseUrl: apiUrl, token: token, enableLog: true);
   }
 
-  set updateClient(OpenAI client) {
-    _client = client;
-  }
+  // set updateClient(OpenAI client) {
+  //   _client = client;
+  // }
 
   Stream<ChatResponseSSE> send({
     required Conversation conversation,
@@ -67,7 +69,9 @@ class LLMChain extends LLMService {
       user: 'user123',
     );
 
-    return _client.onChatCompletionSSE(request: chatCompleteText);
+    throw Exception('TODO ');
+
+    // return _client.sse(request: chatCompleteText);
   }
 
   // void send(

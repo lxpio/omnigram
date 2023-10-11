@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/providers/service/chat/message_model.dart';
+
 import 'package:omnigram/providers/openai/chat/enum.dart';
-import 'package:omnigram/utils/app_toast.dart';
+import 'package:omnigram/screens/chat/models/message.dart';
+import 'package:omnigram/utils/l10n.dart';
+import 'package:omnigram/utils/show_snackbar.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'chat_avatar.dart';
@@ -52,24 +54,15 @@ abstract class ChatBaseItemView extends HookConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildAvatar(context),
-        const SizedBox(
-          width: 8,
-        ),
+        const SizedBox(width: 8),
         Flexible(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
-                onTap: () => onAvatarClicked?.call(message),
-                child: Text(
-                  message.serviceName ?? '-',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ),
               const SizedBox(
                 height: 4,
               ),
-              message.type == MessageType.error
+              (message.error != null && message.error!.isNotEmpty)
                   ? Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -98,39 +91,32 @@ abstract class ChatBaseItemView extends HookConsumerWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    buildButton(
-                      context: context,
-                      onPressed: () async {
-                        await Clipboard.setData(
+                    const IconButton(
+                      onPressed: null,
+                      icon: Icon(Icons.campaign),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        Clipboard.setData(
                           ClipboardData(
-                            text: message.content ?? "",
+                            text: message.content,
                           ),
-                        );
-                        AppToast.show(msg: 'copied');
+                        ).then((value) {
+                          showSnackBar(context, context.l10n.copied);
+                        });
                       },
                       icon: const Icon(Icons.copy),
                     ),
-                    buildButton(
-                      context: context,
+                    IconButton(
                       onPressed: () {
                         if (message.type == MessageType.text) {
                           Share.share(
                             message.content,
-                            subject: message.serviceName,
+                            // subject: message,
                           );
                         }
                       },
                       icon: const Icon(Icons.share),
-                    ),
-                    buildButton(
-                      context: context,
-                      onPressed: () {
-                        onQuoted?.call(message);
-                      },
-                      icon: const Icon(
-                        Icons.format_quote_rounded,
-                        size: 20,
-                      ),
                     ),
                   ],
                 ),
@@ -141,23 +127,6 @@ abstract class ChatBaseItemView extends HookConsumerWidget {
           width: avatarWidth,
         ),
       ],
-    );
-  }
-
-  Widget buildButton({
-    required BuildContext context,
-    required VoidCallback onPressed,
-    required Widget icon,
-  }) {
-    return IconButton(
-      padding: EdgeInsets.zero,
-      constraints: const BoxConstraints.tightFor(
-        width: 32,
-        height: 32,
-      ),
-      iconSize: 16,
-      onPressed: onPressed,
-      icon: icon,
     );
   }
 
@@ -190,14 +159,11 @@ abstract class ChatBaseItemView extends HookConsumerWidget {
         ],
       );
 
-  Widget _buildAvatar(BuildContext context) => GestureDetector(
-        onTap: () => onAvatarClicked?.call(message),
-        child: ChatAvatar(
-          source: message.serviceAvatar ?? Icons.person,
-          width: avatarWidth,
-          height: avatarWidth,
-          radius: const Radius.circular(8),
-          backgroundColor: Colors.white,
-        ),
+  Widget _buildAvatar(BuildContext context) => ChatAvatar(
+        source: Icons.person,
+        width: avatarWidth,
+        height: avatarWidth,
+        radius: const Radius.circular(8),
+        backgroundColor: Colors.white,
       );
 }

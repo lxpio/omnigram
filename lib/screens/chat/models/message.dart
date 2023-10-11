@@ -14,29 +14,22 @@ enum MessageType { text, image, loading, error, vendor }
 // Annotate a Dart class to create a box
 @Entity()
 class Message {
-  static const loadingIdPrefix = 'loading__';
-  static const errorIdPrefix = 'error__';
-
   @Id()
   int id;
-
   @Index()
   final int conversationId;
+
+  String content;
+
+  String? error;
+
+  @Property(type: PropertyType.date)
+  final DateTime? createAt;
 
   @Transient()
   MessageType? type;
   @Transient()
   Role role;
-  final String? serviceName;
-  final String? serviceAvatar;
-  String content;
-  @Property(type: PropertyType.date)
-  final DateTime? createAt;
-  final String? responseData;
-
-  // final Message? requestMessage;
-  // final Message? quoteMessage;
-  // final String? serviceId;
 
   int? get dbMessageType {
     // _ensureStableEnumValues();
@@ -76,20 +69,13 @@ class Message {
     }
   }
 
-  String get loadingId => '$loadingIdPrefix$id';
-  String get errorId => '$errorIdPrefix$id';
-
   Message({
     this.id = 0,
     this.type,
     this.role = Role.system,
-    this.serviceName,
-    this.serviceAvatar,
+    this.error,
     this.content = '',
     this.createAt,
-    // this.requestMessage,
-    this.responseData,
-    // this.quoteMessage,
     required this.conversationId,
     // this.serviceId,
   });
@@ -110,16 +96,9 @@ class Message {
       id: serializer.fromJson<int>(json['id']),
       type: MessageType.values[serializer.fromJson<int?>(json['type']) ?? 0],
       role: Role.values[serializer.fromJson<int?>(json['from_type']) ?? 0],
-      serviceName: serializer.fromJson<String?>(json['service_name']),
-      serviceAvatar: serializer.fromJson<String?>(json['service_avatar']),
+      error: serializer.fromJson<String?>(json['error']),
       content: serializer.fromJson<String>(json['content']),
       createAt: serializer.fromJson<DateTime?>(json['create_at']),
-      // requestMessage: requestMessageJson == null
-      //     ? null
-      //     : Message.fromRawJson(requestMessageJson),
-      // quoteMessage:
-      //     quoteMessage == null ? null : Message.fromRawJson(quoteMessage),
-      responseData: serializer.fromJson<String?>(json["response_data"]),
       conversationId: serializer.fromJson<int>(json['conversation_id']),
     );
   }
@@ -130,14 +109,9 @@ class Message {
       'id': serializer.toJson<int?>(id),
       'type': serializer.toJson<int?>(type?.index),
       'role': serializer.toJson<int?>(role.index),
-      'service_name': serializer.toJson<String?>(serviceName),
-      'service_avatar': serializer.toJson<String?>(serviceAvatar),
+      'error': serializer.toJson<String?>(error),
       'content': serializer.toJson<String?>(content),
       'create_at': serializer.toJson<DateTime?>(createAt),
-      // 'request_message':
-      //     serializer.toJson<String?>(requestMessage?.toRawJson()),
-      // 'quote_message': serializer.toJson<String?>(quoteMessage?.toRawJson()),
-      'response_data': serializer.toJson<String?>(responseData),
       'conversation_id': serializer.toJson<int?>(conversationId),
     };
   }
@@ -146,13 +120,9 @@ class Message {
     int? id,
     MessageType? type,
     Role? role,
-    String? serviceName,
-    String? serviceAvatar,
+    String? error,
     String? content,
     DateTime? createAt,
-    Message? requestMessage,
-    Message? quoteMessage,
-    String? responseData,
     int? conversationId,
     String? serviceId,
   }) =>
@@ -160,13 +130,9 @@ class Message {
         id: id ?? this.id,
         type: type ?? this.type,
         role: role ?? this.role,
-        serviceName: serviceName ?? this.serviceName,
-        serviceAvatar: serviceAvatar ?? this.serviceAvatar,
+        error: error ?? this.error,
         content: content ?? this.content,
         createAt: createAt ?? this.createAt,
-        // requestMessage: requestMessage ?? this.requestMessage,
-        // quoteMessage: quoteMessage ?? this.quoteMessage,
-        responseData: responseData ?? this.responseData,
         conversationId: conversationId ?? this.conversationId,
       );
 
@@ -176,13 +142,8 @@ class Message {
           ..write('id: $id, ')
           ..write('type: $type, ')
           ..write('role: $role, ')
-          ..write('serviceName: $serviceName, ')
-          ..write('serviceAvatar: $serviceAvatar, ')
           ..write('content: $content, ')
           ..write('createAt: $createAt, ')
-          // ..write('requestMessage: $requestMessage, ')
-          // ..write('quoteMessage: $quoteMessage, ')
-          ..write('data: $responseData, ')
           ..write('conversationId: $conversationId')
           ..write(')'))
         .toString();
@@ -193,13 +154,9 @@ class Message {
         id,
         type,
         role,
-        serviceName,
-        serviceAvatar,
+        error,
         content,
         createAt,
-        // requestMessage,
-        // quoteMessage,
-        responseData,
         conversationId,
       );
 
@@ -210,12 +167,8 @@ class Message {
           other.id == id &&
           other.type == type &&
           other.role == role &&
-          other.serviceName == serviceName &&
-          other.serviceAvatar == serviceAvatar &&
+          other.error == error &&
           other.content == content &&
           other.createAt == createAt &&
-          // other.requestMessage == requestMessage &&
-          // other.quoteMessage == quoteMessage &&
-          other.responseData == responseData &&
           other.conversationId == conversationId);
 }

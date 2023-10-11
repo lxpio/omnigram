@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_epub/epub_view.dart';
-import 'package:omnigram/providers/service/reader/book_model.dart';
+import 'package:omnigram/screens/reader/models/book_model.dart';
 
 class ReaderContentScreen extends StatefulHookConsumerWidget {
   const ReaderContentScreen({required this.book, super.key}) : super();

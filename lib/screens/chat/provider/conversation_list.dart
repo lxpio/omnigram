@@ -1,11 +1,26 @@
-import 'package:omnigram/providers/service/chat/conversation_model.dart';
-import 'package:omnigram/providers/service/chat/conversation_provider.dart';
+import 'package:omnigram/flavors/provider.dart';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:universal_platform/universal_platform.dart';
+
+import '../models/conversation.dart';
+import '../models/conversation_provider.dart';
+import 'message_list.dart';
 
 part 'conversation_list.g.dart';
 
-final conversationSearchProvider = Provider<String>((_) {
+final conversationSearchProvider = Provider<String>((ref) {
   return '';
+});
+
+final conversationProvider = Provider<ConversationProvider>((ref) {
+  if (UniversalPlatform.isWeb) {
+    final baseUrl = ref.watch(appConfigProvider).bookBaseUrl;
+
+    return ConversationAPI(baseUrl);
+  }
+
+  return ConversationBox();
 });
 
 @riverpod
@@ -30,6 +45,10 @@ class ConversationList extends _$ConversationList {
   Future<void> remove(Conversation conversation) async {
     final box = ref.read(conversationProvider);
     box.delete(conversation.id);
+
+    //这里要同时删除关联的message
+
+    await ref.read(messageProvider).removeALL(conversation.id);
 
     final previousState = await future;
 

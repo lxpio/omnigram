@@ -7,7 +7,7 @@
 
 ## 关于
 
-Omnigram 是一个支持NAS内容服务终端，支持多平台（iOS、Android、Web、Windows、Linux、Mac）的聊天机器人。其后端服务部署参阅 [omnigam-server](https://github.com/nexptr/omnigam-server).
+Omnigram 是Flutter编写的支持多平台（iOS、Android、Web、Windows、Linux、Mac）文件阅读和听书客户端，它支持多种格式，包括 EPUB 和 PDF。它还提供听书功能，支持使用 Bark TTS 模型以及其他 AI 聊天技术进行辅助阅读。此外，它还具备本地书籍管理功能，允许用户轻松管理书籍在 NAS 上的存储。其后端服务部署参阅 [omnigam-server](https://github.com/nexptr/omnigram-server).
 
 ## 特性
 

@@ -9,5 +9,3 @@ extension JsonDecodeString on String? {
     }
   }
 }
-
-

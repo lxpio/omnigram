@@ -6,7 +6,8 @@ part of 'app_config.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_AppConfig _$$_AppConfigFromJson(Map<String, dynamic> json) => _$_AppConfig(
+_$AppConfigImpl _$$AppConfigImplFromJson(Map<String, dynamic> json) =>
+    _$AppConfigImpl(
       bookBaseUrl: json['bookBaseUrl'] as String,
       bookToken: json['bookToken'] as String,
       appName: json['appName'] as String,
@@ -15,7 +16,7 @@ _$_AppConfig _$$_AppConfigFromJson(Map<String, dynamic> json) => _$_AppConfig(
       openAIApiKey: json['openAIApiKey'] as String?,
     );
 
-Map<String, dynamic> _$$_AppConfigToJson(_$_AppConfig instance) =>
+Map<String, dynamic> _$$AppConfigImplToJson(_$AppConfigImpl instance) =>
     <String, dynamic>{
       'bookBaseUrl': instance.bookBaseUrl,
       'bookToken': instance.bookToken,

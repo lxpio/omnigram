@@ -1,7 +1,7 @@
 import 'package:objectbox/objectbox.dart';
-import '../../../models/value_serializer.dart';
+import 'package:omnigram/models/value_serializer.dart';
 
-import '../../../models/objectbox.g.dart';
+import 'package:omnigram/models/objectbox.g.dart';
 
 // Annotate a Dart class to create a box
 @Entity()

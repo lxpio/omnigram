@@ -1,0 +1,34 @@
+<svg width="141.680664" height="130.000031" viewBox="0 0 141.681 130" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<desc>
+			Created with Pixso.
+	</desc>
+	<defs>
+		<filter id="filter_58_611_dd" x="0.000000" y="0.000000" width="141.680664" height="130.000031" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+			<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+			<feOffset dx="0" dy="10"/>
+			<feGaussianBlur stdDeviation="6.66667"/>
+			<feComposite in2="hardAlpha" operator="out" k2="-1" k3="1"/>
+			<feColorMatrix type="matrix" values="0 0 0 0 0.55686 0 0 0 0 0.55686 0 0 0 0 0.55686 0 0 0 0.25 0"/>
+			<feBlend mode="normal" in2="BackgroundImageFix" result="effect_dropShadow_1"/>
+			<feBlend mode="normal" in="SourceGraphic" in2="effect_dropShadow_1" result="shape"/>
+		</filter>
+		<linearGradient id="paint_linear_58_602_0" x1="101.840752" y1="26.744278" x2="101.840752" y2="82.544357" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#08CBE1"/>
+			<stop offset="1.000000" stop-color="#046D9B"/>
+		</linearGradient>
+		<linearGradient id="paint_linear_58_606_0" x1="103.000000" y1="55.000061" x2="39.000000" y2="55.000061" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#02A0E5"/>
+			<stop offset="1.000000" stop-color="#0AC8F7"/>
+		</linearGradient>
+		<linearGradient id="paint_linear_58_610_0" x1="39.840752" y1="43.488342" x2="39.840752" y2="99.288506" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#0BEBF0"/>
+			<stop offset="1.000000" stop-color="#0BEBF7"/>
+		</linearGradient>
+	</defs>
+	<g filter="url(#filter_58_611_dd)">
+		<path id="合并" d="M101.841 26.7443C100.602 26.7443 82.0007 49.8704 82.0007 64.3589C82.0007 64.4041 82.0012 64.4491 82.002 64.494C82.0012 64.5587 82.0007 64.6235 82.0007 64.6883C82.0007 74.5499 90.8833 82.5444 101.841 82.5444C112.798 82.5444 121.681 74.5499 121.681 64.6883C121.681 64.623 121.68 64.5577 121.68 64.4926C121.68 64.4481 121.681 64.4036 121.681 64.3589C121.681 50.149 103.08 26.7443 101.841 26.7443Z" clip-rule="evenodd" fill-rule="evenodd" fill="url(#paint_linear_58_602_0)" fill-opacity="1.000000"/>
+		<path id="合并" d="M39 70.6688C39 47.3003 69.002 10.0001 71 10.0001C72.998 10.0001 103 47.7497 103 70.6688C103 70.7407 102.999 70.8124 102.998 70.8839C102.999 70.9891 103 71.0945 103 71.2C103 87.1058 88.6731 100 71 100C53.3269 100 39 87.1058 39 71.2C39 71.0954 39.0007 70.9909 39.002 70.8866C39.0007 70.8142 39 70.7416 39 70.6688Z" clip-rule="evenodd" fill-rule="evenodd" fill="url(#paint_linear_58_606_0)" fill-opacity="1.000000"/>
+		<path id="合并" d="M39.8408 43.4883C38.6021 43.4883 20.0007 66.6145 20.0007 81.103C20.0007 81.1481 20.0012 81.1932 20.002 81.2381C20.0012 81.3028 20.0007 81.3676 20.0007 81.4325C20.0007 91.2941 28.8833 99.2885 39.8408 99.2885C50.7981 99.2885 59.6807 91.2941 59.6807 81.4325C59.6807 81.3671 59.6804 81.3018 59.6797 81.2367C59.6804 81.1922 59.6807 81.1477 59.6807 81.103C59.6809 66.8931 41.0796 43.4883 39.8408 43.4883Z" clip-rule="evenodd" fill-rule="evenodd" fill="url(#paint_linear_58_610_0)" fill-opacity="1.000000"/>
+	</g>
+</svg>

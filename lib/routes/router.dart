@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/components/root_layout.dart';
-import 'package:omnigram/flavors/provider.dart';
-import 'package:omnigram/providers/service/chat/conversation_model.dart';
-import 'package:omnigram/providers/service/reader/book_model.dart';
+import 'package:omnigram/providers/user/user_model.dart';
+
+import 'package:omnigram/screens/reader/models/book_model.dart';
 import 'package:omnigram/screens/chat/chat_page_screen.dart';
+import 'package:omnigram/screens/chat/models/conversation.dart';
 
 import 'package:omnigram/screens/photo.dart';
 import 'package:omnigram/screens/reader/reader_content_screen.dart';
@@ -14,13 +15,15 @@ import 'package:go_router/go_router.dart';
 
 import '../screens/chat/chat_home_screen.dart';
 import '../screens/home/home_small_screen.dart';
-import '../screens/login.dart';
+import '../screens/login_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
+  final isAuth = ref.watch(userProvider).logined;
+
   return GoRouter(
     // navigatorKey: _key,
     debugLogDiagnostics: true,
-    initialLocation: kHomePage,
+    initialLocation: kHomePath,
     // initialLocation: '$kChatPath/$kChatPagePath',
     routes: [
       GoRoute(
@@ -121,7 +124,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: kLoginPath,
         name: kLoginPage,
         builder: (context, state) {
-          return const LoginPage();
+          return const LoginScreen();
         },
       ),
     ],
@@ -134,20 +137,19 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // // This has to do with how the FirebaseAuth SDK handles the "log-in" state
       // // Returning `null` means "we are not authorized"
       // final isAuth = authState.valueOrNull != null;
-      final hasConfiged = ref.watch(appConfigProvider).bookBaseUrl.isNotEmpty;
 
       final isSplash = state.fullPath == kSplashPath;
 
       if (isSplash) {
-        return hasConfiged ? kHomePath : kLoginPath;
+        return isAuth ? kHomePath : kLoginPath;
       }
 
       final isLoggingIn = state.fullPath == kLoginPath;
-      if (isLoggingIn) return hasConfiged ? kHomePath : null;
+      if (isLoggingIn) return isAuth ? kHomePath : null;
 
       // return isAuth ? null : SplashPage.routeLocation;
       // return kHomePath;
-      return hasConfiged ? null : kLoginPath;
+      return isAuth ? null : kLoginPath;
     },
   );
 });

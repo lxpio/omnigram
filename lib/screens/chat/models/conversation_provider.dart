@@ -1,11 +1,14 @@
+// ignore_for_file: unused_import
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/flavors/provider.dart';
 import 'package:omnigram/flavors/app_store.dart';
-import 'package:omnigram/providers/service/chat/conversation_model.dart';
+
 import 'package:omnigram/models/objectbox.g.dart';
 import 'package:universal_platform/universal_platform.dart';
 
 import '../../../flavors/app_config.dart';
+import 'conversation.dart';
 
 abstract class ConversationProvider {
   List<Conversation> query({required int max});
@@ -80,16 +83,6 @@ class ConversationBox implements ConversationProvider {
   }
 }
 
-final conversationProvider = Provider<ConversationProvider>((ref) {
-  if (UniversalPlatform.isWeb) {
-    final baseUrl = ref.watch(appConfigProvider).bookBaseUrl;
-
-    return ConversationAPI(baseUrl);
-  }
-
-  return ConversationBox();
-});
-
 class ConversationAPI implements ConversationProvider {
   ConversationAPI(this.baseUrl);
   final String baseUrl;
@@ -130,12 +123,3 @@ class ConversationAPI implements ConversationProvider {
     throw UnimplementedError();
   }
 }
-
-// @riverpod
-// MessageProvider message(MessageRef ref) {
-//   if (UniversalPlatform.isWeb) {
-//     return MessageAPI(ref);
-//   }
-
-//   return MessageBox();
-// }
