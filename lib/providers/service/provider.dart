@@ -8,10 +8,12 @@ import 'interceptors.dart';
 final apiServiceProvider = Provider<APIService>((ref) {
   final appConfig = ref.watch(appConfigProvider);
 
+  
+
   return APIService(
-    baseUrl: appConfig.bookBaseUrl,
+    baseUrl: appConfig.baseUrl,
     serviceHeader: {
-      'Authorization': "Bearer ${appConfig.bookToken}",
+      'Authorization': "Bearer ${appConfig.token}",
     },
     interceptor: OauthInterceptorWrapper(ref),
   );

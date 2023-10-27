@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:4382654162542451794",
-      "lastPropertyId": "26:3420535462144833996",
+      "lastPropertyId": "27:4954713092883913072",
       "name": "Book",
       "properties": [
         {
@@ -140,6 +140,11 @@
           "id": "26:3420535462144833996",
           "name": "progress",
           "type": 8
+        },
+        {
+          "id": "27:4954713092883913072",
+          "name": "chapterPos",
+          "type": 9
         }
       ],
       "relations": []
@@ -324,20 +329,56 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "6:6675840566623983101",
+      "lastPropertyId": "4:8840774103628255635",
+      "name": "BookLocal",
+      "properties": [
+        {
+          "id": "1:8748247701297065926",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "3:7714366306442731302",
+          "name": "localPath",
+          "type": 9
+        },
+        {
+          "id": "4:8840774103628255635",
+          "name": "md5",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "4:4759659452906064473",
-  "lastIndexId": "3:713780467430334506",
+  "lastEntityId": "6:6675840566623983101",
+  "lastIndexId": "5:4200969977577029418",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
-  "retiredEntityUids": [],
-  "retiredIndexUids": [],
+  "retiredEntityUids": [
+    7138909965808688744
+  ],
+  "retiredIndexUids": [
+    713264999523619292
+  ],
   "retiredPropertyUids": [
     4703419655710979884,
     6644799872289331431,
-    8654551839707897423
+    8654551839707897423,
+    2329296386792081397,
+    2473174804660473247,
+    114046738576881172,
+    2332582409752170893,
+    4892948840852343280,
+    2468064776280441771,
+    5757281123476920678,
+    6498190453432890172
   ],
   "retiredRelationUids": [],
   "version": 1

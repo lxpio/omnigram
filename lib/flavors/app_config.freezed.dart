@@ -20,11 +20,11 @@ AppConfig _$AppConfigFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$AppConfig {
-  String get bookBaseUrl => throw _privateConstructorUsedError;
-  String get bookToken => throw _privateConstructorUsedError;
-  String get appName =>
-      throw _privateConstructorUsedError; // final String model;
-// final String dbName;
+  String get baseUrl => throw _privateConstructorUsedError;
+  String get token => throw _privateConstructorUsedError;
+  String get appName => throw _privateConstructorUsedError;
+  bool get chatEnabled => throw _privateConstructorUsedError;
+  bool get m4tEnabled => throw _privateConstructorUsedError;
   bool get shouldCollectCrashLog => throw _privateConstructorUsedError;
   String? get openAIUrl => throw _privateConstructorUsedError;
   String? get openAIApiKey => throw _privateConstructorUsedError;
@@ -41,9 +41,11 @@ abstract class $AppConfigCopyWith<$Res> {
       _$AppConfigCopyWithImpl<$Res, AppConfig>;
   @useResult
   $Res call(
-      {String bookBaseUrl,
-      String bookToken,
+      {String baseUrl,
+      String token,
       String appName,
+      bool chatEnabled,
+      bool m4tEnabled,
       bool shouldCollectCrashLog,
       String? openAIUrl,
       String? openAIApiKey});
@@ -62,26 +64,36 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? bookBaseUrl = null,
-    Object? bookToken = null,
+    Object? baseUrl = null,
+    Object? token = null,
     Object? appName = null,
+    Object? chatEnabled = null,
+    Object? m4tEnabled = null,
     Object? shouldCollectCrashLog = null,
     Object? openAIUrl = freezed,
     Object? openAIApiKey = freezed,
   }) {
     return _then(_value.copyWith(
-      bookBaseUrl: null == bookBaseUrl
-          ? _value.bookBaseUrl
-          : bookBaseUrl // ignore: cast_nullable_to_non_nullable
+      baseUrl: null == baseUrl
+          ? _value.baseUrl
+          : baseUrl // ignore: cast_nullable_to_non_nullable
               as String,
-      bookToken: null == bookToken
-          ? _value.bookToken
-          : bookToken // ignore: cast_nullable_to_non_nullable
+      token: null == token
+          ? _value.token
+          : token // ignore: cast_nullable_to_non_nullable
               as String,
       appName: null == appName
           ? _value.appName
           : appName // ignore: cast_nullable_to_non_nullable
               as String,
+      chatEnabled: null == chatEnabled
+          ? _value.chatEnabled
+          : chatEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      m4tEnabled: null == m4tEnabled
+          ? _value.m4tEnabled
+          : m4tEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
       shouldCollectCrashLog: null == shouldCollectCrashLog
           ? _value.shouldCollectCrashLog
           : shouldCollectCrashLog // ignore: cast_nullable_to_non_nullable
@@ -99,53 +111,64 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
 }
 
 /// @nodoc
-abstract class _$$AppConfigImplCopyWith<$Res>
-    implements $AppConfigCopyWith<$Res> {
-  factory _$$AppConfigImplCopyWith(
-          _$AppConfigImpl value, $Res Function(_$AppConfigImpl) then) =
-      __$$AppConfigImplCopyWithImpl<$Res>;
+abstract class _$$_AppConfigCopyWith<$Res> implements $AppConfigCopyWith<$Res> {
+  factory _$$_AppConfigCopyWith(
+          _$_AppConfig value, $Res Function(_$_AppConfig) then) =
+      __$$_AppConfigCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
-      {String bookBaseUrl,
-      String bookToken,
+      {String baseUrl,
+      String token,
       String appName,
+      bool chatEnabled,
+      bool m4tEnabled,
       bool shouldCollectCrashLog,
       String? openAIUrl,
       String? openAIApiKey});
 }
 
 /// @nodoc
-class __$$AppConfigImplCopyWithImpl<$Res>
-    extends _$AppConfigCopyWithImpl<$Res, _$AppConfigImpl>
-    implements _$$AppConfigImplCopyWith<$Res> {
-  __$$AppConfigImplCopyWithImpl(
-      _$AppConfigImpl _value, $Res Function(_$AppConfigImpl) _then)
+class __$$_AppConfigCopyWithImpl<$Res>
+    extends _$AppConfigCopyWithImpl<$Res, _$_AppConfig>
+    implements _$$_AppConfigCopyWith<$Res> {
+  __$$_AppConfigCopyWithImpl(
+      _$_AppConfig _value, $Res Function(_$_AppConfig) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? bookBaseUrl = null,
-    Object? bookToken = null,
+    Object? baseUrl = null,
+    Object? token = null,
     Object? appName = null,
+    Object? chatEnabled = null,
+    Object? m4tEnabled = null,
     Object? shouldCollectCrashLog = null,
     Object? openAIUrl = freezed,
     Object? openAIApiKey = freezed,
   }) {
-    return _then(_$AppConfigImpl(
-      bookBaseUrl: null == bookBaseUrl
-          ? _value.bookBaseUrl
-          : bookBaseUrl // ignore: cast_nullable_to_non_nullable
+    return _then(_$_AppConfig(
+      baseUrl: null == baseUrl
+          ? _value.baseUrl
+          : baseUrl // ignore: cast_nullable_to_non_nullable
               as String,
-      bookToken: null == bookToken
-          ? _value.bookToken
-          : bookToken // ignore: cast_nullable_to_non_nullable
+      token: null == token
+          ? _value.token
+          : token // ignore: cast_nullable_to_non_nullable
               as String,
       appName: null == appName
           ? _value.appName
           : appName // ignore: cast_nullable_to_non_nullable
               as String,
+      chatEnabled: null == chatEnabled
+          ? _value.chatEnabled
+          : chatEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      m4tEnabled: null == m4tEnabled
+          ? _value.m4tEnabled
+          : m4tEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
       shouldCollectCrashLog: null == shouldCollectCrashLog
           ? _value.shouldCollectCrashLog
           : shouldCollectCrashLog // ignore: cast_nullable_to_non_nullable
@@ -164,26 +187,30 @@ class __$$AppConfigImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$AppConfigImpl implements _AppConfig {
-  const _$AppConfigImpl(
-      {required this.bookBaseUrl,
-      required this.bookToken,
+class _$_AppConfig implements _AppConfig {
+  const _$_AppConfig(
+      {required this.baseUrl,
+      required this.token,
       required this.appName,
+      required this.chatEnabled,
+      required this.m4tEnabled,
       required this.shouldCollectCrashLog,
       this.openAIUrl,
       this.openAIApiKey});
 
-  factory _$AppConfigImpl.fromJson(Map<String, dynamic> json) =>
-      _$$AppConfigImplFromJson(json);
+  factory _$_AppConfig.fromJson(Map<String, dynamic> json) =>
+      _$$_AppConfigFromJson(json);
 
   @override
-  final String bookBaseUrl;
+  final String baseUrl;
   @override
-  final String bookToken;
+  final String token;
   @override
   final String appName;
-// final String model;
-// final String dbName;
+  @override
+  final bool chatEnabled;
+  @override
+  final bool m4tEnabled;
   @override
   final bool shouldCollectCrashLog;
   @override
@@ -193,19 +220,21 @@ class _$AppConfigImpl implements _AppConfig {
 
   @override
   String toString() {
-    return 'AppConfig(bookBaseUrl: $bookBaseUrl, bookToken: $bookToken, appName: $appName, shouldCollectCrashLog: $shouldCollectCrashLog, openAIUrl: $openAIUrl, openAIApiKey: $openAIApiKey)';
+    return 'AppConfig(baseUrl: $baseUrl, token: $token, appName: $appName, chatEnabled: $chatEnabled, m4tEnabled: $m4tEnabled, shouldCollectCrashLog: $shouldCollectCrashLog, openAIUrl: $openAIUrl, openAIApiKey: $openAIApiKey)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$AppConfigImpl &&
-            (identical(other.bookBaseUrl, bookBaseUrl) ||
-                other.bookBaseUrl == bookBaseUrl) &&
-            (identical(other.bookToken, bookToken) ||
-                other.bookToken == bookToken) &&
+            other is _$_AppConfig &&
+            (identical(other.baseUrl, baseUrl) || other.baseUrl == baseUrl) &&
+            (identical(other.token, token) || other.token == token) &&
             (identical(other.appName, appName) || other.appName == appName) &&
+            (identical(other.chatEnabled, chatEnabled) ||
+                other.chatEnabled == chatEnabled) &&
+            (identical(other.m4tEnabled, m4tEnabled) ||
+                other.m4tEnabled == m4tEnabled) &&
             (identical(other.shouldCollectCrashLog, shouldCollectCrashLog) ||
                 other.shouldCollectCrashLog == shouldCollectCrashLog) &&
             (identical(other.openAIUrl, openAIUrl) ||
@@ -216,18 +245,18 @@ class _$AppConfigImpl implements _AppConfig {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, bookBaseUrl, bookToken, appName,
-      shouldCollectCrashLog, openAIUrl, openAIApiKey);
+  int get hashCode => Object.hash(runtimeType, baseUrl, token, appName,
+      chatEnabled, m4tEnabled, shouldCollectCrashLog, openAIUrl, openAIApiKey);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$AppConfigImplCopyWith<_$AppConfigImpl> get copyWith =>
-      __$$AppConfigImplCopyWithImpl<_$AppConfigImpl>(this, _$identity);
+  _$$_AppConfigCopyWith<_$_AppConfig> get copyWith =>
+      __$$_AppConfigCopyWithImpl<_$_AppConfig>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$AppConfigImplToJson(
+    return _$$_AppConfigToJson(
       this,
     );
   }
@@ -235,24 +264,29 @@ class _$AppConfigImpl implements _AppConfig {
 
 abstract class _AppConfig implements AppConfig {
   const factory _AppConfig(
-      {required final String bookBaseUrl,
-      required final String bookToken,
+      {required final String baseUrl,
+      required final String token,
       required final String appName,
+      required final bool chatEnabled,
+      required final bool m4tEnabled,
       required final bool shouldCollectCrashLog,
       final String? openAIUrl,
-      final String? openAIApiKey}) = _$AppConfigImpl;
+      final String? openAIApiKey}) = _$_AppConfig;
 
   factory _AppConfig.fromJson(Map<String, dynamic> json) =
-      _$AppConfigImpl.fromJson;
+      _$_AppConfig.fromJson;
 
   @override
-  String get bookBaseUrl;
+  String get baseUrl;
   @override
-  String get bookToken;
+  String get token;
   @override
   String get appName;
-  @override // final String model;
-// final String dbName;
+  @override
+  bool get chatEnabled;
+  @override
+  bool get m4tEnabled;
+  @override
   bool get shouldCollectCrashLog;
   @override
   String? get openAIUrl;
@@ -260,6 +294,6 @@ abstract class _AppConfig implements AppConfig {
   String? get openAIApiKey;
   @override
   @JsonKey(ignore: true)
-  _$$AppConfigImplCopyWith<_$AppConfigImpl> get copyWith =>
+  _$$_AppConfigCopyWith<_$_AppConfig> get copyWith =>
       throw _privateConstructorUsedError;
 }

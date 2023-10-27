@@ -37,7 +37,7 @@ class APIService {
     _dio = Dio(options);
 
     if (kDebugMode) {
-      print(' APIService init once');
+      print(' APIService init once and token ${serviceHeader?["token"]}');
     }
 
     if (proxy != null) {
@@ -55,7 +55,9 @@ class APIService {
       _dio.interceptors.add(interceptor);
     }
     // 设置拦截器
-    _dio.interceptors.add(LogInterceptor(responseBody: true));
+    if (kDebugMode) {
+      _dio.interceptors.add(LogInterceptor(responseBody: true));
+    }
   }
 
   Future<ApiResponse<T>> request<T>(String method, String path,
@@ -93,28 +95,26 @@ class APIService {
   }
 
   //download file to local dir
-  Future<void> downloadFile(String url, String path,
+  Future<void> download(String url, String path,
       {Map<String, dynamic>? query,
-      Map<String, dynamic>? body,
       Map<String, dynamic>? header,
+      ProgressCallback? onDownloadProgress,
       CancelToken? cancelToken}) async {
     Map<String, dynamic> queryParams = _getQueryParams(query);
 
     Map<String, dynamic> headerParams = _getHeaderParams(header);
-
-    Map<String, dynamic>? bodyParams = _getBodyParams(body);
 
     Options options = Options(
         headers: headerParams,
         responseType: ResponseType.bytes,
         followRedirects: false,
         validateStatus: (status) {
-          return status! < 500;
+          return status! < 400;
         });
 
     final response = await _dio.get(url,
+        onReceiveProgress: onDownloadProgress,
         queryParameters: queryParams,
-        data: bodyParams,
         options: options,
         cancelToken: cancelToken);
 

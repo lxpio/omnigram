@@ -11,7 +11,7 @@ class Destination {
 
 const List<Destination> destinations = <Destination>[
   Destination(Icon(Icons.book), 'read', kHomePath),
+  Destination(Icon(Icons.explore), 'discover', kDiscoverPath),
   Destination(Icon(Icons.messenger_outline_rounded), 'chat', kChatPath),
-  Destination(Icon(Icons.music_video), 'music', kMusicPath),
-  Destination(Icon(Icons.group_outlined), 'picture', kPhotoPath),
+  Destination(Icon(Icons.person), 'profile', kProfilePath),
 ];

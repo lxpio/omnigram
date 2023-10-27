@@ -15,7 +15,7 @@ final conversationSearchProvider = Provider<String>((ref) {
 
 final conversationProvider = Provider<ConversationProvider>((ref) {
   if (UniversalPlatform.isWeb) {
-    final baseUrl = ref.watch(appConfigProvider).bookBaseUrl;
+    final baseUrl = ref.watch(appConfigProvider).baseUrl;
 
     return ConversationAPI(baseUrl);
   }

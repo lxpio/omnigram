@@ -117,21 +117,31 @@ String translateToJapanese({required String word}) =>
 
 //router
 
-const kHomePath = '/';
-const kChatPath = '/chat';
-const kChatPagePath = 'detailpage';
-const kReaderDetailPath = 'read';
-const kReaderPath = '/epub/books/summary';
-const kMusicPath = '/music';
-const kPhotoPath = '/photo';
+const kLoginPage = 'login';
 const kLoginPath = '/login';
+
 const kSplashPath = '/splash';
 
+const kHomePath = '/';
 const kHomePage = 'home';
 
+const kMusicPath = '/music';
+const kDiscoverPage = 'discover';
+const kDiscoverPath = '/discover';
+
+const kProfilePath = '/profile';
+const kProfilePage = 'profile';
+
+const kReaderDetailPath = 'read';
+const kReaderPath = '/epub/books/summary';
+
 const kChatPage = 'chat';
+
+const kChatPath = '/chat';
+const kChatPagePath = 'detailpage';
+
+const kManagerPage = 'manager';
+const kManagerPath = '/manager';
+
 const kReaderPage = 'reader';
 const kReaderDetailPage = 'reader_detail';
-const kMusicPage = 'music';
-const kPhotoPage = 'photo';
-const kLoginPage = 'login';

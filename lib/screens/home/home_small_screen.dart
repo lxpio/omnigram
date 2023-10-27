@@ -4,15 +4,15 @@ import 'package:omnigram/providers/user/user_model.dart';
 
 import '../reader/views/epub_index_view.dart';
 
-class ReaderSmallScreen extends StatefulHookConsumerWidget {
-  const ReaderSmallScreen({super.key});
+class HomeSmallScreen extends StatefulHookConsumerWidget {
+  const HomeSmallScreen({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _ReaderSmallScreenState();
+      _HomeSmallScreenState();
 }
 
-class _ReaderSmallScreenState extends ConsumerState<ReaderSmallScreen> {
+class _HomeSmallScreenState extends ConsumerState<HomeSmallScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +47,6 @@ class _ReaderSmallScreenState extends ConsumerState<ReaderSmallScreen> {
               size: 24,
             ),
             onPressed: () {
-              
               ref.read(userProvider.notifier).logout();
 
               print("press person");

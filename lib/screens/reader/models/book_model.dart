@@ -35,6 +35,7 @@ class Book {
   int? countVisit;
   int? countDownload;
   double? progress;
+  String? chapterPos;
 
   Book({
     required this.id,
@@ -64,6 +65,7 @@ class Book {
     this.countVisit,
     this.countDownload,
     this.progress = 0.0,
+    String? chapterPos,
   });
 
   get isDownloaded => path == null || path!.isEmpty ? false : true;
@@ -100,6 +102,7 @@ class Book {
         countVisit: json['count_visit'] as int?,
         countDownload: json['count_download'] as int?,
         progress: json['progress'] as double?,
+        chapterPos: json['chapter_pos'] as String?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -130,5 +133,6 @@ class Book {
         'count_visit': countVisit,
         'count_download': countDownload,
         'progress': progress,
+        'chapter_pos': chapterPos,
       };
 }

@@ -1,9 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/flavors/app_config.dart';
-import 'package:omnigram/flavors/provider.dart';
 import 'package:omnigram/flavors/app_store.dart';
-import 'package:omnigram/models/objectbox.g.dart';
 import 'package:omnigram/providers/service/api_service.dart';
 import 'package:omnigram/providers/service/provider.dart';
 import 'package:omnigram/utils/constants.dart';
@@ -91,11 +89,31 @@ class BookAPI {
   }
 
   //Download book
-  Future<void> downloadBook(int id) async {
+  Future<String> downloadBook(
+    int id,
+    ProgressCallback? onDownloadProgress,
+  ) async {
     final bookApi = ref.read(apiServiceProvider);
-    await bookApi.downloadFile(
-      "/books/$id/download",
-      "$globalEpubPath/$id.pdf",
+    await bookApi.download(
+      "/book/download/books/$id",
+      "$globalEpubPath/$id.epub",
+      onDownloadProgress: onDownloadProgress,
+    );
+
+    return "$globalEpubPath/$id.epub";
+  }
+
+  Future<ApiResponse> updateProcess(
+      int id, double process, String? chapterPos) async {
+    final bookApi = ref.read(apiServiceProvider);
+    return await bookApi.request(
+      "PUT",
+      "/book/read/books/$id",
+      body: {
+        "process": process,
+        "chapter_pos": chapterPos,
+      },
+      // onDownloadProgress: onDownloadProgress,
     );
   }
 }

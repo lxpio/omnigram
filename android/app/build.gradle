@@ -34,7 +34,7 @@ android {
     namespace "com.nexptr.omnigram"
     compileSdkVersion flutter.compileSdkVersion
     // ndkVersion flutter.ndkVersion
-    ndkVersion '26.1.10909125'
+    ndkVersion '26.0.10792818'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

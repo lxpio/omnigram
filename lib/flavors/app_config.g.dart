@@ -6,21 +6,24 @@ part of 'app_config.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AppConfigImpl _$$AppConfigImplFromJson(Map<String, dynamic> json) =>
-    _$AppConfigImpl(
-      bookBaseUrl: json['bookBaseUrl'] as String,
-      bookToken: json['bookToken'] as String,
+_$_AppConfig _$$_AppConfigFromJson(Map<String, dynamic> json) => _$_AppConfig(
+      baseUrl: json['baseUrl'] as String,
+      token: json['token'] as String,
       appName: json['appName'] as String,
+      chatEnabled: json['chatEnabled'] as bool,
+      m4tEnabled: json['m4tEnabled'] as bool,
       shouldCollectCrashLog: json['shouldCollectCrashLog'] as bool,
       openAIUrl: json['openAIUrl'] as String?,
       openAIApiKey: json['openAIApiKey'] as String?,
     );
 
-Map<String, dynamic> _$$AppConfigImplToJson(_$AppConfigImpl instance) =>
+Map<String, dynamic> _$$_AppConfigToJson(_$_AppConfig instance) =>
     <String, dynamic>{
-      'bookBaseUrl': instance.bookBaseUrl,
-      'bookToken': instance.bookToken,
+      'baseUrl': instance.baseUrl,
+      'token': instance.token,
       'appName': instance.appName,
+      'chatEnabled': instance.chatEnabled,
+      'm4tEnabled': instance.m4tEnabled,
       'shouldCollectCrashLog': instance.shouldCollectCrashLog,
       'openAIUrl': instance.openAIUrl,
       'openAIApiKey': instance.openAIApiKey,

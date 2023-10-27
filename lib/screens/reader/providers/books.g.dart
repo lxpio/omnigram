@@ -6,8 +6,7 @@ part of 'books.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$BookNavImpl _$$BookNavImplFromJson(Map<String, dynamic> json) =>
-    _$BookNavImpl(
+_$_BookNav _$$_BookNavFromJson(Map<String, dynamic> json) => _$_BookNav(
       recent: (json['recent'] as List<dynamic>?)
           ?.map((e) => Book.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -19,22 +18,22 @@ _$BookNavImpl _$$BookNavImplFromJson(Map<String, dynamic> json) =>
           .toList(),
     );
 
-Map<String, dynamic> _$$BookNavImplToJson(_$BookNavImpl instance) =>
+Map<String, dynamic> _$$_BookNavToJson(_$_BookNav instance) =>
     <String, dynamic>{
       'recent': instance.recent,
       'random': instance.random,
       'reading': instance.reading,
     };
 
-_$BookSearchImpl _$$BookSearchImplFromJson(Map<String, dynamic> json) =>
-    _$BookSearchImpl(
+_$_BookSearch _$$_BookSearchFromJson(Map<String, dynamic> json) =>
+    _$_BookSearch(
       search: json['search'] as String?,
       author: json['author'] as String?,
       publisher: json['publisher'] as String?,
       tags: json['tags'] as String?,
     );
 
-Map<String, dynamic> _$$BookSearchImplToJson(_$BookSearchImpl instance) =>
+Map<String, dynamic> _$$_BookSearchToJson(_$_BookSearch instance) =>
     <String, dynamic>{
       'search': instance.search,
       'author': instance.author,
