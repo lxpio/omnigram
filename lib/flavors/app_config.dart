@@ -7,11 +7,11 @@ part 'app_config.g.dart';
 @freezed
 class AppConfig with _$AppConfig {
   const factory AppConfig({
-    required String bookBaseUrl,
-    required String bookToken,
+    required String baseUrl,
+    required String token,
     required String appName,
-    // final String model;
-    // final String dbName;
+    required bool chatEnabled,
+    required bool m4tEnabled,
     required bool shouldCollectCrashLog,
     String? openAIUrl,
     String? openAIApiKey,

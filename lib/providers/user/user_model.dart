@@ -16,7 +16,7 @@ class UserModel with _$UserModel {
     @Default('') String email,
     @Default('') String username,
     @Default('') String nickname,
-    @Default(10) int roleId,
+    @Default(10) @JsonKey(name: 'role_id') int roleId,
     @Default(false) bool locked,
     @Default(false) bool logined,
   }) = _UserModel;
@@ -43,17 +43,38 @@ class User extends Notifier<UserModel> {
     return const UserModel();
   }
 
-  Future<void> update(UserModel user) async {
-    final updated = user.copyWith(logined: true);
+  // Future<void> update(UserModel user) async {
+  //   final updated = user.copyWith(logined: true);
 
-    await AppStore.instance
-        .hive()
-        .put('user_auth', json.encode(updated.toJson()));
+  //   await AppStore.instance
+  //       .hive()
+  //       .put('user_auth', json.encode(updated.toJson()));
 
-    state = user.copyWith(logined: true);
+  //   state = user.copyWith(logined: true);
 
-    if (kDebugMode) {
-      print("user_auth: changed");
+  //   if (kDebugMode) {
+  //     print("user_auth: changed");
+  //   }
+  // }
+
+  Future<void> update() async {
+    final service = ref.read(apiServiceProvider);
+
+    final userResp = await service.request('GET', '/user/info',
+        fromJsonT: UserModel.fromJson);
+
+    if (userResp.code == 200) {
+      final updated = userResp.data!.copyWith(logined: true);
+
+      await AppStore.instance
+          .hive()
+          .put('user_auth', json.encode(updated.toJson()));
+
+      state = updated;
+
+      if (kDebugMode) {
+        print("user_auth: changed");
+      }
     }
   }
 

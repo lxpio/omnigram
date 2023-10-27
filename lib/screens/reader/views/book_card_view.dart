@@ -24,8 +24,6 @@ class BookCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Song nowPlaying = artist.songs[Random().nextInt(artist.songs.length)];
-
     final appConfig = ref.read(appConfigProvider);
 
     return OutlinedCard(
@@ -41,11 +39,11 @@ class BookCard extends HookConsumerWidget {
                   //   appConfig.bookBaseUrl + book.image,
                   //   headers: {"Authorization": "Bearer ${appConfig.bookToken}"},
                   // ),
-                  // image: NetworkImage(
-                  //   appConfig.bookBaseUrl + book.image,
-                  //   headers: {"Authorization": "Bearer ${appConfig.bookToken}"},
-                  // ),
-                  image: AssetImage('assets/images/logo-white.png'),
+                  image: NetworkImage(
+                    appConfig.baseUrl + book.image,
+                    headers: {"Authorization": "Bearer ${appConfig.token}"},
+                  ),
+                  // image: AssetImage('assets/images/logo-white.png'),
                   // ),
                   fit: BoxFit.fill,
                 ),

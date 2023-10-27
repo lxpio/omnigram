@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/flavors/app_config.dart';
 import 'package:omnigram/flavors/provider.dart';
+import 'package:omnigram/screens/reader/models/book_local.dart';
 import 'package:omnigram/screens/reader/models/book_model.dart';
+import 'package:omnigram/screens/reader/providers/books.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/l10n.dart';
 
@@ -17,18 +19,18 @@ class ReaderMobileScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appConfig = ref.read(appConfigProvider);
 
+    final localBook = BookLocalBox.instance.get(book.id);
+
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
-          leading: Builder(builder: (context) {
-            return IconButton(
-              onPressed: () {
-                //back to from
-                context.pop();
-              },
-              icon: const Icon(Icons.arrow_back),
-            );
-          }),
+          leading: IconButton(
+            onPressed: () {
+              //back to from
+              context.pop();
+            },
+            icon: const Icon(Icons.arrow_back),
+          ),
           // titleSpacing: 0,
           actions: [
             IconButton(
@@ -68,9 +70,9 @@ class ReaderMobileScreen extends HookConsumerWidget {
                   color: Theme.of(context).colorScheme.surface,
                   image: DecorationImage(
                     // image: AssetImage(book.image),
-                    image: NetworkImage(appConfig.bookBaseUrl + book.image,
+                    image: NetworkImage(appConfig.baseUrl + book.image,
                         headers: {
-                          "Authorization": "Bearer ${appConfig.bookToken}"
+                          "Authorization": "Bearer ${appConfig.token}"
                         }),
                   )),
             ),
@@ -155,8 +157,21 @@ class ReaderMobileScreen extends HookConsumerWidget {
                 children: [
                   FilledButton.tonal(
                     onPressed: () {
-                      context.push('${kReaderPath}/${kReaderDetailPath}',
-                          extra: book);
+                      //download book if needed
+                      if (localBook?.localPath.isEmpty ?? true) {
+                        //wait download
+                        downloadBook(ref).then((value) {
+                          book.path = value;
+                          context.push('${kReaderPath}/${kReaderDetailPath}',
+                              extra: book);
+                        });
+                      } else {
+                        book.path = localBook!.localPath!;
+
+                        context.push('${kReaderPath}/${kReaderDetailPath}',
+                            extra: book);
+                      }
+
                       // onPress();
                     },
                     child: Text(
@@ -178,6 +193,27 @@ class ReaderMobileScreen extends HookConsumerWidget {
             )
           ]),
         ));
+  }
+
+  Future<String> downloadBook(WidgetRef ref) async {
+    final api = ref.read(bookAPIProvider);
+
+    late String bookPath;
+
+    try {
+      bookPath = await api.downloadBook(book.id, (int count, int total) {
+        print('download book: $count/$total');
+
+        // ref.read(bookDownloadProgressProvider).value = count / total;
+      });
+
+      BookLocalBox.instance.create(book.id, bookPath);
+    } catch (e) {
+      print('download book: $e');
+    }
+    ;
+
+    return bookPath;
   }
 }
 

@@ -1,5 +1,5 @@
 {
-  "nav_name": "{name,select, read{Reader} chat{Chat} music{Music} picture{Picture} other {Other} }",
+  "nav_name": "{name,select, read{Reader} chat{Chat} discover{Discover} profile{Profile} other {Other} }",
   "@nav_name": {
     "description": "The conventional newborn programmer greeting",
     "placeholders": {
@@ -28,10 +28,15 @@
   "server_address_label": "Server",
   "server_address_hint_text": "Your self-host address, https://127.0.0.1:8888",
   "server_address_error": "Please enter the correct server address.",
-  "server_apikey_label": "API Token",
-  "server_apikey_hint_text": "Your API Token",
-  "server_apikey_error": "Please enter the correct API Token.",
+  "account_label": "Account",
+  "account_hint_text": "Your account",
+  "account_error": "Please enter the correct account.",
+  "password_label": "Password",
+  "password_hint_text": "Your password",
+  "password_error": "Please enter the correct password.",
   "next": "Next",
+  "logout": "Logout",
+  "settings": "Settings",
   "need_help": "Need help?",
   "delete": "Delete",
   "cancel": "Cancel",

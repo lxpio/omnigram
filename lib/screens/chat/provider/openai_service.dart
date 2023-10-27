@@ -25,8 +25,8 @@ final openAIServiceProvider = Provider<OpenAIService>((ref) {
       appConfig.openAIUrl != null && appConfig.openAIUrl!.isNotEmpty;
 
   return OpenAIService(
-    baseUrl: independent ? appConfig.openAIUrl! : appConfig.bookBaseUrl,
-    token: independent ? appConfig.openAIApiKey : appConfig.bookToken,
+    baseUrl: independent ? appConfig.openAIUrl! : appConfig.baseUrl,
+    token: independent ? appConfig.openAIApiKey : appConfig.token,
   );
 });
 

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/components/root_layout.dart';
 import 'package:omnigram/providers/user/user_model.dart';
+import 'package:omnigram/screens/discover/discover_small_screen.dart';
+import 'package:omnigram/screens/manager/manger_small_screen.dart';
 
 import 'package:omnigram/screens/reader/models/book_model.dart';
 import 'package:omnigram/screens/chat/chat_page_screen.dart';
@@ -27,6 +29,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     // initialLocation: '$kChatPath/$kChatPagePath',
     routes: [
       GoRoute(
+        path: kLoginPath,
+        name: kLoginPage,
+        builder: (context, state) {
+          return const LoginScreen();
+        },
+      ),
+      GoRoute(
         path: kHomePath,
         name: kHomePage,
         pageBuilder: (context, state) => const MaterialPage(
@@ -34,7 +43,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           child: RootLayout(
             // key: _scaffoldKey,
             currentIndex: 0,
-            child: ReaderSmallScreen(),
+            child: HomeSmallScreen(),
           ),
         ),
       ),
@@ -70,13 +79,25 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         ],
       ),
       GoRoute(
+        path: kDiscoverPath,
+        name: kDiscoverPage,
+        pageBuilder: (context, state) => const MaterialPage(
+          // key: _pageKey,
+          child: RootLayout(
+            // key: _scaffoldKey,
+            currentIndex: 1,
+            child: DiscoverSmallScreen(),
+          ),
+        ),
+      ),
+      GoRoute(
         path: kChatPath,
         name: kChatPage,
         pageBuilder: (context, state) => const MaterialPage(
           // key: _pageKey,
           child: RootLayout(
             // key: _scaffoldKey,
-            currentIndex: 1,
+            currentIndex: 2,
             child: ChatHomeScreen(),
           ),
         ),
@@ -97,20 +118,20 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         ],
       ),
       GoRoute(
-        path: kMusicPath,
-        name: kMusicPage,
+        path: kManagerPath,
+        name: kManagerPage,
         pageBuilder: (context, state) => const MaterialPage(
           // key: _pageKey,
           child: RootLayout(
             // key: _scaffoldKey,
-            currentIndex: 2,
-            child: PhotoPageBody(),
+            currentIndex: 3,
+            child: ManagerSmallScreen(),
           ),
         ),
       ),
       GoRoute(
-        path: kPhotoPath,
-        name: kPhotoPage,
+        path: kProfilePath,
+        name: kProfilePage,
         pageBuilder: (context, state) => const MaterialPage(
           // key: _pageKey,
           child: RootLayout(
@@ -119,13 +140,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             child: PhotoPageBody(),
           ),
         ),
-      ),
-      GoRoute(
-        path: kLoginPath,
-        name: kLoginPage,
-        builder: (context, state) {
-          return const LoginScreen();
-        },
       ),
     ],
     redirect: (context, state) {

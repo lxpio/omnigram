@@ -15,7 +15,7 @@ import "flavors/build_config.dart";
 import "flavors/color_schemes.g.dart";
 
 Future setDesktopWindow() async {
-  await DesktopWindow.setMinWindowSize(const Size(400, 400));
+  await DesktopWindow.setMinWindowSize(const Size(600, 400));
   await DesktopWindow.setWindowSize(const Size(1300, 900));
 }
 
@@ -57,7 +57,8 @@ class OmniApp extends HookConsumerWidget {
       darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
       routerConfig: router,
       // themeMode: AppManager.to.themeMode,
-      // locale: const Locale('zh'),
+      locale:
+          Platform.localeName == 'zh' ? const Locale('zh') : const Locale('en'),
 
       localizationsDelegates: const [
         AppLocalizations.delegate, // Add this line

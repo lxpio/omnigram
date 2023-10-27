@@ -13,7 +13,10 @@ all : omnigram
 
 
 
+
 objectbox:
+	@echo "objectbox build"
+	@flutter clean
 	@dart run build_runner build
 omnigram: objectbox
 	# @flutter pub get

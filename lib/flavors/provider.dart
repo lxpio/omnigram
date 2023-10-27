@@ -8,7 +8,7 @@ import 'app_config.dart';
 import 'app_store.dart';
 
 final themeModeProvider = Provider<ThemeMode>((ref) {
-  return ThemeMode.light;
+  return ThemeMode.system;
 });
 
 final appConfigProvider =
@@ -33,15 +33,22 @@ class AppConfigProvider extends Notifier<AppConfig> {
 
     return const AppConfig(
       appName: 'Omnigram',
-      bookBaseUrl: '',
-      bookToken: '',
+      baseUrl: '',
+      token: '',
+      chatEnabled: true,
+      m4tEnabled: true,
       openAIUrl: '',
       shouldCollectCrashLog: false,
     );
   }
 
   Future<void> updateSever(String apiserver, String apikey) async {
-    final updated = state.copyWith(bookBaseUrl: apiserver, bookToken: apikey);
+    final updated = state.copyWith(baseUrl: apiserver, token: apikey);
+
+    if (kDebugMode) {
+      print(
+          "app config updated baseUrl: ${updated.baseUrl} token ${updated.token}");
+    }
 
     await AppStore.instance.hive().put('config', json.encode(updated.toJson()));
 
