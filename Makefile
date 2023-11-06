@@ -27,3 +27,7 @@ omnigram: objectbox
 release:
 	@echo "release build"
 	@flutter build appbundle 
+
+
+apk:
+	@flutter build apk --split-per-abi

@@ -1,35 +1,30 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/flavors/provider.dart';
-import 'package:omnigram/providers/service/api_service.dart';
-import 'package:omnigram/providers/service/provider.dart';
+
 import 'package:omnigram/providers/user/oauth_model.dart';
 import 'package:omnigram/providers/user/user_model.dart';
-import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/l10n.dart';
 import 'package:omnigram/utils/show_snackbar.dart';
 import 'package:rive/rive.dart';
 
-class LoginScreen extends StatefulHookConsumerWidget {
+class LoginScreen extends HookConsumerWidget {
+  // const LoginScreen({super.key});
   const LoginScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends ConsumerState<LoginScreen> {
-  late TextEditingController serverController;
-  TextEditingController accountController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  // final _serverFormKey = GlobalKey<FormState>();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final serverAddr = ref.watch(appConfigProvider).baseUrl;
-    serverController =
-        TextEditingController(text: serverAddr.isEmpty ? null : serverAddr);
+
+    final serverController =
+        useTextEditingController(text: serverAddr.isEmpty ? null : serverAddr);
+
+    final accountController = useTextEditingController();
+    final passwordController = useTextEditingController();
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -144,7 +139,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     accountController.text,
                     passwordController.text,
                   ).then((value) {
-                    _savedata(value, serverController.text);
+                    _savedata(ref, value, serverController.text);
                   }).onError((error, stackTrace) {
                     if (error is DioException) {
                       showSnackBar(context, context.l10n.network_error);
@@ -170,19 +165,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  Future<void> _savedata(OauthModel oauth, String baseUrl) async {
+  Future<void> _savedata(
+      WidgetRef ref, OauthModel oauth, String baseUrl) async {
     await ref
         .read(appConfigProvider.notifier)
         .updateSever(baseUrl, oauth.accessToken);
 
-    // //see https://github.com/rrousselGit/riverpod/issues/815
-    // ref.read(appConfigProvider);
-    //get user info
     await ref.read(userProvider.notifier).update();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

@@ -104,16 +104,36 @@ class BookAPI {
   }
 
   Future<ApiResponse> updateProcess(
-      int id, double process, String? chapterPos) async {
+      int id, double progress, String? chapterPos) async {
     final bookApi = ref.read(apiServiceProvider);
     return await bookApi.request(
       "PUT",
       "/book/read/books/$id",
       body: {
-        "process": process,
+        "progress": progress,
         "chapter_pos": chapterPos,
       },
       // onDownloadProgress: onDownloadProgress,
     );
+  }
+
+  Future<Map<String, dynamic>?> getReadProcess(int id) async {
+    final bookApi = ref.read(apiServiceProvider);
+
+    try {
+      final resp = await bookApi.request(
+        "GET",
+        "/book/read/books/$id",
+      );
+
+      if (resp.code == 200) {
+        return resp.data as Map<String, dynamic>;
+      }
+    } catch (e) {
+      //TODO
+      print(e);
+    }
+
+    return null;
   }
 }

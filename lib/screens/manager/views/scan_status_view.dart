@@ -5,22 +5,17 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../providers/scan_status.dart';
 
-class ScanStatusView extends StatefulHookConsumerWidget {
-  const ScanStatusView({super.key});
+class ScanStatusView extends HookConsumerWidget {
+  const ScanStatusView({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ScanStatusViewState();
-}
-
-class _ScanStatusViewState extends ConsumerState<ScanStatusView> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final scan = ref.watch(scanStatusProvider);
 
     return scan.when(
       data: (status) {
         if (status.running) {
-          startTicker();
+          // startTicker();
         }
 
         return Container(
@@ -87,9 +82,9 @@ class _ScanStatusViewState extends ConsumerState<ScanStatusView> {
     );
   }
 
-  void startTicker() {
-    final timer = Timer(const Duration(seconds: 2), () {
-      ref.read(scanStatusProvider.notifier).refresh();
-    });
-  }
+  // void startTicker() {
+  //   final timer = Timer(const Duration(seconds: 2), () {
+  //     ref.read(scanStatusProvider.notifier).refresh();
+  //   });
+  // }
 }

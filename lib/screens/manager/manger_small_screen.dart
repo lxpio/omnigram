@@ -4,20 +4,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:omnigram/utils/l10n.dart';
 
-import 'providers/scan_status.dart';
 import 'views/scan_status_view.dart';
 
-class ManagerSmallScreen extends StatefulHookConsumerWidget {
+class ManagerSmallScreen extends HookConsumerWidget {
   const ManagerSmallScreen({Key? key}) : super(key: key);
-
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _ManagerSmallScreenState();
-}
-
-class _ManagerSmallScreenState extends ConsumerState<ManagerSmallScreen> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // final scan = ref.watch(scanAPIProvider);
 
     // scan.stats().
