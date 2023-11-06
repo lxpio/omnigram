@@ -322,22 +322,14 @@ packages:
     source: hosted
     version: "5.3.3"
   epubx:
-    dependency: transitive
+    dependency: "direct main"
     description:
       path: "."
-      ref: "0a787de"
-      resolved-ref: "0a787de96b0efe1e01a7026f5781434b5403187f"
+      ref: "32559dc324b"
+      resolved-ref: "32559dc324be35ae96e599059a31478be7e8904a"
       url: "https://github.com/nexptr/epubx.dart.git"
     source: git
     version: "4.0.1"
-  equatable:
-    dependency: transitive
-    description:
-      name: equatable
-      sha256: c2b87cb7756efdf69892005af546c56c0b5037f54d2a88269b4f347a505e3ca2
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.0.5"
   fake_async:
     dependency: transitive
     description:
@@ -407,15 +399,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.5"
-  flutter_epub:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: "347602228"
-      resolved-ref: "347602228d5b830b1eb70f14f99a8b199bb8ed3f"
-      url: "https://github.com/nexptr/flutter_epub.git"
-    source: git
-    version: "1.0.0"
   flutter_highlight:
     dependency: "direct main"
     description:
@@ -441,7 +424,7 @@ packages:
     source: hosted
     version: "0.20.3"
   flutter_html:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_html
       sha256: "02ad69e813ecfc0728a455e4bf892b9379983e050722b1dce00192ee2e41d1ee"
@@ -1016,7 +999,7 @@ packages:
     source: hosted
     version: "0.27.7"
   scrollable_positioned_list:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: scrollable_positioned_list
       sha256: "1b54d5f1329a1e263269abc9e2543d90806131aa14fe7c6062a8054d57249287"
@@ -1236,14 +1219,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.3.2"
-  universal_file:
-    dependency: transitive
-    description:
-      name: universal_file
-      sha256: d1a957fccaad2a32023b62fe435b273ee47aaf2eb804709795e4bf4afff50960
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.0.0"
   universal_io:
     dependency: transitive
     description:

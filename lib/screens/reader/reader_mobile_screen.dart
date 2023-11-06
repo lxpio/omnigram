@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -5,22 +7,23 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/flavors/app_config.dart';
 import 'package:omnigram/flavors/provider.dart';
 import 'package:omnigram/screens/reader/models/book_local.dart';
-import 'package:omnigram/screens/reader/models/book_model.dart';
 import 'package:omnigram/screens/reader/providers/books.dart';
+import 'package:omnigram/screens/reader/providers/select_book.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/l10n.dart';
+import 'package:omnigram/utils/show_snackbar.dart';
 
 class ReaderMobileScreen extends HookConsumerWidget {
-  const ReaderMobileScreen({required this.book, super.key}) : super();
-
-  final Book book;
+  const ReaderMobileScreen({super.key}) : super();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final book = ref.watch(selectBookProvider);
+
     final appConfig = ref.read(appConfigProvider);
 
     final localBook = BookLocalBox.instance.get(book.id);
-
+    print('build ReaderMobileScreen cfi: ${book.id}');
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -156,23 +159,34 @@ class ReaderMobileScreen extends HookConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   FilledButton.tonal(
-                    onPressed: () {
-                      //download book if needed
-                      if (localBook?.localPath.isEmpty ?? true) {
-                        //wait download
-                        downloadBook(ref).then((value) {
-                          book.path = value;
-                          context.push('${kReaderPath}/${kReaderDetailPath}',
-                              extra: book);
-                        });
-                      } else {
-                        book.path = localBook!.localPath!;
+                    onPressed: () async {
+                      late String filePath;
 
-                        context.push('${kReaderPath}/${kReaderDetailPath}',
-                            extra: book);
+                      bool needDownload =
+                          (localBook?.localPath.isEmpty ?? true);
+
+                      if (!needDownload) {
+                        filePath = localBook!.localPath;
+                        needDownload = !(await File(filePath).exists());
                       }
 
-                      // onPress();
+                      //download book if needed
+                      if (needDownload) {
+                        final api = ref.read(bookAPIProvider);
+                        //wait download
+                        final path = await downloadBook(api, book.id);
+                        filePath = path;
+                      }
+
+                      if (!context.mounted) return;
+                      await context.pushNamed(kReaderDetailPage, extra: {
+                        'bookFile': filePath,
+                        'cfi': book.chapterPos
+                      });
+                      return;
+                      //handle error
+                      // if (!context.mounted) return;
+                      // showSnackBar(context, "book file not exist!");
                     },
                     child: Text(
                       context.l10n.book_start_reading,
@@ -195,23 +209,20 @@ class ReaderMobileScreen extends HookConsumerWidget {
         ));
   }
 
-  Future<String> downloadBook(WidgetRef ref) async {
-    final api = ref.read(bookAPIProvider);
-
+  Future<String> downloadBook(BookAPI api, int id) async {
     late String bookPath;
 
     try {
-      bookPath = await api.downloadBook(book.id, (int count, int total) {
+      bookPath = await api.downloadBook(id, (int count, int total) {
         print('download book: $count/$total');
 
         // ref.read(bookDownloadProgressProvider).value = count / total;
       });
 
-      BookLocalBox.instance.create(book.id, bookPath);
+      BookLocalBox.instance.create(id, bookPath);
     } catch (e) {
       print('download book: $e');
     }
-    ;
 
     return bookPath;
   }

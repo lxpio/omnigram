@@ -39,15 +39,19 @@ dependencies:
   adaptive_components: ^0.0.9
   flutter_adaptive_scaffold: ^0.1.7+1
   flutter_highlighter: ^0.1.1
-
+  epubx:
+    git: 
+      url: https://github.com/nexptr/epubx.dart.git
+      ref: 32559dc324b
+  # epubx:
+  #   path: ../epubx.dart
   rive: 0.11.11
-  flutter_epub:
-    git:
-      url: https://github.com/nexptr/flutter_epub.git
-      ref: "347602228"
+
   flutter_slidable: ^3.0.0
   transparent_image: ^2.0.1
   flutter_hooks: ^0.20.3
+  scrollable_positioned_list: ^0.3.8
+  flutter_html: ^3.0.0-beta.2
 
 dev_dependencies:
   flutter_lints: ^2.0.0

@@ -72,7 +72,9 @@ class Book {
 
   // String get image => "assets/images/logo-green.png";
 
-  get image => "/book/covers/$identifier$coverUrl";
+  String get image => (coverUrl?.isNotEmpty ?? false)
+      ? "/book/covers/$identifier$coverUrl"
+      : "";
 
   factory Book.fromJson(Map<String, dynamic> json) => Book(
         id: json['id'] as int,

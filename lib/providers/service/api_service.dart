@@ -189,7 +189,7 @@ class ApiResponse<T> {
       message: json['message'],
       data: json['data'] != null && fromJsonT != null
           ? fromJsonT(json['data'])
-          : null,
+          : json['data'],
     );
   }
 }

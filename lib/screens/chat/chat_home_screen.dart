@@ -5,20 +5,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/screens/chat/views/conversation_list_view.dart';
 import 'package:omnigram/utils/constants.dart';
 
-class ChatHomeScreen extends StatefulHookConsumerWidget {
+class ChatHomeScreen extends HookConsumerWidget {
   const ChatHomeScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ChatHomeScreenState();
-}
-
-class _ChatHomeScreenState extends ConsumerState<ChatHomeScreen> {
-  late final colorScheme = Theme.of(context).colorScheme;
-  late final backgroundColor = Color.alphaBlend(
-      colorScheme.primary.withOpacity(0.14), colorScheme.surface);
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -59,8 +50,8 @@ class _ChatHomeScreenState extends ConsumerState<ChatHomeScreen> {
       ),
       body: const ConversationListView(),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: colorScheme.tertiaryContainer,
-        foregroundColor: colorScheme.onTertiaryContainer,
+        backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
+        foregroundColor: Theme.of(context).colorScheme.onTertiaryContainer,
         onPressed: () {
           // context.push('$kReaderPage/$kReaderDetailPage');
           context.pushNamed(

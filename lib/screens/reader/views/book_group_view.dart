@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/screens/reader/models/book_model.dart';
+import 'package:omnigram/screens/reader/providers/select_book.dart';
 import 'package:omnigram/utils/constants.dart';
 
 import 'book_card_v2_view.dart';
@@ -49,18 +50,22 @@ class BookGroup extends HookConsumerWidget {
                 final book = books![index];
 
                 return GestureDetector(
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    width: 180,
-                    child: BookCardV2(
-                      book: book!,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
                       width: 180,
-                      height: 230,
+                      child: BookCardV2(
+                        book: book!,
+                        width: 180,
+                        height: 230,
+                      ),
                     ),
-                  ),
-                  onTap: () => context.push(kReaderPath, extra: book),
-                  //'/reader/books/${book.id}'
-                );
+                    onTap: () async {
+                      await ref.read(selectBookProvider.notifier).update(book);
+                      if (!context.mounted) return;
+                      context.pushNamed(kReaderPage, extra: book);
+                    }
+                    //'/reader/books/${book.id}'
+                    );
 
                 return AspectRatio(
                   aspectRatio: 2.1 / 3,

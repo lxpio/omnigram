@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/components/root_layout.dart';
@@ -5,12 +7,11 @@ import 'package:omnigram/providers/user/user_model.dart';
 import 'package:omnigram/screens/discover/discover_small_screen.dart';
 import 'package:omnigram/screens/manager/manger_small_screen.dart';
 
-import 'package:omnigram/screens/reader/models/book_model.dart';
 import 'package:omnigram/screens/chat/chat_page_screen.dart';
 import 'package:omnigram/screens/chat/models/conversation.dart';
 
 import 'package:omnigram/screens/photo.dart';
-import 'package:omnigram/screens/reader/reader_content_screen.dart';
+import 'package:omnigram/screens/reader/read_epub_screen.dart';
 import 'package:omnigram/screens/reader/reader_mobile_screen.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:go_router/go_router.dart';
@@ -51,13 +52,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: kReaderPath,
         name: kReaderPage,
         pageBuilder: (context, state) {
-          final Book book = state.extra as Book;
-
+          // final Book book = state.extra as Book;
           return MaterialPage(
             // key: _pageKey,
             child: ReaderMobileScreen(
-              book: book,
-            ),
+                // book: book,
+                ),
           );
         },
         routes: [
@@ -66,13 +66,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               name: kReaderDetailPage,
               pageBuilder: (context, GoRouterState state) {
                 // final bookPath = state.extra as String;
-                final Book book = state.extra as Book;
-                // ? state.extra as Conversation
-                // : Conversation();
+                final args = state.extra as Map<String, String?>;
 
                 return MaterialPage(
-                  child: ReaderContentScreen(
-                    book: book,
+                  child: ReadEpubScreen(
+                    bookFile: args['bookFile']!,
+                    cfi: args['cfi'],
                   ),
                 );
               }),

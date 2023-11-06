@@ -57,8 +57,8 @@ class OmniApp extends HookConsumerWidget {
       darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
       routerConfig: router,
       // themeMode: AppManager.to.themeMode,
-      locale:
-          Platform.localeName == 'zh' ? const Locale('zh') : const Locale('en'),
+      // locale:
+      //     Platform.localeName == 'zh' ? const Locale('zh') : const Locale('en'),
 
       localizationsDelegates: const [
         AppLocalizations.delegate, // Add this line

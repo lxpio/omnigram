@@ -44,20 +44,24 @@ class BookCardV2 extends HookConsumerWidget {
                   ),
                   height: height * .7,
                   width: width * 1,
-                  child: FadeInImage(
-                    placeholder: MemoryImage(kTransparentImage),
-                    image: NetworkImage(
-                      appConfig.baseUrl + book.image,
-                      headers: {"Authorization": "Bearer ${appConfig.token}"},
-                    ),
-                    fit: BoxFit.fill,
-                    imageErrorBuilder: (context, error, stackTrace) {
-                      if (kDebugMode) {
-                        print('get image failed: $error');
-                      }
-                      return const Icon(Icons.error);
-                    },
-                  ),
+                  child: book.image.isNotEmpty
+                      ? FadeInImage(
+                          placeholder: MemoryImage(kTransparentImage),
+                          image: NetworkImage(
+                            appConfig.baseUrl + book.image,
+                            headers: {
+                              "Authorization": "Bearer ${appConfig.token}"
+                            },
+                          ),
+                          fit: BoxFit.fill,
+                          imageErrorBuilder: (context, error, stackTrace) {
+                            if (kDebugMode) {
+                              print('get image failed: $error');
+                            }
+                            return const Icon(Icons.error);
+                          },
+                        )
+                      : Text(book.title),
                 ),
                 Container(
                   decoration: BoxDecoration(
