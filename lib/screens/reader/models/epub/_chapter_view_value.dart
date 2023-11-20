@@ -1,4 +1,4 @@
-import 'chapter_view_value.dart';
+import '_chapter_view_value.dart';
 
 export 'package:epubx/epubx.dart' hide Image;
 

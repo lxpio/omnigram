@@ -66,13 +66,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               name: kReaderDetailPage,
               pageBuilder: (context, GoRouterState state) {
                 // final bookPath = state.extra as String;
-                final args = state.extra as Map<String, String?>;
+                // final args = state.extra as Map<String, String?>;
 
-                return MaterialPage(
-                  child: ReadEpubScreen(
-                    bookFile: args['bookFile']!,
-                    cfi: args['cfi'],
-                  ),
+                return const MaterialPage(
+                  child: ReadEpubScreen(),
                 );
               }),
         ],

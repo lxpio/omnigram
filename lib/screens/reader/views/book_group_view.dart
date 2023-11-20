@@ -5,7 +5,6 @@ import 'package:omnigram/screens/reader/models/book_model.dart';
 import 'package:omnigram/screens/reader/providers/select_book.dart';
 import 'package:omnigram/utils/constants.dart';
 
-import 'book_card_v2_view.dart';
 import 'book_card_view.dart';
 
 class BookGroup extends HookConsumerWidget {
@@ -13,7 +12,7 @@ class BookGroup extends HookConsumerWidget {
 
   final String title;
   final String viewmore;
-  final List<Book>? books;
+  final List<BookModel>? books;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,33 +52,33 @@ class BookGroup extends HookConsumerWidget {
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       width: 180,
-                      child: BookCardV2(
-                        book: book!,
+                      child: BookCard(
+                        book: book,
                         width: 180,
                         height: 230,
                       ),
                     ),
                     onTap: () async {
-                      await ref.read(selectBookProvider.notifier).update(book);
+                      await ref.read(selectBookProvider.notifier).refresh(book);
                       if (!context.mounted) return;
                       context.pushNamed(kReaderPage, extra: book);
                     }
                     //'/reader/books/${book.id}'
                     );
 
-                return AspectRatio(
-                  aspectRatio: 2.1 / 3,
-                  child: GestureDetector(
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      child: BookCard(
-                        book: book!,
-                      ),
-                    ),
-                    onTap: () => context.push(kReaderPath, extra: book),
-                    //'/reader/books/${book.id}'
-                  ),
-                );
+                // return AspectRatio(
+                //   aspectRatio: 2.1 / 3,
+                //   child: GestureDetector(
+                //     child: Container(
+                //       padding: const EdgeInsets.all(8),
+                //       child: BookCard(
+                //         book: book!,
+                //       ),
+                //     ),
+                //     onTap: () => context.push(kReaderPath, extra: book),
+                //     //'/reader/books/${book.id}'
+                //   ),
+                // );
               } else {
                 return const Text("No data available");
               }
