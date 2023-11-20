@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/flavors/app_config.dart';
 import 'package:omnigram/flavors/provider.dart';
 import 'package:omnigram/screens/reader/models/book_local.dart';
+
 import 'package:omnigram/screens/reader/providers/books.dart';
 import 'package:omnigram/screens/reader/providers/select_book.dart';
 import 'package:omnigram/utils/constants.dart';
@@ -18,7 +18,8 @@ class ReaderMobileScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final book = ref.watch(selectBookProvider);
+    final book =
+        ref.watch(selectBookProvider.select((selected) => selected.book))!;
 
     final appConfig = ref.read(appConfigProvider);
 
@@ -93,11 +94,7 @@ class ReaderMobileScreen extends HookConsumerWidget {
                   Container(
                     child: Row(
                       children: [
-                        const Icon(
-                          Icons.star,
-                          color: Colors.yellow,
-                          size: 20,
-                        ),
+                        const Icon(Icons.star, color: Colors.yellow, size: 20),
                         const SizedBox(width: 5),
                         Text(
                           '4.5',
@@ -110,11 +107,8 @@ class ReaderMobileScreen extends HookConsumerWidget {
                   Container(
                     child: Row(
                       children: [
-                        Icon(
-                          Icons.access_time,
-                          color: Colors.grey.shade600,
-                          size: 20,
-                        ),
+                        Icon(Icons.access_time,
+                            color: Colors.grey.shade600, size: 20),
                         const SizedBox(width: 5),
                         Text(
                           '2h',
@@ -128,11 +122,8 @@ class ReaderMobileScreen extends HookConsumerWidget {
                     width: MediaQuery.of(context).size.width * 0.2,
                     child: Row(
                       children: [
-                        Icon(
-                          Icons.play_circle_filled,
-                          color: Colors.grey.shade600,
-                          size: 20,
-                        ),
+                        Icon(Icons.play_circle_filled,
+                            color: Colors.grey.shade600, size: 20),
                         const SizedBox(width: 5),
                         Text(
                           'Watch',
@@ -160,39 +151,26 @@ class ReaderMobileScreen extends HookConsumerWidget {
                 children: [
                   FilledButton.tonal(
                     onPressed: () async {
-                      late String filePath;
-
-                      bool needDownload =
-                          (localBook?.localPath.isEmpty ?? true);
-
-                      if (!needDownload) {
-                        filePath = localBook!.localPath;
-                        needDownload = !(await File(filePath).exists());
+                      final filePath =
+                          await getOrDownloadBook(ref, localBook, book.id);
+                      if (!context.mounted) return;
+                      if (filePath.isEmpty) {
+                        showSnackBar(context, "book file not exist!");
                       }
-
-                      //download book if needed
-                      if (needDownload) {
-                        final api = ref.read(bookAPIProvider);
-                        //wait download
-                        final path = await downloadBook(api, book.id);
-                        filePath = path;
-                      }
+                      //这里需要更新book path,当前selectBookProvider设计是如果path不为空才
+                      //加载文件；
+                      ref
+                          .read(selectBookProvider.notifier)
+                          .updatePath(filePath);
 
                       if (!context.mounted) return;
-                      await context.pushNamed(kReaderDetailPage, extra: {
-                        'bookFile': filePath,
-                        'cfi': book.chapterPos
-                      });
-                      return;
+                      context.pushNamed(kReaderDetailPage);
+                      // return;
                       //handle error
                       // if (!context.mounted) return;
                       // showSnackBar(context, "book file not exist!");
                     },
-                    child: Text(
-                      context.l10n.book_start_reading,
-                      // style:
-                      //     TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
-                    ),
+                    child: Text(context.l10n.book_start_reading),
                   ),
                   FilledButton.tonal(
                     child: Text(
@@ -209,22 +187,32 @@ class ReaderMobileScreen extends HookConsumerWidget {
         ));
   }
 
-  Future<String> downloadBook(BookAPI api, int id) async {
-    late String bookPath;
+  Future<String> getOrDownloadBook(
+      WidgetRef ref, BookLocal? localBook, int id) async {
+    // Check if the book file already exists and is valid
+    final localFilePath = localBook?.localPath;
+    if (localFilePath != null && await File(localFilePath).exists()) {
+      return localFilePath;
+    }
 
+    // If the file doesn't exist, attempt to download it
     try {
-      bookPath = await api.downloadBook(id, (int count, int total) {
+      final api = ref.read(bookAPIProvider);
+
+      final bookPath = await api.downloadBook(id, (int count, int total) {
         print('download book: $count/$total');
 
         // ref.read(bookDownloadProgressProvider).value = count / total;
       });
 
       BookLocalBox.instance.create(id, bookPath);
-    } catch (e) {
-      print('download book: $e');
-    }
 
-    return bookPath;
+      return bookPath;
+    } catch (e) {
+      // Handle any errors that occur during the download
+      print('Error downloading book: $e');
+      return '';
+    }
   }
 }
 

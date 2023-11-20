@@ -1,7 +1,7 @@
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
-import 'chapter_view_value.dart';
-import 'paragraph.dart';
+import '_chapter_view_value.dart';
+import '_paragraph.dart';
 
 export 'package:epubx/epubx.dart' hide Image;
 
@@ -42,6 +42,11 @@ ParseParagraphsResult parseParagraphs(
   final paragraphs = chapters.fold<List<Paragraph>>(
     [],
     (acc, next) {
+      if (next.ContentFileName == 'text00008.html' ||
+          next.ContentFileName == 'text00054.html') {
+        print('next.ContentFileName: ${next.ContentFileName}');
+      }
+
       List<dom.Element> elmList = [];
       if (filename != next.ContentFileName) {
         filename = next.ContentFileName;

@@ -8,13 +8,13 @@ part of 'books.dart';
 
 _$_BookNav _$$_BookNavFromJson(Map<String, dynamic> json) => _$_BookNav(
       recent: (json['recent'] as List<dynamic>?)
-          ?.map((e) => Book.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => BookModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       random: (json['random'] as List<dynamic>?)
-          ?.map((e) => Book.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => BookModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       reading: (json['reading'] as List<dynamic>?)
-          ?.map((e) => Book.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => BookModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

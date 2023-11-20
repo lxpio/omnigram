@@ -1,31 +1,36 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:omnigram/screens/reader/models/epub_document.dart';
-import 'package:omnigram/screens/reader/models/epub/models/chapter_view_value.dart';
 
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+
+import '../models/epub/_chapter_view_value.dart';
 
 const _minTrailingEdge = 0.55;
 const _minLeadingEdge = -0.05;
 
 class BookController {
   BookController({
+    // required this.ref,
     required this.document,
   });
-
+  // final Ref ref;
   final EpubDocument document;
+
+  late Function(ChapterIndex? index) updater;
 
   late ItemScrollController? itemScrollController;
   late ItemPositionsListener itemPositionListener;
+  // late ScrollOffsetController scrollOffsetController;
+  // final ValueNotifier<ChapterIndex?> index = ValueNotifier(null);
 
-  final ValueNotifier<ChapterIndex?> index = ValueNotifier(null);
-
-  void initialize() {
+  void initialize(Function(ChapterIndex? index) hook) {
     itemScrollController = ItemScrollController();
 
     itemPositionListener = ItemPositionsListener.create();
-
+    // scrollOffsetController = ScrollOffsetController();
+    updater = hook;
     itemPositionListener.itemPositions.addListener(_listener);
-    index.value = cfiParse(document.epubCfi);
   }
 
   void dispose() {
@@ -49,90 +54,62 @@ class BookController {
 
     final paragraphIndex = _getParagraphIndex(chapterIndex, posIndex);
 
-    if (index.value != null) {
-      if (index.value!.chapterIndex != chapterIndex ||
-          index.value!.paragraphIndex != paragraphIndex) {
-        index.value = ChapterIndex(
-          chapter: chapterIndex >= 0 ? document.chapters[chapterIndex] : null,
-          // 这里是相对路径
-          chapterIndex: chapterIndex,
-          paragraphIndex: paragraphIndex,
-        );
-      }
+    final current = ChapterIndex(
+      chapter: chapterIndex >= 0 ? document.chapters[chapterIndex] : null,
+      // 这里是相对路径
+      chapterIndex: chapterIndex,
+      paragraphIndex: paragraphIndex,
+    );
+    updater(current);
+  }
+
+  void scrollToChapter(int chapterIndex) {
+    if (document.chapters.length > chapterIndex && chapterIndex >= 0) {
+      final dest = document.chapterIndexes[chapterIndex];
+
+      itemScrollController?.scrollTo(
+        index: dest,
+        duration: const Duration(milliseconds: 300),
+        alignment: 0,
+        curve: Curves.decelerate,
+      );
     }
   }
 
-  String? cfiGenerate() {
-    final chapter = index.value?.chapter;
-    final paragraphIndex = index.value?.paragraphIndex;
-    if (chapter == null || paragraphIndex == null) {
-      return null;
-    }
+  void scrollToPreviousChapter() {
+    final position = itemPositionListener.itemPositions.value.first;
 
-    return chapter.Anchor == null
-        ? '/${chapter.ContentFileName}?$paragraphIndex'
-        : '/${chapter.ContentFileName}#${chapter.Anchor}?$paragraphIndex';
+    final posIndex = _getAbsParagraphIndexBy(
+      positionIndex: position.index,
+      trailingEdge: position.itemTrailingEdge,
+      leadingEdge: position.itemLeadingEdge,
+    );
+
+    final chapterIndex = _getChapterIndex(posIndex);
+
+    scrollToChapter(chapterIndex - 1);
   }
 
-  ChapterIndex? cfiParse(String? cfi) {
-    if (cfi == null || !cfi.startsWith('/')) {
-      // 处理无效的 CFI 字符串
-      return null;
-    }
+  void scrollToNextChapter() {
+    final position = itemPositionListener.itemPositions.value.first;
 
-    List<String> parts = cfi.split('?');
+    final posIndex = _getAbsParagraphIndexBy(
+      positionIndex: position.index,
+      trailingEdge: position.itemTrailingEdge,
+      leadingEdge: position.itemLeadingEdge,
+    );
 
-    int paragraphIndex = 0;
+    final chapterIndex = _getChapterIndex(posIndex);
 
-    if (parts.length == 2) {
-      // 解析段落索引
-      paragraphIndex = int.tryParse(parts[1]) ?? 0;
-    }
-
-    List<String> cparts = parts[0].split('#');
-    // 处理带锚点的情况
-    final anchor = (cparts.length == 2) ? cparts[1] : null;
-
-    final chapterIndex = document.chapters.indexWhere((chapter) =>
-        chapter.ContentFileName == cparts[0].substring(1) &&
-        chapter.Anchor == anchor);
-
-    return chapterIndex == -1
-        ? ChapterIndex(
-            chapter: null,
-            chapterIndex: 0,
-            paragraphIndex: paragraphIndex,
-          )
-        : ChapterIndex(
-            chapter: document.chapters[chapterIndex],
-            chapterIndex: chapterIndex,
-            paragraphIndex: paragraphIndex,
-          );
+    scrollToChapter(chapterIndex + 1);
   }
 
-  int? get currentParagraphIndex {
-    final last = cfiParse(document.epubCfi);
-
-    return absParagraphIndex(last);
-  }
-
-  int? absParagraphIndex(ChapterIndex? current) {
-    return current != null
-        ? document.chapterIndexes[current.chapterIndex] + current.paragraphIndex
-        : null;
-  }
-
-  double get progress {
-    final pos = absParagraphIndex(index.value);
-
-    if (pos == null) {
-      return 0;
-    }
-    if (kDebugMode) {
-      print('currentParagraphIndex $pos / ${document.paragraphs.length} ');
-    }
-    return pos * 100.0 / document.paragraphs.length;
-  }
+  // void scrollTo(
+  //   String? epubCfi, {
+  //   double alignment = 0,
+  //   Duration duration = const Duration(milliseconds: 250),
+  //   Curve curve = Curves.linear,
+  // }
 
   int get paraLength {
     return document.paragraphs.length;

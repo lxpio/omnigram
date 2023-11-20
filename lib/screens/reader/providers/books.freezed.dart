@@ -20,9 +20,9 @@ BookNav _$BookNavFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$BookNav {
-  List<Book>? get recent => throw _privateConstructorUsedError;
-  List<Book>? get random => throw _privateConstructorUsedError;
-  List<Book>? get reading => throw _privateConstructorUsedError;
+  List<BookModel>? get recent => throw _privateConstructorUsedError;
+  List<BookModel>? get random => throw _privateConstructorUsedError;
+  List<BookModel>? get reading => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -34,7 +34,10 @@ abstract class $BookNavCopyWith<$Res> {
   factory $BookNavCopyWith(BookNav value, $Res Function(BookNav) then) =
       _$BookNavCopyWithImpl<$Res, BookNav>;
   @useResult
-  $Res call({List<Book>? recent, List<Book>? random, List<Book>? reading});
+  $Res call(
+      {List<BookModel>? recent,
+      List<BookModel>? random,
+      List<BookModel>? reading});
 }
 
 /// @nodoc
@@ -58,15 +61,15 @@ class _$BookNavCopyWithImpl<$Res, $Val extends BookNav>
       recent: freezed == recent
           ? _value.recent
           : recent // ignore: cast_nullable_to_non_nullable
-              as List<Book>?,
+              as List<BookModel>?,
       random: freezed == random
           ? _value.random
           : random // ignore: cast_nullable_to_non_nullable
-              as List<Book>?,
+              as List<BookModel>?,
       reading: freezed == reading
           ? _value.reading
           : reading // ignore: cast_nullable_to_non_nullable
-              as List<Book>?,
+              as List<BookModel>?,
     ) as $Val);
   }
 }
@@ -78,7 +81,10 @@ abstract class _$$_BookNavCopyWith<$Res> implements $BookNavCopyWith<$Res> {
       __$$_BookNavCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<Book>? recent, List<Book>? random, List<Book>? reading});
+  $Res call(
+      {List<BookModel>? recent,
+      List<BookModel>? random,
+      List<BookModel>? reading});
 }
 
 /// @nodoc
@@ -99,15 +105,15 @@ class __$$_BookNavCopyWithImpl<$Res>
       recent: freezed == recent
           ? _value._recent
           : recent // ignore: cast_nullable_to_non_nullable
-              as List<Book>?,
+              as List<BookModel>?,
       random: freezed == random
           ? _value._random
           : random // ignore: cast_nullable_to_non_nullable
-              as List<Book>?,
+              as List<BookModel>?,
       reading: freezed == reading
           ? _value._reading
           : reading // ignore: cast_nullable_to_non_nullable
-              as List<Book>?,
+              as List<BookModel>?,
     ));
   }
 }
@@ -116,9 +122,9 @@ class __$$_BookNavCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_BookNav implements _BookNav {
   const _$_BookNav(
-      {final List<Book>? recent,
-      final List<Book>? random,
-      final List<Book>? reading})
+      {final List<BookModel>? recent,
+      final List<BookModel>? random,
+      final List<BookModel>? reading})
       : _recent = recent,
         _random = random,
         _reading = reading;
@@ -126,9 +132,9 @@ class _$_BookNav implements _BookNav {
   factory _$_BookNav.fromJson(Map<String, dynamic> json) =>
       _$$_BookNavFromJson(json);
 
-  final List<Book>? _recent;
+  final List<BookModel>? _recent;
   @override
-  List<Book>? get recent {
+  List<BookModel>? get recent {
     final value = _recent;
     if (value == null) return null;
     if (_recent is EqualUnmodifiableListView) return _recent;
@@ -136,9 +142,9 @@ class _$_BookNav implements _BookNav {
     return EqualUnmodifiableListView(value);
   }
 
-  final List<Book>? _random;
+  final List<BookModel>? _random;
   @override
-  List<Book>? get random {
+  List<BookModel>? get random {
     final value = _random;
     if (value == null) return null;
     if (_random is EqualUnmodifiableListView) return _random;
@@ -146,9 +152,9 @@ class _$_BookNav implements _BookNav {
     return EqualUnmodifiableListView(value);
   }
 
-  final List<Book>? _reading;
+  final List<BookModel>? _reading;
   @override
-  List<Book>? get reading {
+  List<BookModel>? get reading {
     final value = _reading;
     if (value == null) return null;
     if (_reading is EqualUnmodifiableListView) return _reading;
@@ -195,18 +201,18 @@ class _$_BookNav implements _BookNav {
 
 abstract class _BookNav implements BookNav {
   const factory _BookNav(
-      {final List<Book>? recent,
-      final List<Book>? random,
-      final List<Book>? reading}) = _$_BookNav;
+      {final List<BookModel>? recent,
+      final List<BookModel>? random,
+      final List<BookModel>? reading}) = _$_BookNav;
 
   factory _BookNav.fromJson(Map<String, dynamic> json) = _$_BookNav.fromJson;
 
   @override
-  List<Book>? get recent;
+  List<BookModel>? get recent;
   @override
-  List<Book>? get random;
+  List<BookModel>? get random;
   @override
-  List<Book>? get reading;
+  List<BookModel>? get reading;
   @override
   @JsonKey(ignore: true)
   _$$_BookNavCopyWith<_$_BookNav> get copyWith =>

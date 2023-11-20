@@ -14,9 +14,9 @@ part 'books.freezed.dart';
 @freezed
 class BookNav with _$BookNav {
   const factory BookNav({
-    List<Book>? recent,
-    List<Book>? random,
-    List<Book>? reading,
+    List<BookModel>? recent,
+    List<BookModel>? random,
+    List<BookModel>? reading,
   }) = _BookNav;
 
   factory BookNav.fromJson(Map<String, Object?> json) =>
@@ -67,8 +67,8 @@ class BookAPI {
 
   final Ref ref;
 
-  Future<Book> getBook(int id) async {
-    final box = AppStore.instance.box<Book>();
+  Future<BookModel> getBook(int id) async {
+    final box = AppStore.instance.box<BookModel>();
 
     final book = box.get(id);
 
@@ -79,7 +79,7 @@ class BookAPI {
     //from objectbox to get book
     final bookApi = ref.read(apiServiceProvider);
 
-    final resp = await bookApi.request<Book>('GET', "/books/$id");
+    final resp = await bookApi.request<BookModel>('GET', "/books/$id");
 
     if (resp.code == 200) {
       return resp.data!;
