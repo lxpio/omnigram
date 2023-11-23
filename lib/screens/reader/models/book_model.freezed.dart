@@ -27,8 +27,8 @@ mixin _$BookModel {
   String get identifier => throw _privateConstructorUsedError;
   String get author => throw _privateConstructorUsedError;
   double? get progress => throw _privateConstructorUsedError;
-  @JsonKey(name: 'chapter_pos')
-  String? get chapterPos => throw _privateConstructorUsedError;
+  @JsonKey(name: 'progress_index')
+  int? get progressIndex => throw _privateConstructorUsedError;
   int? get size => throw _privateConstructorUsedError;
   String? get path => throw _privateConstructorUsedError;
   String? get ctime => throw _privateConstructorUsedError;
@@ -77,7 +77,7 @@ abstract class $BookModelCopyWith<$Res> {
       @Unique() String identifier,
       String author,
       double? progress,
-      @JsonKey(name: 'chapter_pos') String? chapterPos,
+      @JsonKey(name: 'progress_index') int? progressIndex,
       int? size,
       String? path,
       String? ctime,
@@ -119,7 +119,7 @@ class _$BookModelCopyWithImpl<$Res, $Val extends BookModel>
     Object? identifier = null,
     Object? author = null,
     Object? progress = freezed,
-    Object? chapterPos = freezed,
+    Object? progressIndex = freezed,
     Object? size = freezed,
     Object? path = freezed,
     Object? ctime = freezed,
@@ -163,10 +163,10 @@ class _$BookModelCopyWithImpl<$Res, $Val extends BookModel>
           ? _value.progress
           : progress // ignore: cast_nullable_to_non_nullable
               as double?,
-      chapterPos: freezed == chapterPos
-          ? _value.chapterPos
-          : chapterPos // ignore: cast_nullable_to_non_nullable
-              as String?,
+      progressIndex: freezed == progressIndex
+          ? _value.progressIndex
+          : progressIndex // ignore: cast_nullable_to_non_nullable
+              as int?,
       size: freezed == size
           ? _value.size
           : size // ignore: cast_nullable_to_non_nullable
@@ -268,7 +268,7 @@ abstract class _$$_BookModelCopyWith<$Res> implements $BookModelCopyWith<$Res> {
       @Unique() String identifier,
       String author,
       double? progress,
-      @JsonKey(name: 'chapter_pos') String? chapterPos,
+      @JsonKey(name: 'progress_index') int? progressIndex,
       int? size,
       String? path,
       String? ctime,
@@ -308,7 +308,7 @@ class __$$_BookModelCopyWithImpl<$Res>
     Object? identifier = null,
     Object? author = null,
     Object? progress = freezed,
-    Object? chapterPos = freezed,
+    Object? progressIndex = freezed,
     Object? size = freezed,
     Object? path = freezed,
     Object? ctime = freezed,
@@ -352,10 +352,10 @@ class __$$_BookModelCopyWithImpl<$Res>
           ? _value.progress
           : progress // ignore: cast_nullable_to_non_nullable
               as double?,
-      chapterPos: freezed == chapterPos
-          ? _value.chapterPos
-          : chapterPos // ignore: cast_nullable_to_non_nullable
-              as String?,
+      progressIndex: freezed == progressIndex
+          ? _value.progressIndex
+          : progressIndex // ignore: cast_nullable_to_non_nullable
+              as int?,
       size: freezed == size
           ? _value.size
           : size // ignore: cast_nullable_to_non_nullable
@@ -454,7 +454,7 @@ class _$_BookModel extends _BookModel {
       @Unique() required this.identifier,
       required this.author,
       this.progress,
-      @JsonKey(name: 'chapter_pos') this.chapterPos,
+      @JsonKey(name: 'progress_index') this.progressIndex,
       this.size,
       this.path,
       this.ctime,
@@ -495,8 +495,8 @@ class _$_BookModel extends _BookModel {
   @override
   final double? progress;
   @override
-  @JsonKey(name: 'chapter_pos')
-  final String? chapterPos;
+  @JsonKey(name: 'progress_index')
+  final int? progressIndex;
   @override
   final int? size;
   @override
@@ -551,7 +551,7 @@ class _$_BookModel extends _BookModel {
 
   @override
   String toString() {
-    return 'BookModel(id: $id, title: $title, identifier: $identifier, author: $author, progress: $progress, chapterPos: $chapterPos, size: $size, path: $path, ctime: $ctime, utime: $utime, subTitle: $subTitle, language: $language, coverUrl: $coverUrl, uuid: $uuid, isbn: $isbn, asin: $asin, authorUrl: $authorUrl, authorSort: $authorSort, publisher: $publisher, description: $description, series: $series, seriesIndex: $seriesIndex, pubdate: $pubdate, rating: $rating, publisherUrl: $publisherUrl, countVisit: $countVisit, countDownload: $countDownload)';
+    return 'BookModel(id: $id, title: $title, identifier: $identifier, author: $author, progress: $progress, progressIndex: $progressIndex, size: $size, path: $path, ctime: $ctime, utime: $utime, subTitle: $subTitle, language: $language, coverUrl: $coverUrl, uuid: $uuid, isbn: $isbn, asin: $asin, authorUrl: $authorUrl, authorSort: $authorSort, publisher: $publisher, description: $description, series: $series, seriesIndex: $seriesIndex, pubdate: $pubdate, rating: $rating, publisherUrl: $publisherUrl, countVisit: $countVisit, countDownload: $countDownload)';
   }
 
   @override
@@ -566,8 +566,8 @@ class _$_BookModel extends _BookModel {
             (identical(other.author, author) || other.author == author) &&
             (identical(other.progress, progress) ||
                 other.progress == progress) &&
-            (identical(other.chapterPos, chapterPos) ||
-                other.chapterPos == chapterPos) &&
+            (identical(other.progressIndex, progressIndex) ||
+                other.progressIndex == progressIndex) &&
             (identical(other.size, size) || other.size == size) &&
             (identical(other.path, path) || other.path == path) &&
             (identical(other.ctime, ctime) || other.ctime == ctime) &&
@@ -611,7 +611,7 @@ class _$_BookModel extends _BookModel {
         identifier,
         author,
         progress,
-        chapterPos,
+        progressIndex,
         size,
         path,
         ctime,
@@ -656,7 +656,7 @@ abstract class _BookModel extends BookModel {
           @Unique() required final String identifier,
           required final String author,
           final double? progress,
-          @JsonKey(name: 'chapter_pos') final String? chapterPos,
+          @JsonKey(name: 'progress_index') final int? progressIndex,
           final int? size,
           final String? path,
           final String? ctime,
@@ -697,8 +697,8 @@ abstract class _BookModel extends BookModel {
   @override
   double? get progress;
   @override
-  @JsonKey(name: 'chapter_pos')
-  String? get chapterPos;
+  @JsonKey(name: 'progress_index')
+  int? get progressIndex;
   @override
   int? get size;
   @override

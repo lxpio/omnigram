@@ -6,14 +6,17 @@ import 'package:omnigram/providers/user/user_model.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/l10n.dart';
 
+import '../reader/providers/select_book.dart';
 import '../reader/views/epub_index_view.dart';
+import '../views/stackbar.dart';
 
- class DiscoverSmallScreen extends HookConsumerWidget {
+class DiscoverSmallScreen extends HookConsumerWidget {
   const DiscoverSmallScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isAdmin = ref.watch(userProvider).roleId == 1;
+    final selected = ref.watch(selectBookProvider);
 
     final buttonFocusNode = useFocusNode(debugLabel: 'More Button');
 
@@ -57,7 +60,7 @@ import '../reader/views/epub_index_view.dart';
           // const SizedBox(width: 16),
         ],
       ),
-      body: const EpubIndexView(),
+      body: const Stackbar(child: EpubIndexView()),
     );
   }
 

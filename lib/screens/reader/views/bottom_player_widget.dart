@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/screens/reader/providers/book_controller.dart';
 import 'package:omnigram/screens/reader/providers/select_book.dart';
+import 'package:omnigram/screens/reader/providers/tts_service.dart';
 import 'package:omnigram/screens/reader/views/chapter_sheet_view.dart';
-import 'package:omnigram/screens/reader/views/epub_content_view.dart';
-
-import '../providers/book_play_task.dart';
 
 class BottomPlayerWidget extends HookConsumerWidget {
   const BottomPlayerWidget({required this.controller, super.key});
@@ -18,7 +16,7 @@ class BottomPlayerWidget extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
-        ReadProgressIndicator(controller: controller),
+        _ReadProgressIndicator(controller: controller),
         Container(
           decoration: BoxDecoration(
             // border: Border(
@@ -57,7 +55,7 @@ class BottomPlayerWidget extends HookConsumerWidget {
                 ),
               ),
               PlayButtonWidget(onPressedCallback: () {
-                playBackgroundTask(ref: ref, document: controller.document);
+                ref.read(ttsServiceProvider.notifier).play(controller.document);
               }),
               const SizedBox(
                 height: 4,
@@ -116,74 +114,65 @@ class PlayButtonWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final playing =
-        ref.watch(selectBookProvider.select((value) => value.playing));
+    final tts = ref.watch(ttsServiceProvider);
     if (kDebugMode) {
-      print('on PlayButtonWidget build and status is $playing');
+      print('on PlayButtonWidget build and status is ${tts.playing}');
     }
 
     // Widgets.bin
 
     return IconButton(
-      // padding: EdgeInsets.zero,
-      onPressed: () {
-        if (playing) {
-          ref.read(selectBookProvider.notifier).pause();
-          return;
-        }
-        ref.read(selectBookProvider.notifier).play();
-        if (onPressedCallback != null) {
-          onPressedCallback!();
-        }
-      },
-      // color: Theme.of(context).colorScheme.primary,
-      icon: playing
-          ? const Icon(
-              Icons.pause_circle_filled,
-              size: 40,
-            )
-          : const Icon(
-              Icons.play_circle_fill,
-              size: 40,
-            ),
-    );
+        // padding: EdgeInsets.zero,
+        onPressed: () async {
+          if (tts.playing) {
+            ref.read(ttsServiceProvider.notifier).pause();
+
+            return;
+          }
+          if (onPressedCallback != null) {
+            onPressedCallback!();
+          }
+        },
+        // color: Theme.of(context).colorScheme.primary,
+        icon: Icon(
+          tts.playing ? Icons.pause_circle_filled : Icons.play_circle_fill,
+          size: 40,
+        ));
   }
 }
 
-class ReadProgressIndicator extends ConsumerWidget {
-  const ReadProgressIndicator({required this.controller, super.key});
+class _ReadProgressIndicator extends ConsumerWidget {
+  const _ReadProgressIndicator({required this.controller, super.key});
 
   final BookController controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selected = ref.watch(selectBookProvider);
+    final tts = ref.watch(ttsServiceProvider);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (tts.playing) {
+        final abs = controller.document.absParagraphIndex(selected.index) ?? 0;
 
-    final progress = controller.document.progress(selected.index);
+        if (abs < controller.document.paragraphs.length - 6) {
+          if (kDebugMode) {
+            print('playing build itemScrollController scrollTo $abs');
+          }
 
-    if (kDebugMode) {
-      print('build ReadProgressIndicator $progress');
-    }
-
-    if (selected.playing) {
-      final abs = controller.document.absParagraphIndex(selected.index) ?? 0;
-
-      if (abs < controller.document.paragraphs.length - 6) {
-        if (kDebugMode) {
-          print('build itemScrollController scrollTo $abs');
+          controller.itemScrollController?.scrollTo(
+            index: abs,
+            duration: const Duration(milliseconds: 200),
+            alignment: 0.5,
+            curve: Curves.decelerate,
+          );
         }
-
-        controller.itemScrollController?.scrollTo(
-          index: abs,
-          duration: const Duration(milliseconds: 200),
-          alignment: 0.5,
-          curve: Curves.decelerate,
-        );
       }
+    });
+    if (kDebugMode) {
+      print('build ReadProgressIndicator ${selected.progress}');
     }
-
     return LinearProgressIndicator(
-      value: progress / 100, // Change this value to represent the progress
+      value: selected.progress, // Change this value to represent the progress
       valueColor: AlwaysStoppedAnimation<Color>(
           Theme.of(context).colorScheme.tertiaryContainer), // Set to gray
       backgroundColor: Colors.grey[300],

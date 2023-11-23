@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'epub/_chapter_view_value.dart';
+import 'epub/_chapter_index.dart';
 import 'epub/_paragraph.dart';
 import 'epub/_parse_result.dart';
 
@@ -45,13 +45,13 @@ class EpubDocument {
 
     if (abs < chapterIndexes[index.chapterIndex + 1]) {
       return ChapterIndex(
-        chapter: index.chapter,
+        // chapter: index.chapter,
         chapterIndex: index.chapterIndex,
         paragraphIndex: index.paragraphIndex + 1,
       );
     } else {
       return ChapterIndex(
-        chapter: index.chapter,
+        // chapter: index.chapter,
         chapterIndex: index.chapterIndex + 1,
         paragraphIndex: 0,
       );
@@ -65,8 +65,14 @@ class EpubDocument {
   }
 
   String? cfiGenerate(ChapterIndex? index) {
-    final chapter = index?.chapter;
-    final paragraphIndex = index?.paragraphIndex;
+    if (index == null) {
+      return null;
+    }
+
+    final chapterIndex =
+        index.chapterIndex > chapters.length - 1 ? 0 : index.chapterIndex;
+    final chapter = chapters[chapterIndex];
+    final paragraphIndex = index.paragraphIndex;
     if (chapter == null || paragraphIndex == null) {
       return null;
     }
@@ -74,6 +80,23 @@ class EpubDocument {
     return chapter.Anchor == null
         ? '/${chapter.ContentFileName}?$paragraphIndex'
         : '/${chapter.ContentFileName}#${chapter.Anchor}?$paragraphIndex';
+  }
+
+  ChapterIndex? progressIndexParse(int? combined) {
+    final chapterIndex = (combined ?? 0) >> 32;
+    final paragraphIndex = (combined ?? 0) & 0xFFFFFFFF;
+
+    return chapters.length > chapterIndex
+        ? ChapterIndex(
+            // chapter: chapters[chapterIndex],
+            chapterIndex: chapterIndex,
+            paragraphIndex: paragraphIndex,
+          )
+        : const ChapterIndex(
+            // chapter: null,
+            chapterIndex: 0,
+            paragraphIndex: 0,
+          );
   }
 
   ChapterIndex? cfiParse(String? cfi) {
@@ -101,12 +124,12 @@ class EpubDocument {
 
     return chapterIndex == -1
         ? ChapterIndex(
-            chapter: null,
+            // chapter: null,
             chapterIndex: 0,
             paragraphIndex: paragraphIndex,
           )
         : ChapterIndex(
-            chapter: chapters[chapterIndex],
+            // chapter: chapters[chapterIndex],
             chapterIndex: chapterIndex,
             paragraphIndex: paragraphIndex,
           );
@@ -127,6 +150,6 @@ class EpubDocument {
     if (kDebugMode) {
       print('currentParagraphIndex $pos / ${paragraphs.length} ');
     }
-    return pos * 100.0 / paragraphs.length;
+    return pos / paragraphs.length;
   }
 }

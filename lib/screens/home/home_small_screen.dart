@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/providers/user/user_model.dart';
+import 'package:omnigram/screens/reader/providers/select_book.dart';
 
 import '../reader/views/epub_index_view.dart';
+import '../views/stackbar.dart';
 
-class HomeSmallScreen extends StatefulHookConsumerWidget {
-  const HomeSmallScreen({super.key});
+class HomeSmallScreen extends HookConsumerWidget {
+  const HomeSmallScreen({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _HomeSmallScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selected = ref.watch(selectBookProvider);
 
-class _HomeSmallScreenState extends ConsumerState<HomeSmallScreen> {
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -55,7 +53,7 @@ class _HomeSmallScreenState extends ConsumerState<HomeSmallScreen> {
           // const SizedBox(width: 16),
         ],
       ),
-      body: const EpubIndexView(),
+      body: const Stackbar(child: EpubIndexView()),
     );
   }
 }

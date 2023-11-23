@@ -1,10 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:omnigram/screens/reader/models/epub_document.dart';
 
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import '../models/epub/_chapter_view_value.dart';
+import '../models/epub/_chapter_index.dart';
 
 const _minTrailingEdge = 0.55;
 const _minLeadingEdge = -0.05;
@@ -55,7 +54,7 @@ class BookController {
     final paragraphIndex = _getParagraphIndex(chapterIndex, posIndex);
 
     final current = ChapterIndex(
-      chapter: chapterIndex >= 0 ? document.chapters[chapterIndex] : null,
+      // chapter: chapterIndex >= 0 ? document.chapters[chapterIndex] : null,
       // 这里是相对路径
       chapterIndex: chapterIndex,
       paragraphIndex: paragraphIndex,

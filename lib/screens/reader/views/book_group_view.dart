@@ -5,6 +5,7 @@ import 'package:omnigram/screens/reader/models/book_model.dart';
 import 'package:omnigram/screens/reader/providers/select_book.dart';
 import 'package:omnigram/utils/constants.dart';
 
+import '../providers/books.dart';
 import 'book_card_view.dart';
 
 class BookGroup extends HookConsumerWidget {
@@ -59,9 +60,22 @@ class BookGroup extends HookConsumerWidget {
                       ),
                     ),
                     onTap: () async {
-                      await ref.read(selectBookProvider.notifier).refresh(book);
+                      BookModel? b;
+                      //if progress or chapterPos is null , try request backend to get
+                      if (book.progress == null || book.progressIndex == null) {
+                        final api = ref.read(bookAPIProvider);
+
+                        final data = await api.getReadProcess(book.id);
+
+                        if (data != null) {
+                          // await ref.read(selectBookProvider.notifier).refresh(book);
+                          b = book.copyWith(
+                              progress: (data["progress"] + 0.0),
+                              progressIndex: data["progress_index"]);
+                        }
+                      }
                       if (!context.mounted) return;
-                      context.pushNamed(kReaderPage, extra: book);
+                      context.pushNamed(kSummaryPage, extra: b ?? book);
                     }
                     //'/reader/books/${book.id}'
                     );
