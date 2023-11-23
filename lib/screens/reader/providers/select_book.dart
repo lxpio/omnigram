@@ -1,6 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:markdown/markdown.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/book_model.dart';
@@ -14,98 +12,80 @@ final selectBookProvider =
     NotifierProvider<SelectBookProvider, SelectBook>(SelectBookProvider.new);
 
 class SelectBook {
-  SelectBook({required this.book, required this.playing});
+  SelectBook({
+    required this.book,
+    this.progress = 0.0,
+  });
   late BookModel? book;
 
-  bool playing = false;
-  // late EpubDocument? document;
   late ChapterIndex? index;
+  double progress = 0;
 }
 
 class SelectBookProvider extends Notifier<SelectBook> {
   @override
   SelectBook build() {
     if (kDebugMode) {
-      print('SelectBook  -=-=-=-=-=-=***  build');
+      print('SelectBook init build');
     }
-    return SelectBook(book: null, playing: false);
+
+    return SelectBook(book: null);
   }
 
-  Future<void> refresh(BookModel b) async {
+  Future<void> refresh({required BookModel book}) async {
     if (kDebugMode) {
-      print('refresh select book: ${b.id}');
+      print(
+          'refresh select book: ${book.hashCode} and ${state.book?.hashCode}');
     }
-    //if progress or chapterPos is null , try request backend to get
-    if (b.progress == null || b.chapterPos == null) {
-      final api = ref.read(bookAPIProvider);
 
-      final data = await api.getReadProcess(b.id);
-
-      if (data != null) {
-        state = SelectBook(
-            book: b.copyWith(
-                progress: (data["progress"] + 0.0),
-                chapterPos: data["chapter_pos"]),
-            playing: state.playing);
-      }
-      return;
-    }
-    // final index = document.cfiParse(b.chapterPos);
-    state = SelectBook(book: null, playing: false);
-    //fresh bookDocument;
-  }
-
-  void close() {
-    state = SelectBook(book: null, playing: false);
-  }
-
-  void play() {
-    if (state.book == null) {
+    if (book.hashCode == state.book?.hashCode) {
       return;
     }
 
-    state.playing = true;
+    final updater = SelectBook(book: book, progress: book.progress ?? 0.0);
+    updater.index = ChapterIndex.create(book.progressIndex);
 
+    state = updater;
+
+    if (kDebugMode) {
+      print('refresh select book: ${book.id}');
+    }
+    // ref.notifyListeners();
+  }
+
+  void updateProgress(ChapterIndex index, double progress) {
+    if (kDebugMode) {
+      print(
+          'updateProgress book: ${index.chapterIndex} - ${index.paragraphIndex} ');
+    }
+    state.progress = progress;
+    state.index = index;
     ref.notifyListeners();
   }
 
-  void pause() {
-    if (state.book == null) {
-      return;
-    }
-    state.playing = false;
-
-    ref.notifyListeners();
-  }
-
-  void updatePath(String? localPath) {
-    if (state.book == null) {
-      return;
-    }
-    print('updateProcess ${state.book?.id}');
-
-    state.book = state.book!.copyWith(path: localPath);
-    ref.notifyListeners();
-  }
-
-  void updateIndex(ChapterIndex? current, bool manual) {
+  void updateIndex(ChapterIndex? current) {
     if (state.book == null || current == null) {
       return;
     }
-    final diff = manual ? 5 : 0;
-    if (manual && state.playing) {
-      return;
-    }
-
-    print('in updateProcess ${state.book?.id}');
 
     if (state.index == null ||
         current.chapterIndex != state.index!.chapterIndex ||
-        (current.paragraphIndex - state.index!.paragraphIndex).abs() > diff) {
+        (current.paragraphIndex - state.index!.paragraphIndex).abs() > 5) {
       print('updateProcess ${state.book?.id}');
       state.index = current;
       ref.notifyListeners();
     }
+  }
+
+  Future<void> saveProcess() async {
+    if (state.book == null) {
+      return;
+    }
+
+    print('saveProcess todo handle  ${state.book!.id}');
+    final api = ref.read(bookAPIProvider);
+    await api.updateProcess(
+        state.book!.id, state.progress, state.index?.combined);
   }
 }
 
@@ -117,69 +97,9 @@ Future<EpubDocument?> epubDocument(EpubDocumentRef ref) async {
     return null;
   }
   if (kDebugMode) {
-    print('epubDocumentProvider  -=-=-=-=-=-=***  ${selected.path}');
+    print('epubDocumentProvider init ${selected.path}');
   }
   final document = await EpubDocument.initialize(selected.path!);
 
-  final index = document.cfiParse(selected.chapterPos);
-
-  ref.read(selectBookProvider).index = index;
-
   return document;
 }
-
-// @Riverpod(keepAlive: true)
-// class BookDocument extends _$BookDocument {
-//   @override
-//   Future<EpubDocument?> build() async {
-//     if (kDebugMode) {
-//       print('SelectBook  -=-=-=-=-=-=***  initialize');
-//     }
-//     final selected = ref.watch(selectBookProvider);
-
-//     if (selected.book == null || selected.book!.path == null) {
-//       return null;
-//     }
-
-//     final document = await EpubDocument.initialize(selected.book!.path!);
-
-//     return document;
-//   }
-
-//   Future<void> refresh(BookModel b) async {
-//     if (kDebugMode) {
-//       print('SelectBook  -=-=-=-=-=-=***  initialize');
-//     }
-//     final selected = ref.watch(selectBookProvider);
-
-//     if (selected.book == null || selected.book!.path == null) {
-//       return null;
-//     }
-
-//     final document = await EpubDocument.initialize(selected.book!.path!);
-
-//     return document;
-//   }
-
-//   void updateIndex(ChapterIndex? current) {
-//     final selected = ref.watch(selectBookProvider.notifier);
-//     selected.updateIndex(current);
-//   }
-
-//   Future<void> saveProcess() async {
-//     //   final index = document.cfiParse(chapterPos);
-//     final selected = ref.watch(selectBookProvider);
-
-//     if (selected.book == null || state.value == null) {
-//       return;
-//     }
-
-//     final cfi = state.value!.cfiGenerate(selected.index);
-//     final progress = state.value!.progress(selected.index);
-
-//     print('saveProcess todo handle error  ${selected.book!.id}');
-//     final api = ref.read(bookAPIProvider);
-//     await api.updateProcess(selected.book!.id, progress, cfi);
-//   }
-//   // Add methods to mutate the state
-// }

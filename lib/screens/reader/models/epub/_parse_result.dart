@@ -1,6 +1,6 @@
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
-import '_chapter_view_value.dart';
+import '_chapter_index.dart';
 import '_paragraph.dart';
 
 export 'package:epubx/epubx.dart' hide Image;

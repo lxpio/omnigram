@@ -81,10 +81,4 @@ class ScanStatusView extends HookConsumerWidget {
       error: (err, stack) => Center(child: Text(err.toString())),
     );
   }
-
-  // void startTicker() {
-  //   final timer = Timer(const Duration(seconds: 2), () {
-  //     ref.read(scanStatusProvider.notifier).refresh();
-  //   });
-  // }
 }

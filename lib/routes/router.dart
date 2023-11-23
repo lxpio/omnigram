@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/components/root_layout.dart';
@@ -11,6 +9,7 @@ import 'package:omnigram/screens/chat/chat_page_screen.dart';
 import 'package:omnigram/screens/chat/models/conversation.dart';
 
 import 'package:omnigram/screens/photo.dart';
+import 'package:omnigram/screens/reader/models/book_model.dart';
 import 'package:omnigram/screens/reader/read_epub_screen.dart';
 import 'package:omnigram/screens/reader/reader_mobile_screen.dart';
 import 'package:omnigram/utils/constants.dart';
@@ -49,30 +48,31 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
-        path: kReaderPath,
-        name: kReaderPage,
+        path: kSummaryPath,
+        name: kSummaryPage,
         pageBuilder: (context, state) {
-          // final Book book = state.extra as Book;
+          final book = state.extra as BookModel;
           return MaterialPage(
             // key: _pageKey,
             child: ReaderMobileScreen(
-                // book: book,
-                ),
+              book: book,
+            ),
           );
         },
-        routes: [
-          GoRoute(
-              path: kReaderDetailPath,
-              name: kReaderDetailPage,
-              pageBuilder: (context, GoRouterState state) {
-                // final bookPath = state.extra as String;
-                // final args = state.extra as Map<String, String?>;
+        // routes: [],
+      ),
+      GoRoute(
+        path: kReaderDetailPath,
+        name: kReaderDetailPage,
+        pageBuilder: (context, GoRouterState state) {
+          // final bookPath = state.extra as String;
 
-                return const MaterialPage(
-                  child: ReadEpubScreen(),
-                );
-              }),
-        ],
+          final args = state.extra == null ? false : state.extra as bool;
+     
+          return MaterialPage(
+            child: ReadEpubScreen(playtask: args),
+          );
+        },
       ),
       GoRoute(
         path: kDiscoverPath,

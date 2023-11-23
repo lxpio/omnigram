@@ -6,7 +6,7 @@ part of 'select_book.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$epubDocumentHash() => r'015c312aaded8b57535f2f10e6a0f5cc15bad554';
+String _$epubDocumentHash() => r'53b84aae5f0a02e32ce37d2b50612477babb0645';
 
 /// See also [epubDocument].
 @ProviderFor(epubDocument)

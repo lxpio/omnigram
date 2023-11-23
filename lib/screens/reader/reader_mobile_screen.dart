@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/flavors/provider.dart';
 import 'package:omnigram/screens/reader/models/book_local.dart';
+import 'package:omnigram/screens/reader/models/book_model.dart';
 
 import 'package:omnigram/screens/reader/providers/books.dart';
 import 'package:omnigram/screens/reader/providers/select_book.dart';
@@ -14,13 +16,12 @@ import 'package:omnigram/utils/l10n.dart';
 import 'package:omnigram/utils/show_snackbar.dart';
 
 class ReaderMobileScreen extends HookConsumerWidget {
-  const ReaderMobileScreen({super.key}) : super();
+  const ReaderMobileScreen({super.key, required this.book}) : super();
+
+  final BookModel book;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final book =
-        ref.watch(selectBookProvider.select((selected) => selected.book))!;
-
     final appConfig = ref.read(appConfigProvider);
 
     final localBook = BookLocalBox.instance.get(book.id);
@@ -159,9 +160,9 @@ class ReaderMobileScreen extends HookConsumerWidget {
                       }
                       //这里需要更新book path,当前selectBookProvider设计是如果path不为空才
                       //加载文件；
-                      ref
+                      await ref
                           .read(selectBookProvider.notifier)
-                          .updatePath(filePath);
+                          .refresh(book: book.copyWith(path: filePath));
 
                       if (!context.mounted) return;
                       context.pushNamed(kReaderDetailPage);
@@ -178,7 +179,30 @@ class ReaderMobileScreen extends HookConsumerWidget {
                       // style:
                       //     TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
                     ),
-                    onPressed: () {},
+                    onPressed: () async {
+                      final filePath =
+                          await getOrDownloadBook(ref, localBook, book.id);
+                      if (!context.mounted) return;
+                      if (filePath.isEmpty) {
+                        showSnackBar(context, "book file not exist!");
+                      }
+
+                      if (kDebugMode) {
+                        print('on pressed start listen book: ${book.id}');
+                      }
+                      //这里需要更新book path,当前selectBookProvider设计是如果path不为空才
+                      //加载文件；
+                      await ref
+                          .read(selectBookProvider.notifier)
+                          .refresh(book: book.copyWith(path: filePath));
+                      // ref.read(selectBookProvider.notifier).play();
+                      if (!context.mounted) return;
+                      context.pushNamed(kReaderDetailPage, extra: true);
+                      // return;
+                      //handle error
+                      // if (!context.mounted) return;
+                      // showSnackBar(context, "book file not exist!");
+                    },
                   ),
                 ],
               ),

@@ -13,7 +13,7 @@ class BookModel with _$BookModel {
     @Unique() required String identifier,
     required String author,
     double? progress,
-    @JsonKey(name: 'chapter_pos') String? chapterPos,
+    @JsonKey(name: 'progress_index') int? progressIndex,
     int? size,
     String? path,
     String? ctime,

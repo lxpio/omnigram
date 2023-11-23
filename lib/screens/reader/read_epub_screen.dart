@@ -9,8 +9,10 @@ import 'providers/select_book.dart';
 import 'views/epub_content_view.dart';
 
 class ReadEpubScreen extends HookConsumerWidget {
-  const ReadEpubScreen({super.key}) : super();
+  const ReadEpubScreen({super.key, this.onClose, this.playtask = false});
 
+  final VoidCallback? onClose;
+  final bool playtask;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bookFile = ref.watch(epubDocumentProvider);
@@ -22,10 +24,29 @@ class ReadEpubScreen extends HookConsumerWidget {
     return bookFile.when(
         data: (data) {
           if (data == null) {
-            return const Center(child: Text('Book not found'));
+            return Scaffold(
+              appBar: AppBar(
+                leading: IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    // color: Colors.white,
+                    onPressed: () async {
+                      if (onClose != null) {
+                        onClose!();
+                      } else {
+                        context.pop();
+                      }
+                    }),
+                // actions: ,
+              ),
+              body: const Center(child: Text('Book not found')),
+            );
           }
 
-          return EpubContentView(document: data);
+          return EpubContentView(
+            document: data,
+            onClose: onClose,
+            runplayTask: playtask,
+          );
         },
         error: (err, stack) => Center(child: Text(err.toString())),
         loading: () {
@@ -35,7 +56,11 @@ class ReadEpubScreen extends HookConsumerWidget {
                   icon: const Icon(Icons.arrow_back),
                   // color: Colors.white,
                   onPressed: () async {
-                    context.pop();
+                    if (onClose != null) {
+                      onClose!();
+                    } else {
+                      context.pop();
+                    }
                   }),
               // actions: ,
             ),

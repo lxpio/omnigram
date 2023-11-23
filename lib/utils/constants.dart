@@ -132,8 +132,8 @@ const kDiscoverPath = '/discover';
 const kProfilePath = '/profile';
 const kProfilePage = 'profile';
 
-const kReaderDetailPath = 'read';
-const kReaderPath = '/epub/books/summary';
+const kReaderDetailPath = '/read';
+const kSummaryPath = '/summary';
 
 const kChatPage = 'chat';
 
@@ -143,5 +143,5 @@ const kChatPagePath = 'detailpage';
 const kManagerPage = 'manager';
 const kManagerPath = '/manager';
 
-const kReaderPage = 'reader';
+const kSummaryPage = 'reader';
 const kReaderDetailPage = 'reader_detail';

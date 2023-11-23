@@ -104,14 +104,14 @@ class BookAPI {
   }
 
   Future<ApiResponse> updateProcess(
-      int id, double progress, String? chapterPos) async {
+      int id, double progress, int? progressIndex) async {
     final bookApi = ref.read(apiServiceProvider);
     return await bookApi.request(
       "PUT",
       "/book/read/books/$id",
       body: {
         "progress": progress,
-        "chapter_pos": chapterPos,
+        "progress_index": progressIndex,
       },
       // onDownloadProgress: onDownloadProgress,
     );

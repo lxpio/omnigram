@@ -29,7 +29,7 @@
     },
     {
       "id": "2:2377781516218894627",
-      "lastPropertyId": "27:507996690201045780",
+      "lastPropertyId": "28:4088798926593917462",
       "name": "BookModel",
       "properties": [
         {
@@ -59,11 +59,6 @@
           "id": "5:142002621304961831",
           "name": "progress",
           "type": 8
-        },
-        {
-          "id": "6:2055331516529877016",
-          "name": "chapterPos",
-          "type": 9
         },
         {
           "id": "7:721090536532963474",
@@ -168,6 +163,11 @@
         {
           "id": "27:507996690201045780",
           "name": "countDownload",
+          "type": 6
+        },
+        {
+          "id": "28:4088798926593917462",
+          "name": "progressIndex",
           "type": 6
         }
       ],
@@ -363,7 +363,9 @@
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    2055331516529877016
+  ],
   "retiredRelationUids": [],
   "version": 1
 }
