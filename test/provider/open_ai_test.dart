@@ -1,4 +1,6 @@
 import 'dart:developer';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
@@ -10,6 +12,8 @@ import 'package:omnigram/providers/openai/chat/message.dart';
 import 'package:omnigram/utils/constants.dart';
 
 import 'package:test/test.dart';
+
+import 'package:omnigram/utils/wav.dart';
 
 void main() {
   test('sse should be worked', () async {
@@ -68,10 +72,47 @@ void main() {
     // log("exit....");
   });
 
-  test('simple get should be created', () async {
+  // test('simple get should be created', () async {
+  //   final dio = Dio();
+  //   final onGetResponse = await dio.get("http://127.0.0.1/v1/",
+  //       options: Options(responseType: ResponseType.stream));
+  //   print(onGetResponse.data); // {message: Successfully mocked GET!}
+  // });
+
+  test('simple get should be created2', () async {
     final dio = Dio();
-    final onGetResponse = await dio.get("http://127.0.0.1/v1/",
-        options: Options(responseType: ResponseType.stream));
-    print(onGetResponse.data); // {message: Successfully mocked GET!}
+    final onGetResponse =
+        await dio.post("http://192.168.1.202:8080/m4t/pcm/stream",
+            data: {
+              "text": "社会主义接班人李强出席首届中国国际供应链促进博览会开幕式暨全球供应链创新发展论坛并发表主旨演讲",
+              "lang": "zh",
+              "audio_id": "female_001",
+            },
+            options: Options(responseType: ResponseType.stream));
+    // print(onGetResponse.data); // {message: Successfully mocked GET!}
+    final Float32Wav raw = Float32Wav(
+      numChannels: 1,
+      sampleRate: 24000,
+    );
+    // Pipe the stream to the StreamController
+    final subscription = onGetResponse.data!.stream.listen(
+      (chunk) {
+        final data = Uint8List.fromList(chunk);
+
+        raw.append(data);
+        print('Received chunk: ');
+      },
+      onDone: () {
+        raw.writeFile("test.wav");
+      },
+      onError: (error) {
+        print('Error during stream playback: $error');
+      },
+      cancelOnError: true,
+    );
+
+    await Future.delayed(Duration(seconds: 10), () => subscription.cancel());
+
+    log("exit....");
   });
 }

@@ -1,4 +1,5 @@
 String globalEpubPath = '';
+String globalCachePath = '';
 
 const kOpenAI = 'OpenAI';
 

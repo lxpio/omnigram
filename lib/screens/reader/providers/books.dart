@@ -106,15 +106,23 @@ class BookAPI {
   Future<ApiResponse> updateProcess(
       int id, double progress, int? progressIndex) async {
     final bookApi = ref.read(apiServiceProvider);
-    return await bookApi.request(
-      "PUT",
-      "/book/read/books/$id",
-      body: {
-        "progress": progress,
-        "progress_index": progressIndex,
-      },
-      // onDownloadProgress: onDownloadProgress,
-    );
+
+    try {
+      return await bookApi.request(
+        "PUT",
+        "/book/read/books/$id",
+        body: {
+          "progress": progress,
+          "progress_index": progressIndex,
+        },
+        // onDownloadProgress: onDownloadProgress,
+      );
+    } catch (e) {
+      //TODO
+      print(e);
+    }
+
+    return ApiResponse(code: 400, message: "error");
   }
 
   Future<Map<String, dynamic>?> getReadProcess(int id) async {

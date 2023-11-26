@@ -103,13 +103,6 @@ class BookController {
     scrollToChapter(chapterIndex + 1);
   }
 
-  // void scrollTo(
-  //   String? epubCfi, {
-  //   double alignment = 0,
-  //   Duration duration = const Duration(milliseconds: 250),
-  //   Curve curve = Curves.linear,
-  // }
-
   int get paraLength {
     return document.paragraphs.length;
   }
