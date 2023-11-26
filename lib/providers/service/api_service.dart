@@ -94,6 +94,29 @@ class APIService {
     }
   }
 
+  Future<Response<T>> ttsStream<T>(String path,
+      {Map<String, dynamic>? query,
+      Map<String, dynamic>? header,
+      Map<String, dynamic>? body,
+      CancelToken? cancelToken}) async {
+    Map<String, dynamic> queryParams = _getQueryParams(query);
+
+    Map<String, dynamic> headerParams = _getHeaderParams(header);
+
+    Map<String, dynamic>? bodyParams = _getBodyParams(body);
+
+    Options opts = Options(
+        headers: headerParams,
+        method: 'POST',
+        responseType: ResponseType.stream);
+
+    return await _dio.request<T>(path,
+        queryParameters: queryParams,
+        data: bodyParams,
+        options: opts,
+        cancelToken: cancelToken);
+  }
+
   //download file to local dir
   Future<void> download(String url, String path,
       {Map<String, dynamic>? query,

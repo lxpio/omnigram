@@ -1,20 +1,22 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'epub/_chapter_index.dart';
 import 'epub/_paragraph.dart';
 import 'epub/_parse_result.dart';
 
 class EpubDocument {
-  EpubDocument();
+  EpubDocument(this.id);
 
+  int id;
   late List<EpubChapter> chapters;
   late List<Paragraph> paragraphs;
   late List<int> chapterIndexes;
 
   late EpubBook book;
 
-  static Future<EpubDocument> initialize(String path) async {
-    final doc = EpubDocument();
+  static Future<EpubDocument> initialize(int id, String path) async {
+    final doc = EpubDocument(id);
 
     final file = File(path);
     final bytes = await file.readAsBytes();
@@ -36,8 +38,8 @@ class EpubDocument {
     return doc;
   }
 
-  ChapterIndex? nextIndex(ChapterIndex index) {
-    final abs = (absParagraphIndex(index) ?? 0) + 1;
+  ChapterIndex? nextIndex(ChapterIndex index, int abs) {
+    // final abs = (absParagraphIndex(index) ?? 0) + 1;
 
     if (abs == paragraphs.length - 1) {
       return null;
@@ -58,11 +60,15 @@ class EpubDocument {
     }
   }
 
-  String getContent(ChapterIndex? index) {
-    final abs = absParagraphIndex(index) ?? 0;
-
+  String getContent(int abs) {
     return paragraphs[abs].element.innerHtml;
   }
+
+  // String getContent(ChapterIndex? index) {
+  //   final abs = absParagraphIndex(index) ?? 0;
+
+  //   return paragraphs[abs].element.innerHtml;
+  // }
 
   String? cfiGenerate(ChapterIndex? index) {
     if (index == null) {

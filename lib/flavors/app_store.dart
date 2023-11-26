@@ -35,7 +35,10 @@ class AppStore {
 
       if (!await Directory(globalEpubPath).exists()) {
         await Directory(globalEpubPath).create(recursive: true);
-        print('Directory created at: $globalEpubPath');
+      }
+      globalCachePath = '${docsDir.path}/local_cache';
+      if (!await Directory(globalCachePath).exists()) {
+        await Directory(globalCachePath).create(recursive: true);
       }
 
       instance._store =

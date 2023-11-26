@@ -99,7 +99,7 @@ Future<EpubDocument?> epubDocument(EpubDocumentRef ref) async {
   if (kDebugMode) {
     print('epubDocumentProvider init ${selected.path}');
   }
-  final document = await EpubDocument.initialize(selected.path!);
+  final document = await EpubDocument.initialize(selected.id, selected.path!);
 
   return document;
 }
