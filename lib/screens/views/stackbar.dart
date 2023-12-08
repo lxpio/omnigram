@@ -25,14 +25,14 @@ class Stackbar extends HookConsumerWidget {
     return Column(
       children: [
         Expanded(child: child),
-        if (ttsState.showbar) const _StackbarWidget(),
+        if (ttsState.showbar) const StackbarWidget(),
       ],
     );
   }
 }
 
-class _StackbarWidget extends ConsumerWidget {
-  const _StackbarWidget({super.key});
+class StackbarWidget extends ConsumerWidget {
+  const StackbarWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

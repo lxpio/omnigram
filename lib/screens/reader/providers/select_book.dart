@@ -16,7 +16,7 @@ class SelectBook {
     required this.book,
     this.progress = 0.0,
   });
-  late BookModel? book;
+  BookModel? book;
 
   late ChapterIndex? index;
   double progress = 0;
@@ -43,7 +43,7 @@ class SelectBookProvider extends Notifier<SelectBook> {
     }
 
     final updater = SelectBook(book: book, progress: book.progress ?? 0.0);
-    updater.index = ChapterIndex.create(book.progressIndex);
+    updater.index = ChapterIndex.create(book.progressIndex, book.paraPosition);
 
     state = updater;
 
@@ -77,15 +77,20 @@ class SelectBookProvider extends Notifier<SelectBook> {
     }
   }
 
-  Future<void> saveProcess() async {
+  Future<void> saveProcess(int? position) async {
     if (state.book == null) {
       return;
     }
 
     print('saveProcess todo handle  ${state.book!.id}');
     final api = ref.read(bookAPIProvider);
-    await api.updateProcess(
-        state.book!.id, state.progress, state.index?.combined);
+
+    final index = ChapterIndex(
+        chapterIndex: state.index?.chapterIndex ?? 0,
+        paragraphIndex: state.index?.paragraphIndex ?? 0,
+        position: position);
+
+    await api.updateProcess(state.book!.id, state.progress, index);
   }
 }
 

@@ -29,7 +29,7 @@
     },
     {
       "id": "2:2377781516218894627",
-      "lastPropertyId": "28:4088798926593917462",
+      "lastPropertyId": "29:1550309893250125137",
       "name": "BookModel",
       "properties": [
         {
@@ -168,6 +168,11 @@
         {
           "id": "28:4088798926593917462",
           "name": "progressIndex",
+          "type": 6
+        },
+        {
+          "id": "29:1550309893250125137",
+          "name": "paraPosition",
           "type": 6
         }
       ],

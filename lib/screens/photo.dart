@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart';
+import 'package:lottie/lottie.dart';
 import 'dart:math' as math;
 
 import 'package:omnigram/utils/l10n.dart';
@@ -27,10 +27,10 @@ class _PhotoPageBodyState extends State<PhotoPageBody> {
                 children: [
                   Center(
                     child: Container(
-                      width: 200,
-                      height: 200,
-                      child: RiveAnimation.asset(
-                        "assets/files/4283-8836-developer.riv",
+                      width: 280,
+                      height: 280,
+                      child: Lottie.asset(
+                        "assets/files/Animation-coming-soon.json",
                         // alignment: Alignment.topCenter,
                         // fit: BoxFit.contain,
                         // animation: "coding",

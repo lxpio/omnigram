@@ -9,19 +9,23 @@ part of 'tts_service.dart';
 _$_TTSState _$$_TTSStateFromJson(Map<String, dynamic> json) => _$_TTSState(
       showbar: json['showbar'] as bool? ?? false,
       playing: json['playing'] as bool? ?? false,
+      position: json['position'] == null
+          ? null
+          : Duration(microseconds: json['position'] as int),
     );
 
 Map<String, dynamic> _$$_TTSStateToJson(_$_TTSState instance) =>
     <String, dynamic>{
       'showbar': instance.showbar,
       'playing': instance.playing,
+      'position': instance.position?.inMicroseconds,
     };
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$ttsServiceHash() => r'90092a717c131b00f7be95f22a79875080992a9f';
+String _$ttsServiceHash() => r'c38508bd42c2fe06803f756979c0445e4fd1c599';
 
 /// See also [TtsService].
 @ProviderFor(TtsService)

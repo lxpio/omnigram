@@ -22,6 +22,7 @@ TTSState _$TTSStateFromJson(Map<String, dynamic> json) {
 mixin _$TTSState {
   bool get showbar => throw _privateConstructorUsedError;
   bool get playing => throw _privateConstructorUsedError;
+  Duration? get position => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -34,7 +35,7 @@ abstract class $TTSStateCopyWith<$Res> {
   factory $TTSStateCopyWith(TTSState value, $Res Function(TTSState) then) =
       _$TTSStateCopyWithImpl<$Res, TTSState>;
   @useResult
-  $Res call({bool showbar, bool playing});
+  $Res call({bool showbar, bool playing, Duration? position});
 }
 
 /// @nodoc
@@ -52,6 +53,7 @@ class _$TTSStateCopyWithImpl<$Res, $Val extends TTSState>
   $Res call({
     Object? showbar = null,
     Object? playing = null,
+    Object? position = freezed,
   }) {
     return _then(_value.copyWith(
       showbar: null == showbar
@@ -62,6 +64,10 @@ class _$TTSStateCopyWithImpl<$Res, $Val extends TTSState>
           ? _value.playing
           : playing // ignore: cast_nullable_to_non_nullable
               as bool,
+      position: freezed == position
+          ? _value.position
+          : position // ignore: cast_nullable_to_non_nullable
+              as Duration?,
     ) as $Val);
   }
 }
@@ -73,7 +79,7 @@ abstract class _$$_TTSStateCopyWith<$Res> implements $TTSStateCopyWith<$Res> {
       __$$_TTSStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool showbar, bool playing});
+  $Res call({bool showbar, bool playing, Duration? position});
 }
 
 /// @nodoc
@@ -89,6 +95,7 @@ class __$$_TTSStateCopyWithImpl<$Res>
   $Res call({
     Object? showbar = null,
     Object? playing = null,
+    Object? position = freezed,
   }) {
     return _then(_$_TTSState(
       showbar: null == showbar
@@ -99,6 +106,10 @@ class __$$_TTSStateCopyWithImpl<$Res>
           ? _value.playing
           : playing // ignore: cast_nullable_to_non_nullable
               as bool,
+      position: freezed == position
+          ? _value.position
+          : position // ignore: cast_nullable_to_non_nullable
+              as Duration?,
     ));
   }
 }
@@ -106,7 +117,8 @@ class __$$_TTSStateCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_TTSState implements _TTSState {
-  const _$_TTSState({this.showbar = false, this.playing = false});
+  const _$_TTSState(
+      {this.showbar = false, this.playing = false, this.position});
 
   factory _$_TTSState.fromJson(Map<String, dynamic> json) =>
       _$$_TTSStateFromJson(json);
@@ -117,10 +129,12 @@ class _$_TTSState implements _TTSState {
   @override
   @JsonKey()
   final bool playing;
+  @override
+  final Duration? position;
 
   @override
   String toString() {
-    return 'TTSState(showbar: $showbar, playing: $playing)';
+    return 'TTSState(showbar: $showbar, playing: $playing, position: $position)';
   }
 
   @override
@@ -129,12 +143,14 @@ class _$_TTSState implements _TTSState {
         (other.runtimeType == runtimeType &&
             other is _$_TTSState &&
             (identical(other.showbar, showbar) || other.showbar == showbar) &&
-            (identical(other.playing, playing) || other.playing == playing));
+            (identical(other.playing, playing) || other.playing == playing) &&
+            (identical(other.position, position) ||
+                other.position == position));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, showbar, playing);
+  int get hashCode => Object.hash(runtimeType, showbar, playing, position);
 
   @JsonKey(ignore: true)
   @override
@@ -151,8 +167,10 @@ class _$_TTSState implements _TTSState {
 }
 
 abstract class _TTSState implements TTSState {
-  const factory _TTSState({final bool showbar, final bool playing}) =
-      _$_TTSState;
+  const factory _TTSState(
+      {final bool showbar,
+      final bool playing,
+      final Duration? position}) = _$_TTSState;
 
   factory _TTSState.fromJson(Map<String, dynamic> json) = _$_TTSState.fromJson;
 
@@ -160,6 +178,8 @@ abstract class _TTSState implements TTSState {
   bool get showbar;
   @override
   bool get playing;
+  @override
+  Duration? get position;
   @override
   @JsonKey(ignore: true)
   _$$_TTSStateCopyWith<_$_TTSState> get copyWith =>

@@ -50,7 +50,7 @@ class EpubContentView extends HookConsumerWidget {
               if (onClose != null) {
                 onClose!();
               } else {
-                await ref.read(selectBookProvider.notifier).saveProcess();
+                await ref.read(selectBookProvider.notifier).saveProcess(null);
 
                 if (!context.mounted) {
                   return;
