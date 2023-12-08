@@ -20,6 +20,7 @@ class TTSState with _$TTSState {
   const factory TTSState({
     @Default(false) bool showbar,
     @Default(false) bool playing,
+    Duration? position,
   }) = _TTSState;
 
   factory TTSState.fromJson(Map<String, Object?> json) =>
@@ -28,8 +29,11 @@ class TTSState with _$TTSState {
 
 @Riverpod(keepAlive: true)
 class TtsService extends _$TtsService {
+  late AudioPlayer player;
+
   @override
   TTSState build() {
+    player = AudioPlayer();
     return const TTSState();
   }
 
@@ -39,26 +43,39 @@ class TtsService extends _$TtsService {
 
   Future<void> pause() async {
     if (state.playing) {
+      await player.pause();
+
+      final position = player.position.inMilliseconds;
       //要先关闭现有的
-      await ref.read(selectBookProvider.notifier).saveProcess();
+      await ref.read(selectBookProvider.notifier).saveProcess(position);
     }
     state = TTSState(showbar: state.showbar, playing: false);
 
     // ref.notifyListeners();
   }
 
-  void resume() {
+  Future<void> resume() async {
     state = TTSState(showbar: state.showbar, playing: true);
   }
 
-  void stop() {
+  Future<void> stop() async {
+    await player.stop();
+
+    final position = player.position.inMilliseconds;
+    //要先关闭现有的
+    await ref.read(selectBookProvider.notifier).saveProcess(position);
+
     state = TTSState(showbar: state.showbar, playing: false);
   }
 
   Future<void> close() async {
     if (state.playing) {
       //要先关闭现有的
-      await ref.read(selectBookProvider.notifier).saveProcess();
+      await player.stop();
+
+      final position = player.position.inMilliseconds;
+      //要先关闭现有的
+      await ref.read(selectBookProvider.notifier).saveProcess(position);
     }
     state = const TTSState();
 
@@ -94,35 +111,30 @@ class TtsService extends _$TtsService {
 
     Future<String> streamData = _fetchWavStream(document, pos);
 
-    //send to tts server
-
     while (state.playing) {
       final wavSource = await streamData;
 
       pos++;
       final next = document.nextIndex(current, pos);
 
-      if (next == null) {
-        //读到底了,play stop tone
-
-        state = state.copyWith(playing: false);
-      } else {
-        //read current book data and send
-        current = next;
-
+      if (next != null) {
+        //还有段落，缓存下一个
         streamData = _fetchWavStream(document, pos);
-        final player = AudioPlayer();
-        // await player.setAudioSource(wavSource);
-        await player.setFilePath(wavSource);
-        await player.play();
+      }
 
+      await player.setFilePath(wavSource);
+      await player.seek(current.duration);
+      await player.play();
+
+      if (next != null) {
+        current = next;
         ref
             .read(selectBookProvider.notifier)
             .updateProgress(current, document.progress(current));
+      } else {
+        state = state.copyWith(playing: false);
+        break;
       }
-
-      ref.notifyListeners();
-      //delay
     }
     print('exit runtask');
   }

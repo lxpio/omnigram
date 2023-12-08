@@ -14,6 +14,8 @@ class Conversation {
   final String? editName;
   final String serviceId;
   final int autoQuote;
+
+  @Property(type: PropertyType.date)
   DateTime lastActive;
 
   bool isActive = false;

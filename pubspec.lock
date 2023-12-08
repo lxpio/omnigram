@@ -742,6 +742,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.2.0"
+  lottie:
+    dependency: "direct main"
+    description:
+      name: lottie
+      sha256: a93542cc2d60a7057255405f62252533f8e8956e7e06754955669fd32fb4b216
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.7.0"
   markdown:
     dependency: "direct main"
     description:
@@ -966,22 +974,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.2.1"
-  rive:
-    dependency: "direct main"
-    description:
-      name: rive
-      sha256: "166019487e8bfa6525d4537bfd494deb4f306e32f97a7f50ff452b44ab6b72ea"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.11.11"
-  rive_common:
-    dependency: transitive
-    description:
-      name: rive_common
-      sha256: "83af8b500ad4d23930397229c7ed520e266eb851690a8621afa6cbd782aeac87"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.2.3"
   riverpod:
     dependency: transitive
     description:
@@ -1086,6 +1078,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.4"
+  simple_animations:
+    dependency: "direct main"
+    description:
+      name: simple_animations
+      sha256: "1ea7b93fb98e2a611b6865d632de55607b766328d14700143353129ee0559d3a"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "5.0.2"
   sky_engine:
     dependency: transitive
     description: flutter

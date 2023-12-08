@@ -9,7 +9,7 @@ import 'package:omnigram/providers/user/oauth_model.dart';
 import 'package:omnigram/providers/user/user_model.dart';
 import 'package:omnigram/utils/l10n.dart';
 import 'package:omnigram/utils/show_snackbar.dart';
-import 'package:rive/rive.dart';
+import 'package:lottie/lottie.dart';
 
 class LoginScreen extends HookConsumerWidget {
   // const LoginScreen({super.key});
@@ -33,15 +33,11 @@ class LoginScreen extends HookConsumerWidget {
           child: Column(
             children: [
               const SizedBox(height: 50),
-              const SizedBox(
+              SizedBox(
                 height: 350,
                 width: 350,
-                child: RiveAnimation.asset(
-                  "assets/files/113-173-loading-book.riv",
-                  // alignment: Alignment.topCenter,
-                  // fit: BoxFit.contain,
-                  // animation: "coding",
-                ),
+                child:
+                    Lottie.asset("assets/files/Animation-reading-woman.json"),
               ),
               const SizedBox(height: 40),
               TextFormField(

@@ -29,10 +29,14 @@ mixin _$BookModel {
   double? get progress => throw _privateConstructorUsedError;
   @JsonKey(name: 'progress_index')
   int? get progressIndex => throw _privateConstructorUsedError;
+  @JsonKey(name: 'para_position')
+  int? get paraPosition => throw _privateConstructorUsedError; //para position
   int? get size => throw _privateConstructorUsedError;
   String? get path => throw _privateConstructorUsedError;
   String? get ctime => throw _privateConstructorUsedError;
   String? get utime => throw _privateConstructorUsedError;
+  String? get pubdate => throw _privateConstructorUsedError;
+  int? get rating => throw _privateConstructorUsedError;
   @JsonKey(name: 'sub_title')
   String? get subTitle => throw _privateConstructorUsedError;
   String? get language => throw _privateConstructorUsedError;
@@ -51,8 +55,6 @@ mixin _$BookModel {
   String? get series => throw _privateConstructorUsedError;
   @JsonKey(name: 'series_index')
   String? get seriesIndex => throw _privateConstructorUsedError;
-  String? get pubdate => throw _privateConstructorUsedError;
-  int? get rating => throw _privateConstructorUsedError;
   @JsonKey(name: 'publisher_url')
   String? get publisherUrl => throw _privateConstructorUsedError;
   @JsonKey(name: 'count_visit')
@@ -78,10 +80,13 @@ abstract class $BookModelCopyWith<$Res> {
       String author,
       double? progress,
       @JsonKey(name: 'progress_index') int? progressIndex,
+      @JsonKey(name: 'para_position') int? paraPosition,
       int? size,
       String? path,
       String? ctime,
       String? utime,
+      String? pubdate,
+      int? rating,
       @JsonKey(name: 'sub_title') String? subTitle,
       String? language,
       @JsonKey(name: 'cover_url') String? coverUrl,
@@ -94,8 +99,6 @@ abstract class $BookModelCopyWith<$Res> {
       String? description,
       String? series,
       @JsonKey(name: 'series_index') String? seriesIndex,
-      String? pubdate,
-      int? rating,
       @JsonKey(name: 'publisher_url') String? publisherUrl,
       @JsonKey(name: 'count_visit') int? countVisit,
       @JsonKey(name: 'count_download') int? countDownload});
@@ -120,10 +123,13 @@ class _$BookModelCopyWithImpl<$Res, $Val extends BookModel>
     Object? author = null,
     Object? progress = freezed,
     Object? progressIndex = freezed,
+    Object? paraPosition = freezed,
     Object? size = freezed,
     Object? path = freezed,
     Object? ctime = freezed,
     Object? utime = freezed,
+    Object? pubdate = freezed,
+    Object? rating = freezed,
     Object? subTitle = freezed,
     Object? language = freezed,
     Object? coverUrl = freezed,
@@ -136,8 +142,6 @@ class _$BookModelCopyWithImpl<$Res, $Val extends BookModel>
     Object? description = freezed,
     Object? series = freezed,
     Object? seriesIndex = freezed,
-    Object? pubdate = freezed,
-    Object? rating = freezed,
     Object? publisherUrl = freezed,
     Object? countVisit = freezed,
     Object? countDownload = freezed,
@@ -167,6 +171,10 @@ class _$BookModelCopyWithImpl<$Res, $Val extends BookModel>
           ? _value.progressIndex
           : progressIndex // ignore: cast_nullable_to_non_nullable
               as int?,
+      paraPosition: freezed == paraPosition
+          ? _value.paraPosition
+          : paraPosition // ignore: cast_nullable_to_non_nullable
+              as int?,
       size: freezed == size
           ? _value.size
           : size // ignore: cast_nullable_to_non_nullable
@@ -183,6 +191,14 @@ class _$BookModelCopyWithImpl<$Res, $Val extends BookModel>
           ? _value.utime
           : utime // ignore: cast_nullable_to_non_nullable
               as String?,
+      pubdate: freezed == pubdate
+          ? _value.pubdate
+          : pubdate // ignore: cast_nullable_to_non_nullable
+              as String?,
+      rating: freezed == rating
+          ? _value.rating
+          : rating // ignore: cast_nullable_to_non_nullable
+              as int?,
       subTitle: freezed == subTitle
           ? _value.subTitle
           : subTitle // ignore: cast_nullable_to_non_nullable
@@ -231,14 +247,6 @@ class _$BookModelCopyWithImpl<$Res, $Val extends BookModel>
           ? _value.seriesIndex
           : seriesIndex // ignore: cast_nullable_to_non_nullable
               as String?,
-      pubdate: freezed == pubdate
-          ? _value.pubdate
-          : pubdate // ignore: cast_nullable_to_non_nullable
-              as String?,
-      rating: freezed == rating
-          ? _value.rating
-          : rating // ignore: cast_nullable_to_non_nullable
-              as int?,
       publisherUrl: freezed == publisherUrl
           ? _value.publisherUrl
           : publisherUrl // ignore: cast_nullable_to_non_nullable
@@ -269,10 +277,13 @@ abstract class _$$_BookModelCopyWith<$Res> implements $BookModelCopyWith<$Res> {
       String author,
       double? progress,
       @JsonKey(name: 'progress_index') int? progressIndex,
+      @JsonKey(name: 'para_position') int? paraPosition,
       int? size,
       String? path,
       String? ctime,
       String? utime,
+      String? pubdate,
+      int? rating,
       @JsonKey(name: 'sub_title') String? subTitle,
       String? language,
       @JsonKey(name: 'cover_url') String? coverUrl,
@@ -285,8 +296,6 @@ abstract class _$$_BookModelCopyWith<$Res> implements $BookModelCopyWith<$Res> {
       String? description,
       String? series,
       @JsonKey(name: 'series_index') String? seriesIndex,
-      String? pubdate,
-      int? rating,
       @JsonKey(name: 'publisher_url') String? publisherUrl,
       @JsonKey(name: 'count_visit') int? countVisit,
       @JsonKey(name: 'count_download') int? countDownload});
@@ -309,10 +318,13 @@ class __$$_BookModelCopyWithImpl<$Res>
     Object? author = null,
     Object? progress = freezed,
     Object? progressIndex = freezed,
+    Object? paraPosition = freezed,
     Object? size = freezed,
     Object? path = freezed,
     Object? ctime = freezed,
     Object? utime = freezed,
+    Object? pubdate = freezed,
+    Object? rating = freezed,
     Object? subTitle = freezed,
     Object? language = freezed,
     Object? coverUrl = freezed,
@@ -325,8 +337,6 @@ class __$$_BookModelCopyWithImpl<$Res>
     Object? description = freezed,
     Object? series = freezed,
     Object? seriesIndex = freezed,
-    Object? pubdate = freezed,
-    Object? rating = freezed,
     Object? publisherUrl = freezed,
     Object? countVisit = freezed,
     Object? countDownload = freezed,
@@ -356,6 +366,10 @@ class __$$_BookModelCopyWithImpl<$Res>
           ? _value.progressIndex
           : progressIndex // ignore: cast_nullable_to_non_nullable
               as int?,
+      paraPosition: freezed == paraPosition
+          ? _value.paraPosition
+          : paraPosition // ignore: cast_nullable_to_non_nullable
+              as int?,
       size: freezed == size
           ? _value.size
           : size // ignore: cast_nullable_to_non_nullable
@@ -372,6 +386,14 @@ class __$$_BookModelCopyWithImpl<$Res>
           ? _value.utime
           : utime // ignore: cast_nullable_to_non_nullable
               as String?,
+      pubdate: freezed == pubdate
+          ? _value.pubdate
+          : pubdate // ignore: cast_nullable_to_non_nullable
+              as String?,
+      rating: freezed == rating
+          ? _value.rating
+          : rating // ignore: cast_nullable_to_non_nullable
+              as int?,
       subTitle: freezed == subTitle
           ? _value.subTitle
           : subTitle // ignore: cast_nullable_to_non_nullable
@@ -420,14 +442,6 @@ class __$$_BookModelCopyWithImpl<$Res>
           ? _value.seriesIndex
           : seriesIndex // ignore: cast_nullable_to_non_nullable
               as String?,
-      pubdate: freezed == pubdate
-          ? _value.pubdate
-          : pubdate // ignore: cast_nullable_to_non_nullable
-              as String?,
-      rating: freezed == rating
-          ? _value.rating
-          : rating // ignore: cast_nullable_to_non_nullable
-              as int?,
       publisherUrl: freezed == publisherUrl
           ? _value.publisherUrl
           : publisherUrl // ignore: cast_nullable_to_non_nullable
@@ -455,10 +469,13 @@ class _$_BookModel extends _BookModel {
       required this.author,
       this.progress,
       @JsonKey(name: 'progress_index') this.progressIndex,
+      @JsonKey(name: 'para_position') this.paraPosition,
       this.size,
       this.path,
       this.ctime,
       this.utime,
+      this.pubdate,
+      this.rating,
       @JsonKey(name: 'sub_title') this.subTitle,
       this.language,
       @JsonKey(name: 'cover_url') this.coverUrl,
@@ -471,8 +488,6 @@ class _$_BookModel extends _BookModel {
       this.description,
       this.series,
       @JsonKey(name: 'series_index') this.seriesIndex,
-      this.pubdate,
-      this.rating,
       @JsonKey(name: 'publisher_url') this.publisherUrl,
       @JsonKey(name: 'count_visit') this.countVisit,
       @JsonKey(name: 'count_download') this.countDownload})
@@ -498,6 +513,10 @@ class _$_BookModel extends _BookModel {
   @JsonKey(name: 'progress_index')
   final int? progressIndex;
   @override
+  @JsonKey(name: 'para_position')
+  final int? paraPosition;
+//para position
+  @override
   final int? size;
   @override
   final String? path;
@@ -505,6 +524,10 @@ class _$_BookModel extends _BookModel {
   final String? ctime;
   @override
   final String? utime;
+  @override
+  final String? pubdate;
+  @override
+  final int? rating;
   @override
   @JsonKey(name: 'sub_title')
   final String? subTitle;
@@ -536,10 +559,6 @@ class _$_BookModel extends _BookModel {
   @JsonKey(name: 'series_index')
   final String? seriesIndex;
   @override
-  final String? pubdate;
-  @override
-  final int? rating;
-  @override
   @JsonKey(name: 'publisher_url')
   final String? publisherUrl;
   @override
@@ -551,7 +570,7 @@ class _$_BookModel extends _BookModel {
 
   @override
   String toString() {
-    return 'BookModel(id: $id, title: $title, identifier: $identifier, author: $author, progress: $progress, progressIndex: $progressIndex, size: $size, path: $path, ctime: $ctime, utime: $utime, subTitle: $subTitle, language: $language, coverUrl: $coverUrl, uuid: $uuid, isbn: $isbn, asin: $asin, authorUrl: $authorUrl, authorSort: $authorSort, publisher: $publisher, description: $description, series: $series, seriesIndex: $seriesIndex, pubdate: $pubdate, rating: $rating, publisherUrl: $publisherUrl, countVisit: $countVisit, countDownload: $countDownload)';
+    return 'BookModel(id: $id, title: $title, identifier: $identifier, author: $author, progress: $progress, progressIndex: $progressIndex, paraPosition: $paraPosition, size: $size, path: $path, ctime: $ctime, utime: $utime, pubdate: $pubdate, rating: $rating, subTitle: $subTitle, language: $language, coverUrl: $coverUrl, uuid: $uuid, isbn: $isbn, asin: $asin, authorUrl: $authorUrl, authorSort: $authorSort, publisher: $publisher, description: $description, series: $series, seriesIndex: $seriesIndex, publisherUrl: $publisherUrl, countVisit: $countVisit, countDownload: $countDownload)';
   }
 
   @override
@@ -568,10 +587,14 @@ class _$_BookModel extends _BookModel {
                 other.progress == progress) &&
             (identical(other.progressIndex, progressIndex) ||
                 other.progressIndex == progressIndex) &&
+            (identical(other.paraPosition, paraPosition) ||
+                other.paraPosition == paraPosition) &&
             (identical(other.size, size) || other.size == size) &&
             (identical(other.path, path) || other.path == path) &&
             (identical(other.ctime, ctime) || other.ctime == ctime) &&
             (identical(other.utime, utime) || other.utime == utime) &&
+            (identical(other.pubdate, pubdate) || other.pubdate == pubdate) &&
+            (identical(other.rating, rating) || other.rating == rating) &&
             (identical(other.subTitle, subTitle) ||
                 other.subTitle == subTitle) &&
             (identical(other.language, language) ||
@@ -592,8 +615,6 @@ class _$_BookModel extends _BookModel {
             (identical(other.series, series) || other.series == series) &&
             (identical(other.seriesIndex, seriesIndex) ||
                 other.seriesIndex == seriesIndex) &&
-            (identical(other.pubdate, pubdate) || other.pubdate == pubdate) &&
-            (identical(other.rating, rating) || other.rating == rating) &&
             (identical(other.publisherUrl, publisherUrl) ||
                 other.publisherUrl == publisherUrl) &&
             (identical(other.countVisit, countVisit) ||
@@ -612,10 +633,13 @@ class _$_BookModel extends _BookModel {
         author,
         progress,
         progressIndex,
+        paraPosition,
         size,
         path,
         ctime,
         utime,
+        pubdate,
+        rating,
         subTitle,
         language,
         coverUrl,
@@ -628,8 +652,6 @@ class _$_BookModel extends _BookModel {
         description,
         series,
         seriesIndex,
-        pubdate,
-        rating,
         publisherUrl,
         countVisit,
         countDownload
@@ -657,10 +679,13 @@ abstract class _BookModel extends BookModel {
           required final String author,
           final double? progress,
           @JsonKey(name: 'progress_index') final int? progressIndex,
+          @JsonKey(name: 'para_position') final int? paraPosition,
           final int? size,
           final String? path,
           final String? ctime,
           final String? utime,
+          final String? pubdate,
+          final int? rating,
           @JsonKey(name: 'sub_title') final String? subTitle,
           final String? language,
           @JsonKey(name: 'cover_url') final String? coverUrl,
@@ -673,8 +698,6 @@ abstract class _BookModel extends BookModel {
           final String? description,
           final String? series,
           @JsonKey(name: 'series_index') final String? seriesIndex,
-          final String? pubdate,
-          final int? rating,
           @JsonKey(name: 'publisher_url') final String? publisherUrl,
           @JsonKey(name: 'count_visit') final int? countVisit,
           @JsonKey(name: 'count_download') final int? countDownload}) =
@@ -700,6 +723,9 @@ abstract class _BookModel extends BookModel {
   @JsonKey(name: 'progress_index')
   int? get progressIndex;
   @override
+  @JsonKey(name: 'para_position')
+  int? get paraPosition;
+  @override //para position
   int? get size;
   @override
   String? get path;
@@ -707,6 +733,10 @@ abstract class _BookModel extends BookModel {
   String? get ctime;
   @override
   String? get utime;
+  @override
+  String? get pubdate;
+  @override
+  int? get rating;
   @override
   @JsonKey(name: 'sub_title')
   String? get subTitle;
@@ -736,10 +766,6 @@ abstract class _BookModel extends BookModel {
   @override
   @JsonKey(name: 'series_index')
   String? get seriesIndex;
-  @override
-  String? get pubdate;
-  @override
-  int? get rating;
   @override
   @JsonKey(name: 'publisher_url')
   String? get publisherUrl;

@@ -45,7 +45,6 @@ dependencies:
       ref: 32559dc324b
   # epubx:
   #   path: ../epubx.dart
-  rive: 0.11.11
 
   flutter_slidable: ^3.0.0
   transparent_image: ^2.0.1
@@ -53,6 +52,8 @@ dependencies:
   scrollable_positioned_list: ^0.3.8
   flutter_html: ^3.0.0-beta.2
   just_audio: ^0.9.36
+  lottie: ^2.7.0
+  simple_animations: ^5.0.2
 
 dev_dependencies:
   flutter_lints: ^2.0.0

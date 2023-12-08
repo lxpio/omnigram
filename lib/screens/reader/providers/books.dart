@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/flavors/app_store.dart';
 import 'package:omnigram/providers/service/api_service.dart';
 import 'package:omnigram/providers/service/provider.dart';
+import 'package:omnigram/screens/reader/models/epub/epub.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -104,7 +105,7 @@ class BookAPI {
   }
 
   Future<ApiResponse> updateProcess(
-      int id, double progress, int? progressIndex) async {
+      int id, double progress, ChapterIndex? index) async {
     final bookApi = ref.read(apiServiceProvider);
 
     try {
@@ -113,7 +114,8 @@ class BookAPI {
         "/book/read/books/$id",
         body: {
           "progress": progress,
-          "progress_index": progressIndex,
+          "progress_index": index?.combined,
+          "para_position": index?.position,
         },
         // onDownloadProgress: onDownloadProgress,
       );
