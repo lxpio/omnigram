@@ -1,4 +1,6 @@
-# Omnigram
+#
+
+![Omnigram](https://omnigram.nexptr.com/images/logo_with_letter_white.svg#gh-light-mode-only)![Omnigram](https://omnigram.nexptr.com/images/logo_with_letter_dark.svg#gh-dark-mode-only)
 
 <div style="font-size: 1.5rem;">
   <a href="./README.md">English</a> | <a href="./README.zh.md">中文</a>
@@ -7,7 +9,7 @@
 
 ## About Omnigram
 
-Omnigram is a multi-platform (iOS, Android, Web, Windows, Linux, Mac) file reading and audiobook client written in Flutter. It supports multiple formats, including EPUB and PDF. It provides audiobook functionality through TTS models and supports other AI models for assisted reading. In addition, it has local book management capabilities, allowing users to easily manage book storage on NAS. For its backend service deployment, refer to omnigam-server. Or check the official project documentation.
+Omnigram is a multi-platform (iOS, Android, Web, Windows, Linux, Mac) file reading and audiobook client written in Flutter. It supports multiple formats, including EPUB and PDF. It provides audiobook functionality through TTS models and supports other AI models for assisted reading. In addition, it has local book management capabilities, allowing users to easily manage book storage on NAS. For its backend service deployment, refer to [omnigam-server](https://github.com/nexptr/omnigram-server). Or check the [official project documentation](https://omnigram.nexptr.com/).
 
 ## Features
 

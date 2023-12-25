@@ -41,6 +41,10 @@ class BookSearch with _$BookSearch {
 class Books extends _$Books {
   @override
   Future<BookNav> build() async {
+    return _fetch();
+  }
+
+  Future<BookNav> _fetch() async {
     final bookApi = ref.watch(apiServiceProvider);
 
     final args = ref.watch(bookIndexSearchProvider);
@@ -54,6 +58,14 @@ class Books extends _$Books {
     } else {
       throw Exception(result.message);
     }
+  }
+
+  Future<void> refresh() async {
+    state = const AsyncLoading();
+    // final nav = await _fetch();
+
+    // state = AsyncData(nav);
+    state = await AsyncValue.guard(_fetch);
   }
 }
 

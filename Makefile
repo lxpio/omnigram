@@ -11,7 +11,9 @@ BUILD_HASH=$(shell git rev-parse HEAD)
 
 all : omnigram
 
-
+l10n:
+	@echo "l10n build"
+	@flutter gen-l10n
 
 
 objectbox:
@@ -24,10 +26,10 @@ omnigram: objectbox
 	@dart run flutter_launcher_icons:main
 
 
-release:
+release: l10n
 	@echo "release build"
 	@flutter build appbundle 
 
 
-apk:
+apk: l10n
 	@flutter build apk --split-per-abi
