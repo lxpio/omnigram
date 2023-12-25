@@ -64,5 +64,9 @@
   "failed": "Failed",
   "canceled": "Canceled",
   "failed": "Failed",
-  "copied": "Copied"
+  "copied": "Copied",
+  "ooops":"Ooops! 😓",
+  "no_internet":"No internet connection found. Check your connection or try again.",
+  "try_again":"Try again",
+  "config_server":"Config Server?"
 }
