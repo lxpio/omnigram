@@ -1,6 +1,17 @@
 #
 
-![Omnigram](https://omnigram.nexptr.com/images/logo_with_letter_white.svg#gh-light-mode-only)![Omnigram](https://omnigram.nexptr.com/images/logo_with_letter_dark.svg#gh-dark-mode-only)
+<picture>
+  <source
+    srcset="https://omnigram.nexptr.com/images/logo_with_letter_dark.svg"
+    media="(prefers-color-scheme: dark)"
+  />
+  <source
+    srcset="https://omnigram.nexptr.com/images/logo_with_letter_white.svg"
+    media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
+  />
+  <img src="https://omnigram.nexptr.com/images/logo_with_letter_white.svg" />
+</picture>
+
 
 <div style="font-size: 1.5rem;">
   <a href="./README.md">English</a> | <a href="./README.zh.md">中文</a>
