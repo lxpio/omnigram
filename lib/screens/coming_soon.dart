@@ -28,7 +28,7 @@ class _PhotoPageBodyState extends State<PhotoPageBody> {
                   Center(
                     child: Container(
                       width: 280,
-                      height: 280,
+                      height: 240,
                       child: Lottie.asset(
                         "assets/files/Animation-coming-soon.json",
                         // alignment: Alignment.topCenter,

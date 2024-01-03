@@ -17,7 +17,7 @@ class HomeSmallScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booknav = ref.watch(booksProvider);
+    final booknav = ref.watch(personBooksProvider);
 
     return booknav.when(
       loading: () => const LinearProgressIndicator(),
@@ -33,7 +33,8 @@ class HomeSmallScreen extends HookConsumerWidget {
       },
       error: (err, stack) {
         if (err is DioException &&
-            err.type == DioExceptionType.connectionTimeout) {
+            (err.type == DioExceptionType.connectionTimeout ||
+                err.type == DioExceptionType.connectionError)) {
           // 处理连接超时或接收超时
           // print('Timeout Error: ${err.message}');
           return NoConnectionScreen(onRefresh: () async {

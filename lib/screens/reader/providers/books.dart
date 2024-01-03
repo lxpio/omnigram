@@ -25,6 +25,17 @@ class BookNav with _$BookNav {
 }
 
 @freezed
+class PersonBookNav with _$PersonBookNav {
+  const factory PersonBookNav({
+    List<BookModel>? readings,
+    List<BookModel>? likes,
+  }) = _PersonBookNav;
+
+  factory PersonBookNav.fromJson(Map<String, Object?> json) =>
+      _$PersonBookNavFromJson(json);
+}
+
+@freezed
 class BookSearch with _$BookSearch {
   const factory BookSearch({
     String? search,
@@ -52,6 +63,38 @@ class Books extends _$Books {
     final ApiResponse<BookNav> result = await bookApi.request(
         'GET', "/book/index",
         body: args.toJson(), fromJsonT: BookNav.fromJson);
+
+    if (result.code == 200) {
+      return result.data!;
+    } else {
+      throw Exception(result.message);
+    }
+  }
+
+  Future<void> refresh() async {
+    state = const AsyncLoading();
+    // final nav = await _fetch();
+
+    // state = AsyncData(nav);
+    state = await AsyncValue.guard(_fetch);
+  }
+}
+
+@riverpod
+class PersonBooks extends _$PersonBooks {
+  @override
+  Future<PersonBookNav> build() async {
+    return _fetch();
+  }
+
+  Future<PersonBookNav> _fetch() async {
+    final bookApi = ref.watch(apiServiceProvider);
+
+    final args = ref.watch(bookIndexSearchProvider);
+
+    final ApiResponse<PersonBookNav> result = await bookApi.request(
+        'GET', "/book/personal",
+        body: args.toJson(), fromJsonT: PersonBookNav.fromJson);
 
     if (result.code == 200) {
       return result.data!;

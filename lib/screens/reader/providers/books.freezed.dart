@@ -219,6 +219,181 @@ abstract class _BookNav implements BookNav {
       throw _privateConstructorUsedError;
 }
 
+PersonBookNav _$PersonBookNavFromJson(Map<String, dynamic> json) {
+  return _PersonBookNav.fromJson(json);
+}
+
+/// @nodoc
+mixin _$PersonBookNav {
+  List<BookModel>? get readings => throw _privateConstructorUsedError;
+  List<BookModel>? get likes => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $PersonBookNavCopyWith<PersonBookNav> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $PersonBookNavCopyWith<$Res> {
+  factory $PersonBookNavCopyWith(
+          PersonBookNav value, $Res Function(PersonBookNav) then) =
+      _$PersonBookNavCopyWithImpl<$Res, PersonBookNav>;
+  @useResult
+  $Res call({List<BookModel>? readings, List<BookModel>? likes});
+}
+
+/// @nodoc
+class _$PersonBookNavCopyWithImpl<$Res, $Val extends PersonBookNav>
+    implements $PersonBookNavCopyWith<$Res> {
+  _$PersonBookNavCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? readings = freezed,
+    Object? likes = freezed,
+  }) {
+    return _then(_value.copyWith(
+      readings: freezed == readings
+          ? _value.readings
+          : readings // ignore: cast_nullable_to_non_nullable
+              as List<BookModel>?,
+      likes: freezed == likes
+          ? _value.likes
+          : likes // ignore: cast_nullable_to_non_nullable
+              as List<BookModel>?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$_PersonBookNavCopyWith<$Res>
+    implements $PersonBookNavCopyWith<$Res> {
+  factory _$$_PersonBookNavCopyWith(
+          _$_PersonBookNav value, $Res Function(_$_PersonBookNav) then) =
+      __$$_PersonBookNavCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({List<BookModel>? readings, List<BookModel>? likes});
+}
+
+/// @nodoc
+class __$$_PersonBookNavCopyWithImpl<$Res>
+    extends _$PersonBookNavCopyWithImpl<$Res, _$_PersonBookNav>
+    implements _$$_PersonBookNavCopyWith<$Res> {
+  __$$_PersonBookNavCopyWithImpl(
+      _$_PersonBookNav _value, $Res Function(_$_PersonBookNav) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? readings = freezed,
+    Object? likes = freezed,
+  }) {
+    return _then(_$_PersonBookNav(
+      readings: freezed == readings
+          ? _value._readings
+          : readings // ignore: cast_nullable_to_non_nullable
+              as List<BookModel>?,
+      likes: freezed == likes
+          ? _value._likes
+          : likes // ignore: cast_nullable_to_non_nullable
+              as List<BookModel>?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$_PersonBookNav implements _PersonBookNav {
+  const _$_PersonBookNav(
+      {final List<BookModel>? readings, final List<BookModel>? likes})
+      : _readings = readings,
+        _likes = likes;
+
+  factory _$_PersonBookNav.fromJson(Map<String, dynamic> json) =>
+      _$$_PersonBookNavFromJson(json);
+
+  final List<BookModel>? _readings;
+  @override
+  List<BookModel>? get readings {
+    final value = _readings;
+    if (value == null) return null;
+    if (_readings is EqualUnmodifiableListView) return _readings;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<BookModel>? _likes;
+  @override
+  List<BookModel>? get likes {
+    final value = _likes;
+    if (value == null) return null;
+    if (_likes is EqualUnmodifiableListView) return _likes;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  @override
+  String toString() {
+    return 'PersonBookNav(readings: $readings, likes: $likes)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_PersonBookNav &&
+            const DeepCollectionEquality().equals(other._readings, _readings) &&
+            const DeepCollectionEquality().equals(other._likes, _likes));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(_readings),
+      const DeepCollectionEquality().hash(_likes));
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_PersonBookNavCopyWith<_$_PersonBookNav> get copyWith =>
+      __$$_PersonBookNavCopyWithImpl<_$_PersonBookNav>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_PersonBookNavToJson(
+      this,
+    );
+  }
+}
+
+abstract class _PersonBookNav implements PersonBookNav {
+  const factory _PersonBookNav(
+      {final List<BookModel>? readings,
+      final List<BookModel>? likes}) = _$_PersonBookNav;
+
+  factory _PersonBookNav.fromJson(Map<String, dynamic> json) =
+      _$_PersonBookNav.fromJson;
+
+  @override
+  List<BookModel>? get readings;
+  @override
+  List<BookModel>? get likes;
+  @override
+  @JsonKey(ignore: true)
+  _$$_PersonBookNavCopyWith<_$_PersonBookNav> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
 BookSearch _$BookSearchFromJson(Map<String, dynamic> json) {
   return _BookSearch.fromJson(json);
 }

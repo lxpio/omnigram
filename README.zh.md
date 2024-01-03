@@ -32,11 +32,11 @@ Omnigram 是Flutter编写的支持多平台（iOS、Android、Web、Windows、Li
 
 ## 官方文档
 
-您可以在 <https://omnigram.nexptr.com/> 找到官方文档（包含安装手册）。
+您可以在 <https://omnigram.nexptr.com/en/docs/overview/getting-started/> 找到官方文档（包含安装手册）。
 
 ## 示例
 
-TODO
+![](/docs/images/login_page.png) ![](/docs/images/discover_screen.png)
 
 ## 二次开发
 

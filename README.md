@@ -34,7 +34,7 @@ Omnigram is a multi-platform (iOS, Android, Web, Windows, Linux, Mac) file readi
 
 ## Official Documentation
 
-You can find the official documentation (including installation manuals) at <https://omnigram.nexptr.com/>.
+You can find the official documentation (including installation manuals) at <https://omnigram.nexptr.com/en/docs/overview/getting-started/>.
 
 ## Examples
 
