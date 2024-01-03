@@ -25,6 +25,22 @@ Map<String, dynamic> _$$_BookNavToJson(_$_BookNav instance) =>
       'reading': instance.reading,
     };
 
+_$_PersonBookNav _$$_PersonBookNavFromJson(Map<String, dynamic> json) =>
+    _$_PersonBookNav(
+      readings: (json['readings'] as List<dynamic>?)
+          ?.map((e) => BookModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      likes: (json['likes'] as List<dynamic>?)
+          ?.map((e) => BookModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$$_PersonBookNavToJson(_$_PersonBookNav instance) =>
+    <String, dynamic>{
+      'readings': instance.readings,
+      'likes': instance.likes,
+    };
+
 _$_BookSearch _$$_BookSearchFromJson(Map<String, dynamic> json) =>
     _$_BookSearch(
       search: json['search'] as String?,
@@ -45,7 +61,7 @@ Map<String, dynamic> _$$_BookSearchToJson(_$_BookSearch instance) =>
 // RiverpodGenerator
 // **************************************************************************
 
-String _$booksHash() => r'4cbe9a2a0318c9ae7a0e6b8a4196474792727924';
+String _$booksHash() => r'36633dab977224679cfaa8a92a1bbc1e895fdb4f';
 
 /// See also [Books].
 @ProviderFor(Books)
@@ -59,5 +75,20 @@ final booksProvider = AutoDisposeAsyncNotifierProvider<Books, BookNav>.internal(
 );
 
 typedef _$Books = AutoDisposeAsyncNotifier<BookNav>;
+String _$personBooksHash() => r'bda89d15c70d06ea5e617ff1a1e2692a49f61a8f';
+
+/// See also [PersonBooks].
+@ProviderFor(PersonBooks)
+final personBooksProvider =
+    AutoDisposeAsyncNotifierProvider<PersonBooks, PersonBookNav>.internal(
+  PersonBooks.new,
+  name: r'personBooksProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$personBooksHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$PersonBooks = AutoDisposeAsyncNotifier<PersonBookNav>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

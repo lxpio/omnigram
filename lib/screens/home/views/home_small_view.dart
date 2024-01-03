@@ -8,10 +8,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:omnigram/screens/reader/views/book_group_view.dart';
 import 'package:omnigram/utils/l10n.dart';
 
+import '../../reader/views/book_group_view_v2.dart';
+
 class HomeSmallView extends HookConsumerWidget {
   const HomeSmallView({Key? key, required this.nav}) : super(key: key);
 
-  final BookNav nav;
+  final PersonBookNav nav;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -49,17 +51,19 @@ class HomeSmallView extends HookConsumerWidget {
               StretchMode.zoomBackground,
               // StretchMode.fadeTitle
             ],
-            title: AnimatedOpacity(
-              opacity: isScrolled.value ? 0.0 : 1.0,
-              duration: const Duration(milliseconds: 500),
-              child: Text(
-                "Find your 2021 Collections",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 28.0,
-                ),
-              ),
-            ),
+            // title: AnimatedOpacity(
+            //   opacity: isScrolled.value ? 0.0 : 1.0,
+            //   duration: const Duration(milliseconds: 500),
+            //   child: Container(
+            //     child: Text(
+            //       "Start your reading today",
+            //       style: TextStyle(
+            //         color: Colors.black,
+            //         fontSize: 20.0,
+            //       ),
+            //     ),
+            //   ),
+            // ),
             background: Image.asset("assets/images/girl_reading.png",
                 fit: BoxFit.cover),
           ),
@@ -67,12 +71,12 @@ class HomeSmallView extends HookConsumerWidget {
         ),
         SliverList(
           delegate: SliverChildListDelegate([
+            BookReadingGroup(
+                context.l10n.keepreading, context.l10n.viewmore, nav.readings),
             BookGroup(
-                context.l10n.keepreading, context.l10n.viewmore, nav.reading),
-            BookGroup(
-                context.l10n.recentbooks, context.l10n.viewmore, nav.recent),
-            BookGroup(
-                context.l10n.randombooks, context.l10n.viewmore, nav.random),
+                context.l10n.likedbooks, context.l10n.viewmore, nav.likes),
+            // BookGroup(
+            //     context.l10n.randombooks, context.l10n.viewmore, nav.random),
           ]),
         ),
       ],
