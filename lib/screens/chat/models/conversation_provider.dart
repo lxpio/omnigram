@@ -1,13 +1,12 @@
 // ignore_for_file: unused_import
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/flavors/provider.dart';
-import 'package:omnigram/flavors/app_store.dart';
+import 'package:omnigram/providers/provider.dart';
+import 'package:omnigram/models/app_store.dart';
 
 import 'package:omnigram/models/objectbox.g.dart';
 import 'package:universal_platform/universal_platform.dart';
 
-import '../../../flavors/app_config.dart';
 import 'conversation.dart';
 
 abstract class ConversationProvider {

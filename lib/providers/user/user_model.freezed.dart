@@ -22,8 +22,11 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
 mixin _$UserModel {
   int get id => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
+  @JsonKey(name: 'user_name')
   String get username => throw _privateConstructorUsedError;
-  String get nickname => throw _privateConstructorUsedError;
+  @JsonKey(name: 'nick_name')
+  String get nickname =>
+      throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(name: 'role_id')
   int get roleId => throw _privateConstructorUsedError;
   bool get locked => throw _privateConstructorUsedError;
@@ -43,8 +46,8 @@ abstract class $UserModelCopyWith<$Res> {
   $Res call(
       {int id,
       String email,
-      String username,
-      String nickname,
+      @JsonKey(name: 'user_name') String username,
+      @JsonKey(name: 'nick_name') String nickname,
       @JsonKey(name: 'role_id') int roleId,
       bool locked,
       bool logined});
@@ -114,8 +117,8 @@ abstract class _$$_UserModelCopyWith<$Res> implements $UserModelCopyWith<$Res> {
   $Res call(
       {int id,
       String email,
-      String username,
-      String nickname,
+      @JsonKey(name: 'user_name') String username,
+      @JsonKey(name: 'nick_name') String nickname,
       @JsonKey(name: 'role_id') int roleId,
       bool locked,
       bool logined});
@@ -175,15 +178,16 @@ class __$$_UserModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_UserModel with DiagnosticableTreeMixin implements _UserModel {
+class _$_UserModel extends _UserModel with DiagnosticableTreeMixin {
   const _$_UserModel(
       {this.id = 0,
       this.email = '',
-      this.username = '',
-      this.nickname = '',
+      @JsonKey(name: 'user_name') this.username = '',
+      @JsonKey(name: 'nick_name') this.nickname = '',
       @JsonKey(name: 'role_id') this.roleId = 10,
       this.locked = false,
-      this.logined = false});
+      this.logined = false})
+      : super._();
 
   factory _$_UserModel.fromJson(Map<String, dynamic> json) =>
       _$$_UserModelFromJson(json);
@@ -195,11 +199,12 @@ class _$_UserModel with DiagnosticableTreeMixin implements _UserModel {
   @JsonKey()
   final String email;
   @override
-  @JsonKey()
+  @JsonKey(name: 'user_name')
   final String username;
   @override
-  @JsonKey()
+  @JsonKey(name: 'nick_name')
   final String nickname;
+// ignore: invalid_annotation_target
   @override
   @JsonKey(name: 'role_id')
   final int roleId;
@@ -264,15 +269,16 @@ class _$_UserModel with DiagnosticableTreeMixin implements _UserModel {
   }
 }
 
-abstract class _UserModel implements UserModel {
+abstract class _UserModel extends UserModel {
   const factory _UserModel(
       {final int id,
       final String email,
-      final String username,
-      final String nickname,
+      @JsonKey(name: 'user_name') final String username,
+      @JsonKey(name: 'nick_name') final String nickname,
       @JsonKey(name: 'role_id') final int roleId,
       final bool locked,
       final bool logined}) = _$_UserModel;
+  const _UserModel._() : super._();
 
   factory _UserModel.fromJson(Map<String, dynamic> json) =
       _$_UserModel.fromJson;
@@ -282,10 +288,12 @@ abstract class _UserModel implements UserModel {
   @override
   String get email;
   @override
+  @JsonKey(name: 'user_name')
   String get username;
   @override
+  @JsonKey(name: 'nick_name')
   String get nickname;
-  @override
+  @override // ignore: invalid_annotation_target
   @JsonKey(name: 'role_id')
   int get roleId;
   @override

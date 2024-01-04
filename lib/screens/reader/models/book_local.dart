@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
-import 'package:omnigram/flavors/app_store.dart';
+import 'package:omnigram/models/app_store.dart';
 
 part 'book_local.freezed.dart';
 part 'book_local.g.dart';

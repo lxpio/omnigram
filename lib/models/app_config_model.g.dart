@@ -1,30 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'app_config.dart';
+part of 'app_config_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_AppConfig _$$_AppConfigFromJson(Map<String, dynamic> json) => _$_AppConfig(
+_$_AppConfigModel _$$_AppConfigModelFromJson(Map<String, dynamic> json) =>
+    _$_AppConfigModel(
       baseUrl: json['baseUrl'] as String,
       token: json['token'] as String,
       appName: json['appName'] as String,
-      chatEnabled: json['chatEnabled'] as bool,
-      m4tEnabled: json['m4tEnabled'] as bool,
+      appVersion: json['appVersion'] as String,
       shouldCollectCrashLog: json['shouldCollectCrashLog'] as bool,
-      openAIUrl: json['openAIUrl'] as String?,
-      openAIApiKey: json['openAIApiKey'] as String?,
     );
 
-Map<String, dynamic> _$$_AppConfigToJson(_$_AppConfig instance) =>
+Map<String, dynamic> _$$_AppConfigModelToJson(_$_AppConfigModel instance) =>
     <String, dynamic>{
       'baseUrl': instance.baseUrl,
       'token': instance.token,
       'appName': instance.appName,
-      'chatEnabled': instance.chatEnabled,
-      'm4tEnabled': instance.m4tEnabled,
+      'appVersion': instance.appVersion,
       'shouldCollectCrashLog': instance.shouldCollectCrashLog,
-      'openAIUrl': instance.openAIUrl,
-      'openAIApiKey': instance.openAIApiKey,
     };

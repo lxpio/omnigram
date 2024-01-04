@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'dart:math' as math;
 
 import 'package:omnigram/utils/l10n.dart';
 
