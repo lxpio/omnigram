@@ -3,7 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/components/chat_base_item_view.dart';
-import 'package:omnigram/flavors/provider.dart';
+import 'package:omnigram/providers/provider.dart';
 
 import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher_string.dart';

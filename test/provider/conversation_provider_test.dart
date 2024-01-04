@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/flavors/app_store.dart';
+import 'package:omnigram/models/app_store.dart';
 import 'package:omnigram/screens/chat/models/conversation.dart';
 
 import 'package:omnigram/screens/chat/provider/conversation_list.dart';

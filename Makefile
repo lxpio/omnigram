@@ -16,11 +16,11 @@ l10n:
 	@flutter gen-l10n
 
 
-objectbox:
-	@echo "objectbox build"
+build_runner:
+	@echo "build_runner build"
 	@flutter clean
 	@dart run build_runner build
-omnigram: objectbox
+omnigram: build_runner
 	# @flutter pub get
 	@dart run flutter_native_splash:create
 	@dart run flutter_launcher_icons:main

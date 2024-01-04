@@ -3,12 +3,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/components/root_layout.dart';
 import 'package:omnigram/providers/user/user_model.dart';
 import 'package:omnigram/screens/discover/discover_small_screen.dart';
-import 'package:omnigram/screens/manager/manger_small_screen.dart';
 
 import 'package:omnigram/screens/chat/chat_page_screen.dart';
 import 'package:omnigram/screens/chat/models/conversation.dart';
 
 import 'package:omnigram/screens/coming_soon.dart';
+import 'package:omnigram/screens/profile/profile_mobile_screen.dart';
 import 'package:omnigram/screens/reader/models/book_model.dart';
 import 'package:omnigram/screens/reader/read_epub_screen.dart';
 import 'package:omnigram/screens/reader/reader_mobile_screen.dart';
@@ -118,11 +118,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         name: kManagerPage,
         pageBuilder: (context, state) => const MaterialPage(
           // key: _pageKey,
-          child: RootLayout(
-            // key: _scaffoldKey,
-            currentIndex: 3,
-            child: ManagerSmallScreen(),
-          ),
+          child: PhotoPageBody(),
         ),
       ),
       GoRoute(
@@ -133,7 +129,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           child: RootLayout(
             // key: _scaffoldKey,
             currentIndex: 3,
-            child: PhotoPageBody(),
+            child: ProfileSmallScreen(),
           ),
         ),
       ),

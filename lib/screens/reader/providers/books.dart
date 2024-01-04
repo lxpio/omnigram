@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/flavors/app_store.dart';
+import 'package:omnigram/models/app_store.dart';
 import 'package:omnigram/providers/service/api_service.dart';
 import 'package:omnigram/providers/service/provider.dart';
 import 'package:omnigram/screens/reader/models/epub/epub.dart';

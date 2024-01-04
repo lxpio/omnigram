@@ -1,16 +1,8 @@
 import 'dart:developer';
-import 'dart:io';
-import 'dart:typed_data';
 
+import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
-
-import 'package:omnigram/providers/openai/chat/chat_complate_text.dart';
-import 'package:omnigram/providers/openai/chat/enum.dart';
-import 'package:omnigram/providers/openai/chat/message.dart';
-
-import 'package:omnigram/utils/constants.dart';
-
 import 'package:test/test.dart';
 
 import 'package:omnigram/utils/wav.dart';

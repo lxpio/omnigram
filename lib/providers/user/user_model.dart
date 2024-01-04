@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:omnigram/flavors/app_store.dart';
+import 'package:omnigram/models/app_store.dart';
 import 'package:omnigram/providers/service/provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -14,20 +14,25 @@ class UserModel with _$UserModel {
   const factory UserModel({
     @Default(0) int id,
     @Default('') String email,
-    @Default('') String username,
-    @Default('') String nickname,
+    @Default('') @JsonKey(name: 'user_name') String username,
+    @Default('') @JsonKey(name: 'nick_name') String nickname,
+    // ignore: invalid_annotation_target
     @Default(10) @JsonKey(name: 'role_id') int roleId,
     @Default(false) bool locked,
     @Default(false) bool logined,
   }) = _UserModel;
 
+  const UserModel._();
+
+  get name => nickname.isEmpty ? username : nickname;
+
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
 }
 
-final userProvider = NotifierProvider<User, UserModel>(User.new);
-
-class User extends Notifier<UserModel> {
+// final userProvider = NotifierProvider<User, UserModel>(User.new);
+@Riverpod(keepAlive: true)
+class User extends _$User {
   @override
   UserModel build() {
     try {
@@ -42,20 +47,6 @@ class User extends Notifier<UserModel> {
 
     return const UserModel();
   }
-
-  // Future<void> update(UserModel user) async {
-  //   final updated = user.copyWith(logined: true);
-
-  //   await AppStore.instance
-  //       .hive()
-  //       .put('user_auth', json.encode(updated.toJson()));
-
-  //   state = user.copyWith(logined: true);
-
-  //   if (kDebugMode) {
-  //     print("user_auth: changed");
-  //   }
-  // }
 
   Future<void> update() async {
     final service = ref.read(apiServiceProvider);

@@ -71,9 +71,9 @@ class DiscoverSmallScreen extends HookConsumerWidget {
       MenuItemButton(
         child: Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: const Icon(Icons.logout),
+            const Padding(
+              padding: EdgeInsets.only(right: 8.0),
+              child: Icon(Icons.logout),
             ),
             Text(context.l10n.logout),
           ],
@@ -90,7 +90,7 @@ class DiscoverSmallScreen extends HookConsumerWidget {
         MenuItemButton(
           child: Row(
             children: [
-              Padding(
+              const Padding(
                 padding: EdgeInsets.only(right: 8.0),
                 child: Icon(Icons.settings),
               ),

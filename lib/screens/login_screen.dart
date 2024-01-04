@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/flavors/provider.dart';
+import 'package:omnigram/providers/provider.dart';
+import 'package:omnigram/providers/service/provider.dart';
 
 import 'package:omnigram/providers/user/oauth_model.dart';
 import 'package:omnigram/providers/user/user_model.dart';
@@ -165,8 +166,10 @@ class LoginScreen extends HookConsumerWidget {
       WidgetRef ref, OauthModel oauth, String baseUrl) async {
     await ref
         .read(appConfigProvider.notifier)
-        .updateSever(baseUrl, oauth.accessToken);
-
+        .updateSever(apiserver: baseUrl, apikey: oauth.accessToken);
+    // get server config
+    await ref.read(serverProvider.notifier).update();
+    // get user config
     await ref.read(userProvider.notifier).update();
   }
 }

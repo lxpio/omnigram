@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/flavors/app_config.dart';
-import 'package:omnigram/flavors/provider.dart';
+import 'package:omnigram/providers/provider.dart';
 import 'package:omnigram/providers/openai/client/model.dart';
 import 'package:omnigram/providers/openai/chat/chat_complate_text.dart';
 import 'package:omnigram/providers/openai/chat/message.dart';
 import 'package:omnigram/providers/openai/chat/response.dart';
+import 'package:omnigram/providers/service/provider.dart';
 
 import 'package:omnigram/utils/constants.dart';
 
@@ -21,12 +21,14 @@ import '../models/message.dart';
 final openAIServiceProvider = Provider<OpenAIService>((ref) {
   final appConfig = ref.watch(appConfigProvider);
 
+  final serverConfig = ref.watch(serverProvider);
+
   final independent =
-      appConfig.openAIUrl != null && appConfig.openAIUrl!.isNotEmpty;
+      serverConfig.openAIUrl != null && serverConfig.openAIUrl!.isNotEmpty;
 
   return OpenAIService(
-    baseUrl: independent ? appConfig.openAIUrl! : appConfig.baseUrl,
-    token: independent ? appConfig.openAIApiKey : appConfig.token,
+    baseUrl: independent ? serverConfig.openAIUrl! : appConfig.baseUrl,
+    token: independent ? serverConfig.openAIApiKey : appConfig.token,
   );
 });
 

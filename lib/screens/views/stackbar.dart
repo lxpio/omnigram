@@ -1,16 +1,13 @@
-import 'dart:typed_data';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/flavors/provider.dart';
+import 'package:omnigram/providers/provider.dart';
 import 'package:omnigram/screens/reader/providers/tts_service.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../reader/providers/select_book.dart';
-import '../reader/read_epub_screen.dart';
 
 class Stackbar extends HookConsumerWidget {
   const Stackbar({

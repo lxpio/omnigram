@@ -61,7 +61,7 @@ class NoConnectionScreen extends ConsumerWidget {
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         minimumSize: const Size.fromHeight(45)),
                     child: Text(
-                      context.l10n.next,
+                      context.l10n.try_again,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.onPrimary),
                     ),

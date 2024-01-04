@@ -1,5 +1,5 @@
 import "package:flutter_native_splash/flutter_native_splash.dart";
-import 'package:omnigram/flavors/app_store.dart';
+import 'app_store.dart';
 
 class BuildConfig {
   bool _lock = false;

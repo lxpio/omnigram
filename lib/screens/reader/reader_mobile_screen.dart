@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/flavors/provider.dart';
+import 'package:omnigram/providers/provider.dart';
 import 'package:omnigram/screens/reader/models/book_local.dart';
 import 'package:omnigram/screens/reader/models/book_model.dart';
 
