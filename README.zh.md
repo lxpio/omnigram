@@ -51,7 +51,7 @@ Omnigram 是Flutter编写的支持多平台（iOS、Android、Web、Windows、Li
 
 git clone github.com/nexptr/omnigram.git
 cd omnigram
-fultter clean && dart run build_runner build
+flutter clean && dart run build_runner build
 
 make
 ```

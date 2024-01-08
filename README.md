@@ -53,7 +53,7 @@ This project uses a three-way repository including:
 
 git clone github.com/nexptr/omnigram.git
 cd omnigram
-fultter clean && dart run build_runner build
+flutter clean && dart run build_runner build
 
 make
 ```
