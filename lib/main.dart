@@ -5,7 +5,7 @@ import "package:flutter/services.dart";
 import "package:flutter_localizations/flutter_localizations.dart";
 import "package:flutter_native_splash/flutter_native_splash.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:omnigram/providers/provider.dart";
+import 'package:omnigram/providers/provider.dart';
 import "package:omnigram/routes/router.dart";
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import "package:universal_platform/universal_platform.dart";

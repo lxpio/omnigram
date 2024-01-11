@@ -137,11 +137,8 @@ class ProfileSmallScreen extends HookConsumerWidget {
         ),
         SliverList(
           delegate: SliverChildListDelegate([
-            const SizedBox(height: 32),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: ScanStatusView(),
-            ),
+            const SizedBox(height: 16),
+            const ScanStatusView(),
             const SizedBox(height: 32),
             const _SettingsWidget(),
           ]),
@@ -252,4 +249,21 @@ class _SettingsWidget extends ConsumerWidget {
       ),
     );
   }
+
+  // void showChapterBottomSheet(BuildContext context) {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     showDragHandle: true,
+  //     isScrollControlled: true,
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.only(
+  //           topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
+  //     ),
+  //     constraints: BoxConstraints.tight(Size(MediaQuery.of(context).size.width,
+  //         MediaQuery.of(context).size.height * .4)),
+  //     builder: (BuildContext context) {
+  //       return ChapterSheetView(controller: controller);
+  //     },
+  //   );
+  // }
 }

@@ -66,20 +66,6 @@ class NoConnectionScreen extends ConsumerWidget {
                           color: Theme.of(context).colorScheme.onPrimary),
                     ),
                   ),
-                  // MaterialButton(
-                  //   onPressed: onRefresh,
-                  //   height: 45,
-                  //   padding: const EdgeInsets.symmetric(horizontal: 80),
-                  //   elevation: 0,
-                  //   shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(12)),
-                  //   color: Theme.of(context).colorScheme.primary,
-                  //   child: Text(
-                  //     context.l10n.try_again,
-                  //     style: TextStyle(
-                  //         color: Theme.of(context).colorScheme.onPrimary),
-                  //   ),
-                  // ),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
