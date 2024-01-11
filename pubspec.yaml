@@ -41,8 +41,8 @@ dependencies:
   flutter_highlighter: ^0.1.1
   epubx:
     git: 
-      url: https://github.com/nexptr/epubx.dart.git
-      ref: 32559dc324b
+      url: https://github.com/lxpio/epubx.dart.git
+      ref: v4.0.3
   # epubx:
   #   path: ../epubx.dart
 
