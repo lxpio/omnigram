@@ -87,11 +87,11 @@ class _$OauthModelCopyWithImpl<$Res, $Val extends OauthModel>
 }
 
 /// @nodoc
-abstract class _$$_OauthModelCopyWith<$Res>
+abstract class _$$OauthModelImplCopyWith<$Res>
     implements $OauthModelCopyWith<$Res> {
-  factory _$$_OauthModelCopyWith(
-          _$_OauthModel value, $Res Function(_$_OauthModel) then) =
-      __$$_OauthModelCopyWithImpl<$Res>;
+  factory _$$OauthModelImplCopyWith(
+          _$OauthModelImpl value, $Res Function(_$OauthModelImpl) then) =
+      __$$OauthModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -102,11 +102,11 @@ abstract class _$$_OauthModelCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_OauthModelCopyWithImpl<$Res>
-    extends _$OauthModelCopyWithImpl<$Res, _$_OauthModel>
-    implements _$$_OauthModelCopyWith<$Res> {
-  __$$_OauthModelCopyWithImpl(
-      _$_OauthModel _value, $Res Function(_$_OauthModel) _then)
+class __$$OauthModelImplCopyWithImpl<$Res>
+    extends _$OauthModelCopyWithImpl<$Res, _$OauthModelImpl>
+    implements _$$OauthModelImplCopyWith<$Res> {
+  __$$OauthModelImplCopyWithImpl(
+      _$OauthModelImpl _value, $Res Function(_$OauthModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -117,7 +117,7 @@ class __$$_OauthModelCopyWithImpl<$Res>
     Object? accessToken = null,
     Object? expired_in = null,
   }) {
-    return _then(_$_OauthModel(
+    return _then(_$OauthModelImpl(
       tokenType: null == tokenType
           ? _value.tokenType
           : tokenType // ignore: cast_nullable_to_non_nullable
@@ -140,15 +140,15 @@ class __$$_OauthModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_OauthModel implements _OauthModel {
-  const _$_OauthModel(
+class _$OauthModelImpl implements _OauthModel {
+  const _$OauthModelImpl(
       {@JsonKey(name: 'token_type') this.tokenType = '',
       @JsonKey(name: 'refresh_token') this.refreshToken = '',
       @JsonKey(name: 'access_token') this.accessToken = '',
       this.expired_in = 3600});
 
-  factory _$_OauthModel.fromJson(Map<String, dynamic> json) =>
-      _$$_OauthModelFromJson(json);
+  factory _$OauthModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$OauthModelImplFromJson(json);
 
   @override
   @JsonKey(name: 'token_type')
@@ -169,10 +169,10 @@ class _$_OauthModel implements _OauthModel {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_OauthModel &&
+            other is _$OauthModelImpl &&
             (identical(other.tokenType, tokenType) ||
                 other.tokenType == tokenType) &&
             (identical(other.refreshToken, refreshToken) ||
@@ -191,12 +191,12 @@ class _$_OauthModel implements _OauthModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_OauthModelCopyWith<_$_OauthModel> get copyWith =>
-      __$$_OauthModelCopyWithImpl<_$_OauthModel>(this, _$identity);
+  _$$OauthModelImplCopyWith<_$OauthModelImpl> get copyWith =>
+      __$$OauthModelImplCopyWithImpl<_$OauthModelImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_OauthModelToJson(
+    return _$$OauthModelImplToJson(
       this,
     );
   }
@@ -207,10 +207,10 @@ abstract class _OauthModel implements OauthModel {
       {@JsonKey(name: 'token_type') final String tokenType,
       @JsonKey(name: 'refresh_token') final String refreshToken,
       @JsonKey(name: 'access_token') final String accessToken,
-      final int expired_in}) = _$_OauthModel;
+      final int expired_in}) = _$OauthModelImpl;
 
   factory _OauthModel.fromJson(Map<String, dynamic> json) =
-      _$_OauthModel.fromJson;
+      _$OauthModelImpl.fromJson;
 
   @override
   @JsonKey(name: 'token_type')
@@ -225,6 +225,6 @@ abstract class _OauthModel implements OauthModel {
   int get expired_in;
   @override
   @JsonKey(ignore: true)
-  _$$_OauthModelCopyWith<_$_OauthModel> get copyWith =>
+  _$$OauthModelImplCopyWith<_$OauthModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

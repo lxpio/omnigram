@@ -73,21 +73,22 @@ class _$TTSStateCopyWithImpl<$Res, $Val extends TTSState>
 }
 
 /// @nodoc
-abstract class _$$_TTSStateCopyWith<$Res> implements $TTSStateCopyWith<$Res> {
-  factory _$$_TTSStateCopyWith(
-          _$_TTSState value, $Res Function(_$_TTSState) then) =
-      __$$_TTSStateCopyWithImpl<$Res>;
+abstract class _$$TTSStateImplCopyWith<$Res>
+    implements $TTSStateCopyWith<$Res> {
+  factory _$$TTSStateImplCopyWith(
+          _$TTSStateImpl value, $Res Function(_$TTSStateImpl) then) =
+      __$$TTSStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({bool showbar, bool playing, Duration? position});
 }
 
 /// @nodoc
-class __$$_TTSStateCopyWithImpl<$Res>
-    extends _$TTSStateCopyWithImpl<$Res, _$_TTSState>
-    implements _$$_TTSStateCopyWith<$Res> {
-  __$$_TTSStateCopyWithImpl(
-      _$_TTSState _value, $Res Function(_$_TTSState) _then)
+class __$$TTSStateImplCopyWithImpl<$Res>
+    extends _$TTSStateCopyWithImpl<$Res, _$TTSStateImpl>
+    implements _$$TTSStateImplCopyWith<$Res> {
+  __$$TTSStateImplCopyWithImpl(
+      _$TTSStateImpl _value, $Res Function(_$TTSStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -97,7 +98,7 @@ class __$$_TTSStateCopyWithImpl<$Res>
     Object? playing = null,
     Object? position = freezed,
   }) {
-    return _then(_$_TTSState(
+    return _then(_$TTSStateImpl(
       showbar: null == showbar
           ? _value.showbar
           : showbar // ignore: cast_nullable_to_non_nullable
@@ -116,12 +117,12 @@ class __$$_TTSStateCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_TTSState implements _TTSState {
-  const _$_TTSState(
+class _$TTSStateImpl implements _TTSState {
+  const _$TTSStateImpl(
       {this.showbar = false, this.playing = false, this.position});
 
-  factory _$_TTSState.fromJson(Map<String, dynamic> json) =>
-      _$$_TTSStateFromJson(json);
+  factory _$TTSStateImpl.fromJson(Map<String, dynamic> json) =>
+      _$$TTSStateImplFromJson(json);
 
   @override
   @JsonKey()
@@ -138,10 +139,10 @@ class _$_TTSState implements _TTSState {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_TTSState &&
+            other is _$TTSStateImpl &&
             (identical(other.showbar, showbar) || other.showbar == showbar) &&
             (identical(other.playing, playing) || other.playing == playing) &&
             (identical(other.position, position) ||
@@ -155,12 +156,12 @@ class _$_TTSState implements _TTSState {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_TTSStateCopyWith<_$_TTSState> get copyWith =>
-      __$$_TTSStateCopyWithImpl<_$_TTSState>(this, _$identity);
+  _$$TTSStateImplCopyWith<_$TTSStateImpl> get copyWith =>
+      __$$TTSStateImplCopyWithImpl<_$TTSStateImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_TTSStateToJson(
+    return _$$TTSStateImplToJson(
       this,
     );
   }
@@ -170,9 +171,10 @@ abstract class _TTSState implements TTSState {
   const factory _TTSState(
       {final bool showbar,
       final bool playing,
-      final Duration? position}) = _$_TTSState;
+      final Duration? position}) = _$TTSStateImpl;
 
-  factory _TTSState.fromJson(Map<String, dynamic> json) = _$_TTSState.fromJson;
+  factory _TTSState.fromJson(Map<String, dynamic> json) =
+      _$TTSStateImpl.fromJson;
 
   @override
   bool get showbar;
@@ -182,6 +184,6 @@ abstract class _TTSState implements TTSState {
   Duration? get position;
   @override
   @JsonKey(ignore: true)
-  _$$_TTSStateCopyWith<_$_TTSState> get copyWith =>
+  _$$TTSStateImplCopyWith<_$TTSStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

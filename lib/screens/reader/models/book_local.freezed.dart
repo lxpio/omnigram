@@ -79,10 +79,11 @@ class _$BookLocalCopyWithImpl<$Res, $Val extends BookLocal>
 }
 
 /// @nodoc
-abstract class _$$_BookLocalCopyWith<$Res> implements $BookLocalCopyWith<$Res> {
-  factory _$$_BookLocalCopyWith(
-          _$_BookLocal value, $Res Function(_$_BookLocal) then) =
-      __$$_BookLocalCopyWithImpl<$Res>;
+abstract class _$$BookLocalImplCopyWith<$Res>
+    implements $BookLocalCopyWith<$Res> {
+  factory _$$BookLocalImplCopyWith(
+          _$BookLocalImpl value, $Res Function(_$BookLocalImpl) then) =
+      __$$BookLocalImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -92,11 +93,11 @@ abstract class _$$_BookLocalCopyWith<$Res> implements $BookLocalCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_BookLocalCopyWithImpl<$Res>
-    extends _$BookLocalCopyWithImpl<$Res, _$_BookLocal>
-    implements _$$_BookLocalCopyWith<$Res> {
-  __$$_BookLocalCopyWithImpl(
-      _$_BookLocal _value, $Res Function(_$_BookLocal) _then)
+class __$$BookLocalImplCopyWithImpl<$Res>
+    extends _$BookLocalCopyWithImpl<$Res, _$BookLocalImpl>
+    implements _$$BookLocalImplCopyWith<$Res> {
+  __$$BookLocalImplCopyWithImpl(
+      _$BookLocalImpl _value, $Res Function(_$BookLocalImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -106,7 +107,7 @@ class __$$_BookLocalCopyWithImpl<$Res>
     Object? localPath = null,
     Object? md5 = freezed,
   }) {
-    return _then(_$_BookLocal(
+    return _then(_$BookLocalImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -126,14 +127,14 @@ class __$$_BookLocalCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 @Entity(realClass: BookLocal)
-class _$_BookLocal implements _BookLocal {
-  _$_BookLocal(
+class _$BookLocalImpl implements _BookLocal {
+  _$BookLocalImpl(
       {@Id(assignable: true) required this.id,
       @JsonKey(name: 'local_path') required this.localPath,
       @JsonKey(name: 'md5') this.md5});
 
-  factory _$_BookLocal.fromJson(Map<String, dynamic> json) =>
-      _$$_BookLocalFromJson(json);
+  factory _$BookLocalImpl.fromJson(Map<String, dynamic> json) =>
+      _$$BookLocalImplFromJson(json);
 
   @override
   @Id(assignable: true)
@@ -151,10 +152,10 @@ class _$_BookLocal implements _BookLocal {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_BookLocal &&
+            other is _$BookLocalImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.localPath, localPath) ||
                 other.localPath == localPath) &&
@@ -168,12 +169,12 @@ class _$_BookLocal implements _BookLocal {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_BookLocalCopyWith<_$_BookLocal> get copyWith =>
-      __$$_BookLocalCopyWithImpl<_$_BookLocal>(this, _$identity);
+  _$$BookLocalImplCopyWith<_$BookLocalImpl> get copyWith =>
+      __$$BookLocalImplCopyWithImpl<_$BookLocalImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_BookLocalToJson(
+    return _$$BookLocalImplToJson(
       this,
     );
   }
@@ -183,10 +184,10 @@ abstract class _BookLocal implements BookLocal {
   factory _BookLocal(
       {@Id(assignable: true) required final int id,
       @JsonKey(name: 'local_path') required final String localPath,
-      @JsonKey(name: 'md5') final String? md5}) = _$_BookLocal;
+      @JsonKey(name: 'md5') final String? md5}) = _$BookLocalImpl;
 
   factory _BookLocal.fromJson(Map<String, dynamic> json) =
-      _$_BookLocal.fromJson;
+      _$BookLocalImpl.fromJson;
 
   @override
   @Id(assignable: true)
@@ -199,6 +200,6 @@ abstract class _BookLocal implements BookLocal {
   String? get md5;
   @override
   @JsonKey(ignore: true)
-  _$$_BookLocalCopyWith<_$_BookLocal> get copyWith =>
+  _$$BookLocalImplCopyWith<_$BookLocalImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

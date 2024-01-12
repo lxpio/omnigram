@@ -6,13 +6,14 @@ part of 'book_local.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_BookLocal _$$_BookLocalFromJson(Map<String, dynamic> json) => _$_BookLocal(
+_$BookLocalImpl _$$BookLocalImplFromJson(Map<String, dynamic> json) =>
+    _$BookLocalImpl(
       id: json['id'] as int,
       localPath: json['local_path'] as String,
       md5: json['md5'] as String?,
     );
 
-Map<String, dynamic> _$$_BookLocalToJson(_$_BookLocal instance) =>
+Map<String, dynamic> _$$BookLocalImplToJson(_$BookLocalImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'local_path': instance.localPath,

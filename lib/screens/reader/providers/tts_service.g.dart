@@ -6,7 +6,8 @@ part of 'tts_service.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_TTSState _$$_TTSStateFromJson(Map<String, dynamic> json) => _$_TTSState(
+_$TTSStateImpl _$$TTSStateImplFromJson(Map<String, dynamic> json) =>
+    _$TTSStateImpl(
       showbar: json['showbar'] as bool? ?? false,
       playing: json['playing'] as bool? ?? false,
       position: json['position'] == null
@@ -14,7 +15,7 @@ _$_TTSState _$$_TTSStateFromJson(Map<String, dynamic> json) => _$_TTSState(
           : Duration(microseconds: json['position'] as int),
     );
 
-Map<String, dynamic> _$$_TTSStateToJson(_$_TTSState instance) =>
+Map<String, dynamic> _$$TTSStateImplToJson(_$TTSStateImpl instance) =>
     <String, dynamic>{
       'showbar': instance.showbar,
       'playing': instance.playing,

@@ -6,8 +6,9 @@ part of 'server_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_ScanStatusModel _$$_ScanStatusModelFromJson(Map<String, dynamic> json) =>
-    _$_ScanStatusModel(
+_$ScanStatusModelImpl _$$ScanStatusModelImplFromJson(
+        Map<String, dynamic> json) =>
+    _$ScanStatusModelImpl(
       total: json['total'] as int? ?? 0,
       running: json['running'] as bool? ?? false,
       scanCount: json['scan_count'] as int? ?? 0,
@@ -17,7 +18,8 @@ _$_ScanStatusModel _$$_ScanStatusModelFromJson(Map<String, dynamic> json) =>
       errs: (json['errs'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
 
-Map<String, dynamic> _$$_ScanStatusModelToJson(_$_ScanStatusModel instance) =>
+Map<String, dynamic> _$$ScanStatusModelImplToJson(
+        _$ScanStatusModelImpl instance) =>
     <String, dynamic>{
       'total': instance.total,
       'running': instance.running,

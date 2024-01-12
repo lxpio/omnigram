@@ -6,8 +6,8 @@ part of 'server_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_ServerModel _$$_ServerModelFromJson(Map<String, dynamic> json) =>
-    _$_ServerModel(
+_$ServerModelImpl _$$ServerModelImplFromJson(Map<String, dynamic> json) =>
+    _$ServerModelImpl(
       version: json['version'] as String? ?? "v1.0.0",
       chatEnabled: json['chatEnabled'] as bool? ?? true,
       m4tEnabled: json['m4tEnabled'] as bool? ?? true,
@@ -19,7 +19,7 @@ _$_ServerModel _$$_ServerModelFromJson(Map<String, dynamic> json) =>
       openAIApiKey: json['openai_apikey'] as String?,
     );
 
-Map<String, dynamic> _$$_ServerModelToJson(_$_ServerModel instance) =>
+Map<String, dynamic> _$$ServerModelImplToJson(_$ServerModelImpl instance) =>
     <String, dynamic>{
       'version': instance.version,
       'chatEnabled': instance.chatEnabled,

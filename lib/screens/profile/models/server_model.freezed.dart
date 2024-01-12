@@ -109,11 +109,11 @@ class _$ScanStatusModelCopyWithImpl<$Res, $Val extends ScanStatusModel>
 }
 
 /// @nodoc
-abstract class _$$_ScanStatusModelCopyWith<$Res>
+abstract class _$$ScanStatusModelImplCopyWith<$Res>
     implements $ScanStatusModelCopyWith<$Res> {
-  factory _$$_ScanStatusModelCopyWith(
-          _$_ScanStatusModel value, $Res Function(_$_ScanStatusModel) then) =
-      __$$_ScanStatusModelCopyWithImpl<$Res>;
+  factory _$$ScanStatusModelImplCopyWith(_$ScanStatusModelImpl value,
+          $Res Function(_$ScanStatusModelImpl) then) =
+      __$$ScanStatusModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -127,11 +127,11 @@ abstract class _$$_ScanStatusModelCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_ScanStatusModelCopyWithImpl<$Res>
-    extends _$ScanStatusModelCopyWithImpl<$Res, _$_ScanStatusModel>
-    implements _$$_ScanStatusModelCopyWith<$Res> {
-  __$$_ScanStatusModelCopyWithImpl(
-      _$_ScanStatusModel _value, $Res Function(_$_ScanStatusModel) _then)
+class __$$ScanStatusModelImplCopyWithImpl<$Res>
+    extends _$ScanStatusModelCopyWithImpl<$Res, _$ScanStatusModelImpl>
+    implements _$$ScanStatusModelImplCopyWith<$Res> {
+  __$$ScanStatusModelImplCopyWithImpl(
+      _$ScanStatusModelImpl _value, $Res Function(_$ScanStatusModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -145,7 +145,7 @@ class __$$_ScanStatusModelCopyWithImpl<$Res>
     Object? pdfCount = null,
     Object? errs = freezed,
   }) {
-    return _then(_$_ScanStatusModel(
+    return _then(_$ScanStatusModelImpl(
       total: null == total
           ? _value.total
           : total // ignore: cast_nullable_to_non_nullable
@@ -180,8 +180,8 @@ class __$$_ScanStatusModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_ScanStatusModel implements _ScanStatusModel {
-  const _$_ScanStatusModel(
+class _$ScanStatusModelImpl implements _ScanStatusModel {
+  const _$ScanStatusModelImpl(
       {this.total = 0,
       this.running = false,
       @JsonKey(name: 'scan_count') this.scanCount = 0,
@@ -191,8 +191,8 @@ class _$_ScanStatusModel implements _ScanStatusModel {
       final List<String>? errs})
       : _errs = errs;
 
-  factory _$_ScanStatusModel.fromJson(Map<String, dynamic> json) =>
-      _$$_ScanStatusModelFromJson(json);
+  factory _$ScanStatusModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ScanStatusModelImplFromJson(json);
 
   @override
   @JsonKey()
@@ -228,10 +228,10 @@ class _$_ScanStatusModel implements _ScanStatusModel {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_ScanStatusModel &&
+            other is _$ScanStatusModelImpl &&
             (identical(other.total, total) || other.total == total) &&
             (identical(other.running, running) || other.running == running) &&
             (identical(other.scanCount, scanCount) ||
@@ -260,12 +260,13 @@ class _$_ScanStatusModel implements _ScanStatusModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ScanStatusModelCopyWith<_$_ScanStatusModel> get copyWith =>
-      __$$_ScanStatusModelCopyWithImpl<_$_ScanStatusModel>(this, _$identity);
+  _$$ScanStatusModelImplCopyWith<_$ScanStatusModelImpl> get copyWith =>
+      __$$ScanStatusModelImplCopyWithImpl<_$ScanStatusModelImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_ScanStatusModelToJson(
+    return _$$ScanStatusModelImplToJson(
       this,
     );
   }
@@ -279,10 +280,10 @@ abstract class _ScanStatusModel implements ScanStatusModel {
       @JsonKey(name: 'disk_usage') final int diskUsage,
       @JsonKey(name: 'epub_count') final int epubCount,
       @JsonKey(name: 'pdf_count') final int pdfCount,
-      final List<String>? errs}) = _$_ScanStatusModel;
+      final List<String>? errs}) = _$ScanStatusModelImpl;
 
   factory _ScanStatusModel.fromJson(Map<String, dynamic> json) =
-      _$_ScanStatusModel.fromJson;
+      _$ScanStatusModelImpl.fromJson;
 
   @override
   int get total;
@@ -304,6 +305,6 @@ abstract class _ScanStatusModel implements ScanStatusModel {
   List<String>? get errs;
   @override
   @JsonKey(ignore: true)
-  _$$_ScanStatusModelCopyWith<_$_ScanStatusModel> get copyWith =>
+  _$$ScanStatusModelImplCopyWith<_$ScanStatusModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

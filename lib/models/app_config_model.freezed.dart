@@ -91,11 +91,11 @@ class _$AppConfigModelCopyWithImpl<$Res, $Val extends AppConfigModel>
 }
 
 /// @nodoc
-abstract class _$$_AppConfigModelCopyWith<$Res>
+abstract class _$$AppConfigModelImplCopyWith<$Res>
     implements $AppConfigModelCopyWith<$Res> {
-  factory _$$_AppConfigModelCopyWith(
-          _$_AppConfigModel value, $Res Function(_$_AppConfigModel) then) =
-      __$$_AppConfigModelCopyWithImpl<$Res>;
+  factory _$$AppConfigModelImplCopyWith(_$AppConfigModelImpl value,
+          $Res Function(_$AppConfigModelImpl) then) =
+      __$$AppConfigModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -107,11 +107,11 @@ abstract class _$$_AppConfigModelCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_AppConfigModelCopyWithImpl<$Res>
-    extends _$AppConfigModelCopyWithImpl<$Res, _$_AppConfigModel>
-    implements _$$_AppConfigModelCopyWith<$Res> {
-  __$$_AppConfigModelCopyWithImpl(
-      _$_AppConfigModel _value, $Res Function(_$_AppConfigModel) _then)
+class __$$AppConfigModelImplCopyWithImpl<$Res>
+    extends _$AppConfigModelCopyWithImpl<$Res, _$AppConfigModelImpl>
+    implements _$$AppConfigModelImplCopyWith<$Res> {
+  __$$AppConfigModelImplCopyWithImpl(
+      _$AppConfigModelImpl _value, $Res Function(_$AppConfigModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -123,7 +123,7 @@ class __$$_AppConfigModelCopyWithImpl<$Res>
     Object? appVersion = null,
     Object? shouldCollectCrashLog = null,
   }) {
-    return _then(_$_AppConfigModel(
+    return _then(_$AppConfigModelImpl(
       baseUrl: null == baseUrl
           ? _value.baseUrl
           : baseUrl // ignore: cast_nullable_to_non_nullable
@@ -150,16 +150,16 @@ class __$$_AppConfigModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_AppConfigModel implements _AppConfigModel {
-  const _$_AppConfigModel(
+class _$AppConfigModelImpl implements _AppConfigModel {
+  const _$AppConfigModelImpl(
       {required this.baseUrl,
       required this.token,
       required this.appName,
       required this.appVersion,
       required this.shouldCollectCrashLog});
 
-  factory _$_AppConfigModel.fromJson(Map<String, dynamic> json) =>
-      _$$_AppConfigModelFromJson(json);
+  factory _$AppConfigModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AppConfigModelImplFromJson(json);
 
   @override
   final String baseUrl;
@@ -178,10 +178,10 @@ class _$_AppConfigModel implements _AppConfigModel {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_AppConfigModel &&
+            other is _$AppConfigModelImpl &&
             (identical(other.baseUrl, baseUrl) || other.baseUrl == baseUrl) &&
             (identical(other.token, token) || other.token == token) &&
             (identical(other.appName, appName) || other.appName == appName) &&
@@ -199,12 +199,13 @@ class _$_AppConfigModel implements _AppConfigModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_AppConfigModelCopyWith<_$_AppConfigModel> get copyWith =>
-      __$$_AppConfigModelCopyWithImpl<_$_AppConfigModel>(this, _$identity);
+  _$$AppConfigModelImplCopyWith<_$AppConfigModelImpl> get copyWith =>
+      __$$AppConfigModelImplCopyWithImpl<_$AppConfigModelImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_AppConfigModelToJson(
+    return _$$AppConfigModelImplToJson(
       this,
     );
   }
@@ -216,10 +217,10 @@ abstract class _AppConfigModel implements AppConfigModel {
       required final String token,
       required final String appName,
       required final String appVersion,
-      required final bool shouldCollectCrashLog}) = _$_AppConfigModel;
+      required final bool shouldCollectCrashLog}) = _$AppConfigModelImpl;
 
   factory _AppConfigModel.fromJson(Map<String, dynamic> json) =
-      _$_AppConfigModel.fromJson;
+      _$AppConfigModelImpl.fromJson;
 
   @override
   String get baseUrl;
@@ -233,6 +234,6 @@ abstract class _AppConfigModel implements AppConfigModel {
   bool get shouldCollectCrashLog;
   @override
   @JsonKey(ignore: true)
-  _$$_AppConfigModelCopyWith<_$_AppConfigModel> get copyWith =>
+  _$$AppConfigModelImplCopyWith<_$AppConfigModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

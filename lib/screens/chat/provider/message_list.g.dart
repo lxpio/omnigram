@@ -33,7 +33,7 @@ abstract class _$MessageList
     extends BuildlessAutoDisposeAsyncNotifier<List<Message>> {
   late final int id;
 
-  Future<List<Message>> build(
+  FutureOr<List<Message>> build(
     int id,
   );
 }
@@ -113,7 +113,7 @@ class MessageListProvider
   final int id;
 
   @override
-  Future<List<Message>> runNotifierBuild(
+  FutureOr<List<Message>> runNotifierBuild(
     covariant MessageList notifier,
   ) {
     return notifier.build(

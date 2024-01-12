@@ -1,0 +1,21 @@
+{
+  "extends": "@docusaurus/tsconfig",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "@docusaurus/theme-common/internal": [
+        "node_modules/@docusaurus/theme-common/src/internal.ts"
+      ]
+    }
+  },
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.tsx",
+    "src/theme/MDXComponents.js"
+  ]
+}
