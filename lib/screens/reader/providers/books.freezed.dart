@@ -75,10 +75,10 @@ class _$BookNavCopyWithImpl<$Res, $Val extends BookNav>
 }
 
 /// @nodoc
-abstract class _$$_BookNavCopyWith<$Res> implements $BookNavCopyWith<$Res> {
-  factory _$$_BookNavCopyWith(
-          _$_BookNav value, $Res Function(_$_BookNav) then) =
-      __$$_BookNavCopyWithImpl<$Res>;
+abstract class _$$BookNavImplCopyWith<$Res> implements $BookNavCopyWith<$Res> {
+  factory _$$BookNavImplCopyWith(
+          _$BookNavImpl value, $Res Function(_$BookNavImpl) then) =
+      __$$BookNavImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -88,10 +88,11 @@ abstract class _$$_BookNavCopyWith<$Res> implements $BookNavCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_BookNavCopyWithImpl<$Res>
-    extends _$BookNavCopyWithImpl<$Res, _$_BookNav>
-    implements _$$_BookNavCopyWith<$Res> {
-  __$$_BookNavCopyWithImpl(_$_BookNav _value, $Res Function(_$_BookNav) _then)
+class __$$BookNavImplCopyWithImpl<$Res>
+    extends _$BookNavCopyWithImpl<$Res, _$BookNavImpl>
+    implements _$$BookNavImplCopyWith<$Res> {
+  __$$BookNavImplCopyWithImpl(
+      _$BookNavImpl _value, $Res Function(_$BookNavImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -101,7 +102,7 @@ class __$$_BookNavCopyWithImpl<$Res>
     Object? random = freezed,
     Object? reading = freezed,
   }) {
-    return _then(_$_BookNav(
+    return _then(_$BookNavImpl(
       recent: freezed == recent
           ? _value._recent
           : recent // ignore: cast_nullable_to_non_nullable
@@ -120,8 +121,8 @@ class __$$_BookNavCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_BookNav implements _BookNav {
-  const _$_BookNav(
+class _$BookNavImpl implements _BookNav {
+  const _$BookNavImpl(
       {final List<BookModel>? recent,
       final List<BookModel>? random,
       final List<BookModel>? reading})
@@ -129,8 +130,8 @@ class _$_BookNav implements _BookNav {
         _random = random,
         _reading = reading;
 
-  factory _$_BookNav.fromJson(Map<String, dynamic> json) =>
-      _$$_BookNavFromJson(json);
+  factory _$BookNavImpl.fromJson(Map<String, dynamic> json) =>
+      _$$BookNavImplFromJson(json);
 
   final List<BookModel>? _recent;
   @override
@@ -168,10 +169,10 @@ class _$_BookNav implements _BookNav {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_BookNav &&
+            other is _$BookNavImpl &&
             const DeepCollectionEquality().equals(other._recent, _recent) &&
             const DeepCollectionEquality().equals(other._random, _random) &&
             const DeepCollectionEquality().equals(other._reading, _reading));
@@ -188,12 +189,12 @@ class _$_BookNav implements _BookNav {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_BookNavCopyWith<_$_BookNav> get copyWith =>
-      __$$_BookNavCopyWithImpl<_$_BookNav>(this, _$identity);
+  _$$BookNavImplCopyWith<_$BookNavImpl> get copyWith =>
+      __$$BookNavImplCopyWithImpl<_$BookNavImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_BookNavToJson(
+    return _$$BookNavImplToJson(
       this,
     );
   }
@@ -203,9 +204,9 @@ abstract class _BookNav implements BookNav {
   const factory _BookNav(
       {final List<BookModel>? recent,
       final List<BookModel>? random,
-      final List<BookModel>? reading}) = _$_BookNav;
+      final List<BookModel>? reading}) = _$BookNavImpl;
 
-  factory _BookNav.fromJson(Map<String, dynamic> json) = _$_BookNav.fromJson;
+  factory _BookNav.fromJson(Map<String, dynamic> json) = _$BookNavImpl.fromJson;
 
   @override
   List<BookModel>? get recent;
@@ -215,7 +216,7 @@ abstract class _BookNav implements BookNav {
   List<BookModel>? get reading;
   @override
   @JsonKey(ignore: true)
-  _$$_BookNavCopyWith<_$_BookNav> get copyWith =>
+  _$$BookNavImplCopyWith<_$BookNavImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -273,22 +274,22 @@ class _$PersonBookNavCopyWithImpl<$Res, $Val extends PersonBookNav>
 }
 
 /// @nodoc
-abstract class _$$_PersonBookNavCopyWith<$Res>
+abstract class _$$PersonBookNavImplCopyWith<$Res>
     implements $PersonBookNavCopyWith<$Res> {
-  factory _$$_PersonBookNavCopyWith(
-          _$_PersonBookNav value, $Res Function(_$_PersonBookNav) then) =
-      __$$_PersonBookNavCopyWithImpl<$Res>;
+  factory _$$PersonBookNavImplCopyWith(
+          _$PersonBookNavImpl value, $Res Function(_$PersonBookNavImpl) then) =
+      __$$PersonBookNavImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({List<BookModel>? readings, List<BookModel>? likes});
 }
 
 /// @nodoc
-class __$$_PersonBookNavCopyWithImpl<$Res>
-    extends _$PersonBookNavCopyWithImpl<$Res, _$_PersonBookNav>
-    implements _$$_PersonBookNavCopyWith<$Res> {
-  __$$_PersonBookNavCopyWithImpl(
-      _$_PersonBookNav _value, $Res Function(_$_PersonBookNav) _then)
+class __$$PersonBookNavImplCopyWithImpl<$Res>
+    extends _$PersonBookNavCopyWithImpl<$Res, _$PersonBookNavImpl>
+    implements _$$PersonBookNavImplCopyWith<$Res> {
+  __$$PersonBookNavImplCopyWithImpl(
+      _$PersonBookNavImpl _value, $Res Function(_$PersonBookNavImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -297,7 +298,7 @@ class __$$_PersonBookNavCopyWithImpl<$Res>
     Object? readings = freezed,
     Object? likes = freezed,
   }) {
-    return _then(_$_PersonBookNav(
+    return _then(_$PersonBookNavImpl(
       readings: freezed == readings
           ? _value._readings
           : readings // ignore: cast_nullable_to_non_nullable
@@ -312,14 +313,14 @@ class __$$_PersonBookNavCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_PersonBookNav implements _PersonBookNav {
-  const _$_PersonBookNav(
+class _$PersonBookNavImpl implements _PersonBookNav {
+  const _$PersonBookNavImpl(
       {final List<BookModel>? readings, final List<BookModel>? likes})
       : _readings = readings,
         _likes = likes;
 
-  factory _$_PersonBookNav.fromJson(Map<String, dynamic> json) =>
-      _$$_PersonBookNavFromJson(json);
+  factory _$PersonBookNavImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PersonBookNavImplFromJson(json);
 
   final List<BookModel>? _readings;
   @override
@@ -347,10 +348,10 @@ class _$_PersonBookNav implements _PersonBookNav {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_PersonBookNav &&
+            other is _$PersonBookNavImpl &&
             const DeepCollectionEquality().equals(other._readings, _readings) &&
             const DeepCollectionEquality().equals(other._likes, _likes));
   }
@@ -365,12 +366,12 @@ class _$_PersonBookNav implements _PersonBookNav {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_PersonBookNavCopyWith<_$_PersonBookNav> get copyWith =>
-      __$$_PersonBookNavCopyWithImpl<_$_PersonBookNav>(this, _$identity);
+  _$$PersonBookNavImplCopyWith<_$PersonBookNavImpl> get copyWith =>
+      __$$PersonBookNavImplCopyWithImpl<_$PersonBookNavImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_PersonBookNavToJson(
+    return _$$PersonBookNavImplToJson(
       this,
     );
   }
@@ -379,10 +380,10 @@ class _$_PersonBookNav implements _PersonBookNav {
 abstract class _PersonBookNav implements PersonBookNav {
   const factory _PersonBookNav(
       {final List<BookModel>? readings,
-      final List<BookModel>? likes}) = _$_PersonBookNav;
+      final List<BookModel>? likes}) = _$PersonBookNavImpl;
 
   factory _PersonBookNav.fromJson(Map<String, dynamic> json) =
-      _$_PersonBookNav.fromJson;
+      _$PersonBookNavImpl.fromJson;
 
   @override
   List<BookModel>? get readings;
@@ -390,7 +391,7 @@ abstract class _PersonBookNav implements PersonBookNav {
   List<BookModel>? get likes;
   @override
   @JsonKey(ignore: true)
-  _$$_PersonBookNavCopyWith<_$_PersonBookNav> get copyWith =>
+  _$$PersonBookNavImplCopyWith<_$PersonBookNavImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -460,22 +461,22 @@ class _$BookSearchCopyWithImpl<$Res, $Val extends BookSearch>
 }
 
 /// @nodoc
-abstract class _$$_BookSearchCopyWith<$Res>
+abstract class _$$BookSearchImplCopyWith<$Res>
     implements $BookSearchCopyWith<$Res> {
-  factory _$$_BookSearchCopyWith(
-          _$_BookSearch value, $Res Function(_$_BookSearch) then) =
-      __$$_BookSearchCopyWithImpl<$Res>;
+  factory _$$BookSearchImplCopyWith(
+          _$BookSearchImpl value, $Res Function(_$BookSearchImpl) then) =
+      __$$BookSearchImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String? search, String? author, String? publisher, String? tags});
 }
 
 /// @nodoc
-class __$$_BookSearchCopyWithImpl<$Res>
-    extends _$BookSearchCopyWithImpl<$Res, _$_BookSearch>
-    implements _$$_BookSearchCopyWith<$Res> {
-  __$$_BookSearchCopyWithImpl(
-      _$_BookSearch _value, $Res Function(_$_BookSearch) _then)
+class __$$BookSearchImplCopyWithImpl<$Res>
+    extends _$BookSearchCopyWithImpl<$Res, _$BookSearchImpl>
+    implements _$$BookSearchImplCopyWith<$Res> {
+  __$$BookSearchImplCopyWithImpl(
+      _$BookSearchImpl _value, $Res Function(_$BookSearchImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -486,7 +487,7 @@ class __$$_BookSearchCopyWithImpl<$Res>
     Object? publisher = freezed,
     Object? tags = freezed,
   }) {
-    return _then(_$_BookSearch(
+    return _then(_$BookSearchImpl(
       search: freezed == search
           ? _value.search
           : search // ignore: cast_nullable_to_non_nullable
@@ -509,11 +510,11 @@ class __$$_BookSearchCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_BookSearch implements _BookSearch {
-  const _$_BookSearch({this.search, this.author, this.publisher, this.tags});
+class _$BookSearchImpl implements _BookSearch {
+  const _$BookSearchImpl({this.search, this.author, this.publisher, this.tags});
 
-  factory _$_BookSearch.fromJson(Map<String, dynamic> json) =>
-      _$$_BookSearchFromJson(json);
+  factory _$BookSearchImpl.fromJson(Map<String, dynamic> json) =>
+      _$$BookSearchImplFromJson(json);
 
   @override
   final String? search;
@@ -530,10 +531,10 @@ class _$_BookSearch implements _BookSearch {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_BookSearch &&
+            other is _$BookSearchImpl &&
             (identical(other.search, search) || other.search == search) &&
             (identical(other.author, author) || other.author == author) &&
             (identical(other.publisher, publisher) ||
@@ -548,12 +549,12 @@ class _$_BookSearch implements _BookSearch {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_BookSearchCopyWith<_$_BookSearch> get copyWith =>
-      __$$_BookSearchCopyWithImpl<_$_BookSearch>(this, _$identity);
+  _$$BookSearchImplCopyWith<_$BookSearchImpl> get copyWith =>
+      __$$BookSearchImplCopyWithImpl<_$BookSearchImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_BookSearchToJson(
+    return _$$BookSearchImplToJson(
       this,
     );
   }
@@ -564,10 +565,10 @@ abstract class _BookSearch implements BookSearch {
       {final String? search,
       final String? author,
       final String? publisher,
-      final String? tags}) = _$_BookSearch;
+      final String? tags}) = _$BookSearchImpl;
 
   factory _BookSearch.fromJson(Map<String, dynamic> json) =
-      _$_BookSearch.fromJson;
+      _$BookSearchImpl.fromJson;
 
   @override
   String? get search;
@@ -579,6 +580,6 @@ abstract class _BookSearch implements BookSearch {
   String? get tags;
   @override
   @JsonKey(ignore: true)
-  _$$_BookSearchCopyWith<_$_BookSearch> get copyWith =>
+  _$$BookSearchImplCopyWith<_$BookSearchImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

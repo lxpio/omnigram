@@ -264,10 +264,11 @@ class _$BookModelCopyWithImpl<$Res, $Val extends BookModel>
 }
 
 /// @nodoc
-abstract class _$$_BookModelCopyWith<$Res> implements $BookModelCopyWith<$Res> {
-  factory _$$_BookModelCopyWith(
-          _$_BookModel value, $Res Function(_$_BookModel) then) =
-      __$$_BookModelCopyWithImpl<$Res>;
+abstract class _$$BookModelImplCopyWith<$Res>
+    implements $BookModelCopyWith<$Res> {
+  factory _$$BookModelImplCopyWith(
+          _$BookModelImpl value, $Res Function(_$BookModelImpl) then) =
+      __$$BookModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -302,11 +303,11 @@ abstract class _$$_BookModelCopyWith<$Res> implements $BookModelCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_BookModelCopyWithImpl<$Res>
-    extends _$BookModelCopyWithImpl<$Res, _$_BookModel>
-    implements _$$_BookModelCopyWith<$Res> {
-  __$$_BookModelCopyWithImpl(
-      _$_BookModel _value, $Res Function(_$_BookModel) _then)
+class __$$BookModelImplCopyWithImpl<$Res>
+    extends _$BookModelCopyWithImpl<$Res, _$BookModelImpl>
+    implements _$$BookModelImplCopyWith<$Res> {
+  __$$BookModelImplCopyWithImpl(
+      _$BookModelImpl _value, $Res Function(_$BookModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -341,7 +342,7 @@ class __$$_BookModelCopyWithImpl<$Res>
     Object? countVisit = freezed,
     Object? countDownload = freezed,
   }) {
-    return _then(_$_BookModel(
+    return _then(_$BookModelImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -461,8 +462,8 @@ class __$$_BookModelCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 @Entity(realClass: BookModel)
-class _$_BookModel extends _BookModel {
-  const _$_BookModel(
+class _$BookModelImpl extends _BookModel {
+  const _$BookModelImpl(
       {@Id(assignable: true) this.id = 0,
       required this.title,
       @Unique() required this.identifier,
@@ -493,8 +494,8 @@ class _$_BookModel extends _BookModel {
       @JsonKey(name: 'count_download') this.countDownload})
       : super._();
 
-  factory _$_BookModel.fromJson(Map<String, dynamic> json) =>
-      _$$_BookModelFromJson(json);
+  factory _$BookModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$BookModelImplFromJson(json);
 
   @override
   @JsonKey()
@@ -574,10 +575,10 @@ class _$_BookModel extends _BookModel {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_BookModel &&
+            other is _$BookModelImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.identifier, identifier) ||
@@ -660,12 +661,12 @@ class _$_BookModel extends _BookModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_BookModelCopyWith<_$_BookModel> get copyWith =>
-      __$$_BookModelCopyWithImpl<_$_BookModel>(this, _$identity);
+  _$$BookModelImplCopyWith<_$BookModelImpl> get copyWith =>
+      __$$BookModelImplCopyWithImpl<_$BookModelImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_BookModelToJson(
+    return _$$BookModelImplToJson(
       this,
     );
   }
@@ -701,11 +702,11 @@ abstract class _BookModel extends BookModel {
           @JsonKey(name: 'publisher_url') final String? publisherUrl,
           @JsonKey(name: 'count_visit') final int? countVisit,
           @JsonKey(name: 'count_download') final int? countDownload}) =
-      _$_BookModel;
+      _$BookModelImpl;
   const _BookModel._() : super._();
 
   factory _BookModel.fromJson(Map<String, dynamic> json) =
-      _$_BookModel.fromJson;
+      _$BookModelImpl.fromJson;
 
   @override
   @Id(assignable: true)
@@ -777,6 +778,6 @@ abstract class _BookModel extends BookModel {
   int? get countDownload;
   @override
   @JsonKey(ignore: true)
-  _$$_BookModelCopyWith<_$_BookModel> get copyWith =>
+  _$$BookModelImplCopyWith<_$BookModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

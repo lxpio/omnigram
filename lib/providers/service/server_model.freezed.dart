@@ -123,11 +123,11 @@ class _$ServerModelCopyWithImpl<$Res, $Val extends ServerModel>
 }
 
 /// @nodoc
-abstract class _$$_ServerModelCopyWith<$Res>
+abstract class _$$ServerModelImplCopyWith<$Res>
     implements $ServerModelCopyWith<$Res> {
-  factory _$$_ServerModelCopyWith(
-          _$_ServerModel value, $Res Function(_$_ServerModel) then) =
-      __$$_ServerModelCopyWithImpl<$Res>;
+  factory _$$ServerModelImplCopyWith(
+          _$ServerModelImpl value, $Res Function(_$ServerModelImpl) then) =
+      __$$ServerModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -143,11 +143,11 @@ abstract class _$$_ServerModelCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_ServerModelCopyWithImpl<$Res>
-    extends _$ServerModelCopyWithImpl<$Res, _$_ServerModel>
-    implements _$$_ServerModelCopyWith<$Res> {
-  __$$_ServerModelCopyWithImpl(
-      _$_ServerModel _value, $Res Function(_$_ServerModel) _then)
+class __$$ServerModelImplCopyWithImpl<$Res>
+    extends _$ServerModelCopyWithImpl<$Res, _$ServerModelImpl>
+    implements _$$ServerModelImplCopyWith<$Res> {
+  __$$ServerModelImplCopyWithImpl(
+      _$ServerModelImpl _value, $Res Function(_$ServerModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -163,7 +163,7 @@ class __$$_ServerModelCopyWithImpl<$Res>
     Object? openAIUrl = freezed,
     Object? openAIApiKey = freezed,
   }) {
-    return _then(_$_ServerModel(
+    return _then(_$ServerModelImpl(
       version: null == version
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
@@ -206,8 +206,8 @@ class __$$_ServerModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_ServerModel implements _ServerModel {
-  const _$_ServerModel(
+class _$ServerModelImpl implements _ServerModel {
+  const _$ServerModelImpl(
       {this.version = "v1.0.0",
       this.chatEnabled = true,
       this.m4tEnabled = true,
@@ -218,8 +218,8 @@ class _$_ServerModel implements _ServerModel {
       @JsonKey(name: 'openai_url') this.openAIUrl,
       @JsonKey(name: 'openai_apikey') this.openAIApiKey});
 
-  factory _$_ServerModel.fromJson(Map<String, dynamic> json) =>
-      _$$_ServerModelFromJson(json);
+  factory _$ServerModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ServerModelImplFromJson(json);
 
   @override
   @JsonKey()
@@ -253,10 +253,10 @@ class _$_ServerModel implements _ServerModel {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_ServerModel &&
+            other is _$ServerModelImpl &&
             (identical(other.version, version) || other.version == version) &&
             (identical(other.chatEnabled, chatEnabled) ||
                 other.chatEnabled == chatEnabled) &&
@@ -292,12 +292,12 @@ class _$_ServerModel implements _ServerModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ServerModelCopyWith<_$_ServerModel> get copyWith =>
-      __$$_ServerModelCopyWithImpl<_$_ServerModel>(this, _$identity);
+  _$$ServerModelImplCopyWith<_$ServerModelImpl> get copyWith =>
+      __$$ServerModelImplCopyWithImpl<_$ServerModelImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_ServerModelToJson(
+    return _$$ServerModelImplToJson(
       this,
     );
   }
@@ -314,10 +314,10 @@ abstract class _ServerModel implements ServerModel {
           @JsonKey(name: 'm4t_server_addr') final String? m4tServerAddr,
           @JsonKey(name: 'openai_url') final String? openAIUrl,
           @JsonKey(name: 'openai_apikey') final String? openAIApiKey}) =
-      _$_ServerModel;
+      _$ServerModelImpl;
 
   factory _ServerModel.fromJson(Map<String, dynamic> json) =
-      _$_ServerModel.fromJson;
+      _$ServerModelImpl.fromJson;
 
   @override
   String get version;
@@ -343,6 +343,6 @@ abstract class _ServerModel implements ServerModel {
   String? get openAIApiKey;
   @override
   @JsonKey(ignore: true)
-  _$$_ServerModelCopyWith<_$_ServerModel> get copyWith =>
+  _$$ServerModelImplCopyWith<_$ServerModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -6,8 +6,8 @@ part of 'app_config_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_AppConfigModel _$$_AppConfigModelFromJson(Map<String, dynamic> json) =>
-    _$_AppConfigModel(
+_$AppConfigModelImpl _$$AppConfigModelImplFromJson(Map<String, dynamic> json) =>
+    _$AppConfigModelImpl(
       baseUrl: json['baseUrl'] as String,
       token: json['token'] as String,
       appName: json['appName'] as String,
@@ -15,7 +15,8 @@ _$_AppConfigModel _$$_AppConfigModelFromJson(Map<String, dynamic> json) =>
       shouldCollectCrashLog: json['shouldCollectCrashLog'] as bool,
     );
 
-Map<String, dynamic> _$$_AppConfigModelToJson(_$_AppConfigModel instance) =>
+Map<String, dynamic> _$$AppConfigModelImplToJson(
+        _$AppConfigModelImpl instance) =>
     <String, dynamic>{
       'baseUrl': instance.baseUrl,
       'token': instance.token,
