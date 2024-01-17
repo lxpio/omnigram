@@ -18,7 +18,7 @@
 
 ## 关于
 
-Omnigram 是Flutter编写的支持多平台（iOS、Android、Web、Windows、Linux、Mac）文件阅读和听书客户端，它支持多种格式，包括 EPUB 和 PDF。它通过TTS模型提供听书功能，支持其他 AI 模型进行辅助阅读。此外，它还具备本地书籍管理功能，允许用户轻松管理书籍在 NAS 上的存储。其后端服务部署参阅 [omnigam-server](https://github.com/nexptr/omnigram-server)。或者参考[项目官方文档](https://omnigram.nexptr.com)
+Omnigram 是Flutter编写的支持多平台（iOS、Android、Web、Windows、Linux、Mac）文件阅读和听书客户端，它支持多种格式，包括 EPUB 和 PDF。它通过TTS模型提供听书功能，支持其他 AI 模型进行辅助阅读。此外，它还具备本地书籍管理功能，允许用户轻松管理书籍在 NAS 上的存储。其后端服务部署参阅 [omnigam-server](https://github.com/lxpio/omnigram-server)。或者参考[项目官方文档](https://omnigram.lxpio.com)
 
 ## 特性
 
@@ -32,7 +32,7 @@ Omnigram 是Flutter编写的支持多平台（iOS、Android、Web、Windows、Li
 
 ## 官方文档
 
-您可以在 <https://omnigram.nexptr.com/en/docs/overview/getting-started/> 找到官方文档（包含安装手册）。
+您可以在 <https://omnigram.lxpio.com/> 找到官方文档（包含安装手册）。
 
 ## 示例
 
