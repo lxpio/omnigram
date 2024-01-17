@@ -2,14 +2,14 @@
 
 <picture>
   <source
-    srcset="https://omnigram.nexptr.com/images/logo_with_letter_dark.svg"
+    srcset="./docs/static/img/logo_with_letter_dark.svg"
     media="(prefers-color-scheme: dark)"
   />
   <source
-    srcset="https://omnigram.nexptr.com/images/logo_with_letter_white.svg"
+    srcset="./docs/static/img/logo_with_letter_white.svg"
     media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
   />
-  <img src="https://omnigram.nexptr.com/images/logo_with_letter_white.svg" />
+  <img src="./docs/static/img/logo_with_letter_white.svg" />
 </picture>
 
 
@@ -20,7 +20,7 @@
 
 ## About Omnigram
 
-Omnigram is a multi-platform (iOS, Android, Web, Windows, Linux, Mac) file reading and audiobook client written in Flutter. It supports multiple formats, including EPUB and PDF. It provides audiobook functionality through TTS models and supports other AI models for assisted reading. In addition, it has local book management capabilities, allowing users to easily manage book storage on NAS. For its backend service deployment, refer to [omnigam-server](https://github.com/nexptr/omnigram-server). Or check the [official project documentation](https://omnigram.nexptr.com/).
+Omnigram is a multi-platform (iOS, Android, Web, Windows, Linux, Mac) file reading and audiobook client written in Flutter. It supports multiple formats, including EPUB and PDF. It provides audiobook functionality through TTS models and supports other AI models for assisted reading. In addition, it has local book management capabilities, allowing users to easily manage book storage on NAS. For its backend service deployment, refer to [omnigam-server](https://github.com/lxpio/omnigram-server). Or check the [official project documentation](https://omnigram.lxpio.com/).
 
 ## Features
 
@@ -34,7 +34,7 @@ Omnigram is a multi-platform (iOS, Android, Web, Windows, Linux, Mac) file readi
 
 ## Official Documentation
 
-You can find the official documentation (including installation manuals) at <https://omnigram.nexptr.com/en/docs/overview/getting-started/>.
+You can find the official documentation (including installation manuals) at <https://omnigram.lxpio.com/>.
 
 ## Examples
 

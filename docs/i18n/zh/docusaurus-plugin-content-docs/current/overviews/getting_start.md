@@ -7,7 +7,7 @@ sidebar_position: 10
 
 ## 环境依赖
 
-请查阅[环境要求](../install/reuirements)
+请查阅[环境要求](../install/requirements)
 
 ## Docker 启动
 
