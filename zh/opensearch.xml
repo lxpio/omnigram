@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>Omnigram</ShortName>
+  <Description>Search Omnigram</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image width="16" height="16" type="image/x-icon">https://omnigram.lxpio.com/zh/img/favicon.ico</Image>
+  <Url type="text/html" method="get" template="https://omnigram.lxpio.com/zh/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://omnigram.lxpio.com/zh/opensearch.xml" />
+  <moz:SearchForm>https://omnigram.lxpio.com/zh/</moz:SearchForm>
+</OpenSearchDescription>
