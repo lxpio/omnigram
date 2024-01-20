@@ -28,7 +28,7 @@ The mobile app can be downloaded from:
 
 - [ ] Google Play
 - [ ] App Store
-- [x] [Github (apk)](https://github.com/nexptr/omnigram)
+- [x] [Github (apk)](https://github.com/lxpio/omnigram)
 
 ### Login App
 

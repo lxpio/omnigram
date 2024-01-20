@@ -341,7 +341,7 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v4.0.3"
+      ref: "v4.0.2"
       resolved-ref: "430ceb4dc2f3bd7c2c8da67666a6300da841d311"
       url: "https://github.com/lxpio/epubx.dart.git"
     source: git
@@ -762,10 +762,10 @@ packages:
     dependency: "direct main"
     description:
       name: markdown
-      sha256: acf35edccc0463a9d7384e437c015a3535772e09714cf60e07eeef3a15870dcd
+      sha256: "4e304b422905967f1f7e35a03cd2a3f8f34306b3e1b0cc7a8677d7a306471a0e"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "7.1.1"
+    version: "7.2.0"
   matcher:
     dependency: transitive
     description:

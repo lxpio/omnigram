@@ -1,5 +1,5 @@
 name: omnigram
-version: 1.0.1
+version: 1.0.2
 publish_to: none
 description: A new Flutter project.
 environment:
@@ -22,7 +22,7 @@ dependencies:
   flutter_svg: ^2.0.7
   cached_network_image: ^3.2.3
   flutter_highlight: ^0.7.0
-  objectbox: ^2.3.1
+  objectbox: ^2.4.0
   objectbox_flutter_libs: any
   path_provider: ^2.0.15
   hooks_riverpod: ^2.4.5
@@ -42,7 +42,7 @@ dependencies:
   epubx:
     git: 
       url: https://github.com/lxpio/epubx.dart.git
-      ref: v4.0.3
+      ref: v4.0.2
   # epubx:
   #   path: ../epubx.dart
 
