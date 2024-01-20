@@ -13,6 +13,6 @@ There are many ways to contribute to Omnigram:
 
 - **Testing**: Using Omnigram and reporting bugs is a great way to support the project. Found a bug? Please open an issue on GitHub.
 
-- **Translation**: So far, the Omnigram mobile app only supports Chinese and English! To contribute translations, please contact me by email at [omnigram@nexptr.com](mailto:omnigram@nexptr.com) or send me a message on Github.
+- **Translation**: So far, the Omnigram mobile app only supports Chinese and English! To contribute translations, please contact me by email at [omnigram@lxpio.com](mailto:omnigram@lxpio.com) or send me a message on Github.
 
 - **Development**: If you are a programmer or developer, please review Omnigram's technology stack and consider fixing bugs or building new features. Our team is always looking for new contributors. See the "Developers" section for information on how to contribute as a developer.

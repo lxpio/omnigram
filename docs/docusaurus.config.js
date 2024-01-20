@@ -93,7 +93,7 @@ module.exports = {
         // },
         {
           // label: "GitHub", header-icon-link 
-          href: "https://github.com/nexptr/omnigram",
+          href: "https://github.com/lxpio/omnigram",
           className: "header-github-link",
           position: "right",
         },
@@ -124,7 +124,7 @@ module.exports = {
           items: [
             {
               label: "Github Discussions",
-              href: "https://github.com/nexptr/omnigram/discussions",
+              href: "https://github.com/lxpio/omnigram/discussions",
             },
             {
               label: "Lxpio Team",
@@ -137,7 +137,7 @@ module.exports = {
           items: [
             {
               label: "Omnigram App",
-              href: "https://github.com/nexptr/omnigram",
+              href: "https://github.com/lxpio/omnigram",
             },
             {
               label: "Omnigram Server",
@@ -145,7 +145,7 @@ module.exports = {
             },
             {
               label: "Contribution guide",
-              href: "https://github.com/nexptr/omnigram/blob/main/CONTRIBUTING.md",
+              href: "https://github.com/lxpio/omnigram/blob/main/CONTRIBUTING.md",
             },
           ],
         },

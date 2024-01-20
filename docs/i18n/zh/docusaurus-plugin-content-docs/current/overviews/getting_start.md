@@ -30,7 +30,7 @@ docker run -v <my_local_docs_path>:/docs -p 8080:80 lxpio/omnigram-server:v0.1.2
 
 - [ ] 谷歌商城
 - [ ] 苹果商城
-- [x] [Github(apk)](https://github.com/nexptr/omnigram)
+- [x] [Github(apk)](https://github.com/lxpio/omnigram)
 
 ### 登陆 App
 

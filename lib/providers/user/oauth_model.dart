@@ -1,3 +1,4 @@
+// ignore_for_file: invalid_annotation_target
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:omnigram/providers/service/api_service.dart';
@@ -11,7 +12,7 @@ class OauthModel with _$OauthModel {
     @Default('') @JsonKey(name: 'token_type') String tokenType,
     @Default('') @JsonKey(name: 'refresh_token') String refreshToken,
     @Default('') @JsonKey(name: 'access_token') String accessToken,
-    @Default(3600) int expired_in,
+    @Default(3600) @JsonKey(name: 'expired_in') int expiredIn,
   }) = _OauthModel;
 
   factory OauthModel.fromJson(Map<String, dynamic> json) =>

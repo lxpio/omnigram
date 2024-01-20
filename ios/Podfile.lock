@@ -9,10 +9,10 @@ PODS:
   - FMDB/standard (2.7.5)
   - just_audio (0.0.1):
     - Flutter
-  - ObjectBox (1.9.0)
+  - ObjectBox (1.9.1)
   - objectbox_flutter_libs (0.0.1):
     - Flutter
-    - ObjectBox (= 1.9.0)
+    - ObjectBox (= 1.9.1)
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -36,10 +36,9 @@ DEPENDENCIES:
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
-  https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git:
-    - ObjectBox
   trunk:
     - FMDB
+    - ObjectBox
 
 EXTERNAL SOURCES:
   audio_session:
@@ -67,13 +66,13 @@ SPEC CHECKSUMS:
   flutter_native_splash: 52501b97d1c0a5f898d687f1646226c1f93c56ef
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
-  ObjectBox: e7ff611291a0663380e0736b46786bcd077294ff
-  objectbox_flutter_libs: 0948d6feb7de4f7edaebc7a898b9e85b7fc2bc89
-  path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
-  share_plus: 599aa54e4ea31d4b4c0e9c911bcc26c55e791028
+  ObjectBox: 178bbc475aea8183870993c71e7341f3c95c7b8c
+  objectbox_flutter_libs: 612b49aaaef0974006a854d1abe3c687be1efefd
+  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
+  share_plus: c3fef564749587fc939ef86ffb283ceac0baf9f5
   sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a
-  url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
+  url_launcher_ios: bbd758c6e7f9fd7b5b1d4cde34d2b95fcce5e812
 
-PODFILE CHECKSUM: 2b76dc10891980470a89118f6058e2ce7fd81838
+PODFILE CHECKSUM: f9420bd595da8fbce156b547dcd3368afc5226ff
 
 COCOAPODS: 1.13.0

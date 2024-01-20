@@ -7,7 +7,7 @@
         "official_url": "https://api.openai.com/",
         "api_url": "https://api.openai.com/v1/chat/completions",
         "help": "chat_gpt_help",
-        "help_url": "https://omnigram.nexptr.com/answer/help/chat_gpt.html",
+        "help_url": "https://omnigram.lxpio.com/answer/help/chat_gpt.html",
         "hello": "open_ai_hello",
         "token": ""
     }

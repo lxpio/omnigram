@@ -29,10 +29,6 @@ class HomeSmallScreen extends HookConsumerWidget {
         );
       },
       error: (err, stack) {
-        // // &&
-        //     (err.type == DioExceptionType.connectionTimeout ||
-        //         err.type == DioExceptionType.connectionError ||
-        //         err.type == DioExceptionType.unknown)
         if (err is DioException) {
           // 处理连接超时或接收超时
           // print('Timeout Error: ${err.message}');

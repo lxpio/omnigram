@@ -1,14 +1,14 @@
 #
 <picture>
   <source
-    srcset="https://omnigram.nexptr.com/images/logo_with_letter_dark.svg"
+    srcset="./docs/static/img/logo_with_letter_dark.svg"
     media="(prefers-color-scheme: dark)"
   />
   <source
-    srcset="https://omnigram.nexptr.com/images/logo_with_letter_white.svg"
+    srcset="./docs/static/img/logo_with_letter_white.svg"
     media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
   />
-  <img src="https://omnigram.nexptr.com/images/logo_with_letter_white.svg" />
+  <img src="./docs/static/img/logo_with_letter_white.svg" />
 </picture>
 
 <div style="font-size: 1.5rem;">
@@ -49,7 +49,7 @@ Omnigram 是Flutter编写的支持多平台（iOS、Android、Web、Windows、Li
 
 ```bash
 
-git clone github.com/nexptr/omnigram.git
+git clone github.com/lxpio/omnigram.git
 cd omnigram
 flutter clean && dart run build_runner build
 

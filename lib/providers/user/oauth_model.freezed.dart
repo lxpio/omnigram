@@ -26,7 +26,8 @@ mixin _$OauthModel {
   String get refreshToken => throw _privateConstructorUsedError;
   @JsonKey(name: 'access_token')
   String get accessToken => throw _privateConstructorUsedError;
-  int get expired_in => throw _privateConstructorUsedError;
+  @JsonKey(name: 'expired_in')
+  int get expiredIn => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -44,7 +45,7 @@ abstract class $OauthModelCopyWith<$Res> {
       {@JsonKey(name: 'token_type') String tokenType,
       @JsonKey(name: 'refresh_token') String refreshToken,
       @JsonKey(name: 'access_token') String accessToken,
-      int expired_in});
+      @JsonKey(name: 'expired_in') int expiredIn});
 }
 
 /// @nodoc
@@ -63,7 +64,7 @@ class _$OauthModelCopyWithImpl<$Res, $Val extends OauthModel>
     Object? tokenType = null,
     Object? refreshToken = null,
     Object? accessToken = null,
-    Object? expired_in = null,
+    Object? expiredIn = null,
   }) {
     return _then(_value.copyWith(
       tokenType: null == tokenType
@@ -78,9 +79,9 @@ class _$OauthModelCopyWithImpl<$Res, $Val extends OauthModel>
           ? _value.accessToken
           : accessToken // ignore: cast_nullable_to_non_nullable
               as String,
-      expired_in: null == expired_in
-          ? _value.expired_in
-          : expired_in // ignore: cast_nullable_to_non_nullable
+      expiredIn: null == expiredIn
+          ? _value.expiredIn
+          : expiredIn // ignore: cast_nullable_to_non_nullable
               as int,
     ) as $Val);
   }
@@ -98,7 +99,7 @@ abstract class _$$OauthModelImplCopyWith<$Res>
       {@JsonKey(name: 'token_type') String tokenType,
       @JsonKey(name: 'refresh_token') String refreshToken,
       @JsonKey(name: 'access_token') String accessToken,
-      int expired_in});
+      @JsonKey(name: 'expired_in') int expiredIn});
 }
 
 /// @nodoc
@@ -115,7 +116,7 @@ class __$$OauthModelImplCopyWithImpl<$Res>
     Object? tokenType = null,
     Object? refreshToken = null,
     Object? accessToken = null,
-    Object? expired_in = null,
+    Object? expiredIn = null,
   }) {
     return _then(_$OauthModelImpl(
       tokenType: null == tokenType
@@ -130,9 +131,9 @@ class __$$OauthModelImplCopyWithImpl<$Res>
           ? _value.accessToken
           : accessToken // ignore: cast_nullable_to_non_nullable
               as String,
-      expired_in: null == expired_in
-          ? _value.expired_in
-          : expired_in // ignore: cast_nullable_to_non_nullable
+      expiredIn: null == expiredIn
+          ? _value.expiredIn
+          : expiredIn // ignore: cast_nullable_to_non_nullable
               as int,
     ));
   }
@@ -145,7 +146,7 @@ class _$OauthModelImpl implements _OauthModel {
       {@JsonKey(name: 'token_type') this.tokenType = '',
       @JsonKey(name: 'refresh_token') this.refreshToken = '',
       @JsonKey(name: 'access_token') this.accessToken = '',
-      this.expired_in = 3600});
+      @JsonKey(name: 'expired_in') this.expiredIn = 3600});
 
   factory _$OauthModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$OauthModelImplFromJson(json);
@@ -160,12 +161,12 @@ class _$OauthModelImpl implements _OauthModel {
   @JsonKey(name: 'access_token')
   final String accessToken;
   @override
-  @JsonKey()
-  final int expired_in;
+  @JsonKey(name: 'expired_in')
+  final int expiredIn;
 
   @override
   String toString() {
-    return 'OauthModel(tokenType: $tokenType, refreshToken: $refreshToken, accessToken: $accessToken, expired_in: $expired_in)';
+    return 'OauthModel(tokenType: $tokenType, refreshToken: $refreshToken, accessToken: $accessToken, expiredIn: $expiredIn)';
   }
 
   @override
@@ -179,14 +180,14 @@ class _$OauthModelImpl implements _OauthModel {
                 other.refreshToken == refreshToken) &&
             (identical(other.accessToken, accessToken) ||
                 other.accessToken == accessToken) &&
-            (identical(other.expired_in, expired_in) ||
-                other.expired_in == expired_in));
+            (identical(other.expiredIn, expiredIn) ||
+                other.expiredIn == expiredIn));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, tokenType, refreshToken, accessToken, expired_in);
+  int get hashCode =>
+      Object.hash(runtimeType, tokenType, refreshToken, accessToken, expiredIn);
 
   @JsonKey(ignore: true)
   @override
@@ -207,7 +208,7 @@ abstract class _OauthModel implements OauthModel {
       {@JsonKey(name: 'token_type') final String tokenType,
       @JsonKey(name: 'refresh_token') final String refreshToken,
       @JsonKey(name: 'access_token') final String accessToken,
-      final int expired_in}) = _$OauthModelImpl;
+      @JsonKey(name: 'expired_in') final int expiredIn}) = _$OauthModelImpl;
 
   factory _OauthModel.fromJson(Map<String, dynamic> json) =
       _$OauthModelImpl.fromJson;
@@ -222,7 +223,8 @@ abstract class _OauthModel implements OauthModel {
   @JsonKey(name: 'access_token')
   String get accessToken;
   @override
-  int get expired_in;
+  @JsonKey(name: 'expired_in')
+  int get expiredIn;
   @override
   @JsonKey(ignore: true)
   _$$OauthModelImplCopyWith<_$OauthModelImpl> get copyWith =>

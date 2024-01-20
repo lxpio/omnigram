@@ -51,7 +51,7 @@ This project uses a three-way repository including:
 
 ```bash
 
-git clone github.com/nexptr/omnigram.git
+git clone github.com/lxpio/omnigram.git
 cd omnigram
 flutter clean && dart run build_runner build
 
