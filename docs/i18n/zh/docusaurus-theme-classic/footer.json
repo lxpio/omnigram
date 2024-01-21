@@ -52,11 +52,11 @@
     "description": "The label of footer link with label=Privacy Policy of the website linking to https://go.linwood.dev/privacypolicy"
   },
   "copyright": {
-    "message": "版权 ©️ 2023 Linwood。",
+    "message": "版权 ©️ 2024 Lxpio Team | <a target='_blank' href='https: //beian.miit.gov.cn/'>湘ICP备2024043073号</a>",
     "description": "The footer copyright"
   },
   "logo.alt": {
-    "message": "林伍德徽标",
+    "message": "A Logo",
     "description": "The alt text of footer logo"
   }
 }
