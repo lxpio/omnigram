@@ -33,7 +33,7 @@ jobs:
       run: |
         cd docs
         pnpm run build
-    - name: Deploy
+    - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
         # If you're changing the branch from main,
         # also change the `main` in `refs/heads/main`
@@ -42,3 +42,13 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./docs/build
+    - name: Deploy To Qcloud
+      uses: burnett01/rsync-deployments@6.0.0
+      with:
+        switches: -avzr --delete
+        path: ./docs/build
+        remote_host: ${{ secrets.QCLOUD_HOST }}
+        remote_port: ${{ secrets.QCLOUD_PORT }}
+        remote_path: ${{ vars.DEPLOY_PATH }}
+        remote_user: ${{ secrets.DEPLOY_USER }}
+        remote_key: ${{ secrets.DEPLOY_KEY }}
