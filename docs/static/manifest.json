@@ -4,8 +4,8 @@
   "display": "minimal-ui",
   "scope": "/?scope=pwa/",
   "start_url": "/",
-  "name": "Linwood Butterfly Documentation",
-  "short_name": "Butterfly Docs",
+  "name": "Lxpio Omnigram Documentation",
+  "short_name": "Omnigram Docs",
   "description": "🎨 Notes that change the world 🎨",
   "icons": [
     {

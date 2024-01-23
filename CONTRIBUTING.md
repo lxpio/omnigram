@@ -2,25 +2,25 @@
 
 There are many ways to contribute to this project.
 Thanks to everyone who has contributed!
-If you have any questions, please contact me at [contact@linwood.dev](mailto:contact@linwood.dev).
+If you have any questions, please contact me at [omnigram@lxpio.com](mailto:omnigram@lxpio.com).
 
-There is a matrix server for this project [here](https://linwood.dev/matrix) and a discord server [here](https://discord.linwood.dev).
 
-Please follow the [Code of Conduct](https://docs.butterfly.linwood.dev/code-of-conduct).
+Please follow the [Code of Conduct](https://omnigram.lxpio.com/code-of-conduct).
 
 ## Give feedback
 
 The best way to give feedback is to open an issue on GitHub.
-Please report any bug you find [here](https://github.com/LinwoodDev/Butterfly/issues/new?assignees=CodeDoctorDE&labels=bug%2Ctriage&template=bug_report.yml&title=%5BBug%5D%3A+).
+Please report any bug you find [here](https://github.com/lxpio/omnigram/issues/new).
 
-If you have a feature that you would like to see added, please open an issue [here](https://github.com/LinwoodDev/Butterfly/issues/new?assignees=CodeDoctorDE&labels=enhancement%2Ctriage&template=feature_request.yml&title=%5BFeature+request%5D%3A+).
+If you have a feature that you would like to see added, please open an issue [here](https://github.com/lxpio/omnigram/issues/new?assignees=CodeDoctorDE&labels=enhancement%2Ctriage&template=feature_request.yml&title=%5BFeature+request%5D%3A+).
 
 ## Test nightly builds
 
 Nightly builds are not production ready and need to be tested.
 Please report any bugs in the github issues section.
 
-Read more about it [here](https://docs.butterfly.linwood.dev/nightly).
+TODO
+<!-- Read more about it [here](https://omnigram.lxpio.com/nightly). -->
 
 ## Write documentation
 
@@ -39,18 +39,18 @@ pnpm start
 
 All stable documentation can be found in the `versioned_docs` folder.
 
-Fork the project and create a pull request to add your documentation to the `develop` branch.
+Fork the project and create a pull request to add your documentation to the `main` branch.
 
 ## Translate
 
 Crowdin is a service that allows you to translate the documentation and the app.
-Click [here](https://translate.linwood.dev/butterfly) to see the project and start translating.
+Click [here](https://translate.lxpio.com/omnigram) to see the project and start translating.
 If you have a new language to add, please contact me.
 
 ## Code
 
 This project is written in [Dart](https://dart.dev/) and was built with [Flutter](https://flutter.dev/).
-The app source code can be found in the `app` folder.
+The app source code can be found in the `./` folder.
 
 Please install the dependencies first:
 
@@ -62,11 +62,11 @@ On windows, please install visual studio build tools (or visual studio) and all 
 To get started, run:
 
 ```bash
-cd app
+cd ./
 flutter pub get
 flutter run
 ```
 
-All subdirectories are documented in the `app/README.md` file.
+All subdirectories are documented in the `/README.md` file.
 
-Fork the project and create a pull request to add your code to the `develop` branch.
+Fork the project and create a pull request to add your code to the `main` branch.

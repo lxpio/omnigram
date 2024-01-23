@@ -32,12 +32,12 @@ module.exports = {
     'terms_conditions',
     // {
     //   type: 'link',
-    //   href: 'https://discord.linwood.dev',
+    //   href: 'https://discord.lxpio.com',
     //   label: 'Discord'
     // },
     // {
     //   type: 'link',
-    //   href: 'https://github.com/LinwoodDev/Butterfly',
+    //   href: 'https://github.com/lxpio/omnigram',
     //   label: 'GitHub'
     // }
   ],

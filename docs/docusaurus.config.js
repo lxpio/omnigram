@@ -29,7 +29,7 @@ module.exports = {
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
-  organizationName: "LinwoodDev", // Usually your GitHub org/user name.
+  organizationName: "Lxpio Tream", // Usually your GitHub org/user name.
   projectName: "omnigram-doc", // Usually your repo name.
   i18n: {
     defaultLocale: defaultLocale,
@@ -55,12 +55,12 @@ module.exports = {
     },
     algolia: {
       // The application ID provided by Algolia
-      appId: "PQN0C3O7D3",
+      appId: "",
 
       // Public API key: it is safe to commit it
-      apiKey: "219c0a938f5cec6e889c1e5edaef7035",
+      apiKey: "",
 
-      indexName: "docs-butterfly-linwood",
+      indexName: "docs-omnigram-lxpio",
 
       //... other Algolia params
     },
@@ -154,7 +154,7 @@ module.exports = {
           items: [
             // {
             //   label: "Imprint",
-            //   href: "https://go.linwood.dev/imprint",
+            //   href: "https://omnigram.lxpio.com/imprint",
             // },
             {
               label: "Privacy Policy",
@@ -185,9 +185,9 @@ module.exports = {
           sidebarPath: require.resolve("./sidebars.js"),
           editUrl: ({ locale, docPath }) => {
             if (locale !== 'en') {
-              return `https://translate.linwood.dev/butterfly/${locale}`;
+              return `https://translate.lxpio.com/omnigram/${locale}`;
             }
-            return `https://github.com/LinwoodDev/butterfly/edit/develop/docs/docs/${docPath}`;
+            return `https://github.com/lxpio/omnigram/edit/main/docs/docs/${docPath}`;
           },
           // versions: {
           //   current: {
