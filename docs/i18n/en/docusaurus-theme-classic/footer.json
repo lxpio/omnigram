@@ -13,35 +13,35 @@
   },
   "link.item.label.Discord": {
     "message": "Discord",
-    "description": "The label of footer link with label=Discord linking to https://discord.linwood.dev"
+    "description": "The label of footer link with label=Discord linking to https://discord.omnigram.lxpio.com"
   },
   "link.item.label.Matrix": {
     "message": "Matrix",
-    "description": "The label of footer link with label=Matrix linking to https://linwood.dev/matrix"
+    "description": "The label of footer link with label=Matrix linking to https://omnigram.lxpio.com/matrix"
   },
   "link.item.label.Twitter": {
     "message": "Twitter",
-    "description": "The label of footer link with label=Twitter linking to https://twitter.com/LinwoodDev"
+    "description": "The label of footer link with label=Twitter linking to https://twitter.com/lxpioTeam"
   },
   "link.item.label.Mastodon": {
     "message": "Mastodon",
-    "description": "The label of footer link with label=Mastodon linking to https://floss.social/@linwood"
+    "description": "The label of footer link with label=Mastodon linking to https://floss.social/@lxpio"
   },
   "link.item.label.App": {
     "message": "App",
-    "description": "The label of footer link with label=App linking to https://github.com/LinwoodDev/butterfly/tree/develop/app"
+    "description": "The label of footer link with label=App linking to https://github.com/lxpio/omnigram/tree/main"
   },
   "link.item.label.Docs": {
     "message": "Docs",
-    "description": "The label of footer link with label=Docs linking to https://github.com/LinwoodDev/butterfly/tree/develop/docs"
+    "description": "The label of footer link with label=Docs linking to https://github.com/lxpio/omnigram/tree/main/docs"
   },
   "link.item.label.Contribution guide": {
     "message": "Contribution guide",
-    "description": "The label of footer link with label=Contribution guide linking to https://github.com/LinwoodDev/butterfly/blob/develop/CONTRIBUTING.md"
+    "description": "The label of footer link with label=Contribution guide linking to https://github.com/lxpio/omnigram/tree/main/CONTRIBUTING.md"
   },
   "link.item.label.Imprint": {
     "message": "Imprint",
-    "description": "The label of footer link with label=Imprint linking to https://go.linwood.dev/imprint"
+    "description": "The label of footer link with label=Imprint linking to https://omngiram.lxpio.com/imprint"
   },
   "link.item.label.Privacy Policy of the app": {
     "message": "Privacy Policy of the app",
@@ -49,7 +49,7 @@
   },
   "link.item.label.Privacy Policy of the website": {
     "message": "Privacy Policy of the website",
-    "description": "The label of footer link with label=Privacy Policy of the website linking to https://go.linwood.dev/privacypolicy"
+    "description": "The label of footer link with label=Privacy Policy of the website linking to https://omngiram.lxpio.com/privacypolicy"
   },
   "copyright": {
     "message": "Copyright © 2024 Lxpio Team | <a target='_blank' href='https: //beian.miit.gov.cn/'>湘ICP备2024043073号</a>",
