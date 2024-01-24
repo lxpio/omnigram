@@ -55,10 +55,10 @@ module.exports = {
     },
     algolia: {
       // The application ID provided by Algolia
-      appId: "",
+      appId: "xxx",
 
       // Public API key: it is safe to commit it
-      apiKey: "",
+      apiKey: "xxx",
 
       indexName: "docs-omnigram-lxpio",
 
