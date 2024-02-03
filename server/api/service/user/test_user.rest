@@ -1,0 +1,10 @@
+# completion
+###
+GET http://127.0.0.1:8080/user/apikeys
+Content-Type: application/json
+
+{
+    "model":"vicuna-13b-v1.5-16k",
+    "prompt": ["怎样计算三角形面积"],
+    "stream": true
+}

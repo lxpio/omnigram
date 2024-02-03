@@ -1,0 +1,52 @@
+# http server listen address
+api_addr: '0.0.0.0:80'
+
+
+log_level: 'info'
+
+log_dir: 'stdout'
+# log_dir: './log'
+
+metadata_path: '/metadata'
+
+db_options:
+  # driver: 'postgres'
+  # driver: 'postgres'
+  # host: '127.0.0.1'
+  # port: 5432
+  # passwd: 'password'
+  # user: 'postgres'
+  # dbname: 'epub'
+  # sslmode: 'disable'
+  driver: 'sqlite3'
+  host: '/metadata'
+
+epub_options:
+  #data_path epub files dirctories
+  data_path: '/docs' 
+  save_cover_beside_src: false
+  max_epub_size: 1000000
+
+
+m4t_options:
+  remote_addr: 'localhost:50051'
+
+model_options:
+- name: ggml-llama-7b
+  parameters:
+    top_p: 80
+    top_k: 0.9
+    temperature: 0.7
+    max_tokens: 128
+    model_path: './models/ggml-llama-7b.bin'
+- name: vicuna-13b-v1.5-16k
+  parameters:
+    endpoints: 
+    - 'http://vicuna-service:21002'
+    api_key: 'sk-xxxxxxx'
+    top_p: 80
+    top_k: 0.9
+    temperature: 0.7
+    max_tokens: 8192
+
+

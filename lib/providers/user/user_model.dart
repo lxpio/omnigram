@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_annotation_target
+
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -16,7 +18,6 @@ class UserModel with _$UserModel {
     @Default('') String email,
     @Default('') @JsonKey(name: 'user_name') String username,
     @Default('') @JsonKey(name: 'nick_name') String nickname,
-    // ignore: invalid_annotation_target
     @Default(10) @JsonKey(name: 'role_id') int roleId,
     @Default(false) bool locked,
     @Default(false) bool logined,

@@ -44,7 +44,7 @@ class ScanStatusView extends HookConsumerWidget {
                       : null,
                 ),
                 Container(
-                  height: 140,
+                  height: 128,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

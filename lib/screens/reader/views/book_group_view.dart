@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/screens/reader/models/book_model.dart';
-import 'package:omnigram/screens/reader/providers/select_book.dart';
 import 'package:omnigram/utils/constants.dart';
 
 import '../providers/books.dart';

@@ -1,0 +1,11 @@
+build
+*.o
+*.a
+*.bin
+*.log
+testdata
+.DS_Store
+apidoc
+*.wav
+m4t_server/__pycache__
+m4t_server/pb/__pycache__

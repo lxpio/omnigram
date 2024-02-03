@@ -1,0 +1,76 @@
+name: Build Mobile
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        required: false
+        type: string
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-sign-android:
+    name: Build and sign Android
+    # Skip when PR from a fork
+    if: ${{ !github.event.pull_request.head.repo.fork && github.actor != 'dependabot[bot]' }}
+    runs-on: macos-14
+
+    steps:
+      - name: Determine ref
+        id: get-ref
+        run: |
+          input_ref="${{ inputs.ref }}"
+          github_ref="${{ github.sha }}"
+          ref="${input_ref:-$github_ref}"
+          echo "ref=$ref" >> $GITHUB_OUTPUT
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.get-ref.outputs.ref }}
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "11.0.21+9"
+          cache: "gradle"
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: "3.16.9"
+          cache: true
+
+      - name: Create the Keystore
+        env:
+          KEY_JKS: ${{ secrets.KEY_JKS }}
+        working-directory: ./
+        run: echo $KEY_JKS | base64 -d > android/key.jks
+
+      - name: Get Packages
+        working-directory: ./
+        run: flutter pub get
+
+      - name: Build Android App Bundle
+        working-directory: ./
+        env:
+          ALIAS: ${{ secrets.ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+        run: |
+          dart run build_runner build --delete-conflicting-outputs
+          flutter build apk --release
+          flutter build apk --release --split-per-abi --target-platform android-arm,android-arm64,android-x64
+
+      - name: Publish Android Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk-signed
+          path: mobile/build/app/outputs/flutter-apk/*.apk

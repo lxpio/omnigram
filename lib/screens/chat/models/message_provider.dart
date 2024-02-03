@@ -1,5 +1,4 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/models/app_config_model.dart';
 import 'package:omnigram/providers/provider.dart';
 import 'package:omnigram/models/app_store.dart';
 import 'package:omnigram/models/objectbox.g.dart';
@@ -78,7 +77,7 @@ class MessageAPI implements MessageProvider {
 
   @override
   int create(Message message) {
-    final backendCfg = ref.read(appConfigProvider);
+    // final backendCfg = ref.read(appConfigProvider);
 
     //new http client to post create
 
