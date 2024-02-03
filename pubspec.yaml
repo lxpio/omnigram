@@ -1,7 +1,7 @@
 name: omnigram
 version: 1.0.2
 publish_to: none
-description: A new Flutter project.
+description: A Audio Book project.
 environment:
   sdk: ">=3.0.6 <4.0.0"
 

@@ -25,8 +25,7 @@ mixin _$UserModel {
   @JsonKey(name: 'user_name')
   String get username => throw _privateConstructorUsedError;
   @JsonKey(name: 'nick_name')
-  String get nickname =>
-      throw _privateConstructorUsedError; // ignore: invalid_annotation_target
+  String get nickname => throw _privateConstructorUsedError;
   @JsonKey(name: 'role_id')
   int get roleId => throw _privateConstructorUsedError;
   bool get locked => throw _privateConstructorUsedError;
@@ -205,7 +204,6 @@ class _$UserModelImpl extends _UserModel with DiagnosticableTreeMixin {
   @override
   @JsonKey(name: 'nick_name')
   final String nickname;
-// ignore: invalid_annotation_target
   @override
   @JsonKey(name: 'role_id')
   final int roleId;
@@ -294,7 +292,7 @@ abstract class _UserModel extends UserModel {
   @override
   @JsonKey(name: 'nick_name')
   String get nickname;
-  @override // ignore: invalid_annotation_target
+  @override
   @JsonKey(name: 'role_id')
   int get roleId;
   @override

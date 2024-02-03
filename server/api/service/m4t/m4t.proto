@@ -1,0 +1,74 @@
+syntax = "proto3";
+package m4t;
+option go_package = "github.com/omnigram/server/api/service/m4t";
+
+
+service TextToAudio {
+  rpc ConvertTextToAudio(TextRequest) returns (AudioResponse);
+  rpc TTSStream(TextRequest) returns (stream AudioResponse);
+
+  rpc AllSpeaker(EmptyRequsest) returns (SpeakerList);
+  rpc AddSpeaker(UploadRequsest) returns (Speaker);
+  rpc DelSpeaker(DelRequsest) returns (Speaker);
+
+}
+
+message TextRequest {
+  string text = 1;
+  string lang = 2;
+  string audio_id = 3;
+  int32 format = 4; //default:0 -> int16, 1 -> float32
+}
+
+message UploadRequsest {
+  Speaker speaker = 1;
+  bytes audio_data = 2;
+}
+
+message DelRequsest {
+  string audioID  = 1;
+}
+
+message EmptyRequsest {
+  // string audioID  = 1;
+}
+
+message Speaker {
+  string audio_id  = 1;
+  int32 gender    = 2;
+  bool default_type    = 3;
+  string display_name  = 5;
+  string description    = 6;
+  string avatar_url = 7;
+  string path = 8;
+}
+
+message SpeakerList {
+  repeated Speaker speakers = 1;
+}
+
+// type Speaker struct {
+// 	ID   int64  `json:"id" gorm:"primaryKey;comment:ID"`
+// 	Path string `json:"path" gorm:"comment:文件路径"` //本地文件路径不返回到界面上
+
+// 	AudioID string `json:"audio_id" gorm:"index:idx_speaker_audio_id;type:varchar(50);comment:标题"`
+
+// 	Gender int `json:"gender" gorm:";comment:性别"`
+
+// 	SpeakerType int `json:"speaker_type" gorm:";comment:类型，内置或者用户自定义"`
+
+// 	DisplayName string `json:"display_name,omitempty" gorm:"type:varchar(100);comment:子标题"`
+// 	// SubTitle represents the EPUB sub-titles.
+// 	Description string `json:"description,omitempty" gorm:"type:varchar(255);comment:描述"`
+
+// 	AvatarUrl string `json:"avatar_url" form:"avatar_url" gorm:"type:varchar(255); comment:用户头像图片地址"`
+// }
+
+
+
+message AudioResponse {
+  bytes audio_data = 1;
+}
+
+
+

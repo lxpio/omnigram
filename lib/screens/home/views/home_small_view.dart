@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/providers/user/user_model.dart';
 import 'package:omnigram/screens/reader/providers/books.dart';
-import 'package:omnigram/screens/reader/providers/select_book.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:omnigram/screens/reader/views/book_group_view.dart';
 import 'package:omnigram/utils/l10n.dart';
@@ -11,7 +8,7 @@ import 'package:omnigram/utils/l10n.dart';
 import '../../reader/views/book_group_view_v2.dart';
 
 class HomeSmallView extends HookConsumerWidget {
-  const HomeSmallView({Key? key, required this.nav}) : super(key: key);
+  const HomeSmallView({super.key, required this.nav});
 
   final PersonBookNav nav;
 

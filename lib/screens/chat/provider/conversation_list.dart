@@ -48,7 +48,7 @@ class ConversationList extends _$ConversationList {
 
     //这里要同时删除关联的message
 
-    await ref.read(messageProvider).removeALL(conversation.id);
+    ref.read(messageProvider).removeALL(conversation.id);
 
     final previousState = await future;
 

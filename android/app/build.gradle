@@ -3,14 +3,11 @@ plugins {
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
 }
-
-
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
-
 
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
@@ -33,8 +30,8 @@ if (flutterVersionName == null) {
 android {
     namespace "com.lxpio.omnigram"
     compileSdkVersion flutter.compileSdkVersion
-    // ndkVersion flutter.ndkVersion
-    ndkVersion '26.0.10792818'
+    ndkVersion flutter.ndkVersion
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -57,15 +54,21 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        multiDexEnabled true
+    
     }
-
     signingConfigs {
        release {
-           keyAlias keystoreProperties['keyAlias']
-           keyPassword keystoreProperties['keyPassword']
-           storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-           storePassword keystoreProperties['storePassword']
+
+            def keyAliasVal = System.getenv("ALIAS")
+            def keyPasswordVal = System.getenv("ANDROID_KEY_PASSWORD")
+            def storePasswordVal = System.getenv("ANDROID_STORE_PASSWORD")
+
+
+            keyAlias keyAliasVal ? keyAliasVal : keystoreProperties['keyAlias']
+            keyPassword keyPasswordVal ? keyPasswordVal : keystoreProperties['keyPassword']
+            storeFile file("../key.jks") ? file("../key.jks") : file(keystoreProperties['storeFile'])
+            storePassword storePasswordVal ? storePasswordVal : keystoreProperties['storePassword']
+        
        }
     }
 
@@ -88,6 +91,5 @@ flutter {
 }
 
 dependencies {
-    implementation 'com.google.android.material:material:1.6.1'
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.google.android.material:material:1.8.0'
 }

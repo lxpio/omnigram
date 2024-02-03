@@ -1,0 +1,12 @@
+[
+    {
+        "audio_id": "female_001",
+        "path": "female-0-100.wav",
+        "default_type": 1
+    },
+    {
+        "audio_id": "female_002",
+        "path": "female-0-100.wav",
+        "default_type": 1
+    }
+]
