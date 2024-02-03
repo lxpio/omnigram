@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/components/root_layout.dart';
@@ -66,7 +67,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         name: kReaderDetailPage,
         pageBuilder: (context, GoRouterState state) {
           // final bookPath = state.extra as String;
-
           final args = state.extra == null ? false : state.extra as bool;
 
           return MaterialPage(

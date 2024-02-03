@@ -22,7 +22,7 @@ void main() {
 // factory LLMService.fromRawJson(String str) =>
 //       LLMService.fromJson(json.decode(str));
     final doc = await EpubDocument.initialize(
-        1, '/Workspace/flutter_epub/example/assets/test.epub');
+        1, '/Users/liuyou/Workspace/myfirst/elib.epub');
 
     expect(doc.chapters.length, 1);
     // expect(book.chapterPos, "/text00002.html?12");

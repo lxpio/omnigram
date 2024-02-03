@@ -1,10 +1,10 @@
 import 'package:html/dom.dart' as dom;
 
 class Paragraph {
-  Paragraph(this.element, this.chapterIndex);
+  Paragraph(this.element);
 
   final dom.Element element;
-  final int chapterIndex;
+  // final int chapterIndex;
 }
 
 class Range {
