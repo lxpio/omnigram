@@ -14,6 +14,9 @@ class ReadEpubScreen extends HookConsumerWidget {
   final bool playtask;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (kDebugMode) {
+      print('before ReaderContentScreen bookFile');
+    }
     final bookFile = ref.watch(epubDocumentProvider);
 
     if (kDebugMode) {

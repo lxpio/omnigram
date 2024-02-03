@@ -39,57 +39,61 @@ ParseParagraphsResult parseParagraphs(
 
   final Map<String, Range> ranges = {};
 
-  final paragraphs = chapters.fold<List<Paragraph>>(
-    [],
-    (acc, next) {
-      if (next.ContentFileName == 'text00008.html' ||
-          next.ContentFileName == 'text00054.html') {
-        print('next.ContentFileName: ${next.ContentFileName}');
+  // List<dom.Element> elmList = [];
+//遍历获取所有的章节的元素转换成 dom
+  final paragraphs = chapters.fold<List<Paragraph>>([], (eles, next) {
+    if (filename != next.ContentFileName) {
+      filename = next.ContentFileName;
+      final document = chapterDocument(next);
+      if (document != null) {
+        final result = convertDocumentToElements(document);
+
+        final start = eles.length;
+        eles.addAll(result.map((e) => Paragraph(e)));
+
+        //记录每个文件的章节的起始位置和结束位置
+        ranges[next.ContentFileName!] = Range(start, eles.length);
       }
+    }
 
-      List<dom.Element> elmList = [];
-      if (filename != next.ContentFileName) {
-        filename = next.ContentFileName;
-        final document = chapterDocument(next);
-        if (document != null) {
-          final result = convertDocumentToElements(document);
-          elmList = _removeAllDiv(result);
-        }
+    return eles;
+  });
+
+  chapterIndexes.add(0);
+
+  for (var i = 1; i < chapters.length; i++) {
+    // if
+
+    final chapter = chapters[i];
+    final fileRange = ranges[chapter.ContentFileName]!;
+    if (chapter.Anchor == null) {
+      chapterIndexes.add(fileRange.end);
+      continue;
+    }
+
+    // range start > acc.length 说明是第一次或者没有找到
+    // range start < acc.length 说明找到过
+
+    int start = fileRange.start > chapterIndexes.last
+        ? fileRange.start
+        : chapterIndexes.last;
+
+    int index = start;
+    // print("current  $start: ${chapter.Anchor} ${fileRange.end}");
+    for (var i = start; i < fileRange.end; i++) {
+      if (paragraphs[i].element.outerHtml.contains('id="${chapter.Anchor}"')) {
+        index = i;
+        // print("current id: ${chapter.Anchor} $i");
+        break;
       }
+    }
 
-      if (next.Anchor == null) {
-        // last element from document index as chapter index
-        chapterIndexes.add(acc.length);
-        acc.addAll(elmList
-            .map((element) => Paragraph(element, chapterIndexes.length - 1)));
+    chapterIndexes.add(index);
 
-        ranges[next.ContentFileName!] =
-            Range(chapterIndexes.last, chapterIndexes.last + elmList.length);
-      } else {
-        //如果文件名和当前的文件名一致，就应该从当前的这个章节文件的开始位置到结束位置中间查找
-        if (filename == next.ContentFileName) {
-          //获取当前列表中位置
-          final range = ranges[next.ContentFileName]!;
+    // if (index != -1) {
 
-          int index = -1;
-
-          for (var i = range.start; i < range.end; i++) {
-            if (acc[i].element.outerHtml.contains('id="${next.Anchor}"') ||
-                acc[i].element.outerHtml.contains(
-                    'href="${next.ContentFileName}#${next.Anchor}"')) {
-              index = i;
-              break;
-            }
-          }
-
-          index == -1
-              ? chapterIndexes.add(range.start)
-              : chapterIndexes.add(index);
-        }
-      }
-      return acc;
-    },
-  );
+    // }
+  }
 
   return ParseParagraphsResult(paragraphs, chapterIndexes);
 }

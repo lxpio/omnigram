@@ -29,6 +29,7 @@ RUN apk add build-base && \
     -o /build/bin/omni-server github.com/lxpio/omnigram/server/api/cmd/omni-server
 
 
+
 FROM --platform=$TARGETPLATFORM alpine:3.18.4
 
 LABEL author="exppii" \
