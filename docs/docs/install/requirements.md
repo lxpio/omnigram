@@ -7,7 +7,7 @@ sidebar_position: 10
 
 ### Software Dependencies
 
-Docker
+docker (or docker compose)
 
 ### Hardware Requirements
 

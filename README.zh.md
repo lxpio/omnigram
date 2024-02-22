@@ -37,9 +37,18 @@ Omnigram 是 Flutter 编写的支持多平台（iOS、Android、Web、Windows、
 
 ## 官方文档
 
-您可以在 <https://omnigram.lxpio.com/> 找到官方文档（包含安装手册）。
+您可以在 <https://omnigram.lxpio.com/zh> 找到官方文档（包含安装手册）。
 
 ## 示例
+
+对于APP 后端，你可以使用实例地址： https://demo.lxpio.com:9443 。由于
+
+```
+凭证信息：
+用户名：admin
+密码： 123456
+```
+> 服务器信息：腾讯轻量服务器（ 2cpu - 2GB RAM - 3Mbps）
 
 ![](/docs/images/login_page.png) ![](/docs/images/discover_screen.png)
 

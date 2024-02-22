@@ -28,6 +28,7 @@ var (
 	ErrDeleteToken = Response{Code: 1007, Message: `delete token error`}
 	ErrGetTokens   = Response{Code: 1008, Message: `get tokens failed`}
 	ErrGetUserInfo = Response{Code: 1009, Message: `get user info error`}
+	ErrGetUserList = Response{Code: 1010, Message: `get user list error`}
 
 	ErrUpdateM4tServerAddr = Response{Code: 1100, Message: `update m4t server address error`}
 )

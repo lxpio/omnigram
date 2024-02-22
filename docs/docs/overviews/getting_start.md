@@ -11,13 +11,14 @@ Please refer to [environment requirements](../install/requirements) for details.
 
 By default, after docker starts up it will create a default admin account `admin` with the default password `123456`.
 
-- The default password is `123456`. You can change it after logging in later, or by setting the `OMNI_PASSWORD` environment variable.
-- `my_local_docs_path` should be modified to your actual directory path that stores Epubs and PDFs. After logging in, you can configure scanning strategies to build file indices.
+- The default user and password. You can change it after logging in later, or by setting the `OMNI_USER`  `OMNI_PASSWORD` environment variable.
+- `${my_local_docs_path}` should be modified to your actual directory path that stores Epubs and PDFs. After logging in, you can configure scanning strategies to build file indices.
 - If you need persistent running, please refer to [Best Practices for Deployment](../install/best_practice).
 
 ```bash
 # Replace my_local_docs_path below with your actual documents directory
-docker run -v <my_local_docs_path>:/docs -p 8080:80 lxpio/omnigram-server:v0.1.2-alpine
+docker run -v ${my_local_docs_path}:/docs -p 8080:80 lxpio/omnigram-server:latest
+
 ```
 
 ## Try Mobile UI
@@ -35,6 +36,15 @@ The mobile app can be downloaded from:
 //TODO add login page
 
 <!-- [] -->
+
+**Or just try demo server:**
+
+> Demo Server Addr: `https://demo.lxpio.com:9443`
+> 
+> Demo User: `admin`
+> 
+> Demo Password: `123456`
+
 
 ### Scan local files
 

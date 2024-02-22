@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lxpio/omnigram/server/api/service/m4t"
 	"github.com/lxpio/omnigram/server/api/conf"
 	"github.com/lxpio/omnigram/server/api/log"
+	"github.com/lxpio/omnigram/server/api/service/m4t"
 	"github.com/lxpio/omnigram/server/api/utils"
 )
 
@@ -22,8 +22,11 @@ type ServerConfig struct {
 	// DiskUsage int `json:"disk_usage"`
 
 	M4tServerAddr string `json:"m4t_server_addr,omitempty"`
-	OpenAIUrl     string `json:"openai_url,omitempty"`
-	OpenAIApiKey  string `json:"openai_apikey,omitempty"`
+
+	OllamaAddr string `json:"ollama_addr,omitempty"`
+
+	OpenAIUrl    string `json:"openai_url,omitempty"`
+	OpenAIApiKey string `json:"openai_apikey,omitempty"`
 }
 
 // getSysInfoHandle get User Authorization

@@ -4,9 +4,9 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lxpio/omnigram/server/api/service/user/schema"
 	"github.com/lxpio/omnigram/server/api/log"
 	"github.com/lxpio/omnigram/server/api/middleware"
+	"github.com/lxpio/omnigram/server/api/service/user/schema"
 	"github.com/lxpio/omnigram/server/api/utils"
 )
 
@@ -157,8 +157,20 @@ func getAPIKeysHandle(c *gin.Context) {
 func createAccountHandle(c *gin.Context) {
 	panic(`TODO`)
 }
+
+// listAccountHandle list accounts
 func listAccountHandle(c *gin.Context) {
-	panic(`TODO`)
+
+	users, err := schema.AllUsers(orm)
+
+	if err != nil {
+		log.E(`获取用户列表失败：`, err.Error())
+		c.JSON(500, utils.ErrGetTokens)
+		return
+	}
+
+	c.JSON(200, utils.SUCCESS.WithData(users))
+
 }
 func getAccountHandle(c *gin.Context) {
 	panic(`TODO`)

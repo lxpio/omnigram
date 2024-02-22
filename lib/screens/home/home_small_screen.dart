@@ -10,7 +10,7 @@ import '../views/stackbar.dart';
 import 'views/home_small_view.dart';
 
 class HomeSmallScreen extends HookConsumerWidget {
-  const HomeSmallScreen({Key? key}) : super(key: key);
+  const HomeSmallScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
