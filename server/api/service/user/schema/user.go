@@ -54,6 +54,16 @@ func FirstUserByID(store *gorm.DB, id int64) (*User, error) {
 	return user, err
 }
 
+func AllUsers(store *gorm.DB) ([]User, error) {
+	var users []User
+	//获取用户基本信息
+
+	err := store.Select("id", "user_name", "mobile", "email", "role_id", "nick_name", "AvatarUrl", "locked").Limit(10).Find(&users).Error
+
+	return users, err
+
+}
+
 // FirstUserByAccount 根据 邮箱，手机号，用户名 获取用户
 func FirstUserByAccount(store *gorm.DB, account string) (*User, error) {
 

@@ -6,8 +6,10 @@ import 'package:omnigram/providers/user/user_model.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/l10n.dart';
 
+import 'views/epub_index_view.dart';
+
 import '../reader/providers/select_book.dart';
-import '../reader/views/epub_index_view.dart';
+
 import '../views/stackbar.dart';
 
 class DiscoverSmallScreen extends HookConsumerWidget {
@@ -19,6 +21,132 @@ class DiscoverSmallScreen extends HookConsumerWidget {
     final selected = ref.watch(selectBookProvider);
 
     final buttonFocusNode = useFocusNode(debugLabel: 'More Button');
+
+    final scrollController = useScrollController();
+
+    final isScrolled = useState(false);
+
+    useEffect(() {
+      someCallback() {
+        if (scrollController.offset >= 30.0) {
+          isScrolled.value = true;
+        } else {
+          isScrolled.value = false;
+        }
+      }
+
+      scrollController.addListener(someCallback);
+      return () => scrollController.removeListener(someCallback);
+    }, [scrollController]);
+
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          expandedHeight: 150.0,
+          elevation: 0,
+          pinned: true,
+          floating: true,
+          stretch: true,
+          centerTitle: true,
+          title: isScrolled.value ? Text("发现") : null,
+          // backgroundColor: Colors.grey.shade50,
+          flexibleSpace: FlexibleSpaceBar(
+            collapseMode: CollapseMode.parallax,
+            titlePadding:
+                const EdgeInsets.only(left: 20, right: 30, bottom: 100),
+            stretchModes: const [
+              StretchMode.zoomBackground,
+              StretchMode.fadeTitle,
+              StretchMode.blurBackground,
+            ],
+            title: isScrolled.value ? null : const Text("Profile"),
+            centerTitle: true,
+            // title: const Text("Profile"),
+            background: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Theme.of(context)
+                        .colorScheme
+                        .secondaryContainer
+                        .withOpacity(0.2),
+                    Theme.of(context)
+                        .colorScheme
+                        .surfaceVariant
+                        .withOpacity(0.2),
+                  ],
+                ),
+              ),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: CircleAvatar(
+                        radius: 24,
+                        backgroundColor: Colors.grey[200],
+                        // backgroundImage: NetworkImage(
+                        //     'https://randomuser.me/api/portraits/men/81.jpg'),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    "发现",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // actions: isScrolled.value
+          //     ? [
+          //         Padding(
+          //           padding: const EdgeInsets.only(left: 8, right: 12),
+          //           child: Row(
+          //             children: [
+          //               Padding(
+          //                 padding: const EdgeInsets.only(left: 8, right: 8),
+          //                 child: Text(
+          //                   "TEST",
+          //                   style: const TextStyle(
+          //                     fontSize: 16,
+          //                     fontWeight: FontWeight.bold,
+          //                   ),
+          //                 ),
+          //               ),
+          //               ClipRRect(
+          //                 borderRadius: BorderRadius.circular(64),
+          //                 child: CircleAvatar(
+          //                   radius: 48,
+          //                   backgroundColor: Colors.grey[200],
+          //                   // backgroundImage: NetworkImage(
+          //                   //     'https://randomuser.me/api/portraits/men/81.jpg'),
+          //                 ),
+          //               ),
+          //             ],
+          //           ),
+          //         ),
+          //       ]
+          //     : null,
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate([
+            const SizedBox(height: 16),
+            // const Stackbar(child: EpubIndexView()),
+            const SizedBox(height: 32),
+            // const _SettingsWidget(),
+            const SizedBox(height: 2000),
+          ]),
+        ),
+      ],
+      controller: scrollController,
+    );
 
     return Scaffold(
       appBar: AppBar(

@@ -67,14 +67,14 @@ ParseParagraphsResult parseParagraphs(
     final chapter = chapters[i];
     final fileRange = ranges[chapter.ContentFileName]!;
     if (chapter.Anchor == null) {
-      chapterIndexes.add(fileRange.end);
+      chapterIndexes.add(fileRange.start);
       continue;
     }
 
     // range start > acc.length 说明是第一次或者没有找到
     // range start < acc.length 说明找到过
 
-    int start = fileRange.start > chapterIndexes.last
+    int start = fileRange.start >= chapterIndexes.last
         ? fileRange.start
         : chapterIndexes.last;
 

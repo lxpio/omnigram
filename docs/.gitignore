@@ -7,7 +7,7 @@
 !.yarn/sdks
 !.yarn/versions
 /node_modules
-
+.pnpm-store
 # Production
 /build
 /static/meta.json

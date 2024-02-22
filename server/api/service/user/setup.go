@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lxpio/omnigram/server/api/service/user/schema"
 	"github.com/lxpio/omnigram/server/api/conf"
 	"github.com/lxpio/omnigram/server/api/log"
 	"github.com/lxpio/omnigram/server/api/middleware"
+	"github.com/lxpio/omnigram/server/api/service/user/schema"
 	"github.com/lxpio/omnigram/server/api/store"
 	"github.com/lxpio/omnigram/server/api/utils"
 	"gorm.io/gorm"
@@ -118,26 +118,34 @@ func InitData(cf *conf.Config) error {
 			return err
 		}
 
-		user := &schema.User{
-			UserName:   "admin",
-			Credential: "123456",
+		u := &schema.User{
+			UserName:   os.Getenv(`OMNI_USER`),
+			Credential: os.Getenv(`OMNI_PASSWORD`),
 			RoleID:     1,
+		}
+
+		if u.UserName == `` {
+			u.UserName = `admin`
+		}
+
+		if u.Credential == `` {
+			u.Credential = `123456`
 		}
 
 		if err := tx.Clauses(clause.OnConflict{
 			Columns:   []clause.Column{{Name: "user_name"}},
 			DoNothing: true,
-		}).Create(user).Error; err != nil {
+		}).Create(u).Error; err != nil {
 			return err
 		}
 
-		if user.ID == 1 {
-			apiKey := schema.NewAPIToken(user.ID)
+		if u.ID == 1 {
+			apiKey := schema.NewAPIToken(u.ID)
 			if err := tx.Create(&apiKey).Error; err != nil {
 				log.E(`初始化用户APIKey失败`, err)
 				return err
 			}
-			log.I(`初始化数据成功, 用户信息: `, user.UserName, `, 初始 APIKey: `, apiKey.APIKey)
+			log.I(`初始化数据成功, 用户信息: `, u.UserName, `, 初始 APIKey: `, apiKey.APIKey)
 		}
 
 		return nil

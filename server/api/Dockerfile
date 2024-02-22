@@ -39,7 +39,10 @@ LABEL author="exppii" \
 COPY --from=gobuilder /build/ ./
 COPY --from=gobuilder /omnigram-server/docker-entrypoint.sh ./
 
-ENV CONFIG_FILE=/conf/conf.yaml
+ENV CONFIG_FILE=/conf/conf.yaml \
+  OMNI_PASSWORD="123456" \
+  OMNI_USER="admin"
+
 
 EXPOSE 80
 # scan docs dir
