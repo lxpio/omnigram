@@ -1,1 +1,1985 @@
-{"openapi":"3.0.1","info":{"title":"omnigram","description":"","version":"1.0.0"},"tags":[{"name":"登录认证"},{"name":"用户管理"},{"name":"阅读管理"},{"name":"系统管理"},{"name":"语音服务"}],"paths":{"/api/m4t/tts/speakers":{"get":{"summary":"获取声音列表","deprecated":false,"description":"","tags":["语音服务"],"parameters":[],"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"type":"object","properties":{"total":{"type":"integer"},"items":{"type":"array","items":{"type":"object","properties":{"id":{"type":"integer"},"audio_id":{"type":"string"},"demo_wav":{"type":"string"},"name":{"type":"string"},"tag":{"type":"string"},"avatar_url":{"type":"string"}}}}},"required":["total","items"]},"examples":{"1":{"summary":"成功示例","value":{"total":10,"items":[{"id":1000,"audio_id":"female_0001","demo_wav":"/tts/speakers/0001/demo","name":"female1","tag":"normal","avatar_url":"/img/ava"}]}}}}}}},"security":[]},"post":{"summary":"上传声音","deprecated":false,"description":"","tags":["语音服务"],"parameters":[],"requestBody":{"content":{"multipart/form-data":{"schema":{"type":"object","properties":{"name":{"description":"名称","example":"","type":"string"},"wav":{"format":"binary","type":"string","description":"原始声音","example":""}}}}}},"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"type":"object","properties":{"id":{"type":"integer"},"audio_id":{"type":"string"},"demo_wav":{"type":"string"},"name":{"type":"string"},"tag":{"type":"string"},"avatar_url":{"type":"string"}},"required":["id","audio_id","demo_wav","name","tag","avatar_url"]},"examples":{"1":{"summary":"成功示例","value":{"id":1000,"audio_id":"female_0001","demo_wav":"/tts/speakers/0001/demo","name":"female1","tag":"normal","avatar_url":"/img/ava"}}}}}}},"security":[]}},"/api/reader/index":{"get":{"summary":"获取阅读索引页","deprecated":false,"description":"","tags":["阅读管理"],"parameters":[{"name":"random","in":"query","description":"随机书籍数量","required":false,"example":10,"schema":{"type":"number"}},{"name":"recent","in":"query","description":"最近阅读数量","required":false,"example":12,"schema":{"type":"number"}}],"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"type":"object","properties":{"random":{"type":"array","items":{"$ref":"#/components/schemas/ebook"}},"recent":{"type":"array","items":{"$ref":"#/components/schemas/ebook"}}},"required":["random","recent"]},"examples":{"1":{"summary":"成功示例","value":{"random":[{"id":55,"size":57,"ctime":"1987-07-10 09:02:07","utime":"2008-03-11 20:41:47","title":"拉接造或复","sub_title":"红们复则进","language":"laboris veniam in sit","cover_url":"http://psi.an/tauvnpq","uuid":"80","isbn":"ut exercitation deserunt sed","asin":"non et adipisicing aliqua nostrud","identifier":"37","category":"sit quis","author":"minim aute Ut voluptate","author_url":"http://kbqot.cl/ymxvw","author_sort":"sint","publisher":"occaecat aliquip laboris exercitation","description":"车值美决名系下头再开离点。采口许太派说自际有眼共当。适矿府道上接青中格革图太根半。义做段面许叫议政外局设东层系适发。向养车律示整然管会两何叫保改属把。","tags":["laboris elit","sit occaecat officia sed","Duis consequat eu sed labore"],"pubdate":"2023-03-15","rating":70,"publisher_url":"http://sotv.ne/phnlnbdt","count_visit":21,"count_download":58,"progress":2,"progress_index":7,"para_position":42},{"id":67,"size":53,"ctime":"1992-01-29 17:48:40","utime":"1983-12-09 02:07:36","title":"系难听格","sub_title":"林标特至这","language":"officia cillum sunt Excepteur eu","cover_url":"http://pluychfoc.ie/qfxwioq","uuid":"47","isbn":"pariatur","asin":"consequat","identifier":"45","category":"sint eiusmod ipsum enim","author":"sunt id sed laboris Ut","author_url":"http://aces.qa/xdtejkmg","author_sort":"velit sunt esse enim","publisher":"irure do fugiat","description":"入的具月心准治用般从意往眼动名。白组许务较九今农群次科他起花受到。金立社业放已认定技少精资今。间也达头想其业问把中派离。消记了命事只何后专研与展己你精四西。","tags":["Duis est proident"],"pubdate":"2022-02-23","rating":58,"publisher_url":"http://mygm.ru/rrphfjct","count_visit":26,"count_download":93,"progress":33,"progress_index":35,"para_position":37},{"id":65,"size":56,"ctime":"2005-10-30 19:48:44","utime":"1986-02-09 21:01:19","title":"农五风员知","sub_title":"最两一不","language":"in tempor pariatur eu","cover_url":"http://ngrjydwskl.pk/miblhij","uuid":"92","isbn":"esse","asin":"in proident eu ad amet","identifier":"85","category":"labore ut","author":"do Ut mollit laborum","author_url":"http://mcperttjly.tel/xhbstc","author_sort":"occaecat","publisher":"aliqua esse","description":"文放国标加议期后好队往战治这形深。离党圆到形义两极极得活导每资。复己做低则毛标大白它林系则议。公容改导几你维近状约度领直分众识。际真写无点什东时油通各全。","tags":["ut Ut quis anim sunt","consectetur sed culpa tempor proident"],"pubdate":"1998-12-09","rating":16,"publisher_url":"http://bppcwnr.ru/qspeie","count_visit":10,"count_download":30,"progress":66,"progress_index":31,"para_position":80}],"recent":[{"id":15,"size":73,"ctime":"2022-11-14 18:20:57","utime":"1975-09-02 14:06:17","title":"理除没","sub_title":"界数没","language":"aliquip cillum sit Duis","cover_url":"http://otqbeun.com.cn/cyoi","uuid":"12","isbn":"ad","asin":"ullamco non","identifier":"79","category":"mollit magna nostrud ut qui","author":"sed dolor esse velit","author_url":"http://fcvmotdyk.jo/xxbirnr","author_sort":"sed","publisher":"dolore voluptate minim","description":"书南矿听代火西认电省复何铁一效平求。军会样节点题自党需三强着且目办音资。标矿常前天单利如实回好西精同包。联原的家果强元真多料己队离由。做被引何养西把头题万米他步土调北。会单积我必效增便任两统生办产。","tags":["velit","ipsum in anim","dolore ipsum ea"],"pubdate":"1994-01-27","rating":88,"publisher_url":"http://bneohng.na/unxhjk","count_visit":16,"count_download":100,"progress":30,"progress_index":96,"para_position":50},{"id":87,"size":57,"ctime":"2016-05-23 03:38:51","utime":"1981-06-09 08:10:10","title":"利中无分容","sub_title":"干达局家今公","language":"laboris","cover_url":"http://lmqlse.nz/eluprit","uuid":"48","isbn":"id adipisicing","asin":"quis Duis aliqua","identifier":"20","category":"in nulla magna mollit aliqua","author":"incididunt commodo ut Lorem velit","author_url":"http://cyboub.gf/hkcy","author_sort":"veniam voluptate","publisher":"irure nisi sit officia ullamco","description":"色院解影点新位二同和便整至单值。业白展示维造记争京给小高机五正它物程。离正建九易已所点积性打着连。","tags":["consequat magna","fugiat amet in ut"],"pubdate":"2005-10-05","rating":38,"publisher_url":"http://pguiq.gy/udhcoonkuo","count_visit":18,"count_download":56,"progress":70,"progress_index":62,"para_position":36},{"id":21,"size":43,"ctime":"1986-05-20 01:40:13","utime":"1974-10-30 15:44:45","title":"规方面更","sub_title":"清包持片江","language":"incididunt elit","cover_url":"http://fedspcuky.pt/pmpxzqqkez","uuid":"48","isbn":"in","asin":"fugiat irure laboris Excepteur","identifier":"6","category":"nisi esse proident irure","author":"ex dolor non laborum","author_url":"http://rdvvpki.it/mrpw","author_sort":"laboris anim","publisher":"amet ex deserunt veniam","description":"布战性满满增它见说却往带下。步育时象离石西向才深标设基明严统状状。院通先查政五进度关增点认开气。能级江值我和太我量实术应知队门己。龙你想认集党明先型这商再。广治处员京与往消好采党属部。道院油单出率规习例极及金其龙。","tags":["adipisicing"],"pubdate":"1973-05-22","rating":66,"publisher_url":"http://ifmthfeokx.ad/babfw","count_visit":11,"count_download":37,"progress":17,"progress_index":68,"para_position":8}]}}}}}}},"security":[]}},"/api/account/login":{"post":{"summary":"用户登录","deprecated":false,"description":"用户登录接口，认证成功以后返回200 ok ，并set-cookie ","tags":["登录认证"],"parameters":[],"requestBody":{"content":{"application/json":{"schema":{"type":"object","properties":{"account":{"type":"string","title":"登陆名","description":"账号名/邮箱/手机号"},"password":{"type":"string","title":"登陆凭证","description":"登陆凭证"}},"required":["account","password"]},"example":{"account":"ue$dB","password":"B60R"}}}},"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"$ref":"#/components/schemas/resp"},"examples":{"1":{"summary":"成功示例","value":{"code":200,"message":"success"}}}}}},"400":{"description":"请求有误","content":{"application/json":{"schema":{"$ref":"#/components/schemas/resp"},"examples":{"1":{"summary":"异常示例","value":{"code":9870,"message":"Xtitxt riewv svrvbdo fwiimpniv hsogyj pbbfj bgnxnnjv rxybxif yzzqvjtu mpyeehlxmy vfekconbb cnnhvcwecc brmqfyha xurvcwo uiqtytp slogniypz."}}}}}}},"security":[]}},"/api/sys/info":{"get":{"summary":"获取系统信息","deprecated":false,"description":"获取当前系统后台信息（管理员权限）","tags":["系统管理"],"parameters":[],"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"type":"object","properties":{"version":{"type":"string","title":"服务版本"},"system":{"type":"string","title":"服务系统"},"architecture":{"type":"string","title":"服务构架"},"docs_data_path":{"type":"string","title":"数据存储目录"},"disk_usage":{"type":"string","title":"磁盘使用"},"m4t_support":{"type":"boolean","title":"支持语音"}},"required":["version","system","architecture","docs_data_path","disk_usage","m4t_support"]},"examples":{"1":{"summary":"成功示例","value":{"version":"0.0.1","system":"Linux","architecture":"AMD64","docs_data_path":"/data","disk_usage":"10/100T","m4t_support":true}}}}}}},"security":[]},"put":{"summary":"修改系统信息","deprecated":false,"description":"","tags":["系统管理"],"parameters":[],"requestBody":{"content":{"application/json":{"schema":{"type":"object","properties":{"version":{"type":"string"},"system":{"type":"string"},"architecture":{"type":"string"},"docs_data_path":{"type":"string"},"m4t_support":{"type":"boolean"}},"required":["version","system","architecture","docs_data_path","m4t_support"]},"example":{"version":"0.0.1","system":"Linux","architecture":"AMD64","docs_data_path":"/data","disk_usage":"10/100T","m4t_support":true}}}},"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"type":"object","properties":{"code":{"type":"integer"},"message":{"type":"string"}},"required":["code","message"]},"examples":{"1":{"summary":"成功示例","value":{"code":200,"message":"ok"}}}}}}},"security":[]}},"/api/reader/books":{"get":{"summary":"获取书籍列表","deprecated":false,"description":"","tags":["阅读管理"],"parameters":[{"name":"search","in":"query","description":"模糊搜索字段","required":false,"example":"","schema":{"type":"string"}},{"name":"page_size","in":"query","description":"页数","required":false,"schema":{"type":"integer"}},{"name":"page_num","in":"query","description":"页数大小","required":false,"schema":{"type":"integer"}},{"name":"category","in":"query","description":"分类","required":false,"schema":{"type":"string"}},{"name":"author","in":"query","description":"作者","required":false,"schema":{"type":"string"}}],"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"type":"object","properties":{"total":{"type":"integer"},"items":{"type":"array","items":{"$ref":"#/components/schemas/ebook"}}},"required":["total","items"]},"examples":{"1":{"summary":"成功示例","value":{"total":51,"items":[{"id":79,"size":45,"ctime":"2017-09-22 06:12:40","utime":"1972-08-03 06:00:09","title":"书何效内当","sub_title":"律给将离志转问","language":"laboris labore dolor ipsum voluptate","cover_url":"http://clsn.sr/ybahcn","uuid":"55","isbn":"adipisicing minim qui laboris","asin":"eiusmod ea","identifier":"11","category":"tempor ut Excepteur consequat dolor","author":"proident Excepteur dolore","author_url":"http://lkvmhd.com.cn/rtjwlvd","author_sort":"ex ut amet aute","publisher":"officia consectetur exercitation amet deserunt","description":"记主导反分圆们照何办两通品容积。处特明际百比组儿想将油拉该。时作权月不段三导组他样加育。收究过达他无花求心所如科认团。根国想把家引建各情级装后图委管生名。","tags":["Ut","commodo deserunt Duis anim"],"pubdate":"1975-03-27","rating":20,"publisher_url":"http://txbjtyp.jm/ktebevpfd","count_visit":50,"count_download":95,"progress":3,"progress_index":12,"para_position":53}]}}}}}}},"security":[]}},"/api/admin/accounts":{"get":{"summary":"获取用户列表","deprecated":false,"description":"","tags":["用户管理"],"parameters":[{"name":"search","in":"query","description":"模糊搜索","required":false,"example":"","schema":{"type":"string"}},{"name":"email","in":"query","description":"邮箱","required":false,"example":"","schema":{"type":"string"}},{"name":"name","in":"query","description":"用户名","required":false,"example":"user1","schema":{"type":"string"}}],"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"type":"object","properties":{"total":{"type":"integer"},"items":{"type":"array","items":{"$ref":"#/components/schemas/user"}},"page_num":{"type":"integer"},"page_size":{"type":"integer"}},"required":["total","items"]},"examples":{"1":{"summary":"成功示例","value":{"total":10,"items":[{"id":100,"email":"l.blliu@jnfsbcpjvz.bb","mobile":"18177469274","name":"Timothy","role_id":13,"nick_name":"梁秀兰","avatar_url":"http://mfgc.ua/ordiwvk","locked":false,"mfa_switch":4539565661504226,"ctime":1723798493,"utime":1723798493},{"id":200,"email":"b.xkr@hhf.cz","mobile":"18171361014","name":"Ruth","role_id":17,"nick_name":"康涛","avatar_url":"http://jxfo.dz/nkomxj","locked":false,"mfa_switch":3120745005090837,"ctime":1723798493,"utime":1723798493}],"page_num":65,"page_size":95}}}}}}},"security":[]},"post":{"summary":"创建账号","deprecated":false,"description":"创建普通用户","tags":["用户管理"],"parameters":[],"requestBody":{"content":{"application/json":{"schema":{"type":"object","properties":{"name":{"type":"string","title":"用户名"},"email":{"type":"string","title":"邮箱"},"mobile":{"type":"string","title":"手机"}},"required":["email","name"]},"example":{"user_name":"test1","email":"email@test.com","password":"testpaswd"}}}},"responses":{"201":{"description":"成功","content":{"application/json":{"schema":{"$ref":"#/components/schemas/user"},"examples":{"1":{"summary":"成功示例","value":{"id":400,"email":"x.omkrkh@xqwbjyl.la","mobile":"18133002145","name":"Frank","role_id":18,"nick_name":"田涛","avatar_url":"http://qwdxz.so/suvkjjyau","locked":true,"mfa_switch":8054463667692446,"ctime":1723798599,"utime":1723798599}}}}}}},"security":[]}},"/api/reader/recent":{"get":{"summary":"最近阅读","deprecated":false,"description":"","tags":["阅读管理"],"parameters":[{"name":"search","in":"query","description":"模糊搜索字段","required":false,"example":"","schema":{"type":"string"}},{"name":"page_size","in":"query","description":"页数","required":false,"schema":{"type":"number"}},{"name":"page_num","in":"query","description":"页数大小","required":false,"schema":{"type":"number"}},{"name":"category","in":"query","description":"分类","required":false,"schema":{"type":"string"}},{"name":"author","in":"query","description":"作者","required":false,"schema":{"type":"string"}}],"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"type":"object","properties":{"total":{"type":"integer"},"items":{"type":"array","items":{"$ref":"#/components/schemas/ebook"}}},"required":["total","items"]},"examples":{"1":{"summary":"成功示例","value":{"total":23,"items":[{"id":52,"size":43,"ctime":"2001-09-10 18:47:02","utime":"2011-04-05 11:00:21","title":"指能级此原许","sub_title":"场复下百表","language":"aliqua irure id","cover_url":"http://kpa.sz/gyivwdho","uuid":"41","isbn":"culpa minim elit qui ea","asin":"ea","identifier":"54","category":"in cillum voluptate mollit consectetur","author":"fugiat eu pariatur mollit sit","author_url":"http://vhnmdh.bj/okydkpmyx","author_sort":"est","publisher":"aliquip","description":"毛属报整听来报总开格走就节原里往党。构打报西交整书科参单南断此。百江农日名向指两格头提需习动号压。究经开斗林学业她参己上业引。几府事年深较从对我西原记资了。","tags":["Lorem enim proident tempor eiusmod"],"pubdate":"2011-12-14","rating":54,"publisher_url":"http://xedjnfl.ht/yieulnl","count_visit":64,"count_download":86,"progress":34,"progress_index":68,"para_position":1}]}}}}}}},"security":[]}},"/api/m4t/tts/stream":{"post":{"summary":"文字转语音接口","deprecated":false,"description":"","tags":["语音服务"],"parameters":[],"requestBody":{"content":{"application/json":{"schema":{"type":"object","properties":{"text":{"type":"string"},"lang":{"type":"string"},"audio_id":{"type":"string"},"format":{"type":"string"},"stream":{"type":"boolean"}},"required":["text","lang","audio_id","format","stream"]},"example":{"text":"hello world","lang":"en","audio_id":"female_0001","format":"wav","stream":true}}}},"responses":{"200":{"description":"成功","content":{"*/*":{"schema":{"type":"object","properties":{}}}}}},"security":[]}},"/api/sys/scan/status":{"get":{"summary":"获取当前扫描状态","deprecated":false,"description":"","tags":["系统管理"],"parameters":[],"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"type":"object","properties":{"total":{"type":"integer","title":"扫描总数"},"running":{"type":"boolean","title":"运行状态"},"scan_count":{"type":"integer","title":"扫描数量"},"errs":{"type":"array","items":{"type":"string"},"title":"错误列表"},"disk_usage":{"type":"integer","title":"磁盘使用"},"epub_count":{"type":"integer","title":"EPUB计数"},"pdf_count":{"type":"integer","title":"PDF计数"}},"required":["total","running","scan_count","errs","disk_usage","epub_count","pdf_count"]},"examples":{"1":{"summary":"成功示例","value":{"total":31,"running":true,"scan_count":2,"errs":["laborum magna"],"disk_usage":44,"epub_count":98,"pdf_count":43}}}}}}},"security":[]}},"/api/reader/fav":{"get":{"summary":"喜欢的书","deprecated":false,"description":"","tags":["阅读管理"],"parameters":[{"name":"search","in":"query","description":"模糊搜索字段","required":false,"example":"","schema":{"type":"string"}},{"name":"page_size","in":"query","description":"页数","required":false,"schema":{"type":"number"}},{"name":"page_num","in":"query","description":"页数大小","required":false,"schema":{"type":"number"}},{"name":"category","in":"query","description":"分类","required":false,"schema":{"type":"string"}},{"name":"author","in":"query","description":"作者","required":false,"schema":{"type":"string"}}],"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"type":"object","properties":{"total":{"type":"integer"},"items":{"type":"array","items":{"$ref":"#/components/schemas/ebook"}}},"required":["total","items"]},"examples":{"1":{"summary":"成功示例","value":{"total":72,"items":[{"id":37,"size":20,"ctime":"1997-08-15 02:32:06","utime":"1985-05-18 23:44:38","title":"七无几经老明","sub_title":"便业很单以效","language":"occaecat irure quis esse","cover_url":"http://mmpdk.bm/rvvq","uuid":"73","isbn":"et minim","asin":"do Duis veniam id","identifier":"67","category":"veniam ullamco ut non do","author":"amet est labore","author_url":"http://emyqhqsvw.co/pohzm","author_sort":"ut proident dolore pariatur","publisher":"ut","description":"分大又其走物产着只作带际区济。断王很或看变结证热路几产温。有科音金示而就正南二千每长。于四议信里战亲结世时资斯主将律水光。指性期军打查决西验也细世阶广却分格。","tags":["officia"],"pubdate":"1972-02-28","rating":82,"publisher_url":"http://etmy.mg/povzvb","count_visit":43,"count_download":64,"progress":48,"progress_index":4,"para_position":24}]}}}}}}},"security":[]}},"/api/sys/scan/run":{"post":{"summary":"启动扫描","deprecated":false,"description":"启动扫描目录（管理员权限）","tags":["系统管理"],"parameters":[],"requestBody":{"content":{"application/json":{"schema":{"type":"object","properties":{"refresh":{"type":"boolean","title":"重新刷新扫描","description":"从头开始扫描"},"max_thread":{"type":"number","title":"最大线程","description":"扫描线程数量"}},"required":["refresh","max_thread"]}}}},"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"$ref":"#/components/schemas/scan_stats"},"examples":{"1":{"summary":"成功示例","value":{"total":10,"running":false,"scan_count":100,"errs":["Duis"],"disk_usage":10,"epub_count":6,"pdf_count":46}}}}}}},"security":[]}},"/api/admin/accounts/{account_id}":{"delete":{"summary":"删除账号","deprecated":false,"description":"","tags":["用户管理"],"parameters":[{"name":"account_id","in":"path","description":"","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"$ref":"#/components/schemas/resp"},"examples":{"1":{"summary":"成功示例","value":{"code":3557,"message":"Qtqpgneky yrstcffei yinjrgontz dkplfw npcnbpr jjzwa rbsn cocgxo bil kufidv vivhq hkfdmoiqc eeccuggpaw."}}}}}}},"security":[]}},"/api/reader/books/{book_id}":{"get":{"summary":"书籍详情","deprecated":false,"description":"","tags":["阅读管理"],"parameters":[{"name":"book_id","in":"path","description":"","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"type":"object","properties":{"code":{"type":"integer","title":"返回码"},"message":{"type":"string","title":"返回信息"},"data":{"type":"object","properties":{"total":{"type":"integer","title":"总数"},"items":{"type":"array","items":{"type":"object","properties":{"id":{"type":"integer","title":"书ID"},"size":{"type":"integer","title":"文件大小"},"ctime":{"type":"string","title":"创建时间"},"utime":{"type":"string","title":"更新时间"},"title":{"type":"string","title":"标题"},"sub_title":{"type":"string","title":"子标题"},"language":{"type":"string","title":"图书语言"},"cover_url":{"type":"string","title":"封面URL"},"uuid":{"type":"string","title":"图书UUID"},"isbn":{"type":"string","title":"ISBN"},"asin":{"type":"string","title":"AWS ID"},"identifier":{"type":"string","title":"唯一ID"},"category":{"type":"string","title":"分类"},"author":{"type":"string","title":"作者"},"author_url":{"type":"string","title":"作者URL"},"author_sort":{"type":"string","title":"作者列表"},"publisher":{"type":"string","title":"出版社"},"description":{"type":"string","title":"描述"},"tags":{"type":"array","items":{"type":"string"},"title":"标签"},"pubdate":{"type":"string","title":"出版日期"},"rating":{"type":"number","title":"评分"},"publisher_url":{"type":"string","title":"出版链接"},"count_visit":{"type":"integer","title":"访问次数"},"count_download":{"type":"integer","title":"下载次数"},"progress":{"type":"number","title":"阅读进度"},"progress_index":{"type":"integer","title":"阅读进度索引"},"para_position":{"type":"integer","title":"段落位置"}}},"title":"书籍列表"},"id":{"type":"integer"},"size":{"type":"integer"},"ctime":{"type":"string"},"utime":{"type":"string"},"title":{"type":"string"},"sub_title":{"type":"string"},"language":{"type":"string"},"cover_url":{"type":"string"},"uuid":{"type":"string"},"isbn":{"type":"string"},"asin":{"type":"string"},"identifier":{"type":"string"},"category":{"type":"string"},"author":{"type":"string"},"author_url":{"type":"string"},"author_sort":{"type":"string"},"publisher":{"type":"string"},"description":{"type":"string"},"tags":{"type":"array","items":{"type":"string"}},"pubdate":{"type":"string"},"rating":{"type":"number"},"publisher_url":{"type":"string"},"count_visit":{"type":"integer"},"count_download":{"type":"integer"},"progress":{"type":"number"},"progress_index":{"type":"integer"},"para_position":{"type":"integer"}},"required":["total","items","id","size","ctime","utime","title","sub_title","language","cover_url","uuid","isbn","asin","identifier","category","author","author_url","author_sort","publisher","description","tags","pubdate","rating","publisher_url","count_visit","count_download","progress","progress_index","para_position"],"title":"数据"}},"required":["code","message","data"]},"examples":{"1":{"summary":"成功示例","value":{"code":200,"message":"ok","data":{"total":100,"items":[{"id":12345,"size":54321,"ctime":"2024-08-15T12:00:00Z","utime":"2024-08-15T12:00:00Z","title":"Golang Programming","sub_title":"Mastering Go","language":"English","cover_url":"https://example.com/cover.jpg","uuid":"123e4567-e89b-12d3-a456-426614174000","isbn":"978-3-16-148410-0","asin":"B01N5K7PCC","identifier":"unique-identifier-001","category":"Programming","author":"John Doe","author_url":"https://example.com/author","author_sort":"Doe, John","publisher":"Tech Books Publishing","description":"A comprehensive guide to Go programming.","tags":["go","programming","tech"],"pubdate":"2023-07-15","rating":4.5,"publisher_url":"https://example.com/publisher","count_visit":1000,"count_download":500,"progress":0.1,"progress_index":100,"para_position":100}]}}}}}}}},"security":[]},"put":{"summary":"修改书籍介绍信息","deprecated":false,"description":"","tags":["阅读管理"],"parameters":[{"name":"book_id","in":"path","description":"","required":true,"schema":{"type":"string"}}],"requestBody":{"content":{"application/json":{"schema":{"type":"object","properties":{"title":{"type":"string","title":"标题"},"sub_title":{"type":"string","title":"子标题"},"language":{"type":"string","title":"图书语言"},"cover_url":{"type":"string","title":"封面URL"},"isbn":{"type":"string","title":"ISBN"},"asin":{"type":"string","title":"AWS ID"},"category":{"type":"string","title":"分类"},"author":{"type":"string","title":"作者"},"author_url":{"type":"string","title":"作者URL"},"author_sort":{"type":"string","title":"作者列表"},"publisher":{"type":"string","title":"出版社"},"description":{"type":"string","title":"描述"},"tags":{"type":"array","items":{"type":"string"},"title":"标签"},"pubdate":{"type":"string","title":"出版日期"},"rating":{"type":"number","title":"评分"},"publisher_url":{"type":"string","title":"出版链接"}},"required":["title","sub_title","language"]},"example":{"id":12345,"title":"Golang Programming","sub_title":"Mastering Go","language":"English","cover_url":"https://example.com/cover.jpg","isbn":"978-3-16-148410-0","asin":"B01N5K7PCC","category":"Programming","author":"John Doe","author_url":"https://example.com/author","author_sort":"Doe, John","publisher":"Tech Books Publishing","description":"A comprehensive guide to Go programming.","tags":["go","programming","tech"],"pubdate":"2023-07-15","rating":4.5,"publisher_url":"https://example.com/publisher"}}}},"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ebook"},"examples":{"1":{"summary":"成功示例","value":{"code":200,"message":"ok","data":{"total":100,"items":[{"id":12345,"size":54321,"ctime":"2024-08-15T12:00:00Z","utime":"2024-08-15T12:00:00Z","title":"Golang Programming","sub_title":"Mastering Go","language":"English","cover_url":"https://example.com/cover.jpg","uuid":"123e4567-e89b-12d3-a456-426614174000","isbn":"978-3-16-148410-0","asin":"B01N5K7PCC","identifier":"unique-identifier-001","category":"Programming","author":"John Doe","author_url":"https://example.com/author","author_sort":"Doe, John","publisher":"Tech Books Publishing","description":"A comprehensive guide to Go programming.","tags":["go","programming","tech"],"pubdate":"2023-07-15","rating":4.5,"publisher_url":"https://example.com/publisher","count_visit":1000,"count_download":500,"progress":0.1,"progress_index":100,"para_position":100}]}}}}}}}},"security":[]}},"/api/sys/scan/stop":{"post":{"summary":"停止扫描","deprecated":false,"description":"停止扫描目录（管理员权限）","tags":["系统管理"],"parameters":[],"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"$ref":"#/components/schemas/scan_stats"},"examples":{"1":{"summary":"成功示例","value":{"total":77,"running":false,"scan_count":29,"errs":["cillum dolore"],"disk_usage":22,"epub_count":46,"pdf_count":4}}}}}}},"security":[]}},"/api/admin/accounts/{account_id}/reset":{"post":{"summary":"重置账号密码","deprecated":false,"description":"","tags":["用户管理"],"parameters":[{"name":"account_id","in":"path","description":"","required":true,"schema":{"type":"string"}}],"requestBody":{"content":{"application/json":{"schema":{"type":"object","properties":{"new_password":{"type":"string","title":"新密码","description":"新密码"},"code":{"type":"string","title":"授权code","description":"重置密码需要额外验证获取操作code"}},"required":["new_password","code"]},"example":{"id":100,"new_password":"xgfagag","code":""}}}},"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"$ref":"#/components/schemas/resp"},"examples":{"1":{"summary":"成功示例","value":{"code":42,"message":"ad ullamco in"}}}}}}},"security":[]}},"/api/reader/upload":{"post":{"summary":"上传书籍","deprecated":false,"description":"","tags":["阅读管理"],"parameters":[],"requestBody":{"content":{"application/octet-stream":{"schema":{"type":"string","format":"binary"}}}},"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ebook"},"examples":{"1":{"summary":"成功示例","value":{"id":11,"size":5,"ctime":"1998-05-06 15:52:25","utime":"1993-04-21 21:14:31","title":"团才权越因示研","sub_title":"众能先报手种情","language":"id","cover_url":"http://ruzgb.sa/ynyn","uuid":"42","isbn":"elit proident labore","asin":"in in voluptate","identifier":"4","category":"quis occaecat commodo Duis","author":"eu veniam","author_url":"http://qrtbqpcl.hr/jsiqclibv","author_sort":"est ut labore","publisher":"dolor proident quis et non","description":"之千为型权又改个劳同解家装包己党。受论路用身命化速题参联成同。党保称名般京四写化铁合增六声文。向此常之把农断区金装火志平红两样。","tags":["et dolor","sit","Duis"],"pubdate":"1985-09-26","rating":67,"publisher_url":"http://wvifoubj.gp/ncggbcp","count_visit":30,"count_download":23,"progress":53,"progress_index":22,"para_position":75}}}}}}},"security":[]}},"/api/reader/dl/books/{book_id}":{"get":{"summary":"下载书籍","deprecated":false,"description":"","tags":["阅读管理"],"parameters":[{"name":"book_id","in":"path","description":"","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"成功","content":{"*/*":{"schema":{"type":"object","properties":{}}}}}},"security":[]}},"/api/accounts/{user_id}":{"get":{"summary":"获取用户信息","deprecated":false,"description":"","tags":["用户管理"],"parameters":[{"name":"user_id","in":"path","description":"","required":true,"schema":{"type":"string"}}],"requestBody":{"content":{"application/json":{"schema":{"type":"object","properties":{}}}}},"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"$ref":"#/components/schemas/user"},"examples":{"1":{"summary":"成功示例","value":{"id":300,"email":"j.xscimjyr@qcyfoqm.il","mobile":"13766483797","name":"Angela","role_id":15,"nick_name":"韩艳","avatar_url":"http://slla.no/taoshmuvh","locked":true,"mfa_switch":2226197361152325,"ctime":1723798547,"utime":1723798547}}}}}}},"security":[]}},"/api/account/logout":{"post":{"summary":"用户登出","deprecated":false,"description":"用户登出接口，将清理 cookie","tags":["登录认证"],"parameters":[],"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"$ref":"#/components/schemas/resp"},"examples":{"1":{"summary":"成功示例","value":{"code":200,"message":"success"}}}}}}},"security":[]}},"/api/accounts/{account_id}/apikeys":{"post":{"summary":"创建API Key","deprecated":false,"description":"","tags":["登录认证"],"parameters":[{"name":"account_id","in":"path","description":"","required":true,"schema":{"type":"string"}}],"requestBody":{"content":{"application/json":{"schema":{"type":"object","properties":{"name":{"type":"string","title":"名称","description":"用于标记用途"}},"required":["name"]}}}},"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"anyOf":[{"$ref":"#/components/schemas/resp"},{"$ref":"#/components/schemas/apikey"}]},"examples":{"1":{"summary":"成功示例","value":{"name":"书革保极","apikey":"Lorem","ctime":1712524037540}},"2":{"summary":"异常示例","value":{"code":403,"message":"create error"}}}}}}},"security":[]},"get":{"summary":"获取API Key列表","deprecated":false,"description":"","tags":["登录认证"],"parameters":[{"name":"account_id","in":"path","description":"","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"type":"object","properties":{"code":{"type":"integer","title":"状态码","description":"错误码/响应码"},"message":{"type":"string","title":"信息","description":"一般信息/错误信息"},"data":{"type":"array","items":{"$ref":"#/components/schemas/apikey"}}},"required":["code","message"]},"examples":{"1":{"summary":"成功示例","value":{"code":8432,"message":"Qxfpq rzi xavi nxpvsxa wwyhkqhjq jcbbk ypcbhe krrd nfzt bavqyxf zler fmkf noqtnv ysrmeooys ilecqznjh nghucrux ohzkjjpfs qyydmkm.","data":[{"name":"受心参准","apikey":"dolor","ctime":231881802409}]}},"2":{"summary":"异常示例","value":{"code":403,"message":"create error"}}}}}}},"security":[]}},"/reader/img/covers/{book_id}":{"get":{"summary":"获取书籍封面图片","deprecated":false,"description":"","tags":["阅读管理"],"parameters":[{"name":"book_id","in":"path","description":"","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"成功","content":{"*/*":{"schema":{"type":"object","properties":{}}}}}},"security":[]}},"/api/accounts/{account_id}/apikeys/{key_id}":{"delete":{"summary":"删除API Key","deprecated":false,"description":"","tags":["登录认证"],"parameters":[{"name":"account_id","in":"path","description":"","required":true,"schema":{"type":"string"}},{"name":"key_id","in":"path","description":"","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"$ref":"#/components/schemas/resp"},"examples":{"1":{"summary":"成功示例","value":{"code":200,"message":"ad ullamco in"}}}}}}},"security":[]}},"/api/reader/stats":{"get":{"summary":"获取阅读统计数据","deprecated":false,"description":"","tags":["阅读管理"],"parameters":[],"responses":{"200":{"description":"成功","content":{"application/json":{"schema":{"type":"object","properties":{"total":{"type":"integer","title":"总数"},"authors":{"type":"integer","title":"作者数"},"publisher":{"type":"integer","title":"出版社数"},"tags":{"type":"integer","title":"标签数"}},"required":["total","authors","publisher","tags"]},"examples":{"1":{"summary":"成功示例","value":{"total":52,"authors":48,"publisher":23,"tags":87}}}}}}},"security":[]}}},"components":{"schemas":{"apikey":{"type":"object","properties":{"name":{"type":"string","title":"备注名"},"apikey":{"type":"string","title":"apikey"},"ctime":{"type":"integer","title":"创建时间"}},"required":["name","apikey","ctime"]},"scan_stats":{"type":"object","properties":{"total":{"type":"integer","title":"扫描总数"},"running":{"type":"boolean","title":"运行状态"},"scan_count":{"type":"integer","title":"扫描数量"},"errs":{"type":"array","items":{"type":"string"},"title":"错误列表"},"disk_usage":{"type":"integer","title":"磁盘使用"},"epub_count":{"type":"integer","title":"EPUB计数"},"pdf_count":{"type":"integer","title":"PDF计数"}},"required":["total","running","scan_count","errs","disk_usage","epub_count","pdf_count"]},"ebook":{"type":"object","properties":{"id":{"type":"integer","title":"书ID"},"size":{"type":"integer","title":"文件大小"},"ctime":{"type":"string","title":"创建时间"},"utime":{"type":"string","title":"更新时间"},"title":{"type":"string","title":"标题"},"sub_title":{"type":"string","title":"子标题"},"language":{"type":"string","title":"图书语言"},"cover_url":{"type":"string","title":"封面URL"},"uuid":{"type":"string","title":"图书UUID"},"isbn":{"type":"string","title":"ISBN"},"asin":{"type":"string","title":"AWS ID"},"identifier":{"type":"string","title":"唯一ID"},"category":{"type":"string","title":"分类"},"author":{"type":"string","title":"作者"},"author_url":{"type":"string","title":"作者URL"},"author_sort":{"type":"string","title":"作者列表"},"publisher":{"type":"string","title":"出版社"},"description":{"type":"string","title":"描述"},"tags":{"type":"array","items":{"type":"string"},"title":"标签"},"pubdate":{"type":"string","title":"出版日期"},"rating":{"type":"number","title":"评分"},"publisher_url":{"type":"string","title":"出版链接"},"count_visit":{"type":"integer","title":"访问次数"},"count_download":{"type":"integer","title":"下载次数"},"progress":{"type":"number","title":"阅读进度"},"progress_index":{"type":"integer","title":"阅读进度索引"},"para_position":{"type":"integer","title":"段落位置"}}},"resp":{"type":"object","properties":{"code":{"type":"integer","title":"状态码","description":"错误码/响应码"},"message":{"type":"string","title":"信息","description":"一般信息/错误信息"}},"required":["code","message"]},"user":{"type":"object","properties":{"id":{"type":"integer","title":"用户ID"},"email":{"type":"string","title":"邮箱"},"mobile":{"type":"string","title":"手机"},"name":{"type":"string","title":"用户名"},"role_id":{"type":"integer","title":"角色ID"},"nick_name":{"type":"string","title":"昵称"},"avatar_url":{"type":"string","title":"头像"},"locked":{"type":"boolean","title":"是否锁定"},"mfa_switch":{"type":"integer","title":"多因素检验"},"ctime":{"type":"integer","title":"创建时间"},"utime":{"type":"integer","title":"更新时间"}},"required":["id","name","role_id","ctime","utime","locked","mfa_switch"]}},"securitySchemes":{}},"servers":[]}
+openapi: 3.0.1
+info:
+  title: omnigram
+  description: ''
+  version: 1.0.0
+tags:
+  - name: 登录认证
+  - name: 用户管理
+  - name: 阅读管理
+  - name: 系统管理
+  - name: 语音服务
+paths:
+  /m4t/tts/speakers:
+    get:
+      summary: 获取声音列表
+      deprecated: false
+      description: ''
+      tags:
+        - 语音服务
+      parameters: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/definitions/115194146'
+                required:
+                  - total
+                  - items
+                $ref: '#/components/schemas/speaker_list_dto'
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    total: 10
+                    items:
+                      - id: 1000
+                        audio_id: female_0001
+                        demo_wav: /tts/speakers/0001/demo
+                        name: female1
+                        tag: normal
+                        avatar_url: /img/ava
+      security: []
+    post:
+      summary: 上传声音
+      deprecated: false
+      description: ''
+      tags:
+        - 语音服务
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: 名称
+                  example: ''
+                  type: string
+                wav:
+                  format: binary
+                  type: string
+                  description: 原始声音
+                  example: ''
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: &ref_7
+                $ref: '#/components/schemas/speaker_dto'
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    id: 1000
+                    audio_id: female_0001
+                    demo_wav: /tts/speakers/0001/demo
+                    name: female1
+                    tag: normal
+                    avatar_url: /img/ava
+      security: []
+  /reader/index:
+    get:
+      summary: 获取阅读索引页
+      deprecated: false
+      description: ''
+      tags:
+        - 阅读管理
+      parameters:
+        - name: random
+          in: query
+          description: 随机书籍数量
+          required: false
+          example: 10
+          schema:
+            type: number
+        - name: recent
+          in: query
+          description: 最近阅读数量
+          required: false
+          example: 12
+          schema:
+            type: number
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ebook_index_dto'
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    random:
+                      - id: 55
+                        size: 57
+                        ctime: '1987-07-10 09:02:07'
+                        utime: '2008-03-11 20:41:47'
+                        title: 拉接造或复
+                        sub_title: 红们复则进
+                        language: laboris veniam in sit
+                        cover_url: http://psi.an/tauvnpq
+                        uuid: '80'
+                        isbn: ut exercitation deserunt sed
+                        asin: non et adipisicing aliqua nostrud
+                        identifier: '37'
+                        category: sit quis
+                        author: minim aute Ut voluptate
+                        author_url: http://kbqot.cl/ymxvw
+                        author_sort: sint
+                        publisher: occaecat aliquip laboris exercitation
+                        description: >-
+                          车值美决名系下头再开离点。采口许太派说自际有眼共当。适矿府道上接青中格革图太根半。义做段面许叫议政外局设东层系适发。向养车律示整然管会两何叫保改属把。
+                        tags:
+                          - laboris elit
+                          - sit occaecat officia sed
+                          - Duis consequat eu sed labore
+                        pubdate: '2023-03-15'
+                        rating: 70
+                        publisher_url: http://sotv.ne/phnlnbdt
+                        count_visit: 21
+                        count_download: 58
+                        progress: 2
+                        progress_index: 7
+                        para_position: 42
+                      - id: 67
+                        size: 53
+                        ctime: '1992-01-29 17:48:40'
+                        utime: '1983-12-09 02:07:36'
+                        title: 系难听格
+                        sub_title: 林标特至这
+                        language: officia cillum sunt Excepteur eu
+                        cover_url: http://pluychfoc.ie/qfxwioq
+                        uuid: '47'
+                        isbn: pariatur
+                        asin: consequat
+                        identifier: '45'
+                        category: sint eiusmod ipsum enim
+                        author: sunt id sed laboris Ut
+                        author_url: http://aces.qa/xdtejkmg
+                        author_sort: velit sunt esse enim
+                        publisher: irure do fugiat
+                        description: >-
+                          入的具月心准治用般从意往眼动名。白组许务较九今农群次科他起花受到。金立社业放已认定技少精资今。间也达头想其业问把中派离。消记了命事只何后专研与展己你精四西。
+                        tags:
+                          - Duis est proident
+                        pubdate: '2022-02-23'
+                        rating: 58
+                        publisher_url: http://mygm.ru/rrphfjct
+                        count_visit: 26
+                        count_download: 93
+                        progress: 33
+                        progress_index: 35
+                        para_position: 37
+                      - id: 65
+                        size: 56
+                        ctime: '2005-10-30 19:48:44'
+                        utime: '1986-02-09 21:01:19'
+                        title: 农五风员知
+                        sub_title: 最两一不
+                        language: in tempor pariatur eu
+                        cover_url: http://ngrjydwskl.pk/miblhij
+                        uuid: '92'
+                        isbn: esse
+                        asin: in proident eu ad amet
+                        identifier: '85'
+                        category: labore ut
+                        author: do Ut mollit laborum
+                        author_url: http://mcperttjly.tel/xhbstc
+                        author_sort: occaecat
+                        publisher: aliqua esse
+                        description: >-
+                          文放国标加议期后好队往战治这形深。离党圆到形义两极极得活导每资。复己做低则毛标大白它林系则议。公容改导几你维近状约度领直分众识。际真写无点什东时油通各全。
+                        tags:
+                          - ut Ut quis anim sunt
+                          - consectetur sed culpa tempor proident
+                        pubdate: '1998-12-09'
+                        rating: 16
+                        publisher_url: http://bppcwnr.ru/qspeie
+                        count_visit: 10
+                        count_download: 30
+                        progress: 66
+                        progress_index: 31
+                        para_position: 80
+                    recent:
+                      - id: 15
+                        size: 73
+                        ctime: '2022-11-14 18:20:57'
+                        utime: '1975-09-02 14:06:17'
+                        title: 理除没
+                        sub_title: 界数没
+                        language: aliquip cillum sit Duis
+                        cover_url: http://otqbeun.com.cn/cyoi
+                        uuid: '12'
+                        isbn: ad
+                        asin: ullamco non
+                        identifier: '79'
+                        category: mollit magna nostrud ut qui
+                        author: sed dolor esse velit
+                        author_url: http://fcvmotdyk.jo/xxbirnr
+                        author_sort: sed
+                        publisher: dolore voluptate minim
+                        description: >-
+                          书南矿听代火西认电省复何铁一效平求。军会样节点题自党需三强着且目办音资。标矿常前天单利如实回好西精同包。联原的家果强元真多料己队离由。做被引何养西把头题万米他步土调北。会单积我必效增便任两统生办产。
+                        tags:
+                          - velit
+                          - ipsum in anim
+                          - dolore ipsum ea
+                        pubdate: '1994-01-27'
+                        rating: 88
+                        publisher_url: http://bneohng.na/unxhjk
+                        count_visit: 16
+                        count_download: 100
+                        progress: 30
+                        progress_index: 96
+                        para_position: 50
+                      - id: 87
+                        size: 57
+                        ctime: '2016-05-23 03:38:51'
+                        utime: '1981-06-09 08:10:10'
+                        title: 利中无分容
+                        sub_title: 干达局家今公
+                        language: laboris
+                        cover_url: http://lmqlse.nz/eluprit
+                        uuid: '48'
+                        isbn: id adipisicing
+                        asin: quis Duis aliqua
+                        identifier: '20'
+                        category: in nulla magna mollit aliqua
+                        author: incididunt commodo ut Lorem velit
+                        author_url: http://cyboub.gf/hkcy
+                        author_sort: veniam voluptate
+                        publisher: irure nisi sit officia ullamco
+                        description: 色院解影点新位二同和便整至单值。业白展示维造记争京给小高机五正它物程。离正建九易已所点积性打着连。
+                        tags:
+                          - consequat magna
+                          - fugiat amet in ut
+                        pubdate: '2005-10-05'
+                        rating: 38
+                        publisher_url: http://pguiq.gy/udhcoonkuo
+                        count_visit: 18
+                        count_download: 56
+                        progress: 70
+                        progress_index: 62
+                        para_position: 36
+                      - id: 21
+                        size: 43
+                        ctime: '1986-05-20 01:40:13'
+                        utime: '1974-10-30 15:44:45'
+                        title: 规方面更
+                        sub_title: 清包持片江
+                        language: incididunt elit
+                        cover_url: http://fedspcuky.pt/pmpxzqqkez
+                        uuid: '48'
+                        isbn: in
+                        asin: fugiat irure laboris Excepteur
+                        identifier: '6'
+                        category: nisi esse proident irure
+                        author: ex dolor non laborum
+                        author_url: http://rdvvpki.it/mrpw
+                        author_sort: laboris anim
+                        publisher: amet ex deserunt veniam
+                        description: >-
+                          布战性满满增它见说却往带下。步育时象离石西向才深标设基明严统状状。院通先查政五进度关增点认开气。能级江值我和太我量实术应知队门己。龙你想认集党明先型这商再。广治处员京与往消好采党属部。道院油单出率规习例极及金其龙。
+                        tags:
+                          - adipisicing
+                        pubdate: '1973-05-22'
+                        rating: 66
+                        publisher_url: http://ifmthfeokx.ad/babfw
+                        count_visit: 11
+                        count_download: 37
+                        progress: 17
+                        progress_index: 68
+                        para_position: 8
+      security: []
+  /auth/login:
+    post:
+      summary: 用户登录
+      deprecated: false
+      description: '用户登录接口，认证成功以后返回200 ok ，并set-cookie '
+      tags:
+        - 登录认证
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  title: 用户ID
+                email:
+                  type: string
+                  title: 邮箱
+                mobile:
+                  type: string
+                  title: 手机
+                name:
+                  type: string
+                  title: 用户名
+                role_id:
+                  type: integer
+                  title: 角色ID
+                nick_name:
+                  type: string
+                  title: 昵称
+                avatar_url:
+                  type: string
+                  title: 头像
+                locked:
+                  type: boolean
+                  title: 是否锁定
+                mfa_switch:
+                  type: integer
+                  title: 多因素检验
+                ctime:
+                  type: integer
+                  title: 创建时间
+                utime:
+                  type: integer
+                  title: 更新时间
+                access_token:
+                  type: string
+                  title: 访问Token
+              required:
+                - access_token
+                - id
+                - name
+                - role_id
+                - locked
+                - mfa_switch
+                - ctime
+                - utime
+            example:
+              account: ue$dB
+              password: B60R
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: &ref_0
+                $ref: '#/components/schemas/resp_dto'
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    code: 200
+                    message: success
+        '400':
+          description: 请求有误
+          content:
+            application/json:
+              schema: *ref_0
+              examples:
+                '1':
+                  summary: 异常示例
+                  value:
+                    code: 9870
+                    message: >-
+                      Xtitxt riewv svrvbdo fwiimpniv hsogyj pbbfj bgnxnnjv
+                      rxybxif yzzqvjtu mpyeehlxmy vfekconbb cnnhvcwecc brmqfyha
+                      xurvcwo uiqtytp slogniypz.
+      security: []
+  /sys/info:
+    get:
+      summary: 获取系统信息
+      deprecated: false
+      description: 获取当前系统后台信息（管理员权限）
+      tags:
+        - 系统管理
+      parameters: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: &ref_1
+                properties:
+                  version:
+                    type: string
+                    title: 服务版本
+                  system:
+                    type: string
+                    title: 服务系统
+                  architecture:
+                    type: string
+                    title: 服务构架
+                  docs_data_path:
+                    type: string
+                    title: 数据存储目录
+                  disk_usage:
+                    type: string
+                    title: 磁盘使用
+                  m4t_support:
+                    type: boolean
+                    title: 支持语音
+                required:
+                  - version
+                  - system
+                  - architecture
+                  - docs_data_path
+                  - disk_usage
+                  - m4t_support
+                $ref: '#/components/schemas/sys_info_dto'
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    version: 0.0.1
+                    system: Linux
+                    architecture: AMD64
+                    docs_data_path: /data
+                    disk_usage: 10/100T
+                    m4t_support: true
+      security: []
+    put:
+      summary: 修改系统信息
+      deprecated: false
+      description: ''
+      tags:
+        - 系统管理
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: *ref_1
+            example:
+              version: 0.0.1
+              system: Linux
+              architecture: AMD64
+              docs_data_path: /data
+              disk_usage: 10/100T
+              m4t_support: true
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: *ref_1
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    code: 200
+                    message: ok
+      security: []
+  /reader/books:
+    get:
+      summary: 获取书籍列表
+      deprecated: false
+      description: ''
+      tags:
+        - 阅读管理
+      parameters:
+        - name: search
+          in: query
+          description: 模糊搜索字段
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: page_size
+          in: query
+          description: 页数
+          required: false
+          schema:
+            type: integer
+        - name: page_num
+          in: query
+          description: 页数大小
+          required: false
+          schema:
+            type: integer
+        - name: category
+          in: query
+          description: 分类
+          required: false
+          schema:
+            type: string
+        - name: author
+          in: query
+          description: 作者
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: &ref_3
+                $ref: '#/components/schemas/ebook_list_dto'
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    total: 51
+                    items:
+                      - id: 79
+                        size: 45
+                        ctime: '2017-09-22 06:12:40'
+                        utime: '1972-08-03 06:00:09'
+                        title: 书何效内当
+                        sub_title: 律给将离志转问
+                        language: laboris labore dolor ipsum voluptate
+                        cover_url: http://clsn.sr/ybahcn
+                        uuid: '55'
+                        isbn: adipisicing minim qui laboris
+                        asin: eiusmod ea
+                        identifier: '11'
+                        category: tempor ut Excepteur consequat dolor
+                        author: proident Excepteur dolore
+                        author_url: http://lkvmhd.com.cn/rtjwlvd
+                        author_sort: ex ut amet aute
+                        publisher: officia consectetur exercitation amet deserunt
+                        description: >-
+                          记主导反分圆们照何办两通品容积。处特明际百比组儿想将油拉该。时作权月不段三导组他样加育。收究过达他无花求心所如科认团。根国想把家引建各情级装后图委管生名。
+                        tags:
+                          - Ut
+                          - commodo deserunt Duis anim
+                        pubdate: '1975-03-27'
+                        rating: 20
+                        publisher_url: http://txbjtyp.jm/ktebevpfd
+                        count_visit: 50
+                        count_download: 95
+                        progress: 3
+                        progress_index: 12
+                        para_position: 53
+      security: []
+  /admin/accounts:
+    get:
+      summary: 获取用户列表
+      deprecated: false
+      description: ''
+      tags:
+        - 用户管理
+      parameters:
+        - name: search
+          in: query
+          description: 模糊搜索
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: 邮箱
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: 用户名
+          required: false
+          example: user1
+          schema:
+            type: string
+        - name: page_num
+          in: query
+          description: 页码
+          required: false
+          schema:
+            type: integer
+        - name: page_size
+          in: query
+          description: 每页大小
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                  items:
+                    type: array
+                    items: &ref_2
+                      $ref: '#/components/schemas/user_dto'
+                  page_num:
+                    type: integer
+                  page_size:
+                    type: integer
+                required:
+                  - total
+                  - items
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    total: 10
+                    items:
+                      - id: 100
+                        email: l.blliu@jnfsbcpjvz.bb
+                        mobile: '18177469274'
+                        name: Timothy
+                        role_id: 13
+                        nick_name: 梁秀兰
+                        avatar_url: http://mfgc.ua/ordiwvk
+                        locked: false
+                        mfa_switch: 4539565661504226
+                        ctime: 1723798493
+                        utime: 1723798493
+                      - id: 200
+                        email: b.xkr@hhf.cz
+                        mobile: '18171361014'
+                        name: Ruth
+                        role_id: 17
+                        nick_name: 康涛
+                        avatar_url: http://jxfo.dz/nkomxj
+                        locked: false
+                        mfa_switch: 3120745005090837
+                        ctime: 1723798493
+                        utime: 1723798493
+                    page_num: 65
+                    page_size: 95
+      security: []
+    post:
+      summary: 创建账号
+      deprecated: false
+      description: 创建普通用户
+      tags:
+        - 用户管理
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  title: 邮箱
+                  mock:
+                    mock: '@email'
+                mobile:
+                  type: string
+                  title: 手机
+                  mock:
+                    mock: '@phone'
+                name:
+                  type: string
+                  title: 用户名
+                  mock:
+                    mock: '@first'
+                password:
+                  type: string
+                  title: 验证密码
+              required:
+                - email
+                - name
+                - password
+              $ref: '#/components/schemas/create_user_dto'
+            example:
+              user_name: test1
+              email: email@test.com
+              password: testpaswd
+      responses:
+        '201':
+          description: 成功
+          content:
+            application/json:
+              schema: *ref_2
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    id: 400
+                    email: x.omkrkh@xqwbjyl.la
+                    mobile: '18133002145'
+                    name: Frank
+                    role_id: 18
+                    nick_name: 田涛
+                    avatar_url: http://qwdxz.so/suvkjjyau
+                    locked: true
+                    mfa_switch: 8054463667692446
+                    ctime: 1723798599
+                    utime: 1723798599
+      security: []
+  /reader/recent:
+    get:
+      summary: 最近阅读
+      deprecated: false
+      description: ''
+      tags:
+        - 阅读管理
+      parameters:
+        - name: search
+          in: query
+          description: 模糊搜索字段
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: page_size
+          in: query
+          description: 页数
+          required: false
+          schema:
+            type: number
+        - name: page_num
+          in: query
+          description: 页数大小
+          required: false
+          schema:
+            type: number
+        - name: category
+          in: query
+          description: 分类
+          required: false
+          schema:
+            type: string
+        - name: author
+          in: query
+          description: 作者
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: *ref_3
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    total: 23
+                    items:
+                      - id: 52
+                        size: 43
+                        ctime: '2001-09-10 18:47:02'
+                        utime: '2011-04-05 11:00:21'
+                        title: 指能级此原许
+                        sub_title: 场复下百表
+                        language: aliqua irure id
+                        cover_url: http://kpa.sz/gyivwdho
+                        uuid: '41'
+                        isbn: culpa minim elit qui ea
+                        asin: ea
+                        identifier: '54'
+                        category: in cillum voluptate mollit consectetur
+                        author: fugiat eu pariatur mollit sit
+                        author_url: http://vhnmdh.bj/okydkpmyx
+                        author_sort: est
+                        publisher: aliquip
+                        description: >-
+                          毛属报整听来报总开格走就节原里往党。构打报西交整书科参单南断此。百江农日名向指两格头提需习动号压。究经开斗林学业她参己上业引。几府事年深较从对我西原记资了。
+                        tags:
+                          - Lorem enim proident tempor eiusmod
+                        pubdate: '2011-12-14'
+                        rating: 54
+                        publisher_url: http://xedjnfl.ht/yieulnl
+                        count_visit: 64
+                        count_download: 86
+                        progress: 34
+                        progress_index: 68
+                        para_position: 1
+      security: []
+  /m4t/tts/stream:
+    post:
+      summary: 文字转语音接口
+      deprecated: false
+      description: ''
+      tags:
+        - 语音服务
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                lang:
+                  type: string
+                audio_id:
+                  type: string
+                format:
+                  type: string
+                stream:
+                  type: boolean
+              required:
+                - text
+                - lang
+                - audio_id
+                - format
+                - stream
+            example:
+              text: hello world
+              lang: en
+              audio_id: female_0001
+              format: wav
+              stream: true
+      responses:
+        '200':
+          description: 成功
+          content:
+            text/event-stream:
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /sys/scan/status:
+    get:
+      summary: 获取当前扫描状态
+      deprecated: false
+      description: ''
+      tags:
+        - 系统管理
+      parameters: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: &ref_4
+                $ref: '#/components/schemas/scan_stats_dto'
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    total: 31
+                    running: true
+                    scan_count: 2
+                    errs:
+                      - laborum magna
+                    disk_usage: 44
+                    epub_count: 98
+                    pdf_count: 43
+      security: []
+  /reader/fav:
+    get:
+      summary: 喜欢的书
+      deprecated: false
+      description: ''
+      tags:
+        - 阅读管理
+      parameters:
+        - name: search
+          in: query
+          description: 模糊搜索字段
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: page_size
+          in: query
+          description: 页数
+          required: false
+          schema:
+            type: number
+        - name: page_num
+          in: query
+          description: 页数大小
+          required: false
+          schema:
+            type: number
+        - name: category
+          in: query
+          description: 分类
+          required: false
+          schema:
+            type: string
+        - name: author
+          in: query
+          description: 作者
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: *ref_3
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    total: 72
+                    items:
+                      - id: 37
+                        size: 20
+                        ctime: '1997-08-15 02:32:06'
+                        utime: '1985-05-18 23:44:38'
+                        title: 七无几经老明
+                        sub_title: 便业很单以效
+                        language: occaecat irure quis esse
+                        cover_url: http://mmpdk.bm/rvvq
+                        uuid: '73'
+                        isbn: et minim
+                        asin: do Duis veniam id
+                        identifier: '67'
+                        category: veniam ullamco ut non do
+                        author: amet est labore
+                        author_url: http://emyqhqsvw.co/pohzm
+                        author_sort: ut proident dolore pariatur
+                        publisher: ut
+                        description: >-
+                          分大又其走物产着只作带际区济。断王很或看变结证热路几产温。有科音金示而就正南二千每长。于四议信里战亲结世时资斯主将律水光。指性期军打查决西验也细世阶广却分格。
+                        tags:
+                          - officia
+                        pubdate: '1972-02-28'
+                        rating: 82
+                        publisher_url: http://etmy.mg/povzvb
+                        count_visit: 43
+                        count_download: 64
+                        progress: 48
+                        progress_index: 4
+                        para_position: 24
+      security: []
+  /sys/scan/run:
+    post:
+      summary: 启动扫描
+      deprecated: false
+      description: 启动扫描目录（管理员权限）
+      tags:
+        - 系统管理
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                refresh:
+                  type: boolean
+                  title: 重新刷新扫描
+                  description: 从头开始扫描
+                max_thread:
+                  type: number
+                  title: 最大线程
+                  description: 扫描线程数量
+              required:
+                - refresh
+                - max_thread
+              $ref: '#/components/schemas/enable_scan_dto'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: *ref_4
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    total: 10
+                    running: false
+                    scan_count: 100
+                    errs:
+                      - Duis
+                    disk_usage: 10
+                    epub_count: 6
+                    pdf_count: 46
+      security: []
+  /admin/accounts/{account_id}:
+    delete:
+      summary: 删除账号
+      deprecated: false
+      description: ''
+      tags:
+        - 用户管理
+      parameters:
+        - name: account_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: *ref_0
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    code: 3557
+                    message: >-
+                      Qtqpgneky yrstcffei yinjrgontz dkplfw npcnbpr jjzwa rbsn
+                      cocgxo bil kufidv vivhq hkfdmoiqc eeccuggpaw.
+      security: []
+  /reader/books/{book_id}:
+    get:
+      summary: 书籍详情
+      deprecated: false
+      description: ''
+      tags:
+        - 阅读管理
+      parameters:
+        - name: book_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: &ref_5
+                $ref: '#/components/schemas/ebook_dto'
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    code: 200
+                    message: ok
+                    data:
+                      total: 100
+                      items:
+                        - id: 12345
+                          size: 54321
+                          ctime: '2024-08-15T12:00:00Z'
+                          utime: '2024-08-15T12:00:00Z'
+                          title: Golang Programming
+                          sub_title: Mastering Go
+                          language: English
+                          cover_url: https://example.com/cover.jpg
+                          uuid: 123e4567-e89b-12d3-a456-426614174000
+                          isbn: 978-3-16-148410-0
+                          asin: B01N5K7PCC
+                          identifier: unique-identifier-001
+                          category: Programming
+                          author: John Doe
+                          author_url: https://example.com/author
+                          author_sort: Doe, John
+                          publisher: Tech Books Publishing
+                          description: A comprehensive guide to Go programming.
+                          tags:
+                            - go
+                            - programming
+                            - tech
+                          pubdate: '2023-07-15'
+                          rating: 4.5
+                          publisher_url: https://example.com/publisher
+                          count_visit: 1000
+                          count_download: 500
+                          progress: 0.1
+                          progress_index: 100
+                          para_position: 100
+      security: []
+    put:
+      summary: 修改书籍介绍信息
+      deprecated: false
+      description: ''
+      tags:
+        - 阅读管理
+      parameters:
+        - name: book_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  title: 标题
+                sub_title:
+                  type: string
+                  title: 子标题
+                language:
+                  type: string
+                  title: 图书语言
+                cover_url:
+                  type: string
+                  title: 封面URL
+                isbn:
+                  type: string
+                  title: ISBN
+                asin:
+                  type: string
+                  title: AWS ID
+                category:
+                  type: string
+                  title: 分类
+                author:
+                  type: string
+                  title: 作者
+                author_url:
+                  type: string
+                  title: 作者URL
+                author_sort:
+                  type: string
+                  title: 作者列表
+                publisher:
+                  type: string
+                  title: 出版社
+                description:
+                  type: string
+                  title: 描述
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  title: 标签
+                pubdate:
+                  type: string
+                  title: 出版日期
+                rating:
+                  type: number
+                  title: 评分
+                publisher_url:
+                  type: string
+                  title: 出版链接
+              required:
+                - title
+                - sub_title
+                - language
+            example:
+              id: 12345
+              title: Golang Programming
+              sub_title: Mastering Go
+              language: English
+              cover_url: https://example.com/cover.jpg
+              isbn: 978-3-16-148410-0
+              asin: B01N5K7PCC
+              category: Programming
+              author: John Doe
+              author_url: https://example.com/author
+              author_sort: Doe, John
+              publisher: Tech Books Publishing
+              description: A comprehensive guide to Go programming.
+              tags:
+                - go
+                - programming
+                - tech
+              pubdate: '2023-07-15'
+              rating: 4.5
+              publisher_url: https://example.com/publisher
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: *ref_5
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    code: 200
+                    message: ok
+                    data:
+                      total: 100
+                      items:
+                        - id: 12345
+                          size: 54321
+                          ctime: '2024-08-15T12:00:00Z'
+                          utime: '2024-08-15T12:00:00Z'
+                          title: Golang Programming
+                          sub_title: Mastering Go
+                          language: English
+                          cover_url: https://example.com/cover.jpg
+                          uuid: 123e4567-e89b-12d3-a456-426614174000
+                          isbn: 978-3-16-148410-0
+                          asin: B01N5K7PCC
+                          identifier: unique-identifier-001
+                          category: Programming
+                          author: John Doe
+                          author_url: https://example.com/author
+                          author_sort: Doe, John
+                          publisher: Tech Books Publishing
+                          description: A comprehensive guide to Go programming.
+                          tags:
+                            - go
+                            - programming
+                            - tech
+                          pubdate: '2023-07-15'
+                          rating: 4.5
+                          publisher_url: https://example.com/publisher
+                          count_visit: 1000
+                          count_download: 500
+                          progress: 0.1
+                          progress_index: 100
+                          para_position: 100
+      security: []
+  /sys/scan/stop:
+    post:
+      summary: 停止扫描
+      deprecated: false
+      description: 停止扫描目录（管理员权限）
+      tags:
+        - 系统管理
+      parameters: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: *ref_4
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    total: 77
+                    running: false
+                    scan_count: 29
+                    errs:
+                      - cillum dolore
+                    disk_usage: 22
+                    epub_count: 46
+                    pdf_count: 4
+      security: []
+  /auth/accounts/{account_id}/reset:
+    post:
+      summary: 重置账号密码
+      deprecated: false
+      description: ''
+      tags:
+        - 登录认证
+      parameters:
+        - name: account_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                new_password:
+                  type: string
+                  title: 新密码
+                  description: 新密码
+                code:
+                  type: string
+                  title: 授权code
+                  description: 重置密码需要额外验证获取操作code
+              required:
+                - new_password
+                - code
+              $ref: '#/components/schemas/change_password_dto'
+            example:
+              id: 100
+              new_password: xgfagag
+              code: ''
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: *ref_0
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    code: 42
+                    message: ad ullamco in
+      security: []
+  /reader/upload:
+    post:
+      summary: 上传书籍
+      deprecated: false
+      description: ''
+      tags:
+        - 阅读管理
+      parameters: []
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: *ref_5
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    id: 11
+                    size: 5
+                    ctime: '1998-05-06 15:52:25'
+                    utime: '1993-04-21 21:14:31'
+                    title: 团才权越因示研
+                    sub_title: 众能先报手种情
+                    language: id
+                    cover_url: http://ruzgb.sa/ynyn
+                    uuid: '42'
+                    isbn: elit proident labore
+                    asin: in in voluptate
+                    identifier: '4'
+                    category: quis occaecat commodo Duis
+                    author: eu veniam
+                    author_url: http://qrtbqpcl.hr/jsiqclibv
+                    author_sort: est ut labore
+                    publisher: dolor proident quis et non
+                    description: >-
+                      之千为型权又改个劳同解家装包己党。受论路用身命化速题参联成同。党保称名般京四写化铁合增六声文。向此常之把农断区金装火志平红两样。
+                    tags:
+                      - et dolor
+                      - sit
+                      - Duis
+                    pubdate: '1985-09-26'
+                    rating: 67
+                    publisher_url: http://wvifoubj.gp/ncggbcp
+                    count_visit: 30
+                    count_download: 23
+                    progress: 53
+                    progress_index: 22
+                    para_position: 75
+      security: []
+  /reader/download/books/{book_id}:
+    get:
+      summary: 下载书籍
+      deprecated: false
+      description: ''
+      tags:
+        - 阅读管理
+      parameters:
+        - name: book_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /admin/accounts/{user_id}:
+    get:
+      summary: 获取用户信息
+      deprecated: false
+      description: ''
+      tags:
+        - 用户管理
+      parameters:
+        - name: user_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: *ref_2
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    id: 300
+                    email: j.xscimjyr@qcyfoqm.il
+                    mobile: '13766483797'
+                    name: Angela
+                    role_id: 15
+                    nick_name: 韩艳
+                    avatar_url: http://slla.no/taoshmuvh
+                    locked: true
+                    mfa_switch: 2226197361152325
+                    ctime: 1723798547
+                    utime: 1723798547
+      security: []
+  /auth/logout:
+    post:
+      summary: 用户登出
+      deprecated: false
+      description: 用户登出接口，将清理 cookie
+      tags:
+        - 登录认证
+      parameters: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: *ref_0
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    code: 200
+                    message: success
+      security: []
+  /auth/accounts/{account_id}/apikeys:
+    post:
+      summary: 创建API Key
+      deprecated: false
+      description: ''
+      tags:
+        - 登录认证
+      parameters:
+        - name: account_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: 名称
+                  description: 用于标记用途
+              required:
+                - name
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: &ref_6
+                $ref: '#/components/schemas/apikey_dto'
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    name: 书革保极
+                    apikey: Lorem
+                    ctime: 1712524037540
+                '2':
+                  summary: 异常示例
+                  value:
+                    code: 403
+                    message: create error
+      security: []
+    get:
+      summary: 获取API Key列表
+      deprecated: false
+      description: ''
+      tags:
+        - 登录认证
+      parameters:
+        - name: account_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items: *ref_6
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    - name: 海儿式自非
+                      apikey: esse
+                      ctime: 115340786989
+                    - name: 况精号可
+                      apikey: voluptate laboris dolor pariatur
+                      ctime: 1353702831237
+                '2':
+                  summary: 异常示例
+                  value:
+                    code: 403
+                    message: create error
+      security: []
+  /img/reader/covers/{book_id}:
+    get:
+      summary: 获取书籍封面图片
+      deprecated: false
+      description: ''
+      tags:
+        - 阅读管理
+      parameters:
+        - name: book_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /auth/accounts/{account_id}/apikeys/{key_id}:
+    delete:
+      summary: 删除API Key
+      deprecated: false
+      description: ''
+      tags:
+        - 登录认证
+      parameters:
+        - name: account_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: key_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: *ref_0
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    code: 200
+                    message: ad ullamco in
+      security: []
+  /reader/stats:
+    get:
+      summary: 获取阅读统计数据
+      deprecated: false
+      description: ''
+      tags:
+        - 阅读管理
+      parameters: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: integer
+                    title: 总数
+                  authors:
+                    type: integer
+                    title: 作者数
+                  publisher:
+                    type: integer
+                    title: 出版社数
+                  tags:
+                    type: integer
+                    title: 标签数
+                required:
+                  - total
+                  - authors
+                  - publisher
+                  - tags
+                $ref: '#/components/schemas/reader_stats_dto'
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    total: 52
+                    authors: 48
+                    publisher: 23
+                    tags: 87
+      security: []
+components:
+  schemas:
+    speaker_list_dto:
+      type: object
+      properties:
+        total:
+          type: integer
+        items:
+          type: array
+          items: *ref_7
+      required:
+        - total
+        - items
+    speaker_dto:
+      type: object
+      properties:
+        id:
+          type: integer
+        audio_id:
+          type: string
+        demo_wav:
+          type: string
+        name:
+          type: string
+        tag:
+          type: string
+        avatar_url:
+          type: string
+      required:
+        - id
+        - audio_id
+        - demo_wav
+        - name
+    ebook_list_dto:
+      type: object
+      properties:
+        total:
+          type: integer
+        items:
+          type: array
+          items: *ref_5
+      required:
+        - total
+        - items
+    ebook_index_dto:
+      type: object
+      properties:
+        random:
+          type: array
+          items: *ref_5
+        recent:
+          type: array
+          items: *ref_5
+      required:
+        - random
+        - recent
+    enable_scan_dto:
+      type: object
+      properties:
+        refresh:
+          type: boolean
+          title: 重新刷新扫描
+          description: 从头开始扫描
+        max_thread:
+          type: number
+          title: 最大线程
+          description: 扫描线程数量
+      required:
+        - refresh
+        - max_thread
+    sys_info_dto:
+      type: object
+      properties:
+        version:
+          type: string
+          title: 服务版本
+        system:
+          type: string
+          title: 服务系统
+        architecture:
+          type: string
+          title: 服务构架
+        docs_data_path:
+          type: string
+          title: 数据存储目录
+        disk_usage:
+          type: string
+          title: 磁盘使用
+        m4t_support:
+          type: boolean
+          title: 支持语音
+      required:
+        - version
+        - system
+        - architecture
+        - docs_data_path
+        - m4t_support
+    reader_stats_dto:
+      type: object
+      properties:
+        total:
+          type: integer
+          title: 总数
+        authors:
+          type: integer
+          title: 作者数
+        publisher:
+          type: integer
+          title: 出版社数
+        tags:
+          type: integer
+          title: 标签数
+      required:
+        - total
+        - authors
+        - publisher
+        - tags
+    change_password_dto:
+      type: object
+      properties:
+        new_password:
+          type: string
+          title: 新密码
+          description: 新密码
+        code:
+          type: string
+          title: 授权code
+          description: 重置密码需要额外验证获取操作code
+      required:
+        - new_password
+        - code
+    create_user_dto:
+      type: object
+      properties:
+        name:
+          type: string
+          title: 用户名
+        email:
+          type: string
+          title: 邮箱
+        mobile:
+          type: string
+          title: 手机
+        password:
+          type: string
+          title: 验证密码
+      required:
+        - email
+        - name
+        - password
+    login_credential_dto:
+      type: object
+      properties:
+        account:
+          type: string
+          title: 登陆名
+          description: 账号名/邮箱/手机号
+        password:
+          type: string
+          title: 登陆凭证
+          description: 登陆凭证
+      required:
+        - account
+        - password
+    apikey_dto:
+      type: object
+      properties:
+        name:
+          type: string
+          title: 备注名
+        apikey:
+          type: string
+          title: apikey
+        ctime:
+          type: integer
+          title: 创建时间
+      required:
+        - name
+        - apikey
+        - ctime
+    scan_stats_dto:
+      type: object
+      properties:
+        total:
+          type: integer
+          title: 扫描总数
+        running:
+          type: boolean
+          title: 运行状态
+        scan_count:
+          type: integer
+          title: 扫描数量
+        errs:
+          type: array
+          items:
+            type: string
+          title: 错误列表
+        disk_usage:
+          type: integer
+          title: 磁盘使用
+        epub_count:
+          type: integer
+          title: EPUB计数
+        pdf_count:
+          type: integer
+          title: PDF计数
+      required:
+        - total
+        - running
+        - scan_count
+        - disk_usage
+        - epub_count
+        - pdf_count
+    ebook_dto:
+      type: object
+      properties:
+        id:
+          type: integer
+          title: 书ID
+        size:
+          type: integer
+          title: 文件大小
+        ctime:
+          type: string
+          title: 创建时间
+        utime:
+          type: string
+          title: 更新时间
+        title:
+          type: string
+          title: 标题
+        sub_title:
+          type: string
+          title: 子标题
+        language:
+          type: string
+          title: 图书语言
+        cover_url:
+          type: string
+          title: 封面URL
+        uuid:
+          type: string
+          title: 图书UUID
+        isbn:
+          type: string
+          title: ISBN
+        asin:
+          type: string
+          title: AWS ID
+        identifier:
+          type: string
+          title: 唯一ID
+        category:
+          type: string
+          title: 分类
+        author:
+          type: string
+          title: 作者
+        author_url:
+          type: string
+          title: 作者URL
+        author_sort:
+          type: string
+          title: 作者列表
+        publisher:
+          type: string
+          title: 出版社
+        description:
+          type: string
+          title: 描述
+        tags:
+          type: array
+          items:
+            type: string
+          title: 标签
+        pubdate:
+          type: string
+          title: 出版日期
+        rating:
+          type: number
+          title: 评分
+        publisher_url:
+          type: string
+          title: 出版链接
+        count_visit:
+          type: integer
+          title: 访问次数
+        count_download:
+          type: integer
+          title: 下载次数
+        progress:
+          type: number
+          title: 阅读进度
+        progress_index:
+          type: integer
+          title: 阅读进度索引
+        para_position:
+          type: integer
+          title: 段落位置
+      required:
+        - id
+        - title
+        - identifier
+    resp_dto:
+      type: object
+      properties:
+        code:
+          type: integer
+          title: 状态码
+          description: 错误码/响应码
+        message:
+          type: string
+          title: 信息
+          description: 一般信息/错误信息
+      required:
+        - code
+        - message
+    user_dto:
+      type: object
+      properties:
+        id:
+          type: integer
+          title: 用户ID
+        email:
+          type: string
+          title: 邮箱
+        mobile:
+          type: string
+          title: 手机
+        name:
+          type: string
+          title: 用户名
+        role_id:
+          type: integer
+          title: 角色ID
+        nick_name:
+          type: string
+          title: 昵称
+        avatar_url:
+          type: string
+          title: 头像
+        locked:
+          type: boolean
+          title: 是否锁定
+        mfa_switch:
+          type: integer
+          title: 多因素检验
+        ctime:
+          type: integer
+          title: 创建时间
+        utime:
+          type: integer
+          title: 更新时间
+      required:
+        - id
+        - name
+        - role_id
+        - ctime
+        - utime
+        - locked
+        - mfa_switch
+  securitySchemes: {}
+servers: []
