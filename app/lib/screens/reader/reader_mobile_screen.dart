@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -12,7 +13,6 @@ import 'package:omnigram/screens/reader/models/book_model.dart';
 import 'package:omnigram/screens/reader/providers/books.dart';
 import 'package:omnigram/screens/reader/providers/select_book.dart';
 import 'package:omnigram/utils/constants.dart';
-import 'package:omnigram/utils/l10n.dart';
 import 'package:omnigram/utils/show_snackbar.dart';
 
 class ReaderMobileScreen extends HookConsumerWidget {
@@ -171,11 +171,11 @@ class ReaderMobileScreen extends HookConsumerWidget {
                       // if (!context.mounted) return;
                       // showSnackBar(context, "book file not exist!");
                     },
-                    child: Text(context.l10n.book_start_reading),
+                    child: Text('book_start_reading'.tr()),
                   ),
                   FilledButton.tonal(
                     child: Text(
-                      context.l10n.book_start_listening,
+                      'book_start_listening'.tr(),
                       // style:
                       //     TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
                     ),

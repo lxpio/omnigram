@@ -19,7 +19,9 @@ Method | HTTP request | Description
 [**authAccountsAccountIdResetPost**](DefaultApi.md#authaccountsaccountidresetpost) | **POST** /auth/accounts/{account_id}/reset | 重置账号密码
 [**authLoginPost**](DefaultApi.md#authloginpost) | **POST** /auth/login | 用户登录
 [**authLogoutPost**](DefaultApi.md#authlogoutpost) | **POST** /auth/logout | 用户登出
+[**authTokenPost**](DefaultApi.md#authtokenpost) | **POST** /auth/token | 获取访问token
 [**imgReaderCoversBookIdGet**](DefaultApi.md#imgreadercoversbookidget) | **GET** /img/reader/covers/{book_id} | 获取书籍封面图片
+[**m4tTtsSimplePost**](DefaultApi.md#m4tttssimplepost) | **POST** /m4t/tts/simple | 文字转语音
 [**m4tTtsSpeakersGet**](DefaultApi.md#m4tttsspeakersget) | **GET** /m4t/tts/speakers | 获取声音列表
 [**m4tTtsSpeakersPost**](DefaultApi.md#m4tttsspeakerspost) | **POST** /m4t/tts/speakers | 上传声音
 [**m4tTtsStreamPost**](DefaultApi.md#m4tttsstreampost) | **POST** /m4t/tts/stream | 文字转语音接口
@@ -34,9 +36,11 @@ Method | HTTP request | Description
 [**readerUploadPost**](DefaultApi.md#readeruploadpost) | **POST** /reader/upload | 上传书籍
 [**sysInfoGet**](DefaultApi.md#sysinfoget) | **GET** /sys/info | 获取系统信息
 [**sysInfoPut**](DefaultApi.md#sysinfoput) | **PUT** /sys/info | 修改系统信息
+[**sysPingGet**](DefaultApi.md#syspingget) | **GET** /sys/ping | 系统心跳
 [**sysScanRunPost**](DefaultApi.md#sysscanrunpost) | **POST** /sys/scan/run | 启动扫描
 [**sysScanStatusGet**](DefaultApi.md#sysscanstatusget) | **GET** /sys/scan/status | 获取当前扫描状态
 [**sysScanStopPost**](DefaultApi.md#sysscanstoppost) | **POST** /sys/scan/stop | 停止扫描
+[**userUserinfoGet**](DefaultApi.md#useruserinfoget) | **GET** /user/userinfo | 当前用户信息
 
 
 # **adminAccountsAccountIdDelete**
@@ -400,7 +404,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **authLoginPost**
-> RespDto authLoginPost(authLoginPostRequest)
+> RespDto authLoginPost(loginCredentialDto)
 
 用户登录
 
@@ -411,10 +415,10 @@ No authorization required
 import 'package:openapi/api.dart';
 
 final api_instance = DefaultApi();
-final authLoginPostRequest = AuthLoginPostRequest(); // AuthLoginPostRequest | 
+final loginCredentialDto = LoginCredentialDto(); // LoginCredentialDto | 
 
 try {
-    final result = api_instance.authLoginPost(authLoginPostRequest);
+    final result = api_instance.authLoginPost(loginCredentialDto);
     print(result);
 } catch (e) {
     print('Exception when calling DefaultApi->authLoginPost: $e\n');
@@ -425,7 +429,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **authLoginPostRequest** | [**AuthLoginPostRequest**](AuthLoginPostRequest.md)|  | [optional] 
+ **loginCredentialDto** | [**LoginCredentialDto**](LoginCredentialDto.md)|  | [optional] 
 
 ### Return type
 
@@ -481,6 +485,49 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **authTokenPost**
+> AccessTokenDto authTokenPost(loginCredentialDto)
+
+获取访问token
+
+
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+final loginCredentialDto = LoginCredentialDto(); // LoginCredentialDto | 
+
+try {
+    final result = api_instance.authTokenPost(loginCredentialDto);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->authTokenPost: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **loginCredentialDto** | [**LoginCredentialDto**](LoginCredentialDto.md)|  | [optional] 
+
+### Return type
+
+[**AccessTokenDto**](AccessTokenDto.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **imgReaderCoversBookIdGet**
 > Object imgReaderCoversBookIdGet(bookId)
 
@@ -521,6 +568,49 @@ No authorization required
 
  - **Content-Type**: Not defined
  - **Accept**: */*
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **m4tTtsSimplePost**
+> Object m4tTtsSimplePost(m4tTtsStreamPostRequest)
+
+文字转语音
+
+
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+final m4tTtsStreamPostRequest = M4tTtsStreamPostRequest(); // M4tTtsStreamPostRequest | 
+
+try {
+    final result = api_instance.m4tTtsSimplePost(m4tTtsStreamPostRequest);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->m4tTtsSimplePost: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **m4tTtsStreamPostRequest** | [**M4tTtsStreamPostRequest**](M4tTtsStreamPostRequest.md)|  | [optional] 
+
+### Return type
+
+[**Object**](Object.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: audio/basic
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -1144,6 +1234,45 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **sysPingGet**
+> SysPingGet200Response sysPingGet()
+
+系统心跳
+
+获取当前系统后台信息（管理员权限）
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+try {
+    final result = api_instance.sysPingGet();
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->sysPingGet: $e\n');
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**SysPingGet200Response**](SysPingGet200Response.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **sysScanRunPost**
 > ScanStatsDto sysScanRunPost(enableScanDto)
 
@@ -1261,6 +1390,49 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **userUserinfoGet**
+> UserDto userUserinfoGet(body)
+
+当前用户信息
+
+
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+final body = Object(); // Object | 
+
+try {
+    final result = api_instance.userUserinfoGet(body);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->userUserinfoGet: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **body** | **Object**|  | [optional] 
+
+### Return type
+
+[**UserDto**](UserDto.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

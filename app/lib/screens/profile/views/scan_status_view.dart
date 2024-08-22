@@ -1,7 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
-import 'package:omnigram/utils/l10n.dart';
+import 'package:omnigram/utils/localization.service.dart';
 
 import '../providers/scan_status.dart';
 
@@ -31,7 +32,7 @@ class ScanStatusView extends HookConsumerWidget {
               children: [
                 ListTile(
                   // dense: true,
-                  title: Text(context.l10n.useage),
+                  title: Text('usage'.tr()),
                   trailing: status.running
                       ? IconButton(
                           onPressed: () {

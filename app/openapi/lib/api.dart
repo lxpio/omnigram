@@ -30,10 +30,10 @@ part 'auth/http_bearer_auth.dart';
 
 part 'api/default_api.dart';
 
+part 'model/access_token_dto.dart';
 part 'model/admin_accounts_get200_response.dart';
 part 'model/apikey_dto.dart';
 part 'model/auth_accounts_account_id_apikeys_post_request.dart';
-part 'model/auth_login_post_request.dart';
 part 'model/change_password_dto.dart';
 part 'model/create_user_dto.dart';
 part 'model/ebook_dto.dart';
@@ -49,6 +49,7 @@ part 'model/scan_stats_dto.dart';
 part 'model/speaker_dto.dart';
 part 'model/speaker_list_dto.dart';
 part 'model/sys_info_dto.dart';
+part 'model/sys_ping_get200_response.dart';
 part 'model/user_dto.dart';
 
 

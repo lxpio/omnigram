@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/utils/constants.dart';
-import 'package:omnigram/utils/l10n.dart';
+import 'package:omnigram/utils/localization.service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'conversation_view.dart';
 import '../provider/conversation_list.dart';

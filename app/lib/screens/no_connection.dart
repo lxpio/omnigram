@@ -1,10 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
 import 'package:omnigram/providers/user/user_model.dart';
 import 'package:omnigram/utils/constants.dart';
-import 'package:omnigram/utils/l10n.dart';
 
 class NoConnectionScreen extends ConsumerWidget {
   const NoConnectionScreen({required this.onRefresh, super.key});
@@ -45,12 +45,12 @@ class NoConnectionScreen extends ConsumerWidget {
                 // mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    context.l10n.ooops,
+                    'ooops'.tr(),
                     style: Theme.of(context).textTheme.headlineLarge,
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    context.l10n.no_internet,
+                    'no_internet'.tr(),
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
@@ -61,7 +61,7 @@ class NoConnectionScreen extends ConsumerWidget {
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         minimumSize: const Size.fromHeight(45)),
                     child: Text(
-                      context.l10n.try_again,
+                      'try_again'.tr(),
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.onPrimary),
                     ),
@@ -76,7 +76,7 @@ class NoConnectionScreen extends ConsumerWidget {
                           context.goNamed(kLoginPage);
                         },
                         child: Text(
-                          context.l10n.config_server,
+                          'config_server'.tr(),
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall!

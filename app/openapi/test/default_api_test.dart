@@ -93,7 +93,7 @@ void main() {
     //
     // 用户登录接口，认证成功以后返回200 ok ，并set-cookie 
     //
-    //Future<RespDto> authLoginPost({ AuthLoginPostRequest authLoginPostRequest }) async
+    //Future<RespDto> authLoginPost({ LoginCredentialDto loginCredentialDto }) async
     test('test authLoginPost', () async {
       // TODO
     });
@@ -107,12 +107,30 @@ void main() {
       // TODO
     });
 
+    // 获取访问token
+    //
+    // 
+    //
+    //Future<AccessTokenDto> authTokenPost({ LoginCredentialDto loginCredentialDto }) async
+    test('test authTokenPost', () async {
+      // TODO
+    });
+
     // 获取书籍封面图片
     //
     // 
     //
     //Future<Object> imgReaderCoversBookIdGet(String bookId) async
     test('test imgReaderCoversBookIdGet', () async {
+      // TODO
+    });
+
+    // 文字转语音
+    //
+    // 
+    //
+    //Future<Object> m4tTtsSimplePost({ M4tTtsStreamPostRequest m4tTtsStreamPostRequest }) async
+    test('test m4tTtsSimplePost', () async {
       // TODO
     });
 
@@ -242,6 +260,15 @@ void main() {
       // TODO
     });
 
+    // 系统心跳
+    //
+    // 获取当前系统后台信息（管理员权限）
+    //
+    //Future<SysPingGet200Response> sysPingGet() async
+    test('test sysPingGet', () async {
+      // TODO
+    });
+
     // 启动扫描
     //
     // 启动扫描目录（管理员权限）
@@ -266,6 +293,15 @@ void main() {
     //
     //Future<ScanStatsDto> sysScanStopPost() async
     test('test sysScanStopPost', () async {
+      // TODO
+    });
+
+    // 当前用户信息
+    //
+    // 
+    //
+    //Future<UserDto> userUserinfoGet({ Object body }) async
+    test('test userUserinfoGet', () async {
       // TODO
     });
 

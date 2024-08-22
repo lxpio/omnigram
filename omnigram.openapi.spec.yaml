@@ -10,83 +10,542 @@ tags:
   - name: 系统管理
   - name: 语音服务
 paths:
-  /m4t/tts/speakers:
-    get:
-      summary: 获取声音列表
+  /auth/login:
+    post:
+      summary: 用户登录
+      deprecated: false
+      description: '用户登录接口，认证成功以后返回200 ok ，并set-cookie '
+      tags:
+        - 登录认证
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: &ref_2
+              $ref: '#/components/schemas/login_credential_dto'
+            example:
+              account: ue$dB
+              password: B60R
+      responses:
+        '200':
+          description: 登陆成功
+          content:
+            application/json:
+              schema: &ref_0
+                $ref: '#/components/schemas/resp_dto'
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    code: 200
+                    message: success
+          headers: {}
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_0
+              examples:
+                '1':
+                  summary: 异常示例
+                  value:
+                    code: 9870
+                    message: >-
+                      Xtitxt riewv svrvbdo fwiimpniv hsogyj pbbfj bgnxnnjv
+                      rxybxif yzzqvjtu mpyeehlxmy vfekconbb cnnhvcwecc brmqfyha
+                      xurvcwo uiqtytp slogniypz.
+          headers: {}
+      security: []
+  /auth/accounts/{account_id}/reset:
+    post:
+      summary: 重置账号密码
       deprecated: false
       description: ''
       tags:
-        - 语音服务
+        - 登录认证
+      parameters:
+        - name: account_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                new_password:
+                  type: string
+                  title: 新密码
+                  description: 新密码
+                code:
+                  type: string
+                  title: 授权code
+                  description: 重置密码需要额外验证获取操作code
+              required:
+                - new_password
+                - code
+              $ref: '#/components/schemas/change_password_dto'
+            example:
+              id: 100
+              new_password: xgfagag
+              code: ''
+      responses:
+        '200':
+          description: 重置密码成功
+          content:
+            application/json:
+              schema: *ref_0
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    code: 42
+                    message: ad ullamco in
+          headers: {}
+      security: []
+  /auth/logout:
+    post:
+      summary: 用户登出
+      deprecated: false
+      description: 用户登出接口，将清理 cookie
+      tags:
+        - 登录认证
       parameters: []
       responses:
         '200':
-          description: 成功
+          description: 登出成功
+          content:
+            application/json:
+              schema: *ref_0
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    code: 200
+                    message: success
+          headers: {}
+      security: []
+  /auth/accounts/{account_id}/apikeys:
+    post:
+      summary: 创建API Key
+      deprecated: false
+      description: ''
+      tags:
+        - 登录认证
+      parameters:
+        - name: account_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: 名称
+                  description: 用于标记用途
+              required:
+                - name
+      responses:
+        '200':
+          description: 返回创建后的API key
+          content:
+            application/json:
+              schema: &ref_1
+                $ref: '#/components/schemas/apikey_dto'
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    name: 书革保极
+                    apikey: Lorem
+                    ctime: 1712524037540
+                '2':
+                  summary: 异常示例
+                  value:
+                    code: 403
+                    message: create error
+          headers: {}
+      security: []
+    get:
+      summary: 获取API Key列表
+      deprecated: false
+      description: ''
+      tags:
+        - 登录认证
+      parameters:
+        - name: account_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 返回API key 列表，这里返回的是所有的数据
           content:
             application/json:
               schema:
+                type: array
+                items: *ref_1
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    - name: 海儿式自非
+                      apikey: esse
+                      ctime: 115340786989
+                    - name: 况精号可
+                      apikey: voluptate laboris dolor pariatur
+                      ctime: 1353702831237
+                '2':
+                  summary: 异常示例
+                  value:
+                    code: 403
+                    message: create error
+          headers: {}
+      security: []
+  /auth/accounts/{account_id}/apikeys/{key_id}:
+    delete:
+      summary: 删除API Key
+      deprecated: false
+      description: ''
+      tags:
+        - 登录认证
+      parameters:
+        - name: account_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: key_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 删除成功
+          content:
+            application/json:
+              schema: *ref_0
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    code: 200
+                    message: ad ullamco in
+          headers: {}
+      security: []
+  /auth/token:
+    post:
+      summary: 获取访问token
+      deprecated: false
+      description: ''
+      tags:
+        - 登录认证
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: *ref_2
+      responses:
+        '200':
+          description: 登陆成功，返回访问access token
+          content:
+            application/json:
+              schema:
+                properties:
+                  token_type:
+                    type: string
+                  expired_in:
+                    type: integer
+                  refresh_token:
+                    type: string
+                  access_token:
+                    type: string
+                required:
+                  - token_type
+                  - expired_in
+                  - refresh_token
+                  - access_token
+                $ref: '#/components/schemas/access_token_dto'
+          headers: {}
+      security: []
+  /admin/accounts:
+    get:
+      summary: 获取用户列表
+      deprecated: false
+      description: ''
+      tags:
+        - 用户管理
+      parameters:
+        - name: search
+          in: query
+          description: 模糊搜索
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: 邮箱
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: 用户名
+          required: false
+          example: user1
+          schema:
+            type: string
+        - name: page_num
+          in: query
+          description: 页码
+          required: false
+          schema:
+            type: integer
+        - name: page_size
+          in: query
+          description: 每页大小
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 响应用户列表数据，total为该过滤条件下所有的数据
+          content:
+            application/json:
+              schema:
+                type: object
                 properties:
                   total:
                     type: integer
                   items:
                     type: array
-                    items:
-                      $ref: '#/definitions/115194146'
+                    items: &ref_3
+                      $ref: '#/components/schemas/user_dto'
+                  page_num:
+                    type: integer
+                  page_size:
+                    type: integer
                 required:
                   - total
                   - items
-                $ref: '#/components/schemas/speaker_list_dto'
               examples:
                 '1':
                   summary: 成功示例
                   value:
                     total: 10
                     items:
-                      - id: 1000
-                        audio_id: female_0001
-                        demo_wav: /tts/speakers/0001/demo
-                        name: female1
-                        tag: normal
-                        avatar_url: /img/ava
+                      - id: 100
+                        email: l.blliu@jnfsbcpjvz.bb
+                        mobile: '18177469274'
+                        name: Timothy
+                        role_id: 13
+                        nick_name: 梁秀兰
+                        avatar_url: http://mfgc.ua/ordiwvk
+                        locked: false
+                        mfa_switch: 4539565661504226
+                        ctime: 1723798493
+                        utime: 1723798493
+                      - id: 200
+                        email: b.xkr@hhf.cz
+                        mobile: '18171361014'
+                        name: Ruth
+                        role_id: 17
+                        nick_name: 康涛
+                        avatar_url: http://jxfo.dz/nkomxj
+                        locked: false
+                        mfa_switch: 3120745005090837
+                        ctime: 1723798493
+                        utime: 1723798493
+                    page_num: 65
+                    page_size: 95
+          headers: {}
       security: []
     post:
-      summary: 上传声音
+      summary: 创建账号
       deprecated: false
-      description: ''
+      description: 创建普通用户
       tags:
-        - 语音服务
+        - 用户管理
       parameters: []
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
-              type: object
               properties:
+                email:
+                  type: string
+                  title: 邮箱
+                  mock:
+                    mock: '@email'
+                mobile:
+                  type: string
+                  title: 手机
+                  mock:
+                    mock: '@phone'
                 name:
-                  description: 名称
-                  example: ''
                   type: string
-                wav:
-                  format: binary
+                  title: 用户名
+                  mock:
+                    mock: '@first'
+                password:
                   type: string
-                  description: 原始声音
-                  example: ''
+                  title: 验证密码
+              required:
+                - email
+                - name
+                - password
+              $ref: '#/components/schemas/create_user_dto'
+            example:
+              user_name: test1
+              email: email@test.com
+              password: testpaswd
       responses:
-        '200':
-          description: 成功
+        '201':
+          description: 创建账号成功
           content:
             application/json:
-              schema: &ref_7
-                $ref: '#/components/schemas/speaker_dto'
+              schema: *ref_3
               examples:
                 '1':
                   summary: 成功示例
                   value:
-                    id: 1000
-                    audio_id: female_0001
-                    demo_wav: /tts/speakers/0001/demo
-                    name: female1
-                    tag: normal
-                    avatar_url: /img/ava
+                    id: 400
+                    email: x.omkrkh@xqwbjyl.la
+                    mobile: '18133002145'
+                    name: Frank
+                    role_id: 18
+                    nick_name: 田涛
+                    avatar_url: http://qwdxz.so/suvkjjyau
+                    locked: true
+                    mfa_switch: 8054463667692446
+                    ctime: 1723798599
+                    utime: 1723798599
+          headers: {}
+      security: []
+  /admin/accounts/{account_id}:
+    delete:
+      summary: 删除账号
+      deprecated: false
+      description: ''
+      tags:
+        - 用户管理
+      parameters:
+        - name: account_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 删除账号成功
+          content:
+            application/json:
+              schema: *ref_0
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    code: 3557
+                    message: >-
+                      Qtqpgneky yrstcffei yinjrgontz dkplfw npcnbpr jjzwa rbsn
+                      cocgxo bil kufidv vivhq hkfdmoiqc eeccuggpaw.
+          headers: {}
+      security: []
+  /admin/accounts/{user_id}:
+    get:
+      summary: 获取用户信息
+      deprecated: false
+      description: ''
+      tags:
+        - 用户管理
+      parameters:
+        - name: user_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+      responses:
+        '200':
+          description: 响应用户数据
+          content:
+            application/json:
+              schema: *ref_3
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    id: 300
+                    email: j.xscimjyr@qcyfoqm.il
+                    mobile: '13766483797'
+                    name: Angela
+                    role_id: 15
+                    nick_name: 韩艳
+                    avatar_url: http://slla.no/taoshmuvh
+                    locked: true
+                    mfa_switch: 2226197361152325
+                    ctime: 1723798547
+                    utime: 1723798547
+          headers: {}
+      security: []
+  /user/userinfo:
+    get:
+      summary: 当前用户信息
+      deprecated: false
+      description: ''
+      tags:
+        - 用户管理
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+      responses:
+        '200':
+          description: 响应用户数据
+          content:
+            application/json:
+              schema: *ref_3
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    id: 300
+                    email: j.xscimjyr@qcyfoqm.il
+                    mobile: '13766483797'
+                    name: Angela
+                    role_id: 15
+                    nick_name: 韩艳
+                    avatar_url: http://slla.no/taoshmuvh
+                    locked: true
+                    mfa_switch: 2226197361152325
+                    ctime: 1723798547
+                    utime: 1723798547
+          headers: {}
       security: []
   /reader/index:
     get:
@@ -112,7 +571,7 @@ paths:
             type: number
       responses:
         '200':
-          description: 成功
+          description: 返回随机数据和最近阅读的书籍列表
           content:
             application/json:
               schema:
@@ -302,179 +761,7 @@ paths:
                         progress: 17
                         progress_index: 68
                         para_position: 8
-      security: []
-  /auth/login:
-    post:
-      summary: 用户登录
-      deprecated: false
-      description: '用户登录接口，认证成功以后返回200 ok ，并set-cookie '
-      tags:
-        - 登录认证
-      parameters: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: integer
-                  title: 用户ID
-                email:
-                  type: string
-                  title: 邮箱
-                mobile:
-                  type: string
-                  title: 手机
-                name:
-                  type: string
-                  title: 用户名
-                role_id:
-                  type: integer
-                  title: 角色ID
-                nick_name:
-                  type: string
-                  title: 昵称
-                avatar_url:
-                  type: string
-                  title: 头像
-                locked:
-                  type: boolean
-                  title: 是否锁定
-                mfa_switch:
-                  type: integer
-                  title: 多因素检验
-                ctime:
-                  type: integer
-                  title: 创建时间
-                utime:
-                  type: integer
-                  title: 更新时间
-                access_token:
-                  type: string
-                  title: 访问Token
-              required:
-                - access_token
-                - id
-                - name
-                - role_id
-                - locked
-                - mfa_switch
-                - ctime
-                - utime
-            example:
-              account: ue$dB
-              password: B60R
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema: &ref_0
-                $ref: '#/components/schemas/resp_dto'
-              examples:
-                '1':
-                  summary: 成功示例
-                  value:
-                    code: 200
-                    message: success
-        '400':
-          description: 请求有误
-          content:
-            application/json:
-              schema: *ref_0
-              examples:
-                '1':
-                  summary: 异常示例
-                  value:
-                    code: 9870
-                    message: >-
-                      Xtitxt riewv svrvbdo fwiimpniv hsogyj pbbfj bgnxnnjv
-                      rxybxif yzzqvjtu mpyeehlxmy vfekconbb cnnhvcwecc brmqfyha
-                      xurvcwo uiqtytp slogniypz.
-      security: []
-  /sys/info:
-    get:
-      summary: 获取系统信息
-      deprecated: false
-      description: 获取当前系统后台信息（管理员权限）
-      tags:
-        - 系统管理
-      parameters: []
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema: &ref_1
-                properties:
-                  version:
-                    type: string
-                    title: 服务版本
-                  system:
-                    type: string
-                    title: 服务系统
-                  architecture:
-                    type: string
-                    title: 服务构架
-                  docs_data_path:
-                    type: string
-                    title: 数据存储目录
-                  disk_usage:
-                    type: string
-                    title: 磁盘使用
-                  m4t_support:
-                    type: boolean
-                    title: 支持语音
-                required:
-                  - version
-                  - system
-                  - architecture
-                  - docs_data_path
-                  - disk_usage
-                  - m4t_support
-                $ref: '#/components/schemas/sys_info_dto'
-              examples:
-                '1':
-                  summary: 成功示例
-                  value:
-                    version: 0.0.1
-                    system: Linux
-                    architecture: AMD64
-                    docs_data_path: /data
-                    disk_usage: 10/100T
-                    m4t_support: true
-      security: []
-    put:
-      summary: 修改系统信息
-      deprecated: false
-      description: ''
-      tags:
-        - 系统管理
-      parameters: []
-      requestBody:
-        content:
-          application/json:
-            schema: *ref_1
-            example:
-              version: 0.0.1
-              system: Linux
-              architecture: AMD64
-              docs_data_path: /data
-              disk_usage: 10/100T
-              m4t_support: true
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema: *ref_1
-              examples:
-                '1':
-                  summary: 成功示例
-                  value:
-                    code: 200
-                    message: ok
+          headers: {}
       security: []
   /reader/books:
     get:
@@ -517,10 +804,10 @@ paths:
             type: string
       responses:
         '200':
-          description: 成功
+          description: 获取书籍列表
           content:
             application/json:
-              schema: &ref_3
+              schema: &ref_4
                 $ref: '#/components/schemas/ebook_list_dto'
               examples:
                 '1':
@@ -558,160 +845,7 @@ paths:
                         progress: 3
                         progress_index: 12
                         para_position: 53
-      security: []
-  /admin/accounts:
-    get:
-      summary: 获取用户列表
-      deprecated: false
-      description: ''
-      tags:
-        - 用户管理
-      parameters:
-        - name: search
-          in: query
-          description: 模糊搜索
-          required: false
-          example: ''
-          schema:
-            type: string
-        - name: email
-          in: query
-          description: 邮箱
-          required: false
-          example: ''
-          schema:
-            type: string
-        - name: name
-          in: query
-          description: 用户名
-          required: false
-          example: user1
-          schema:
-            type: string
-        - name: page_num
-          in: query
-          description: 页码
-          required: false
-          schema:
-            type: integer
-        - name: page_size
-          in: query
-          description: 每页大小
-          required: false
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  total:
-                    type: integer
-                  items:
-                    type: array
-                    items: &ref_2
-                      $ref: '#/components/schemas/user_dto'
-                  page_num:
-                    type: integer
-                  page_size:
-                    type: integer
-                required:
-                  - total
-                  - items
-              examples:
-                '1':
-                  summary: 成功示例
-                  value:
-                    total: 10
-                    items:
-                      - id: 100
-                        email: l.blliu@jnfsbcpjvz.bb
-                        mobile: '18177469274'
-                        name: Timothy
-                        role_id: 13
-                        nick_name: 梁秀兰
-                        avatar_url: http://mfgc.ua/ordiwvk
-                        locked: false
-                        mfa_switch: 4539565661504226
-                        ctime: 1723798493
-                        utime: 1723798493
-                      - id: 200
-                        email: b.xkr@hhf.cz
-                        mobile: '18171361014'
-                        name: Ruth
-                        role_id: 17
-                        nick_name: 康涛
-                        avatar_url: http://jxfo.dz/nkomxj
-                        locked: false
-                        mfa_switch: 3120745005090837
-                        ctime: 1723798493
-                        utime: 1723798493
-                    page_num: 65
-                    page_size: 95
-      security: []
-    post:
-      summary: 创建账号
-      deprecated: false
-      description: 创建普通用户
-      tags:
-        - 用户管理
-      parameters: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                email:
-                  type: string
-                  title: 邮箱
-                  mock:
-                    mock: '@email'
-                mobile:
-                  type: string
-                  title: 手机
-                  mock:
-                    mock: '@phone'
-                name:
-                  type: string
-                  title: 用户名
-                  mock:
-                    mock: '@first'
-                password:
-                  type: string
-                  title: 验证密码
-              required:
-                - email
-                - name
-                - password
-              $ref: '#/components/schemas/create_user_dto'
-            example:
-              user_name: test1
-              email: email@test.com
-              password: testpaswd
-      responses:
-        '201':
-          description: 成功
-          content:
-            application/json:
-              schema: *ref_2
-              examples:
-                '1':
-                  summary: 成功示例
-                  value:
-                    id: 400
-                    email: x.omkrkh@xqwbjyl.la
-                    mobile: '18133002145'
-                    name: Frank
-                    role_id: 18
-                    nick_name: 田涛
-                    avatar_url: http://qwdxz.so/suvkjjyau
-                    locked: true
-                    mfa_switch: 8054463667692446
-                    ctime: 1723798599
-                    utime: 1723798599
+          headers: {}
       security: []
   /reader/recent:
     get:
@@ -754,10 +888,10 @@ paths:
             type: string
       responses:
         '200':
-          description: 成功
+          description: 最近阅读列表
           content:
             application/json:
-              schema: *ref_3
+              schema: *ref_4
               examples:
                 '1':
                   summary: 成功示例
@@ -793,79 +927,7 @@ paths:
                         progress: 34
                         progress_index: 68
                         para_position: 1
-      security: []
-  /m4t/tts/stream:
-    post:
-      summary: 文字转语音接口
-      deprecated: false
-      description: ''
-      tags:
-        - 语音服务
-      parameters: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                text:
-                  type: string
-                lang:
-                  type: string
-                audio_id:
-                  type: string
-                format:
-                  type: string
-                stream:
-                  type: boolean
-              required:
-                - text
-                - lang
-                - audio_id
-                - format
-                - stream
-            example:
-              text: hello world
-              lang: en
-              audio_id: female_0001
-              format: wav
-              stream: true
-      responses:
-        '200':
-          description: 成功
-          content:
-            text/event-stream:
-              schema:
-                type: object
-                properties: {}
-      security: []
-  /sys/scan/status:
-    get:
-      summary: 获取当前扫描状态
-      deprecated: false
-      description: ''
-      tags:
-        - 系统管理
-      parameters: []
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema: &ref_4
-                $ref: '#/components/schemas/scan_stats_dto'
-              examples:
-                '1':
-                  summary: 成功示例
-                  value:
-                    total: 31
-                    running: true
-                    scan_count: 2
-                    errs:
-                      - laborum magna
-                    disk_usage: 44
-                    epub_count: 98
-                    pdf_count: 43
+          headers: {}
       security: []
   /reader/fav:
     get:
@@ -908,10 +970,10 @@ paths:
             type: string
       responses:
         '200':
-          description: 成功
+          description: 书籍列表
           content:
             application/json:
-              schema: *ref_3
+              schema: *ref_4
               examples:
                 '1':
                   summary: 成功示例
@@ -947,79 +1009,7 @@ paths:
                         progress: 48
                         progress_index: 4
                         para_position: 24
-      security: []
-  /sys/scan/run:
-    post:
-      summary: 启动扫描
-      deprecated: false
-      description: 启动扫描目录（管理员权限）
-      tags:
-        - 系统管理
-      parameters: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                refresh:
-                  type: boolean
-                  title: 重新刷新扫描
-                  description: 从头开始扫描
-                max_thread:
-                  type: number
-                  title: 最大线程
-                  description: 扫描线程数量
-              required:
-                - refresh
-                - max_thread
-              $ref: '#/components/schemas/enable_scan_dto'
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema: *ref_4
-              examples:
-                '1':
-                  summary: 成功示例
-                  value:
-                    total: 10
-                    running: false
-                    scan_count: 100
-                    errs:
-                      - Duis
-                    disk_usage: 10
-                    epub_count: 6
-                    pdf_count: 46
-      security: []
-  /admin/accounts/{account_id}:
-    delete:
-      summary: 删除账号
-      deprecated: false
-      description: ''
-      tags:
-        - 用户管理
-      parameters:
-        - name: account_id
-          in: path
-          description: ''
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema: *ref_0
-              examples:
-                '1':
-                  summary: 成功示例
-                  value:
-                    code: 3557
-                    message: >-
-                      Qtqpgneky yrstcffei yinjrgontz dkplfw npcnbpr jjzwa rbsn
-                      cocgxo bil kufidv vivhq hkfdmoiqc eeccuggpaw.
+          headers: {}
       security: []
   /reader/books/{book_id}:
     get:
@@ -1037,7 +1027,7 @@ paths:
             type: string
       responses:
         '200':
-          description: 成功
+          description: 数据详情
           content:
             application/json:
               schema: &ref_5
@@ -1081,6 +1071,7 @@ paths:
                           progress: 0.1
                           progress_index: 100
                           para_position: 100
+          headers: {}
       security: []
     put:
       summary: 修改书籍介绍信息
@@ -1178,7 +1169,7 @@ paths:
               publisher_url: https://example.com/publisher
       responses:
         '200':
-          description: 成功
+          description: 获取书面详情
           content:
             application/json:
               schema: *ref_5
@@ -1221,81 +1212,7 @@ paths:
                           progress: 0.1
                           progress_index: 100
                           para_position: 100
-      security: []
-  /sys/scan/stop:
-    post:
-      summary: 停止扫描
-      deprecated: false
-      description: 停止扫描目录（管理员权限）
-      tags:
-        - 系统管理
-      parameters: []
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema: *ref_4
-              examples:
-                '1':
-                  summary: 成功示例
-                  value:
-                    total: 77
-                    running: false
-                    scan_count: 29
-                    errs:
-                      - cillum dolore
-                    disk_usage: 22
-                    epub_count: 46
-                    pdf_count: 4
-      security: []
-  /auth/accounts/{account_id}/reset:
-    post:
-      summary: 重置账号密码
-      deprecated: false
-      description: ''
-      tags:
-        - 登录认证
-      parameters:
-        - name: account_id
-          in: path
-          description: ''
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                new_password:
-                  type: string
-                  title: 新密码
-                  description: 新密码
-                code:
-                  type: string
-                  title: 授权code
-                  description: 重置密码需要额外验证获取操作code
-              required:
-                - new_password
-                - code
-              $ref: '#/components/schemas/change_password_dto'
-            example:
-              id: 100
-              new_password: xgfagag
-              code: ''
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema: *ref_0
-              examples:
-                '1':
-                  summary: 成功示例
-                  value:
-                    code: 42
-                    message: ad ullamco in
+          headers: {}
       security: []
   /reader/upload:
     post:
@@ -1313,7 +1230,7 @@ paths:
               format: binary
       responses:
         '200':
-          description: 成功
+          description: 上传书
           content:
             application/json:
               schema: *ref_5
@@ -1352,6 +1269,7 @@ paths:
                     progress: 53
                     progress_index: 22
                     para_position: 75
+          headers: {}
       security: []
   /reader/download/books/{book_id}:
     get:
@@ -1369,158 +1287,13 @@ paths:
             type: string
       responses:
         '200':
-          description: 成功
+          description: 下载书
           content:
             '*/*':
               schema:
                 type: object
                 properties: {}
-      security: []
-  /admin/accounts/{user_id}:
-    get:
-      summary: 获取用户信息
-      deprecated: false
-      description: ''
-      tags:
-        - 用户管理
-      parameters:
-        - name: user_id
-          in: path
-          description: ''
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties: {}
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema: *ref_2
-              examples:
-                '1':
-                  summary: 成功示例
-                  value:
-                    id: 300
-                    email: j.xscimjyr@qcyfoqm.il
-                    mobile: '13766483797'
-                    name: Angela
-                    role_id: 15
-                    nick_name: 韩艳
-                    avatar_url: http://slla.no/taoshmuvh
-                    locked: true
-                    mfa_switch: 2226197361152325
-                    ctime: 1723798547
-                    utime: 1723798547
-      security: []
-  /auth/logout:
-    post:
-      summary: 用户登出
-      deprecated: false
-      description: 用户登出接口，将清理 cookie
-      tags:
-        - 登录认证
-      parameters: []
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema: *ref_0
-              examples:
-                '1':
-                  summary: 成功示例
-                  value:
-                    code: 200
-                    message: success
-      security: []
-  /auth/accounts/{account_id}/apikeys:
-    post:
-      summary: 创建API Key
-      deprecated: false
-      description: ''
-      tags:
-        - 登录认证
-      parameters:
-        - name: account_id
-          in: path
-          description: ''
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  title: 名称
-                  description: 用于标记用途
-              required:
-                - name
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema: &ref_6
-                $ref: '#/components/schemas/apikey_dto'
-              examples:
-                '1':
-                  summary: 成功示例
-                  value:
-                    name: 书革保极
-                    apikey: Lorem
-                    ctime: 1712524037540
-                '2':
-                  summary: 异常示例
-                  value:
-                    code: 403
-                    message: create error
-      security: []
-    get:
-      summary: 获取API Key列表
-      deprecated: false
-      description: ''
-      tags:
-        - 登录认证
-      parameters:
-        - name: account_id
-          in: path
-          description: ''
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                type: array
-                items: *ref_6
-              examples:
-                '1':
-                  summary: 成功示例
-                  value:
-                    - name: 海儿式自非
-                      apikey: esse
-                      ctime: 115340786989
-                    - name: 况精号可
-                      apikey: voluptate laboris dolor pariatur
-                      ctime: 1353702831237
-                '2':
-                  summary: 异常示例
-                  value:
-                    code: 403
-                    message: create error
+          headers: {}
       security: []
   /img/reader/covers/{book_id}:
     get:
@@ -1538,45 +1311,13 @@ paths:
             type: string
       responses:
         '200':
-          description: 成功
+          description: 封面图片
           content:
             '*/*':
               schema:
                 type: object
                 properties: {}
-      security: []
-  /auth/accounts/{account_id}/apikeys/{key_id}:
-    delete:
-      summary: 删除API Key
-      deprecated: false
-      description: ''
-      tags:
-        - 登录认证
-      parameters:
-        - name: account_id
-          in: path
-          description: ''
-          required: true
-          schema:
-            type: string
-        - name: key_id
-          in: path
-          description: ''
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema: *ref_0
-              examples:
-                '1':
-                  summary: 成功示例
-                  value:
-                    code: 200
-                    message: ad ullamco in
+          headers: {}
       security: []
   /reader/stats:
     get:
@@ -1588,7 +1329,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: 成功
+          description: 阅读统计数据
           content:
             application/json:
               schema:
@@ -1619,220 +1360,461 @@ paths:
                     authors: 48
                     publisher: 23
                     tags: 87
+          headers: {}
+      security: []
+  /sys/info:
+    get:
+      summary: 获取系统信息
+      deprecated: false
+      description: 获取当前系统后台信息（管理员权限）
+      tags:
+        - 系统管理
+      parameters: []
+      responses:
+        '200':
+          description: 系统信息详情
+          content:
+            application/json:
+              schema: &ref_6
+                properties:
+                  version:
+                    type: string
+                    title: 服务版本
+                  system:
+                    type: string
+                    title: 服务系统
+                  architecture:
+                    type: string
+                    title: 服务构架
+                  docs_data_path:
+                    type: string
+                    title: 数据存储目录
+                  disk_usage:
+                    type: string
+                    title: 磁盘使用
+                  m4t_support:
+                    type: boolean
+                    title: 支持语音
+                required:
+                  - version
+                  - system
+                  - architecture
+                  - docs_data_path
+                  - disk_usage
+                  - m4t_support
+                $ref: '#/components/schemas/sys_info_dto'
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    version: 0.0.1
+                    system: Linux
+                    architecture: AMD64
+                    docs_data_path: /data
+                    disk_usage: 10/100T
+                    m4t_support: true
+          headers: {}
+      security: []
+    put:
+      summary: 修改系统信息
+      deprecated: false
+      description: ''
+      tags:
+        - 系统管理
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: *ref_6
+            example:
+              version: 0.0.1
+              system: Linux
+              architecture: AMD64
+              docs_data_path: /data
+              disk_usage: 10/100T
+              m4t_support: true
+      responses:
+        '200':
+          description: 修改后的详情
+          content:
+            application/json:
+              schema: *ref_6
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    code: 200
+                    message: ok
+          headers: {}
+      security: []
+  /sys/ping:
+    get:
+      summary: 系统心跳
+      deprecated: false
+      description: 获取当前系统后台信息（管理员权限）
+      tags:
+        - 系统管理
+      parameters: []
+      responses:
+        '200':
+          description: 系统信息详情
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    title: 版本
+                    description: 服务器版本
+                required:
+                  - version
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    version: 0.0.1
+                    system: Linux
+                    architecture: AMD64
+                    docs_data_path: /data
+                    disk_usage: 10/100T
+                    m4t_support: true
+          headers: {}
+      security: []
+  /sys/scan/status:
+    get:
+      summary: 获取当前扫描状态
+      deprecated: false
+      description: ''
+      tags:
+        - 系统管理
+      parameters: []
+      responses:
+        '200':
+          description: 当前扫描状态
+          content:
+            application/json:
+              schema: &ref_7
+                $ref: '#/components/schemas/scan_stats_dto'
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    total: 31
+                    running: true
+                    scan_count: 2
+                    errs:
+                      - laborum magna
+                    disk_usage: 44
+                    epub_count: 98
+                    pdf_count: 43
+          headers: {}
+      security: []
+  /sys/scan/run:
+    post:
+      summary: 启动扫描
+      deprecated: false
+      description: 启动扫描目录（管理员权限）
+      tags:
+        - 系统管理
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                refresh:
+                  type: boolean
+                  title: 重新刷新扫描
+                  description: 从头开始扫描
+                max_thread:
+                  type: number
+                  title: 最大线程
+                  description: 扫描线程数量
+              required:
+                - refresh
+                - max_thread
+              $ref: '#/components/schemas/enable_scan_dto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_7
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    total: 10
+                    running: false
+                    scan_count: 100
+                    errs:
+                      - Duis
+                    disk_usage: 10
+                    epub_count: 6
+                    pdf_count: 46
+          headers: {}
+      security: []
+  /sys/scan/stop:
+    post:
+      summary: 停止扫描
+      deprecated: false
+      description: 停止扫描目录（管理员权限）
+      tags:
+        - 系统管理
+      parameters: []
+      responses:
+        '200':
+          description: 当前状态
+          content:
+            application/json:
+              schema: *ref_7
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    total: 77
+                    running: false
+                    scan_count: 29
+                    errs:
+                      - cillum dolore
+                    disk_usage: 22
+                    epub_count: 46
+                    pdf_count: 4
+          headers: {}
+      security: []
+  /m4t/tts/speakers:
+    get:
+      summary: 获取声音列表
+      deprecated: false
+      description: ''
+      tags:
+        - 语音服务
+      parameters: []
+      responses:
+        '200':
+          description: 声音列表
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/definitions/115194146'
+                required:
+                  - total
+                  - items
+                $ref: '#/components/schemas/speaker_list_dto'
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    total: 10
+                    items:
+                      - id: 1000
+                        audio_id: female_0001
+                        demo_wav: /tts/speakers/0001/demo
+                        name: female1
+                        tag: normal
+                        avatar_url: /img/ava
+          headers: {}
+      security: []
+    post:
+      summary: 上传声音
+      deprecated: false
+      description: ''
+      tags:
+        - 语音服务
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: 名称
+                  example: ''
+                  type: string
+                wav:
+                  format: binary
+                  type: string
+                  description: 原始声音
+                  example: ''
+      responses:
+        '200':
+          description: 上传后id 记录
+          content:
+            application/json:
+              schema: &ref_8
+                $ref: '#/components/schemas/speaker_dto'
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    id: 1000
+                    audio_id: female_0001
+                    demo_wav: /tts/speakers/0001/demo
+                    name: female1
+                    tag: normal
+                    avatar_url: /img/ava
+          headers: {}
+      security: []
+  /m4t/tts/stream:
+    post:
+      summary: 文字转语音接口
+      deprecated: false
+      description: ''
+      tags:
+        - 语音服务
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                lang:
+                  type: string
+                audio_id:
+                  type: string
+                format:
+                  type: string
+                stream:
+                  type: boolean
+              required:
+                - text
+                - lang
+                - audio_id
+                - format
+                - stream
+            example:
+              text: hello world
+              lang: en
+              audio_id: female_0001
+              format: wav
+              stream: true
+      responses:
+        '200':
+          description: 数据流
+          content:
+            text/event-stream:
+              schema:
+                type: object
+                properties: {}
+          headers: {}
+      security: []
+  /m4t/tts/simple:
+    post:
+      summary: 文字转语音
+      deprecated: false
+      description: ''
+      tags:
+        - 语音服务
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                lang:
+                  type: string
+                audio_id:
+                  type: string
+                format:
+                  type: string
+                stream:
+                  type: boolean
+              required:
+                - text
+                - lang
+                - audio_id
+                - format
+                - stream
+            example:
+              text: hello world
+              lang: en
+              audio_id: female_0001
+              format: wav
+              stream: true
+      responses:
+        '200':
+          description: 数据wav格式
+          content:
+            audio/basic:
+              schema:
+                type: object
+                properties: {}
+          headers: {}
       security: []
 components:
   schemas:
-    speaker_list_dto:
-      type: object
-      properties:
-        total:
-          type: integer
-        items:
-          type: array
-          items: *ref_7
-      required:
-        - total
-        - items
-    speaker_dto:
+    user_dto:
       type: object
       properties:
         id:
           type: integer
-        audio_id:
-          type: string
-        demo_wav:
-          type: string
-        name:
-          type: string
-        tag:
-          type: string
-        avatar_url:
-          type: string
-      required:
-        - id
-        - audio_id
-        - demo_wav
-        - name
-    ebook_list_dto:
-      type: object
-      properties:
-        total:
-          type: integer
-        items:
-          type: array
-          items: *ref_5
-      required:
-        - total
-        - items
-    ebook_index_dto:
-      type: object
-      properties:
-        random:
-          type: array
-          items: *ref_5
-        recent:
-          type: array
-          items: *ref_5
-      required:
-        - random
-        - recent
-    enable_scan_dto:
-      type: object
-      properties:
-        refresh:
-          type: boolean
-          title: 重新刷新扫描
-          description: 从头开始扫描
-        max_thread:
-          type: number
-          title: 最大线程
-          description: 扫描线程数量
-      required:
-        - refresh
-        - max_thread
-    sys_info_dto:
-      type: object
-      properties:
-        version:
-          type: string
-          title: 服务版本
-        system:
-          type: string
-          title: 服务系统
-        architecture:
-          type: string
-          title: 服务构架
-        docs_data_path:
-          type: string
-          title: 数据存储目录
-        disk_usage:
-          type: string
-          title: 磁盘使用
-        m4t_support:
-          type: boolean
-          title: 支持语音
-      required:
-        - version
-        - system
-        - architecture
-        - docs_data_path
-        - m4t_support
-    reader_stats_dto:
-      type: object
-      properties:
-        total:
-          type: integer
-          title: 总数
-        authors:
-          type: integer
-          title: 作者数
-        publisher:
-          type: integer
-          title: 出版社数
-        tags:
-          type: integer
-          title: 标签数
-      required:
-        - total
-        - authors
-        - publisher
-        - tags
-    change_password_dto:
-      type: object
-      properties:
-        new_password:
-          type: string
-          title: 新密码
-          description: 新密码
-        code:
-          type: string
-          title: 授权code
-          description: 重置密码需要额外验证获取操作code
-      required:
-        - new_password
-        - code
-    create_user_dto:
-      type: object
-      properties:
-        name:
-          type: string
-          title: 用户名
+          title: 用户ID
         email:
           type: string
           title: 邮箱
         mobile:
           type: string
           title: 手机
-        password:
-          type: string
-          title: 验证密码
-      required:
-        - email
-        - name
-        - password
-    login_credential_dto:
-      type: object
-      properties:
-        account:
-          type: string
-          title: 登陆名
-          description: 账号名/邮箱/手机号
-        password:
-          type: string
-          title: 登陆凭证
-          description: 登陆凭证
-      required:
-        - account
-        - password
-    apikey_dto:
-      type: object
-      properties:
         name:
           type: string
-          title: 备注名
-        apikey:
+          title: 用户名
+        role_id:
+          type: integer
+          title: 角色ID
+        nick_name:
           type: string
-          title: apikey
+          title: 昵称
+        avatar_url:
+          type: string
+          title: 头像
+        locked:
+          type: boolean
+          title: 是否锁定
+        mfa_switch:
+          type: integer
+          title: 多因素检验
         ctime:
           type: integer
           title: 创建时间
+        utime:
+          type: integer
+          title: 更新时间
       required:
+        - id
         - name
-        - apikey
+        - role_id
         - ctime
-    scan_stats_dto:
+        - utime
+        - locked
+        - mfa_switch
+    resp_dto:
       type: object
       properties:
-        total:
+        code:
           type: integer
-          title: 扫描总数
-        running:
-          type: boolean
-          title: 运行状态
-        scan_count:
-          type: integer
-          title: 扫描数量
-        errs:
-          type: array
-          items:
-            type: string
-          title: 错误列表
-        disk_usage:
-          type: integer
-          title: 磁盘使用
-        epub_count:
-          type: integer
-          title: EPUB计数
-        pdf_count:
-          type: integer
-          title: PDF计数
+          title: 状态码
+          description: 错误码/响应码
+        message:
+          type: string
+          title: 信息
+          description: 一般信息/错误信息
       required:
-        - total
-        - running
-        - scan_count
-        - disk_usage
-        - epub_count
-        - pdf_count
+        - code
+        - message
     ebook_dto:
       type: object
       properties:
@@ -1923,63 +1905,232 @@ components:
         - id
         - title
         - identifier
-    resp_dto:
+    scan_stats_dto:
       type: object
       properties:
-        code:
+        total:
           type: integer
-          title: 状态码
-          description: 错误码/响应码
-        message:
-          type: string
-          title: 信息
-          description: 一般信息/错误信息
+          title: 扫描总数
+        running:
+          type: boolean
+          title: 运行状态
+        scan_count:
+          type: integer
+          title: 扫描数量
+        errs:
+          type: array
+          items:
+            type: string
+          title: 错误列表
+        disk_usage:
+          type: integer
+          title: 磁盘使用
+        epub_count:
+          type: integer
+          title: EPUB计数
+        pdf_count:
+          type: integer
+          title: PDF计数
       required:
-        - code
-        - message
-    user_dto:
+        - total
+        - running
+        - scan_count
+        - disk_usage
+        - epub_count
+        - pdf_count
+    apikey_dto:
       type: object
       properties:
-        id:
+        name:
+          type: string
+          title: 备注名
+        apikey:
+          type: string
+          title: apikey
+        ctime:
           type: integer
-          title: 用户ID
+          title: 创建时间
+      required:
+        - name
+        - apikey
+        - ctime
+    login_credential_dto:
+      type: object
+      properties:
+        account:
+          type: string
+          title: 登陆名
+          description: 账号名/邮箱/手机号
+        password:
+          type: string
+          title: 登陆凭证
+          description: 登陆凭证
+      required:
+        - account
+        - password
+    create_user_dto:
+      type: object
+      properties:
+        name:
+          type: string
+          title: 用户名
         email:
           type: string
           title: 邮箱
         mobile:
           type: string
           title: 手机
+        password:
+          type: string
+          title: 验证密码
+      required:
+        - email
+        - name
+        - password
+    change_password_dto:
+      type: object
+      properties:
+        new_password:
+          type: string
+          title: 新密码
+          description: 新密码
+        code:
+          type: string
+          title: 授权code
+          description: 重置密码需要额外验证获取操作code
+      required:
+        - new_password
+        - code
+    reader_stats_dto:
+      type: object
+      properties:
+        total:
+          type: integer
+          title: 总数
+        authors:
+          type: integer
+          title: 作者数
+        publisher:
+          type: integer
+          title: 出版社数
+        tags:
+          type: integer
+          title: 标签数
+      required:
+        - total
+        - authors
+        - publisher
+        - tags
+    sys_info_dto:
+      type: object
+      properties:
+        version:
+          type: string
+          title: 服务版本
+        system:
+          type: string
+          title: 服务系统
+        architecture:
+          type: string
+          title: 服务构架
+        docs_data_path:
+          type: string
+          title: 数据存储目录
+        disk_usage:
+          type: string
+          title: 磁盘使用
+        m4t_support:
+          type: boolean
+          title: 支持语音
+      required:
+        - version
+        - system
+        - architecture
+        - docs_data_path
+        - m4t_support
+    enable_scan_dto:
+      type: object
+      properties:
+        refresh:
+          type: boolean
+          title: 重新刷新扫描
+          description: 从头开始扫描
+        max_thread:
+          type: number
+          title: 最大线程
+          description: 扫描线程数量
+      required:
+        - refresh
+        - max_thread
+    ebook_index_dto:
+      type: object
+      properties:
+        random:
+          type: array
+          items: *ref_5
+        recent:
+          type: array
+          items: *ref_5
+      required:
+        - random
+        - recent
+    ebook_list_dto:
+      type: object
+      properties:
+        total:
+          type: integer
+        items:
+          type: array
+          items: *ref_5
+      required:
+        - total
+        - items
+    speaker_dto:
+      type: object
+      properties:
+        id:
+          type: integer
+        audio_id:
+          type: string
+        demo_wav:
+          type: string
         name:
           type: string
-          title: 用户名
-        role_id:
-          type: integer
-          title: 角色ID
-        nick_name:
+        tag:
           type: string
-          title: 昵称
         avatar_url:
           type: string
-          title: 头像
-        locked:
-          type: boolean
-          title: 是否锁定
-        mfa_switch:
-          type: integer
-          title: 多因素检验
-        ctime:
-          type: integer
-          title: 创建时间
-        utime:
-          type: integer
-          title: 更新时间
       required:
         - id
+        - audio_id
+        - demo_wav
         - name
-        - role_id
-        - ctime
-        - utime
-        - locked
-        - mfa_switch
+    speaker_list_dto:
+      type: object
+      properties:
+        total:
+          type: integer
+        items:
+          type: array
+          items: *ref_8
+      required:
+        - total
+        - items
+    access_token_dto:
+      type: object
+      properties:
+        token_type:
+          type: string
+        expired_in:
+          type: integer
+        refresh_token:
+          type: string
+        access_token:
+          type: string
+      required:
+        - token_type
+        - expired_in
+        - refresh_token
+        - access_token
   securitySchemes: {}
 servers: []

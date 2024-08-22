@@ -1,7 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/utils/l10n.dart';
+import 'package:omnigram/utils/localization.service.dart';
 import 'package:omnigram/utils/show_snackbar.dart';
 
 import '../models/conversation.dart';
@@ -65,7 +66,7 @@ class _ConversationWidgetState extends ConsumerState<ConversationWidget> {
                 backgroundColor: Theme.of(context).colorScheme.error,
                 foregroundColor: Colors.white,
                 icon: Icons.delete,
-                label: context.l10n.delete,
+                label: 'button_delete'.tr(),
                 onPressed: (BuildContext context) {
                   ref
                       .read(conversationListProvider.notifier)
@@ -73,13 +74,13 @@ class _ConversationWidgetState extends ConsumerState<ConversationWidget> {
                       .then((_) {
                     showSnackBar(
                         context,
-                        context.l10n.deleted(
-                            widget.conversation.name ?? 'Conversation'));
+                        context.tr('snack_bar_deleted',
+                            args: [widget.conversation.name ?? 'Conversation']));
                   }).onError((error, stackTrace) {
                     showSnackBar(
                         context,
-                        context.l10n.deleted_error(
-                            widget.conversation.name ?? 'Conversation'));
+                        context.tr('snack_bar_deleted_error',
+                            args: [widget.conversation.name ?? 'Conversation']));
                   });
                 },
               ),

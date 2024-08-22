@@ -182,14 +182,14 @@ class ApiClient {
           return valueString == 'true' || valueString == '1';
         case 'DateTime':
           return value is DateTime ? value : DateTime.tryParse(value);
+        case 'AccessTokenDto':
+          return AccessTokenDto.fromJson(value);
         case 'AdminAccountsGet200Response':
           return AdminAccountsGet200Response.fromJson(value);
         case 'ApikeyDto':
           return ApikeyDto.fromJson(value);
         case 'AuthAccountsAccountIdApikeysPostRequest':
           return AuthAccountsAccountIdApikeysPostRequest.fromJson(value);
-        case 'AuthLoginPostRequest':
-          return AuthLoginPostRequest.fromJson(value);
         case 'ChangePasswordDto':
           return ChangePasswordDto.fromJson(value);
         case 'CreateUserDto':
@@ -220,6 +220,8 @@ class ApiClient {
           return SpeakerListDto.fromJson(value);
         case 'SysInfoDto':
           return SysInfoDto.fromJson(value);
+        case 'SysPingGet200Response':
+          return SysPingGet200Response.fromJson(value);
         case 'UserDto':
           return UserDto.fromJson(value);
         default:

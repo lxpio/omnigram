@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -5,7 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/screens/chat/views/input_view.dart';
 import 'package:omnigram/providers/openai/chat/enum.dart';
 
-import 'package:omnigram/utils/l10n.dart';
+import 'package:omnigram/utils/localization.service.dart';
 
 import 'models/conversation.dart';
 import 'models/message.dart';
@@ -55,7 +56,7 @@ class _ChatPageScreenState extends ConsumerState<ChatPageScreen> {
           },
         ),
         title: Text(
-          widget.conversation.displayName ?? context.l10n.new_chat,
+          widget.conversation.displayName ?? 'new_chat'.tr(), //TODO
         ),
         centerTitle: true,
         titleSpacing: 0,

@@ -10,9 +10,6 @@ import '../models/app_config_model.dart';
 
 part 'provider.g.dart';
 
-final themeModeProvider = Provider<ThemeMode>((ref) {
-  return ThemeMode.system;
-});
 
 @Riverpod(keepAlive: true)
 class AppConfig extends _$AppConfig {

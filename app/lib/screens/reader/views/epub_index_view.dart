@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/screens/no_connection.dart';
 import 'package:omnigram/screens/reader/providers/books.dart';
 import 'package:omnigram/screens/reader/views/book_group_view.dart';
-import 'package:omnigram/utils/l10n.dart';
 
 class EpubIndexView extends StatefulHookConsumerWidget {
   const EpubIndexView({super.key});
@@ -28,11 +28,11 @@ class _EpubIndexViewState extends ConsumerState<EpubIndexView> {
             controller: _controllerOne,
             children: <Widget>[
               BookGroup(
-                  context.l10n.keepreading, context.l10n.viewmore, nav.reading),
+                  'keepreading'.tr(), 'viewmore'.tr(), nav.reading),
               BookGroup(
-                  context.l10n.recentbooks, context.l10n.viewmore, nav.recent),
+                  'recentbooks'.tr(), 'viewmore'.tr(), nav.recent),
               BookGroup(
-                  context.l10n.randombooks, context.l10n.viewmore, nav.random),
+                  'randombooks'.tr(), 'viewmore'.tr(), nav.random),
             ],
           ),
         );
