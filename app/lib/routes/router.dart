@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/components/root_layout.dart';
+import 'package:omnigram/providers/auth.provider.dart';
 import 'package:omnigram/providers/user/user_model.dart';
 import 'package:omnigram/screens/discover/discover_small_screen.dart';
 
@@ -13,6 +14,7 @@ import 'package:omnigram/screens/profile/profile_mobile_screen.dart';
 import 'package:omnigram/screens/reader/models/book_model.dart';
 import 'package:omnigram/screens/reader/read_epub_screen.dart';
 import 'package:omnigram/screens/reader/reader_mobile_screen.dart';
+import 'package:omnigram/screens/splash_screen.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:go_router/go_router.dart';
 
@@ -21,14 +23,30 @@ import '../screens/home/home_small_screen.dart';
 import '../screens/login_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
-  final isAuth = ref.watch(userProvider).logined;
+
+  // final isAuth = ref.read(authProvider.select((value) => value.isAuthenticated));
+
+  
+
+  // final user = ref.watch(authProvider.select((value) => value.user));
+
+ 
+  // final user = ref.watch(authProvider.select((value) => value.user));
+
 
   return GoRouter(
     // navigatorKey: _key,
     debugLogDiagnostics: true,
-    initialLocation: kHomePath,
+    initialLocation: kSplashPath,
     // initialLocation: '$kChatPath/$kChatPagePath',
     routes: [
+      GoRoute(
+        path: kSplashPath,
+        name: kSplashPage,
+        builder: (context, state) {
+          return const SplashScreen();
+        },
+      ),
       GoRoute(
         path: kLoginPath,
         name: kLoginPage,
@@ -134,28 +152,28 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         ),
       ),
     ],
-    redirect: (context, state) {
-      // If our async state is loading, don't perform redirects, yet
-      // if (authState.isLoading || authState.hasError) return null;
+    // redirect: (context, state) {
+    //   // If our async state is loading, don't perform redirects, yet
+    //   // if (authState.isLoading || authState.hasError) return null;
 
-      // // Here we guarantee that hasData == true, i.e. we have a readable value
+    //   // // Here we guarantee that hasData == true, i.e. we have a readable value
 
-      // // This has to do with how the FirebaseAuth SDK handles the "log-in" state
-      // // Returning `null` means "we are not authorized"
-      // final isAuth = authState.valueOrNull != null;
+    //   // // This has to do with how the FirebaseAuth SDK handles the "log-in" state
+    //   // // Returning `null` means "we are not authorized"
+    //   // final isAuth = authState.valueOrNull != null;
 
-      final isSplash = state.fullPath == kSplashPath;
+    //   final isSplash = state.fullPath == kSplashPath;
 
-      if (isSplash) {
-        return isAuth ? kHomePath : kLoginPath;
-      }
+    //   if (isSplash) {
+    //     return isAuth ? kHomePath : kLoginPath;
+    //   }
 
-      final isLoggingIn = state.fullPath == kLoginPath;
-      if (isLoggingIn) return isAuth ? kHomePath : null;
+    //   final isLoggingIn = state.fullPath == kLoginPath;
+    //   if (isLoggingIn) return isAuth ? kHomePath : null;
 
-      // return isAuth ? null : SplashPage.routeLocation;
-      // return kHomePath;
-      return isAuth ? null : kLoginPath;
-    },
+    //   // return isAuth ? null : SplashPage.routeLocation;
+    //   // return kHomePath;
+    //   return isAuth ? null : kLoginPath;
+    // },
   );
 });

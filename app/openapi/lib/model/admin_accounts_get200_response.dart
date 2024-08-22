@@ -40,30 +40,27 @@ class AdminAccountsGet200Response {
   int? pageSize;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is AdminAccountsGet200Response &&
-          other.total == total &&
-          _deepEquality.equals(other.items, items) &&
-          other.pageNum == pageNum &&
-          other.pageSize == pageSize;
+  bool operator ==(Object other) => identical(this, other) || other is AdminAccountsGet200Response &&
+    other.total == total &&
+    _deepEquality.equals(other.items, items) &&
+    other.pageNum == pageNum &&
+    other.pageSize == pageSize;
 
   @override
   int get hashCode =>
-      // ignore: unnecessary_parenthesis
-      (total.hashCode) +
-      (items.hashCode) +
-      (pageNum == null ? 0 : pageNum!.hashCode) +
-      (pageSize == null ? 0 : pageSize!.hashCode);
+    // ignore: unnecessary_parenthesis
+    (total.hashCode) +
+    (items.hashCode) +
+    (pageNum == null ? 0 : pageNum!.hashCode) +
+    (pageSize == null ? 0 : pageSize!.hashCode);
 
   @override
-  String toString() =>
-      'AdminAccountsGet200Response[total=$total, items=$items, pageNum=$pageNum, pageSize=$pageSize]';
+  String toString() => 'AdminAccountsGet200Response[total=$total, items=$items, pageNum=$pageNum, pageSize=$pageSize]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    json[r'total'] = this.total;
-    json[r'items'] = this.items;
+      json[r'total'] = this.total;
+      json[r'items'] = this.items;
     if (this.pageNum != null) {
       json[r'page_num'] = this.pageNum;
     } else {
@@ -89,10 +86,8 @@ class AdminAccountsGet200Response {
       // Note 2: this code is stripped in release mode!
       assert(() {
         requiredKeys.forEach((key) {
-          assert(json.containsKey(key),
-              'Required key "AdminAccountsGet200Response[$key]" is missing from JSON.');
-          assert(json[key] != null,
-              'Required key "AdminAccountsGet200Response[$key]" has a null value in JSON.');
+          assert(json.containsKey(key), 'Required key "AdminAccountsGet200Response[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "AdminAccountsGet200Response[$key]" has a null value in JSON.');
         });
         return true;
       }());
@@ -107,10 +102,7 @@ class AdminAccountsGet200Response {
     return null;
   }
 
-  static List<AdminAccountsGet200Response> listFromJson(
-    dynamic json, {
-    bool growable = false,
-  }) {
+  static List<AdminAccountsGet200Response> listFromJson(dynamic json, {bool growable = false,}) {
     final result = <AdminAccountsGet200Response>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
@@ -138,19 +130,13 @@ class AdminAccountsGet200Response {
   }
 
   // maps a json object with a list of AdminAccountsGet200Response-objects as value to a dart map
-  static Map<String, List<AdminAccountsGet200Response>> mapListFromJson(
-    dynamic json, {
-    bool growable = false,
-  }) {
+  static Map<String, List<AdminAccountsGet200Response>> mapListFromJson(dynamic json, {bool growable = false,}) {
     final map = <String, List<AdminAccountsGet200Response>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = AdminAccountsGet200Response.listFromJson(
-          entry.value,
-          growable: growable,
-        );
+        map[entry.key] = AdminAccountsGet200Response.listFromJson(entry.value, growable: growable,);
       }
     }
     return map;
@@ -162,3 +148,4 @@ class AdminAccountsGet200Response {
     'items',
   };
 }
+

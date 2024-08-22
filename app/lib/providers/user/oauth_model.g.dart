@@ -11,7 +11,7 @@ _$OauthModelImpl _$$OauthModelImplFromJson(Map<String, dynamic> json) =>
       tokenType: json['token_type'] as String? ?? '',
       refreshToken: json['refresh_token'] as String? ?? '',
       accessToken: json['access_token'] as String? ?? '',
-      expiredIn: json['expired_in'] as int? ?? 3600,
+      expiredIn: (json['expired_in'] as num?)?.toInt() ?? 3600,
     );
 
 Map<String, dynamic> _$$OauthModelImplToJson(_$OauthModelImpl instance) =>

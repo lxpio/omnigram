@@ -122,6 +122,7 @@ const kLoginPage = 'login';
 const kLoginPath = '/login';
 
 const kSplashPath = '/splash';
+const kSplashPage = 'splash';
 
 const kHomePath = '/';
 const kHomePage = 'home';

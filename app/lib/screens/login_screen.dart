@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -8,7 +9,6 @@ import 'package:omnigram/providers/service/provider.dart';
 
 import 'package:omnigram/providers/user/oauth_model.dart';
 import 'package:omnigram/providers/user/user_model.dart';
-import 'package:omnigram/utils/l10n.dart';
 import 'package:omnigram/utils/show_snackbar.dart';
 import 'package:lottie/lottie.dart';
 
@@ -42,29 +42,26 @@ class LoginScreen extends HookConsumerWidget {
               ),
               const SizedBox(height: 40),
               TextFormField(
-                // key: _serverFormKey,
-
-                // cursorColor: Colors.black,
                 controller: serverController,
 
                 validator: (text) {
                   if (text == null || text.isEmpty) {
-                    return context.l10n.server_address_error;
+                    return 'server_address_error'.tr();
                   }
                   final urlPattern =
                       RegExp(r'^(https?|ftp)://[^\s/$.?#].[^\s]*$');
 
                   return urlPattern.hasMatch(text)
                       ? null
-                      : context.l10n.server_address_error;
+                      : 'server_address_error'.tr();
                 },
                 onEditingComplete: () => {},
                 decoration: InputDecoration(
                   // contentPadding: EdgeInsets.all(0.0),
-                  labelText: context.l10n.server_address_label,
+                  labelText: 'server_address_label'.tr(),
                   hintText: serverAddr.isNotEmpty
                       ? serverAddr
-                      : context.l10n.server_address_hint_text,
+                      : 'server_address_hint_text'.tr(),
                   prefixIcon: const Icon(Icons.dns_outlined),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -82,8 +79,8 @@ class LoginScreen extends HookConsumerWidget {
                 // cursorColor: Colors.black,
                 controller: accountController,
                 decoration: InputDecoration(
-                  labelText: context.l10n.account_label,
-                  hintText: context.l10n.account_hint_text,
+                  labelText: 'account_label'.tr(),
+                  hintText: 'account_hint_text'.tr(),
                   prefixIcon: const Icon(Icons.person),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -103,8 +100,8 @@ class LoginScreen extends HookConsumerWidget {
                 obscureText: true,
                 controller: passwordController,
                 decoration: InputDecoration(
-                  labelText: context.l10n.password_label,
-                  hintText: context.l10n.password_hint_text,
+                  labelText: 'password_label'.tr(),
+                  hintText: 'password_hint_text'.tr(),
                   prefixIcon: const Icon(Icons.key),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -123,7 +120,7 @@ class LoginScreen extends HookConsumerWidget {
                 children: [
                   TextButton(
                     onPressed: () {},
-                    child: Text(context.l10n.need_help),
+                    child: Text('need_help'.tr()),
                   )
                 ],
               ),
@@ -139,7 +136,7 @@ class LoginScreen extends HookConsumerWidget {
                     _savedata(ref, value, serverController.text);
                   }).onError((error, stackTrace) {
                     if (error is DioException) {
-                      showSnackBar(context, context.l10n.network_error);
+                      showSnackBar(context, 'network_error'.tr());
                     } else {
                       showSnackBar(context, error.toString());
                     }
@@ -150,7 +147,7 @@ class LoginScreen extends HookConsumerWidget {
                         Theme.of(context).colorScheme.secondaryContainer,
                     minimumSize: const Size.fromHeight(45)),
                 child: Text(
-                  context.l10n.next,
+                  'next'.tr(),
                   style:
                       TextStyle(color: Theme.of(context).colorScheme.onSurface),
                 ),

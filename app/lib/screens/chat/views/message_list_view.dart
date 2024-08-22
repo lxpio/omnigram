@@ -1,7 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/providers/openai/chat/enum.dart';
-import 'package:omnigram/utils/l10n.dart';
+import 'package:omnigram/utils/localization.service.dart';
 
 import '../models/message.dart';
 import '../provider/message_list.dart';
@@ -53,7 +54,7 @@ class MessageListView extends ConsumerWidget {
       conversationId: id,
       role: Role.system,
       createAt: DateTime.now(),
-      content: context.l10n.open_ai_hello,
+      content: 'open_ai_hello'.tr(),
     );
 
     ref.read(messageListProvider(id).notifier).tips(msg);

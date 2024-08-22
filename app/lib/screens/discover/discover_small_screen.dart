@@ -1,10 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/providers/user/user_model.dart';
 import 'package:omnigram/utils/constants.dart';
-import 'package:omnigram/utils/l10n.dart';
+import 'package:omnigram/utils/localization.service.dart';
 
 import 'views/epub_index_view.dart';
 
@@ -203,7 +204,7 @@ class DiscoverSmallScreen extends HookConsumerWidget {
               padding: EdgeInsets.only(right: 8.0),
               child: Icon(Icons.logout),
             ),
-            Text(context.l10n.logout),
+            Text('logout'.tr()),
           ],
         ),
         onPressed: () {
@@ -222,7 +223,7 @@ class DiscoverSmallScreen extends HookConsumerWidget {
                 padding: EdgeInsets.only(right: 8.0),
                 child: Icon(Icons.settings),
               ),
-              Text(context.l10n.settings),
+              Text('settings'.tr()),
             ],
           ),
           onPressed: () {

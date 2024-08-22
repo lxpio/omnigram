@@ -1,6 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:omnigram/utils/l10n.dart';
+import 'package:omnigram/utils/localization.service.dart';
 
 import '../models/message.dart';
 
@@ -172,8 +173,7 @@ class ChatInput extends StatelessWidget {
         isCollapsed: true,
         filled: true,
         fillColor: Theme.of(context).colorScheme.onSecondary,
-        // hintText: 'typing_a_message',
-        hintText: context.l10n.type_message_placeholder,
+        hintText: 'typein_message_placeholder'.tr(),
         contentPadding: const EdgeInsets.only(
           top: 8,
           bottom: 8,

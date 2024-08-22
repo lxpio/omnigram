@@ -1,9 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/screens/reader/providers/books.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:omnigram/screens/reader/views/book_group_view.dart';
-import 'package:omnigram/utils/l10n.dart';
+import 'package:omnigram/utils/localization.service.dart';
 
 import '../../reader/views/book_group_view_v2.dart';
 
@@ -69,11 +70,11 @@ class HomeSmallView extends HookConsumerWidget {
         SliverList(
           delegate: SliverChildListDelegate([
             BookReadingGroup(
-                context.l10n.keepreading, context.l10n.viewmore, nav.readings),
+                'keepreading'.tr(), 'viewmore'.tr(), nav.readings),
             BookGroup(
-                context.l10n.likedbooks, context.l10n.viewmore, nav.likes),
+                'likedbooks'.tr(), 'viewmore'.tr(), nav.likes),
             // BookGroup(
-            //     context.l10n.randombooks, context.l10n.viewmore, nav.random),
+            //     'randombooks'.tr(), 'viewmore'.tr(), nav.random),
           ]),
         ),
       ],

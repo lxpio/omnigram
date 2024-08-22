@@ -1,10 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:omnigram/providers/openai/chat/enum.dart';
 import 'package:omnigram/screens/chat/models/message.dart';
-import 'package:omnigram/utils/l10n.dart';
+import 'package:omnigram/utils/localization.service.dart';
 import 'package:omnigram/utils/show_snackbar.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -102,7 +103,7 @@ abstract class ChatBaseItemView extends HookConsumerWidget {
                             text: message.content,
                           ),
                         ).then((value) {
-                          showSnackBar(context, context.l10n.copied);
+                          showSnackBar(context, 'snack_bar_copied'.tr());
                         });
                       },
                       icon: const Icon(Icons.copy),

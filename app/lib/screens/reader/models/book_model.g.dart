@@ -8,19 +8,19 @@ part of 'book_model.dart';
 
 _$BookModelImpl _$$BookModelImplFromJson(Map<String, dynamic> json) =>
     _$BookModelImpl(
-      id: json['id'] as int? ?? 0,
+      id: (json['id'] as num?)?.toInt() ?? 0,
       title: json['title'] as String,
       identifier: json['identifier'] as String,
       author: json['author'] as String,
       progress: (json['progress'] as num?)?.toDouble(),
-      progressIndex: json['progress_index'] as int?,
-      paraPosition: json['para_position'] as int?,
-      size: json['size'] as int?,
+      progressIndex: (json['progress_index'] as num?)?.toInt(),
+      paraPosition: (json['para_position'] as num?)?.toInt(),
+      size: (json['size'] as num?)?.toInt(),
       path: json['path'] as String?,
       ctime: json['ctime'] as String?,
       utime: json['utime'] as String?,
       pubdate: json['pubdate'] as String?,
-      rating: json['rating'] as int?,
+      rating: (json['rating'] as num?)?.toInt(),
       subTitle: json['sub_title'] as String?,
       language: json['language'] as String?,
       coverUrl: json['cover_url'] as String?,
@@ -34,8 +34,8 @@ _$BookModelImpl _$$BookModelImplFromJson(Map<String, dynamic> json) =>
       series: json['series'] as String?,
       seriesIndex: json['series_index'] as String?,
       publisherUrl: json['publisher_url'] as String?,
-      countVisit: json['count_visit'] as int?,
-      countDownload: json['count_download'] as int?,
+      countVisit: (json['count_visit'] as num?)?.toInt(),
+      countDownload: (json['count_download'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$BookModelImplToJson(_$BookModelImpl instance) =>

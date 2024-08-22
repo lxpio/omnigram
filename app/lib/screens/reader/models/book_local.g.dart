@@ -8,7 +8,7 @@ part of 'book_local.dart';
 
 _$BookLocalImpl _$$BookLocalImplFromJson(Map<String, dynamic> json) =>
     _$BookLocalImpl(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       localPath: json['local_path'] as String,
       md5: json['md5'] as String?,
     );

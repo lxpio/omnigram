@@ -554,13 +554,13 @@ class DefaultApi {
   ///
   /// Parameters:
   ///
-  /// * [AuthLoginPostRequest] authLoginPostRequest:
-  Future<Response> authLoginPostWithHttpInfo({ AuthLoginPostRequest? authLoginPostRequest, }) async {
+  /// * [LoginCredentialDto] loginCredentialDto:
+  Future<Response> authLoginPostWithHttpInfo({ LoginCredentialDto? loginCredentialDto, }) async {
     // ignore: prefer_const_declarations
     final path = r'/auth/login';
 
     // ignore: prefer_final_locals
-    Object? postBody = authLoginPostRequest;
+    Object? postBody = loginCredentialDto;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
@@ -586,9 +586,9 @@ class DefaultApi {
   ///
   /// Parameters:
   ///
-  /// * [AuthLoginPostRequest] authLoginPostRequest:
-  Future<RespDto?> authLoginPost({ AuthLoginPostRequest? authLoginPostRequest, }) async {
-    final response = await authLoginPostWithHttpInfo( authLoginPostRequest: authLoginPostRequest, );
+  /// * [LoginCredentialDto] loginCredentialDto:
+  Future<RespDto?> authLoginPost({ LoginCredentialDto? loginCredentialDto, }) async {
+    final response = await authLoginPostWithHttpInfo( loginCredentialDto: loginCredentialDto, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -650,6 +650,62 @@ class DefaultApi {
     return null;
   }
 
+  /// 获取访问token
+  ///
+  /// 
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [LoginCredentialDto] loginCredentialDto:
+  Future<Response> authTokenPostWithHttpInfo({ LoginCredentialDto? loginCredentialDto, }) async {
+    // ignore: prefer_const_declarations
+    final path = r'/auth/token';
+
+    // ignore: prefer_final_locals
+    Object? postBody = loginCredentialDto;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>['application/json'];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'POST',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// 获取访问token
+  ///
+  /// 
+  ///
+  /// Parameters:
+  ///
+  /// * [LoginCredentialDto] loginCredentialDto:
+  Future<AccessTokenDto?> authTokenPost({ LoginCredentialDto? loginCredentialDto, }) async {
+    final response = await authTokenPostWithHttpInfo( loginCredentialDto: loginCredentialDto, );
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'AccessTokenDto',) as AccessTokenDto;
+    
+    }
+    return null;
+  }
+
   /// 获取书籍封面图片
   ///
   /// 
@@ -696,6 +752,62 @@ class DefaultApi {
   ///   
   Future<Object?> imgReaderCoversBookIdGet(String bookId,) async {
     final response = await imgReaderCoversBookIdGetWithHttpInfo(bookId,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'Object',) as Object;
+    
+    }
+    return null;
+  }
+
+  /// 文字转语音
+  ///
+  /// 
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [M4tTtsStreamPostRequest] m4tTtsStreamPostRequest:
+  Future<Response> m4tTtsSimplePostWithHttpInfo({ M4tTtsStreamPostRequest? m4tTtsStreamPostRequest, }) async {
+    // ignore: prefer_const_declarations
+    final path = r'/m4t/tts/simple';
+
+    // ignore: prefer_final_locals
+    Object? postBody = m4tTtsStreamPostRequest;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>['application/json'];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'POST',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// 文字转语音
+  ///
+  /// 
+  ///
+  /// Parameters:
+  ///
+  /// * [M4tTtsStreamPostRequest] m4tTtsStreamPostRequest:
+  Future<Object?> m4tTtsSimplePost({ M4tTtsStreamPostRequest? m4tTtsStreamPostRequest, }) async {
+    final response = await m4tTtsSimplePostWithHttpInfo( m4tTtsStreamPostRequest: m4tTtsStreamPostRequest, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -1645,6 +1757,54 @@ class DefaultApi {
     return null;
   }
 
+  /// 系统心跳
+  ///
+  /// 获取当前系统后台信息（管理员权限）
+  ///
+  /// Note: This method returns the HTTP [Response].
+  Future<Response> sysPingGetWithHttpInfo() async {
+    // ignore: prefer_const_declarations
+    final path = r'/sys/ping';
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// 系统心跳
+  ///
+  /// 获取当前系统后台信息（管理员权限）
+  Future<SysPingGet200Response?> sysPingGet() async {
+    final response = await sysPingGetWithHttpInfo();
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'SysPingGet200Response',) as SysPingGet200Response;
+    
+    }
+    return null;
+  }
+
   /// 启动扫描
   ///
   /// 启动扫描目录（管理员权限）
@@ -1792,6 +1952,62 @@ class DefaultApi {
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
       return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ScanStatsDto',) as ScanStatsDto;
+    
+    }
+    return null;
+  }
+
+  /// 当前用户信息
+  ///
+  /// 
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [Object] body:
+  Future<Response> userUserinfoGetWithHttpInfo({ Object? body, }) async {
+    // ignore: prefer_const_declarations
+    final path = r'/user/userinfo';
+
+    // ignore: prefer_final_locals
+    Object? postBody = body;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>['application/json'];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// 当前用户信息
+  ///
+  /// 
+  ///
+  /// Parameters:
+  ///
+  /// * [Object] body:
+  Future<UserDto?> userUserinfoGet({ Object? body, }) async {
+    final response = await userUserinfoGetWithHttpInfo( body: body, );
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'UserDto',) as UserDto;
     
     }
     return null;

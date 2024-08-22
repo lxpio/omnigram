@@ -1,7 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-import 'package:omnigram/utils/l10n.dart';
 
 class PhotoPageBody extends StatefulWidget {
   const PhotoPageBody({Key? key}) : super(key: key);
@@ -38,7 +38,7 @@ class _PhotoPageBodyState extends State<PhotoPageBody> {
                   ),
                   SizedBox(height: 20),
                   Text(
-                    context.l10n.coming_soon,
+                    'coming_soon'.tr(),
                     // alignment: Alignment.topCenter,
                   ),
                 ],

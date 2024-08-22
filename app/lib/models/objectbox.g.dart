@@ -10,8 +10,9 @@
 import 'dart:typed_data';
 
 import 'package:flat_buffers/flat_buffers.dart' as fb;
-import 'package:objectbox/internal.dart'; // generated code can access "internal" functionality
-import 'package:objectbox/objectbox.dart';
+import 'package:objectbox/internal.dart'
+    as obx_int; // generated code can access "internal" functionality
+import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import '../models/llm_service.dart';
@@ -22,360 +23,360 @@ import '../screens/reader/models/book_model.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
-final _entities = <ModelEntity>[
-  ModelEntity(
-      id: const IdUid(1, 6707462596581586420),
+final _entities = <obx_int.ModelEntity>[
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(1, 6707462596581586420),
       name: 'BookLocal',
-      lastPropertyId: const IdUid(3, 7078609590508456723),
+      lastPropertyId: const obx_int.IdUid(3, 7078609590508456723),
       flags: 0,
-      properties: <ModelProperty>[
-        ModelProperty(
-            id: const IdUid(1, 4714616925242471174),
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 4714616925242471174),
             name: 'id',
             type: 6,
             flags: 129),
-        ModelProperty(
-            id: const IdUid(2, 1558628104240906393),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 1558628104240906393),
             name: 'localPath',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(3, 7078609590508456723),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 7078609590508456723),
             name: 'md5',
             type: 9,
             flags: 0)
       ],
-      relations: <ModelRelation>[],
-      backlinks: <ModelBacklink>[]),
-  ModelEntity(
-      id: const IdUid(2, 2377781516218894627),
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(2, 2377781516218894627),
       name: 'BookModel',
-      lastPropertyId: const IdUid(29, 1550309893250125137),
+      lastPropertyId: const obx_int.IdUid(29, 1550309893250125137),
       flags: 0,
-      properties: <ModelProperty>[
-        ModelProperty(
-            id: const IdUid(1, 5145468023147690668),
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 5145468023147690668),
             name: 'id',
             type: 6,
             flags: 129),
-        ModelProperty(
-            id: const IdUid(2, 11996826803372471),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 11996826803372471),
             name: 'title',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(3, 4151224713551063478),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 4151224713551063478),
             name: 'identifier',
             type: 9,
             flags: 2080,
-            indexId: const IdUid(1, 3234125845898534854)),
-        ModelProperty(
-            id: const IdUid(4, 748250368840931782),
+            indexId: const obx_int.IdUid(1, 3234125845898534854)),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 748250368840931782),
             name: 'author',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(5, 142002621304961831),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 142002621304961831),
             name: 'progress',
             type: 8,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(7, 721090536532963474),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(7, 721090536532963474),
             name: 'size',
             type: 6,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(8, 4714584983541282893),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(8, 4714584983541282893),
             name: 'path',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(9, 6616863920496308033),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(9, 6616863920496308033),
             name: 'ctime',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(10, 4653324342649627876),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(10, 4653324342649627876),
             name: 'utime',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(11, 3569405046062289156),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(11, 3569405046062289156),
             name: 'subTitle',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(12, 2670856880955245301),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(12, 2670856880955245301),
             name: 'language',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(13, 508113337419259124),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(13, 508113337419259124),
             name: 'coverUrl',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(14, 750253216295725756),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(14, 750253216295725756),
             name: 'uuid',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(15, 4481054464976567198),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(15, 4481054464976567198),
             name: 'isbn',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(16, 6271510966424834565),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(16, 6271510966424834565),
             name: 'asin',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(17, 3368241653469170233),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(17, 3368241653469170233),
             name: 'authorUrl',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(18, 5141242604025256883),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(18, 5141242604025256883),
             name: 'authorSort',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(19, 4319502457995714545),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(19, 4319502457995714545),
             name: 'publisher',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(20, 5043889894207422914),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(20, 5043889894207422914),
             name: 'description',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(21, 5124842745039157830),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(21, 5124842745039157830),
             name: 'series',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(22, 4012174187045566222),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(22, 4012174187045566222),
             name: 'seriesIndex',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(23, 3814369684469442117),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(23, 3814369684469442117),
             name: 'pubdate',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(24, 2673555387814784463),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(24, 2673555387814784463),
             name: 'rating',
             type: 6,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(25, 55997867239583174),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(25, 55997867239583174),
             name: 'publisherUrl',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(26, 729985418655754337),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(26, 729985418655754337),
             name: 'countVisit',
             type: 6,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(27, 507996690201045780),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(27, 507996690201045780),
             name: 'countDownload',
             type: 6,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(28, 4088798926593917462),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(28, 4088798926593917462),
             name: 'progressIndex',
             type: 6,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(29, 1550309893250125137),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(29, 1550309893250125137),
             name: 'paraPosition',
             type: 6,
             flags: 0)
       ],
-      relations: <ModelRelation>[],
-      backlinks: <ModelBacklink>[]),
-  ModelEntity(
-      id: const IdUid(3, 8701783815158741159),
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(3, 8701783815158741159),
       name: 'Conversation',
-      lastPropertyId: const IdUid(10, 4373051813681724226),
+      lastPropertyId: const obx_int.IdUid(10, 4373051813681724226),
       flags: 0,
-      properties: <ModelProperty>[
-        ModelProperty(
-            id: const IdUid(1, 8995399421908218659),
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 8995399421908218659),
             name: 'id',
             type: 6,
             flags: 129),
-        ModelProperty(
-            id: const IdUid(2, 7070217944279259050),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 7070217944279259050),
             name: 'name',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(3, 5081038014541328299),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 5081038014541328299),
             name: 'timeout',
             type: 6,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(4, 7988744154821074316),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 7988744154821074316),
             name: 'maxTokens',
             type: 6,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(5, 4639405396114130885),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 4639405396114130885),
             name: 'editName',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(6, 329924133098302823),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 329924133098302823),
             name: 'serviceId',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(7, 6589093618973643310),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(7, 6589093618973643310),
             name: 'autoQuote',
             type: 6,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(8, 7301222825546517802),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(8, 7301222825546517802),
             name: 'lastActive',
             type: 10,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(9, 7029699488866037214),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(9, 7029699488866037214),
             name: 'isActive',
             type: 1,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(10, 4373051813681724226),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(10, 4373051813681724226),
             name: 'promptId',
             type: 9,
             flags: 0)
       ],
-      relations: <ModelRelation>[],
-      backlinks: <ModelBacklink>[]),
-  ModelEntity(
-      id: const IdUid(4, 5819575114060395614),
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(4, 5819575114060395614),
       name: 'LLMService',
-      lastPropertyId: const IdUid(13, 6115828865270120181),
+      lastPropertyId: const obx_int.IdUid(13, 6115828865270120181),
       flags: 0,
-      properties: <ModelProperty>[
-        ModelProperty(
-            id: const IdUid(1, 6933859970665620320),
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 6933859970665620320),
             name: 'id',
             type: 6,
             flags: 1),
-        ModelProperty(
-            id: const IdUid(2, 4986517704711037439),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 4986517704711037439),
             name: 'name',
             type: 9,
             flags: 2080,
-            indexId: const IdUid(2, 1559909979686872173)),
-        ModelProperty(
-            id: const IdUid(3, 5948486554495538365),
+            indexId: const obx_int.IdUid(2, 1559909979686872173)),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 5948486554495538365),
             name: 'model',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(4, 98509560938991298),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 98509560938991298),
             name: 'avatar',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(5, 6992430437203680363),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 6992430437203680363),
             name: 'token',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(6, 7878994859142948657),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 7878994859142948657),
             name: 'desc',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(7, 1744000268336573782),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(7, 1744000268336573782),
             name: 'apiUrl',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(8, 4562648906991317930),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(8, 4562648906991317930),
             name: 'officialUrl',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(9, 7646594681783991147),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(9, 7646594681783991147),
             name: 'editApiUrl',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(10, 7675220099801735937),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(10, 7675220099801735937),
             name: 'hello',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(11, 6049293380507292524),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(11, 6049293380507292524),
             name: 'help',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(12, 5101427925203102450),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(12, 5101427925203102450),
             name: 'helpUrl',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(13, 6115828865270120181),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(13, 6115828865270120181),
             name: 'block',
             type: 1,
             flags: 0)
       ],
-      relations: <ModelRelation>[],
-      backlinks: <ModelBacklink>[]),
-  ModelEntity(
-      id: const IdUid(5, 8278735069177484164),
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(5, 8278735069177484164),
       name: 'Message',
-      lastPropertyId: const IdUid(7, 3050767139080148159),
+      lastPropertyId: const obx_int.IdUid(7, 3050767139080148159),
       flags: 0,
-      properties: <ModelProperty>[
-        ModelProperty(
-            id: const IdUid(1, 1400617488877522774),
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 1400617488877522774),
             name: 'id',
             type: 6,
             flags: 1),
-        ModelProperty(
-            id: const IdUid(2, 2633719418305916681),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 2633719418305916681),
             name: 'conversationId',
             type: 6,
             flags: 8,
-            indexId: const IdUid(3, 1896456448200958387)),
-        ModelProperty(
-            id: const IdUid(3, 4710882586237443988),
+            indexId: const obx_int.IdUid(3, 1896456448200958387)),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 4710882586237443988),
             name: 'content',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(4, 6481958391296567526),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 6481958391296567526),
             name: 'error',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(5, 3059017529974268612),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 3059017529974268612),
             name: 'createAt',
             type: 10,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(6, 4034256254584685073),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 4034256254584685073),
             name: 'dbMessageType',
             type: 6,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(7, 3050767139080148159),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(7, 3050767139080148159),
             name: 'dbMessageFromType',
             type: 6,
             flags: 0)
       ],
-      relations: <ModelRelation>[],
-      backlinks: <ModelBacklink>[])
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[])
 ];
 
 /// Shortcut for [Store.new] that passes [getObjectBoxModel] and for Flutter
@@ -385,30 +386,38 @@ final _entities = <ModelEntity>[
 /// Note: for desktop apps it is recommended to specify a unique [directory].
 ///
 /// See [Store.new] for an explanation of all parameters.
-Future<Store> openStore(
-        {String? directory,
-        int? maxDBSizeInKB,
-        int? fileMode,
-        int? maxReaders,
-        bool queriesCaseSensitiveDefault = true,
-        String? macosApplicationGroup}) async =>
-    Store(getObjectBoxModel(),
-        directory: directory ?? (await defaultStoreDirectory()).path,
-        maxDBSizeInKB: maxDBSizeInKB,
-        fileMode: fileMode,
-        maxReaders: maxReaders,
-        queriesCaseSensitiveDefault: queriesCaseSensitiveDefault,
-        macosApplicationGroup: macosApplicationGroup);
+///
+/// For Flutter apps, also calls `loadObjectBoxLibraryAndroidCompat()` from
+/// the ObjectBox Flutter library to fix loading the native ObjectBox library
+/// on Android 6 and older.
+Future<obx.Store> openStore(
+    {String? directory,
+    int? maxDBSizeInKB,
+    int? maxDataSizeInKB,
+    int? fileMode,
+    int? maxReaders,
+    bool queriesCaseSensitiveDefault = true,
+    String? macosApplicationGroup}) async {
+  await loadObjectBoxLibraryAndroidCompat();
+  return obx.Store(getObjectBoxModel(),
+      directory: directory ?? (await defaultStoreDirectory()).path,
+      maxDBSizeInKB: maxDBSizeInKB,
+      maxDataSizeInKB: maxDataSizeInKB,
+      fileMode: fileMode,
+      maxReaders: maxReaders,
+      queriesCaseSensitiveDefault: queriesCaseSensitiveDefault,
+      macosApplicationGroup: macosApplicationGroup);
+}
 
 /// Returns the ObjectBox model definition for this project for use with
 /// [Store.new].
-ModelDefinition getObjectBoxModel() {
-  final model = ModelInfo(
+obx_int.ModelDefinition getObjectBoxModel() {
+  final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(5, 8278735069177484164),
-      lastIndexId: const IdUid(3, 1896456448200958387),
-      lastRelationId: const IdUid(0, 0),
-      lastSequenceId: const IdUid(0, 0),
+      lastEntityId: const obx_int.IdUid(5, 8278735069177484164),
+      lastIndexId: const obx_int.IdUid(3, 1896456448200958387),
+      lastRelationId: const obx_int.IdUid(0, 0),
+      lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [],
       retiredIndexUids: const [],
       retiredPropertyUids: const [2055331516529877016],
@@ -417,8 +426,8 @@ ModelDefinition getObjectBoxModel() {
       modelVersionParserMinimum: 5,
       version: 1);
 
-  final bindings = <Type, EntityDefinition>{
-    BookLocal: EntityDefinition<BookLocal>(
+  final bindings = <Type, obx_int.EntityDefinition>{
+    BookLocal: obx_int.EntityDefinition<BookLocal>(
         model: _entities[0],
         toOneRelations: (BookLocal object) => [],
         toManyRelations: (BookLocal object) => {},
@@ -443,7 +452,7 @@ ModelDefinition getObjectBoxModel() {
           fbb.finish(fbb.endTable());
           return object.id;
         },
-        objectFromFB: (Store store, ByteData fbData) {
+        objectFromFB: (obx.Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
           final idParam =
@@ -457,7 +466,7 @@ ModelDefinition getObjectBoxModel() {
 
           return object;
         }),
-    BookModel: EntityDefinition<BookModel>(
+    BookModel: obx_int.EntityDefinition<BookModel>(
         model: _entities[1],
         toOneRelations: (BookModel object) => [],
         toManyRelations: (BookModel object) => {},
@@ -550,7 +559,7 @@ ModelDefinition getObjectBoxModel() {
           fbb.finish(fbb.endTable());
           return object.id;
         },
-        objectFromFB: (Store store, ByteData fbData) {
+        objectFromFB: (obx.Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
           final idParam =
@@ -644,7 +653,7 @@ ModelDefinition getObjectBoxModel() {
 
           return object;
         }),
-    Conversation: EntityDefinition<Conversation>(
+    Conversation: obx_int.EntityDefinition<Conversation>(
         model: _entities[2],
         toOneRelations: (Conversation object) => [],
         toManyRelations: (Conversation object) => {},
@@ -676,7 +685,7 @@ ModelDefinition getObjectBoxModel() {
           fbb.finish(fbb.endTable());
           return object.id;
         },
-        objectFromFB: (Store store, ByteData fbData) {
+        objectFromFB: (obx.Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
           final idParam =
@@ -712,7 +721,7 @@ ModelDefinition getObjectBoxModel() {
 
           return object;
         }),
-    LLMService: EntityDefinition<LLMService>(
+    LLMService: obx_int.EntityDefinition<LLMService>(
         model: _entities[3],
         toOneRelations: (LLMService object) => [],
         toManyRelations: (LLMService object) => {},
@@ -758,7 +767,7 @@ ModelDefinition getObjectBoxModel() {
           fbb.finish(fbb.endTable());
           return object.id;
         },
-        objectFromFB: (Store store, ByteData fbData) {
+        objectFromFB: (obx.Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
           final idParam =
@@ -805,7 +814,7 @@ ModelDefinition getObjectBoxModel() {
 
           return object;
         }),
-    Message: EntityDefinition<Message>(
+    Message: obx_int.EntityDefinition<Message>(
         model: _entities[4],
         toOneRelations: (Message object) => [],
         toManyRelations: (Message object) => {},
@@ -828,7 +837,7 @@ ModelDefinition getObjectBoxModel() {
           fbb.finish(fbb.endTable());
           return object.id;
         },
-        objectFromFB: (Store store, ByteData fbData) {
+        objectFromFB: (obx.Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
           final createAtValue =
@@ -859,259 +868,264 @@ ModelDefinition getObjectBoxModel() {
         })
   };
 
-  return ModelDefinition(model, bindings);
+  return obx_int.ModelDefinition(model, bindings);
 }
 
 /// [BookLocal] entity fields to define ObjectBox queries.
 class BookLocal_ {
   /// see [BookLocal.id]
-  static final id = QueryIntegerProperty<BookLocal>(_entities[0].properties[0]);
+  static final id =
+      obx.QueryIntegerProperty<BookLocal>(_entities[0].properties[0]);
 
   /// see [BookLocal.localPath]
   static final localPath =
-      QueryStringProperty<BookLocal>(_entities[0].properties[1]);
+      obx.QueryStringProperty<BookLocal>(_entities[0].properties[1]);
 
   /// see [BookLocal.md5]
-  static final md5 = QueryStringProperty<BookLocal>(_entities[0].properties[2]);
+  static final md5 =
+      obx.QueryStringProperty<BookLocal>(_entities[0].properties[2]);
 }
 
 /// [BookModel] entity fields to define ObjectBox queries.
 class BookModel_ {
   /// see [BookModel.id]
-  static final id = QueryIntegerProperty<BookModel>(_entities[1].properties[0]);
+  static final id =
+      obx.QueryIntegerProperty<BookModel>(_entities[1].properties[0]);
 
   /// see [BookModel.title]
   static final title =
-      QueryStringProperty<BookModel>(_entities[1].properties[1]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[1]);
 
   /// see [BookModel.identifier]
   static final identifier =
-      QueryStringProperty<BookModel>(_entities[1].properties[2]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[2]);
 
   /// see [BookModel.author]
   static final author =
-      QueryStringProperty<BookModel>(_entities[1].properties[3]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[3]);
 
   /// see [BookModel.progress]
   static final progress =
-      QueryDoubleProperty<BookModel>(_entities[1].properties[4]);
+      obx.QueryDoubleProperty<BookModel>(_entities[1].properties[4]);
 
   /// see [BookModel.size]
   static final size =
-      QueryIntegerProperty<BookModel>(_entities[1].properties[5]);
+      obx.QueryIntegerProperty<BookModel>(_entities[1].properties[5]);
 
   /// see [BookModel.path]
   static final path =
-      QueryStringProperty<BookModel>(_entities[1].properties[6]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[6]);
 
   /// see [BookModel.ctime]
   static final ctime =
-      QueryStringProperty<BookModel>(_entities[1].properties[7]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[7]);
 
   /// see [BookModel.utime]
   static final utime =
-      QueryStringProperty<BookModel>(_entities[1].properties[8]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[8]);
 
   /// see [BookModel.subTitle]
   static final subTitle =
-      QueryStringProperty<BookModel>(_entities[1].properties[9]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[9]);
 
   /// see [BookModel.language]
   static final language =
-      QueryStringProperty<BookModel>(_entities[1].properties[10]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[10]);
 
   /// see [BookModel.coverUrl]
   static final coverUrl =
-      QueryStringProperty<BookModel>(_entities[1].properties[11]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[11]);
 
   /// see [BookModel.uuid]
   static final uuid =
-      QueryStringProperty<BookModel>(_entities[1].properties[12]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[12]);
 
   /// see [BookModel.isbn]
   static final isbn =
-      QueryStringProperty<BookModel>(_entities[1].properties[13]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[13]);
 
   /// see [BookModel.asin]
   static final asin =
-      QueryStringProperty<BookModel>(_entities[1].properties[14]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[14]);
 
   /// see [BookModel.authorUrl]
   static final authorUrl =
-      QueryStringProperty<BookModel>(_entities[1].properties[15]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[15]);
 
   /// see [BookModel.authorSort]
   static final authorSort =
-      QueryStringProperty<BookModel>(_entities[1].properties[16]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[16]);
 
   /// see [BookModel.publisher]
   static final publisher =
-      QueryStringProperty<BookModel>(_entities[1].properties[17]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[17]);
 
   /// see [BookModel.description]
   static final description =
-      QueryStringProperty<BookModel>(_entities[1].properties[18]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[18]);
 
   /// see [BookModel.series]
   static final series =
-      QueryStringProperty<BookModel>(_entities[1].properties[19]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[19]);
 
   /// see [BookModel.seriesIndex]
   static final seriesIndex =
-      QueryStringProperty<BookModel>(_entities[1].properties[20]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[20]);
 
   /// see [BookModel.pubdate]
   static final pubdate =
-      QueryStringProperty<BookModel>(_entities[1].properties[21]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[21]);
 
   /// see [BookModel.rating]
   static final rating =
-      QueryIntegerProperty<BookModel>(_entities[1].properties[22]);
+      obx.QueryIntegerProperty<BookModel>(_entities[1].properties[22]);
 
   /// see [BookModel.publisherUrl]
   static final publisherUrl =
-      QueryStringProperty<BookModel>(_entities[1].properties[23]);
+      obx.QueryStringProperty<BookModel>(_entities[1].properties[23]);
 
   /// see [BookModel.countVisit]
   static final countVisit =
-      QueryIntegerProperty<BookModel>(_entities[1].properties[24]);
+      obx.QueryIntegerProperty<BookModel>(_entities[1].properties[24]);
 
   /// see [BookModel.countDownload]
   static final countDownload =
-      QueryIntegerProperty<BookModel>(_entities[1].properties[25]);
+      obx.QueryIntegerProperty<BookModel>(_entities[1].properties[25]);
 
   /// see [BookModel.progressIndex]
   static final progressIndex =
-      QueryIntegerProperty<BookModel>(_entities[1].properties[26]);
+      obx.QueryIntegerProperty<BookModel>(_entities[1].properties[26]);
 
   /// see [BookModel.paraPosition]
   static final paraPosition =
-      QueryIntegerProperty<BookModel>(_entities[1].properties[27]);
+      obx.QueryIntegerProperty<BookModel>(_entities[1].properties[27]);
 }
 
 /// [Conversation] entity fields to define ObjectBox queries.
 class Conversation_ {
   /// see [Conversation.id]
   static final id =
-      QueryIntegerProperty<Conversation>(_entities[2].properties[0]);
+      obx.QueryIntegerProperty<Conversation>(_entities[2].properties[0]);
 
   /// see [Conversation.name]
   static final name =
-      QueryStringProperty<Conversation>(_entities[2].properties[1]);
+      obx.QueryStringProperty<Conversation>(_entities[2].properties[1]);
 
   /// see [Conversation.timeout]
   static final timeout =
-      QueryIntegerProperty<Conversation>(_entities[2].properties[2]);
+      obx.QueryIntegerProperty<Conversation>(_entities[2].properties[2]);
 
   /// see [Conversation.maxTokens]
   static final maxTokens =
-      QueryIntegerProperty<Conversation>(_entities[2].properties[3]);
+      obx.QueryIntegerProperty<Conversation>(_entities[2].properties[3]);
 
   /// see [Conversation.editName]
   static final editName =
-      QueryStringProperty<Conversation>(_entities[2].properties[4]);
+      obx.QueryStringProperty<Conversation>(_entities[2].properties[4]);
 
   /// see [Conversation.serviceId]
   static final serviceId =
-      QueryStringProperty<Conversation>(_entities[2].properties[5]);
+      obx.QueryStringProperty<Conversation>(_entities[2].properties[5]);
 
   /// see [Conversation.autoQuote]
   static final autoQuote =
-      QueryIntegerProperty<Conversation>(_entities[2].properties[6]);
+      obx.QueryIntegerProperty<Conversation>(_entities[2].properties[6]);
 
   /// see [Conversation.lastActive]
   static final lastActive =
-      QueryIntegerProperty<Conversation>(_entities[2].properties[7]);
+      obx.QueryDateProperty<Conversation>(_entities[2].properties[7]);
 
   /// see [Conversation.isActive]
   static final isActive =
-      QueryBooleanProperty<Conversation>(_entities[2].properties[8]);
+      obx.QueryBooleanProperty<Conversation>(_entities[2].properties[8]);
 
   /// see [Conversation.promptId]
   static final promptId =
-      QueryStringProperty<Conversation>(_entities[2].properties[9]);
+      obx.QueryStringProperty<Conversation>(_entities[2].properties[9]);
 }
 
 /// [LLMService] entity fields to define ObjectBox queries.
 class LLMService_ {
   /// see [LLMService.id]
   static final id =
-      QueryIntegerProperty<LLMService>(_entities[3].properties[0]);
+      obx.QueryIntegerProperty<LLMService>(_entities[3].properties[0]);
 
   /// see [LLMService.name]
   static final name =
-      QueryStringProperty<LLMService>(_entities[3].properties[1]);
+      obx.QueryStringProperty<LLMService>(_entities[3].properties[1]);
 
   /// see [LLMService.model]
   static final model =
-      QueryStringProperty<LLMService>(_entities[3].properties[2]);
+      obx.QueryStringProperty<LLMService>(_entities[3].properties[2]);
 
   /// see [LLMService.avatar]
   static final avatar =
-      QueryStringProperty<LLMService>(_entities[3].properties[3]);
+      obx.QueryStringProperty<LLMService>(_entities[3].properties[3]);
 
   /// see [LLMService.token]
   static final token =
-      QueryStringProperty<LLMService>(_entities[3].properties[4]);
+      obx.QueryStringProperty<LLMService>(_entities[3].properties[4]);
 
   /// see [LLMService.desc]
   static final desc =
-      QueryStringProperty<LLMService>(_entities[3].properties[5]);
+      obx.QueryStringProperty<LLMService>(_entities[3].properties[5]);
 
   /// see [LLMService.apiUrl]
   static final apiUrl =
-      QueryStringProperty<LLMService>(_entities[3].properties[6]);
+      obx.QueryStringProperty<LLMService>(_entities[3].properties[6]);
 
   /// see [LLMService.officialUrl]
   static final officialUrl =
-      QueryStringProperty<LLMService>(_entities[3].properties[7]);
+      obx.QueryStringProperty<LLMService>(_entities[3].properties[7]);
 
   /// see [LLMService.editApiUrl]
   static final editApiUrl =
-      QueryStringProperty<LLMService>(_entities[3].properties[8]);
+      obx.QueryStringProperty<LLMService>(_entities[3].properties[8]);
 
   /// see [LLMService.hello]
   static final hello =
-      QueryStringProperty<LLMService>(_entities[3].properties[9]);
+      obx.QueryStringProperty<LLMService>(_entities[3].properties[9]);
 
   /// see [LLMService.help]
   static final help =
-      QueryStringProperty<LLMService>(_entities[3].properties[10]);
+      obx.QueryStringProperty<LLMService>(_entities[3].properties[10]);
 
   /// see [LLMService.helpUrl]
   static final helpUrl =
-      QueryStringProperty<LLMService>(_entities[3].properties[11]);
+      obx.QueryStringProperty<LLMService>(_entities[3].properties[11]);
 
   /// see [LLMService.block]
   static final block =
-      QueryBooleanProperty<LLMService>(_entities[3].properties[12]);
+      obx.QueryBooleanProperty<LLMService>(_entities[3].properties[12]);
 }
 
 /// [Message] entity fields to define ObjectBox queries.
 class Message_ {
   /// see [Message.id]
-  static final id = QueryIntegerProperty<Message>(_entities[4].properties[0]);
+  static final id =
+      obx.QueryIntegerProperty<Message>(_entities[4].properties[0]);
 
   /// see [Message.conversationId]
   static final conversationId =
-      QueryIntegerProperty<Message>(_entities[4].properties[1]);
+      obx.QueryIntegerProperty<Message>(_entities[4].properties[1]);
 
   /// see [Message.content]
   static final content =
-      QueryStringProperty<Message>(_entities[4].properties[2]);
+      obx.QueryStringProperty<Message>(_entities[4].properties[2]);
 
   /// see [Message.error]
-  static final error = QueryStringProperty<Message>(_entities[4].properties[3]);
+  static final error =
+      obx.QueryStringProperty<Message>(_entities[4].properties[3]);
 
   /// see [Message.createAt]
   static final createAt =
-      QueryIntegerProperty<Message>(_entities[4].properties[4]);
+      obx.QueryDateProperty<Message>(_entities[4].properties[4]);
 
   /// see [Message.dbMessageType]
   static final dbMessageType =
-      QueryIntegerProperty<Message>(_entities[4].properties[5]);
+      obx.QueryIntegerProperty<Message>(_entities[4].properties[5]);
 
   /// see [Message.dbMessageFromType]
   static final dbMessageFromType =
-      QueryIntegerProperty<Message>(_entities[4].properties[6]);
+      obx.QueryIntegerProperty<Message>(_entities[4].properties[6]);
 }

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:omnigram/utils/logger/logger.dart';
+import 'package:logging/logging.dart';
 
 import 'model.dart';
 import 'utils.dart';
@@ -12,16 +12,19 @@ import 'err.dart';
 abstract class OpenAIWrapper {}
 
 class OpenAIClient extends OpenAIWrapper {
+
+  ///[log]
+  final Logger _log = Logger("PartnerService");
+
   OpenAIClient({required Dio dio, bool isLogging = false}) {
     _dio = dio;
-    log = Logger.instance.builder(isLogging: isLogging);
+    // log = Logger.instance.builder(isLogging: isLogging);
   }
 
   ///[_dio]
   late Dio _dio;
 
-  ///[log]
-  late Logger log;
+
 
   Future<T> get<T>(
     String url, {
@@ -33,11 +36,11 @@ class OpenAIClient extends OpenAIWrapper {
       final cancelData = CancelData(cancelToken: CancelToken());
       onCancel(cancelData);
 
-      log.log("starting request");
+      // _log.info("starting request");
       final rawData = await _dio.get(url, cancelToken: cancelData.cancelToken);
 
       if (rawData.statusCode == HttpStatus.ok) {
-        log.log("============= success ==================");
+        // _log.info("============= success ==================");
 
         if (returnRawData) {
           return rawData.data as T;
@@ -45,7 +48,7 @@ class OpenAIClient extends OpenAIWrapper {
 
         return onSuccess(rawData.data);
       } else {
-        log.log("code: ${rawData.statusCode}, message :${rawData.data}");
+        // _log.info("code: ${rawData.statusCode}, message :${rawData.data}");
         throw handleError(
           code: rawData.statusCode ?? HttpStatus.internalServerError,
           message: "",
@@ -53,9 +56,9 @@ class OpenAIClient extends OpenAIWrapper {
         );
       }
     } on DioException catch (err) {
-      log.log(
-        "code: ${err.response?.statusCode}, message :${err.message} + ${err.response?.data}",
-      );
+      // _log.info(
+      //   "code: ${err.response?.statusCode}, message :${err.message} + ${err.response?.data}",
+      // );
       throw handleError(
         code: err.response?.statusCode ?? HttpStatus.internalServerError,
         message: '${err.message}',
@@ -74,7 +77,7 @@ class OpenAIClient extends OpenAIWrapper {
 
     onCancel(cancelData);
 
-    log.log("starting request");
+    // _log.info("starting request");
     _dio
         .get(
       url,
@@ -96,7 +99,7 @@ class OpenAIClient extends OpenAIWrapper {
               if (line.startsWith("data: ")) {
                 final data = line.substring(6);
                 if (data.startsWith("[DONE]")) {
-                  log.log("stream response is done");
+                  // _log.info("stream response is done");
 
                   return;
                 }
@@ -111,7 +114,7 @@ class OpenAIClient extends OpenAIWrapper {
             controller.close();
           },
           onError: (err, t) {
-            log.error(err, t);
+            _log.severe(err, t);
             controller
               ..sink
               ..addError(err, t);
@@ -119,7 +122,7 @@ class OpenAIClient extends OpenAIWrapper {
         );
       },
       onError: (err, t) {
-        log.error(err, t);
+        _log.severe(err, t);
         controller
           ..sink
           ..addError(err, t);
@@ -138,16 +141,16 @@ class OpenAIClient extends OpenAIWrapper {
       final cancelData = CancelData(cancelToken: CancelToken());
       onCancel(cancelData);
 
-      log.log("starting request");
+      _log.info("starting request");
       final rawData =
           await _dio.delete(url, cancelToken: cancelData.cancelToken);
 
       if (rawData.statusCode == HttpStatus.ok) {
-        log.log("============= success ==================");
+        _log.info("============= success ==================");
 
         return onSuccess(rawData.data);
       } else {
-        log.log("error code: ${rawData.statusCode}, message :${rawData.data}");
+        _log.info("error code: ${rawData.statusCode}, message :${rawData.data}");
         throw handleError(
           code: rawData.statusCode ?? HttpStatus.internalServerError,
           message: "${rawData.statusCode}",
@@ -155,7 +158,7 @@ class OpenAIClient extends OpenAIWrapper {
         );
       }
     } on DioException catch (err) {
-      log.log(
+      _log.info(
         "code: ${err.response?.statusCode}, message :${err.message} data: ${err.response?.data}",
       );
       throw handleError(
@@ -176,8 +179,8 @@ class OpenAIClient extends OpenAIWrapper {
       final cancelData = CancelData(cancelToken: CancelToken());
       onCancel(cancelData);
 
-      log.log("starting request");
-      log.log("request body :$request");
+      _log.info("starting request");
+      _log.info("request body :$request");
 
       final response = await _dio.post(
         url,
@@ -186,11 +189,11 @@ class OpenAIClient extends OpenAIWrapper {
       );
 
       if (response.statusCode == HttpStatus.ok) {
-        log.log("============= success ==================");
+        _log.info("============= success ==================");
 
         return onSuccess(response.data);
       } else {
-        log.log("code: ${response.statusCode}, message :${response.data}");
+        _log.info("code: ${response.statusCode}, message :${response.data}");
         throw handleError(
           code: response.statusCode ?? HttpStatus.internalServerError,
           message: "${response.statusCode}",
@@ -198,7 +201,7 @@ class OpenAIClient extends OpenAIWrapper {
         );
       }
     } on DioException catch (err) {
-      log.log(
+      _log.info(
         "error code: ${err.response?.statusCode}, message :${err.message} data:${err.response?.data}",
       );
       throw handleError(
@@ -217,8 +220,8 @@ class OpenAIClient extends OpenAIWrapper {
     final cancelData = CancelData(cancelToken: CancelToken());
     onCancel(cancelData);
 
-    log.log("starting request");
-    log.log("request body :$request");
+    _log.info("starting request");
+    _log.info("request body :$request");
     final response = _dio
         .post(
           url,
@@ -236,8 +239,8 @@ class OpenAIClient extends OpenAIWrapper {
     required T Function(Map<String, dynamic> value) complete,
     required void Function(CancelData cancelData) onCancel,
   }) {
-    log.log("starting request");
-    log.log("request body :$request");
+    _log.info("starting request");
+    _log.info("request body :$request");
     final controller = StreamController<T>.broadcast();
     final cancelData = CancelData(cancelToken: CancelToken());
     try {
@@ -264,7 +267,7 @@ class OpenAIClient extends OpenAIWrapper {
                   ///remove data:
                   final mData = data.substring(6);
                   if (mData.startsWith("[DONE]")) {
-                    log.log("stream response is done");
+                    _log.info("stream response is done");
 
                     return;
                   }
@@ -276,8 +279,8 @@ class OpenAIClient extends OpenAIWrapper {
                       ..sink
                       ..add(complete(jsonMap[jsonMap.keys.last]));
                   } else {
-                    log.log("stream response invalid try regenerate");
-                    log.log("last json error :$mData");
+                    _log.info("stream response invalid try regenerate");
+                    _log.info("last json error :$mData");
                   }
                 }
               }
@@ -286,7 +289,7 @@ class OpenAIClient extends OpenAIWrapper {
               controller.close();
             },
             onError: (err, t) {
-              log.error(err, t);
+              _log.severe(err, t);
               if (err is DioException) {
                 controller
                   ..sink
@@ -304,7 +307,7 @@ class OpenAIClient extends OpenAIWrapper {
           );
         },
         onError: (err, t) {
-          log.error(err, t);
+          _log.severe(err, t);
           if (err is DioException) {
             final error = err;
             controller
@@ -323,7 +326,7 @@ class OpenAIClient extends OpenAIWrapper {
       );
     } on DioException catch (e) {
       if (CancelToken.isCancel(e)) {
-        log.log("cancel request");
+        _log.info("cancel request");
       }
     }
 
@@ -340,8 +343,8 @@ class OpenAIClient extends OpenAIWrapper {
       final cancelData = CancelData(cancelToken: CancelToken());
       onCancel(cancelData);
 
-      log.log("starting request");
-      log.log("request body :$request");
+      _log.info("starting request");
+      _log.info("request body :$request");
       final response = await _dio.post(
         url,
         data: request,
@@ -349,11 +352,11 @@ class OpenAIClient extends OpenAIWrapper {
       );
 
       if (response.statusCode == HttpStatus.ok) {
-        log.log("============= success ==================\n");
+        _log.info("============= success ==================\n");
 
         return complete(response.data);
       } else {
-        log.log("code: ${response.statusCode}, error: ${response.data}");
+        _log.info("code: ${response.statusCode}, error: ${response.data}");
         throw handleError(
           code: response.statusCode ?? HttpStatus.internalServerError,
           message: "${response.statusCode}",
@@ -361,7 +364,7 @@ class OpenAIClient extends OpenAIWrapper {
         );
       }
     } on DioException catch (err) {
-      log.log(
+      _log.info(
         "code: ${err.response?.statusCode}, error: ${err.message} ${err.response?.data}",
       );
       throw handleError(

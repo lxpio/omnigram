@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart' as go;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
-import 'package:omnigram/utils/l10n.dart';
+import 'package:omnigram/utils/localization.service.dart';
 
 import 'destinations.dart';
 // import 'views.dart';
@@ -37,7 +38,7 @@ class RootLayout extends HookConsumerWidget {
       destinations: destinations
           .map((e) => NavigationDestination(
                 icon: e.icon,
-                label: context.l10n.nav_name(e.label),
+                label: e.label.tr(),
               ))
           .toList(),
       selectedIndex: currentIndex,

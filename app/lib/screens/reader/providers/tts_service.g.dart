@@ -12,7 +12,7 @@ _$TTSStateImpl _$$TTSStateImplFromJson(Map<String, dynamic> json) =>
       playing: json['playing'] as bool? ?? false,
       position: json['position'] == null
           ? null
-          : Duration(microseconds: json['position'] as int),
+          : Duration(microseconds: (json['position'] as num).toInt()),
     );
 
 Map<String, dynamic> _$$TTSStateImplToJson(_$TTSStateImpl instance) =>

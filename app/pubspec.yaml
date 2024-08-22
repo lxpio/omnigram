@@ -6,7 +6,6 @@ environment:
   sdk: ">=3.4.0-0 <4.0.0"
 
 dependencies:
-  flutter_native_splash: ^2.3.1
   flutter:
     sdk: flutter
   pretty_dio_logger: ^1.3.1
@@ -28,9 +27,6 @@ dependencies:
   hooks_riverpod: ^2.4.5
   riverpod_annotation: ^2.3.0
   go_router: ^13.0.1
-  flutter_localizations:
-    sdk: flutter
-  intl: any
   universal_platform: ^1.0.0+1
   freezed_annotation: ^2.4.1
   test: ^1.24.9
@@ -54,12 +50,20 @@ dependencies:
   just_audio: ^0.9.36
   lottie: ^3.0.0
   simple_animations: ^5.0.2
+  easy_localization: ^3.0.7
+  isar: ^3.1.0+1
+  isar_flutter_libs: ^3.1.0+1
+  timezone: ^0.9.4
+  device_info_plus: ^10.1.2
+  openapi:
+    path: openapi
+  flutter_udid: ^3.0.0
 
 dev_dependencies:
   flutter_lints: ^3.0.1
   flutter_test:
     sdk: flutter
-  build_runner: ^2.4.6
+  build_runner: ^2.4.11
   objectbox_generator: any
   flutter_launcher_icons: "^0.13.1"
   custom_lint: ^0.5.2  
@@ -67,6 +71,7 @@ dev_dependencies:
   riverpod_generator: ^2.3.1
   freezed: ^2.4.1
   json_serializable: ^6.7.1
+  isar_generator: ^3.1.0+1
 
 flutter:
   uses-material-design: true
@@ -74,9 +79,9 @@ flutter:
   assets:
     - assets/images/
     - assets/files/
+    - assets/i18n/
 
-# flutter_intl:
-#   enabled: false
+
 
 objectbox:
   # Writes objectbox-model.json and objectbox.g.dart to lib/custom (and test/custom).
@@ -85,15 +90,6 @@ objectbox:
   # output_dir:
   #   lib: custom
   #   test: other
-
-flutter_native_splash:
-  color: "#ffffff"
-  image: assets/images/logo-white-s.png
-  image_dark: assets/images/logo-dark-s.png
-  android: true
-  ios: true
-  android_12:
-    image: assets/images/logo-white-s.png
 
 flutter_launcher_icons:
   android: true
@@ -113,3 +109,8 @@ flutter_launcher_icons:
   macos:
     generate: true
     image_path: "assets/images/logo-white-s.png"
+
+
+analyzer:
+  exclude:
+    - openapi/**
