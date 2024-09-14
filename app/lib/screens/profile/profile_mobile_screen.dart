@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/providers/service/provider.dart';
-import 'package:omnigram/providers/user/user_model.dart';
+import 'package:omnigram/providers/auth.provider.dart';
+import 'package:omnigram/providers/server_info.provider.dart';
+
+
 
 import 'views/scan_status_view.dart';
 
@@ -11,7 +13,7 @@ class ProfileSmallScreen extends HookConsumerWidget {
   const ProfileSmallScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(userProvider);
+    final authState = ref.watch(authProvider);
 
     final scrollController = useScrollController();
 
@@ -84,11 +86,11 @@ class ProfileSmallScreen extends HookConsumerWidget {
                     height: 16,
                   ),
                   Text(
-                    user.name,
+                    authState.name,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
-                  Text(user.email),
+                  Text(authState.userEmail),
                 ],
               ),
             ),
@@ -105,14 +107,14 @@ class ProfileSmallScreen extends HookConsumerWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                user.name,
+                                authState.name,
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               Text(
-                                user.email,
+                                authState.userEmail,
                                 style: const TextStyle(
                                   fontSize: 12,
                                 ),
@@ -154,8 +156,12 @@ class _SettingsWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final server = ref.watch(serverProvider);
-    return Container(
+
+
+    final info = ref.watch(serverInfoProvider);
+
+
+    return info.when(data: (data) => Container(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -212,7 +218,7 @@ class _SettingsWidget extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Switch(
-                  value: server.m4tEnabled,
+                  value: data.m4tSupport,
                   onChanged: (bool value) {},
                 ),
                 // Text("中文", style: TextStyle(fontSize: 16)),
@@ -239,7 +245,7 @@ class _SettingsWidget extends ConsumerWidget {
                 // const SizedBox(width: 8),
                 IconButton(
                     onPressed: () {
-                      ref.read(userProvider.notifier).logout();
+                      ref.read(authProvider.notifier).logout();
                     },
                     icon: const Icon(Icons.arrow_forward_ios)),
               ],
@@ -247,7 +253,12 @@ class _SettingsWidget extends ConsumerWidget {
           )
         ],
       ),
-    );
+    ),
+        loading: () => const CircularProgressIndicator(),
+        error: (error, stackTrace) => Text(error.toString()));
+
+
+    
   }
 
   // void showChapterBottomSheet(BuildContext context) {

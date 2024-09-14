@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/providers/provider.dart';
 import 'package:omnigram/screens/reader/providers/tts_service.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -71,7 +70,7 @@ class StackbarWidget extends ConsumerWidget {
                 right: 4,
                 child: Row(
                   children: [
-                    _AlbumArt(image: book.image),
+                    _AlbumArt(image: book.coverUrl),
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -82,7 +81,7 @@ class StackbarWidget extends ConsumerWidget {
                           style: Theme.of(context).textTheme.labelMedium,
                         ),
                         Text(
-                          book.author,
+                          book.author ?? '',
                           style: Theme.of(context).textTheme.labelSmall,
                         ),
                       ],
@@ -117,7 +116,7 @@ class _AlbumArt extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appConfig = ref.read(appConfigProvider);
+  
 
     return Padding(
       padding: const EdgeInsets.all(8),
@@ -127,10 +126,11 @@ class _AlbumArt extends ConsumerWidget {
         child: image != null
             ? FadeInImage(
                 placeholder: MemoryImage(kTransparentImage),
-                image: NetworkImage(
-                  appConfig.baseUrl + image!,
-                  headers: {"Authorization": "Bearer ${appConfig.token}"},
-                ),
+                image: const AssetImage('todo image file'),
+                // image: NetworkImage(
+                //   appConfig.baseUrl + image!,
+                //   headers: {"Authorization": "Bearer ${appConfig.token}"},
+                // ),
                 fit: BoxFit.fill,
                 imageErrorBuilder: (context, error, stackTrace) {
                   if (kDebugMode) {
@@ -150,7 +150,7 @@ class _AlbumArt extends ConsumerWidget {
 }
 
 class _ProgressbarWidget extends ConsumerWidget {
-  const _ProgressbarWidget({super.key});
+  const _ProgressbarWidget();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -175,7 +175,7 @@ class _ProgressbarWidget extends ConsumerWidget {
 }
 
 class _ButtonBarwidget extends ConsumerWidget {
-  const _ButtonBarwidget({super.key});
+  const _ButtonBarwidget();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
+
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 
@@ -7,16 +8,17 @@ part 'logger_message.entity.g.dart';
 
 @Collection(inheritance: false)
 class LoggerMessage {
-  Id id = Isar.autoIncrement;
+  int id ;
   String message;
   String? details;
-  @Enumerated(EnumType.ordinal)
+
   LogLevel level = LogLevel.INFO;
   DateTime createdAt;
   String? context1;
   String? context2;
 
   LoggerMessage({
+    required this.id,
     required this.message,
     required this.details,
     required this.level,

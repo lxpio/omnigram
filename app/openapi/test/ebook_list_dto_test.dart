@@ -1,32 +1,21 @@
-//
-// AUTO-GENERATED FILE, DO NOT MODIFY!
-//
-// @dart=2.18
-
-// ignore_for_file: unused_element, unused_import
-// ignore_for_file: always_put_required_named_parameters_first
-// ignore_for_file: constant_identifier_names
-// ignore_for_file: lines_longer_than_80_chars
-
-import 'package:openapi/api.dart';
 import 'package:test/test.dart';
+import 'package:openapi/openapi.dart';
 
 // tests for EbookListDto
 void main() {
-  // final instance = EbookListDto();
+  final instance = EbookListDtoBuilder();
+  // TODO add properties to the builder and call build()
 
-  group('test EbookListDto', () {
+  group(EbookListDto, () {
     // int total
     test('to test the property `total`', () async {
       // TODO
     });
 
-    // List<EbookDto> items (default value: const [])
+    // BuiltList<EbookDto> items
     test('to test the property `items`', () async {
       // TODO
     });
 
-
   });
-
 }

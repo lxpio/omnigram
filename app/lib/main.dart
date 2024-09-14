@@ -55,7 +55,7 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: [dbProvider.overrideWithValue(db)],
-      child: MainWidget(),
+      child: const MainWidget(),
     ),
   );
 }

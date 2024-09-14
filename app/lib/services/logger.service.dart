@@ -22,38 +22,45 @@ import 'package:share_plus/share_plus.dart';
 /// and generate a csv file.
 class OmnigramLogger {
 
+
+
   static final OmnigramLogger _instance = OmnigramLogger._internal();
+
+  OmnigramLogger._internal();
+
+  static late final Isar _db;
+
+ 
   final maxLogEntries = 1024;
-  final Isar _db = Isar.getInstance()!;
-  List<LoggerMessage> _msgBuffer = [];
-  Timer? _timer;
+  // final Isar _db = Isar.getInstance()!;
+  static late List<LoggerMessage> _msgBuffer = [];
+  static late Timer? _timer;
 
-  factory OmnigramLogger() => _instance;
+  // factory OmnigramLogger() => _instance;
 
-  OmnigramLogger._internal() {
-    _removeOverflowMessages();
+  static void initialize(Isar db) async {
+    _db = db; 
+    _instance._removeOverflowMessages();
     final int levelId = IsarStore.get(StoreKey.logLevel, 5); // 5 is INFO
     Logger.root.level = Level.LEVELS[levelId];
-    Logger.root.onRecord.listen(_writeLogToDatabase);
+    Logger.root.onRecord.listen(_instance._writeLogToDatabase);
   }
 
   set level(Level level) => Logger.root.level = level;
 
   List<LoggerMessage> get messages {
     final inDb =
-        _db.loggerMessages.where(sort: Sort.desc).anyId().findAllSync();
+        _db.loggerMessages.where().sortByIdDesc().findAll();
     return _msgBuffer.isEmpty ? inDb : _msgBuffer.reversed.toList() + inDb;
   }
 
   void _removeOverflowMessages() {
-    final msgCount = _db.loggerMessages.countSync();
+    final msgCount = _db.loggerMessages.count();
     if (msgCount > maxLogEntries) {
       final numberOfEntryToBeDeleted = msgCount - maxLogEntries;
-      _db.writeTxn(
-        () => _db.loggerMessages
-            .where()
-            .limit(numberOfEntryToBeDeleted)
-            .deleteAll(),
+      _db.write(
+        (db) => db.loggerMessages
+            .where().deleteAll(limit: numberOfEntryToBeDeleted),
       );
     }
   }
@@ -61,6 +68,7 @@ class OmnigramLogger {
   void _writeLogToDatabase(LogRecord record) {
     debugPrint('[${record.level.name}] [${record.time}] ${record.message}');
     final lm = LoggerMessage(
+      id: _db.loggerMessages.autoIncrement(),
       message: record.message,
       details: record.error?.toString(),
       level: record.level.toLogLevel(),
@@ -79,14 +87,14 @@ class OmnigramLogger {
     _timer = null;
     final buffer = _msgBuffer;
     _msgBuffer = [];
-    _db.writeTxn(() => _db.loggerMessages.putAll(buffer));
+    _db.writeAsync((db) => db.loggerMessages.putAll(buffer));
   }
 
   void clearLogs() {
     _timer?.cancel();
     _timer = null;
     _msgBuffer.clear();
-    _db.writeTxn(() => _db.loggerMessages.clear());
+    _db.writeAsync((db) => db.loggerMessages.clear());
   }
 
   Future<void> shareLogs(BuildContext context) async {
@@ -124,10 +132,10 @@ class OmnigramLogger {
   }
 
   /// Flush pending log messages to persistent storage
-  void flush() {
+  static void flush() {
     if (_timer != null) {
       _timer!.cancel();
-      _db.writeTxnSync(() => _db.loggerMessages.putAllSync(_msgBuffer));
+      _db.write((db) => db.loggerMessages.putAll(_msgBuffer));
     }
   }
 }

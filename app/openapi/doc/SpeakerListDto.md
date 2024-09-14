@@ -9,7 +9,7 @@ import 'package:openapi/api.dart';
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **total** | **int** |  | 
-**items** | [**List<SpeakerDto>**](SpeakerDto.md) |  | [default to const []]
+**items** | [**BuiltList&lt;SpeakerDto&gt;**](SpeakerDto.md) |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

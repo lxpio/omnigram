@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 **total** | **int** |  | 
 **running** | **bool** |  | 
 **scanCount** | **int** |  | 
-**errs** | **List<String>** |  | [optional] [default to const []]
+**errs** | **BuiltList&lt;String&gt;** |  | [optional] 
 **diskUsage** | **int** |  | 
 **epubCount** | **int** |  | 
 **pdfCount** | **int** |  | 

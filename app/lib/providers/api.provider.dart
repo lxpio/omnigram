@@ -4,10 +4,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:omnigram/entities/isar_store.entity.dart';
 import 'package:omnigram/utils/url_helper.dart';
-import 'package:openapi/api.dart';
+import 'package:openapi/openapi.dart';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:http/http.dart';
 import 'package:logging/logging.dart';
@@ -25,28 +27,22 @@ class ApiService extends _$ApiService {
   @override
   DefaultApi build() {
 
-    final endpoint = IsarStore.tryGet(StoreKey.serverEndpoint);
+    log.info("ApiService build");
 
-     if (endpoint != null && endpoint.isNotEmpty) {
-      final apiClient = ApiClient(basePath: endpoint, authentication: APIAuthentication());
-      setDeviceHeaders(apiClient);
-      return DefaultApi(apiClient);
-    }
-
-    return DefaultApi(ApiClient(basePath: "https://api.omnigram.app", authentication: APIAuthentication()));
+    return _createApi();
     
   }
 
-
   setEndpoint(String endpoint)  {
-    final apiClient = ApiClient(basePath: endpoint, authentication: APIAuthentication());
-    setDeviceHeaders(apiClient);
-    state = DefaultApi(apiClient);
+
+    final apiClient = _createApi();
+    state = apiClient;
   }
 
 
+  Future<String> resolveAndSetEndpoint(String serverUrl) async {
 
-Future<String> resolveAndSetEndpoint(String serverUrl) async {
+
     final endpoint = await _resolveEndpoint(serverUrl);
     await setEndpoint(endpoint);
 
@@ -55,32 +51,6 @@ Future<String> resolveAndSetEndpoint(String serverUrl) async {
     return endpoint;
   }
 
-  setDeviceHeaders(ApiClient apiClient)  {
-    // Make sign-in request
-    DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-
-
-    try {
-      if (Platform.isIOS) {
-      
-        deviceInfoPlugin.iosInfo.then((iosInfo) {
-             apiClient.addDefaultHeader('deviceModel', iosInfo.utsname.machine);
-            apiClient.addDefaultHeader('deviceType', 'iOS');
-        });
-     
-      } else {
-
-        deviceInfoPlugin.androidInfo.then((androidInfo){
-        apiClient.addDefaultHeader('deviceModel', androidInfo.model);
-        apiClient.addDefaultHeader('deviceType', 'Android');
-        });
-    
-      }
-    } catch (e) {
-      log.warning("Failed to set device headers: $e");
-    }
-
-  }
   
 
    /// Takes a server URL and attempts to resolve the API endpoint.
@@ -93,68 +63,27 @@ Future<String> resolveAndSetEndpoint(String serverUrl) async {
   Future<String> _resolveEndpoint(String serverUrl) async {
     final url = sanitizeUrl(serverUrl);
 
-    if (!await _isEndpointAvailable(serverUrl)) {
-      throw ApiException(503, "Server is not reachable");
-    }
+    await _isEndpointAvailable(serverUrl);
 
-    // Check for /.well-known/immich
-    final wellKnownEndpoint = await _getWellKnownEndpoint(url);
-    if (wellKnownEndpoint.isNotEmpty) return wellKnownEndpoint;
 
     // Otherwise, assume the URL provided is the api endpoint
     return url;
   }
 
 
-Future<String> _getWellKnownEndpoint(String baseUrl) async {
-    final Client client = Client();
 
-    try {
-      var headers = {"Accept": "application/json"};
-      headers.addAll(getRequestHeaders());
-
-      final res = await client.get(
-        Uri.parse("$baseUrl/.well-known/immich"),
-        headers: headers,
-      );
-
-      if (res.statusCode == 200) {
-        final data = jsonDecode(res.body);
-        final endpoint = data['api']['endpoint'].toString();
-
-        if (endpoint.startsWith('/')) {
-          // Full URL is relative to base
-          return "$baseUrl$endpoint";
-        }
-        return endpoint;
-      }
-    } catch (e) {
-      debugPrint("Could not locate /.well-known/immich at $baseUrl");
-    }
-
-    return "";
-  }
 
   Future<bool> _isEndpointAvailable(String serverUrl) async {
     
-    final Client client = Client();
-
-    if (!serverUrl.endsWith('/api')) {
-      serverUrl += '/api';
-    }
+    final dio = _createDio(serverUrl);
 
     try {
-      final response = await client
-          .get(
-            Uri.parse("$serverUrl/server-info/ping"),
-            headers: getRequestHeaders(),
-          )
-          .timeout(const Duration(seconds: 5));
+      final response = await dio.get("/sys/ping");
 
       log.info("Pinging server with response code ${response.statusCode}");
       if (response.statusCode != 200) {
         log.severe(
-          "Server Gateway Error: ${response.body} - Cannot communicate to the server",
+          "Server Gateway Error: ${response.data} - Cannot communicate to the server",
         );
         return false;
       }
@@ -173,41 +102,84 @@ Future<String> _getWellKnownEndpoint(String baseUrl) async {
     return true;
   }
  
+
+ Dio _createDio(String? baseUrl) {
+    return Dio(BaseOptions(
+              baseUrl: baseUrl ?? r'http://localhost',
+               connectTimeout: const Duration(seconds: 5),
+               receiveTimeout: const Duration(seconds: 10),
+            ));
+  }
+
+  DefaultApi _createApi() {
+    final endpoint = IsarStore.tryGet(StoreKey.serverEndpoint);
+    final accessToken = IsarStore.get(StoreKey.accessToken, "");
+    // final customHeadersStr = IsarStore.get(StoreKey.customHeaders, "");
+
+    final dio = _createDio(endpoint);
+
+
+    final interceptors = [setDeviceHeadersInterceptor(),BearerAuthInterceptor()];
+
+
+    final api = Openapi(dio: dio,interceptors: interceptors);
+
+    api.setBearerAuth('bearer', accessToken);
+    return api.getDefaultApi();
+  }
+
+
+
+  DeviceHeaderInterceptor setDeviceHeadersInterceptor()  {
+    // Make sign-in request
+    DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+
+   final Map<String,String> headers = {};
+
+    try {
+      if (Platform.isIOS) {
+      
+        deviceInfoPlugin.iosInfo.then((iosInfo) {
+             headers['deviceModel'] = iosInfo.utsname.machine;
+             headers['deviceType'] = 'iOS';
+        });
+     
+      } else {
+
+        deviceInfoPlugin.androidInfo.then((androidInfo){
+             headers['deviceModel'] = androidInfo.model;
+             headers['deviceType'] = 'Android';
+        });
+    
+      }
+    } catch (e) {
+      // log.warning("Failed to set device headers: $e");
+    }
+
+
+    return DeviceHeaderInterceptor(headers: headers);
+
+  }
+
 }
 
-class APIAuthentication extends Authentication {
-   @override
-  Future<void> applyToParams(
-    List<QueryParam> queryParams,
-    Map<String, String> headerParams,
+
+
+  
+
+
+class DeviceHeaderInterceptor extends Interceptor {
+  final Map<String, String> headers;
+
+  DeviceHeaderInterceptor({Map<String, String>? headers}): headers = headers ?? {};
+
+  @override
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
   ) {
-    return Future<void>(() {
-      var headers = getRequestHeaders();
-      headerParams.addAll(headers);
-    });
+    options.headers.addAll(headers);
+    super.onRequest(options, handler);
   }
-
 
 }
-
-
-
-Map<String, String> getRequestHeaders() {
-    var accessToken = IsarStore.get(StoreKey.accessToken, "");
-    var customHeadersStr = IsarStore.get(StoreKey.customHeaders, "");
-    var header = <String, String>{};
-    if (accessToken.isNotEmpty) {
-      header['x-omnigram-token'] = accessToken;
-    }
-
-    if (customHeadersStr.isEmpty) {
-      return header;
-    }
-
-    var customHeaders = jsonDecode(customHeadersStr) as Map;
-    customHeaders.forEach((key, value) {
-      header[key] = value;
-    });
-
-    return header;
-  }

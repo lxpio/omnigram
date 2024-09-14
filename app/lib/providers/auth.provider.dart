@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 import 'package:flutter/material.dart';
 import 'package:omnigram/entities/isar_store.entity.dart';
@@ -7,7 +8,7 @@ import 'package:omnigram/entities/user.entity.dart';
 import 'package:omnigram/providers/api.provider.dart';
 import 'package:logging/logging.dart';
 import 'package:omnigram/utils/hash.dart';
-import 'package:openapi/api.dart';
+import 'package:openapi/openapi.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 
@@ -59,20 +60,23 @@ class Auth extends _$Auth {
 
       final api = ref.watch(apiServiceProvider);
 
-      var loginResponse = await api.authTokenPost(loginCredentialDto:
-        LoginCredentialDto(
-          account: account,
-          password: password,
-        ),
+      LoginCredentialDto loginCredentialDto =LoginCredentialDto((b) => b
+      ..account = account
+      ..password = password
       );
 
-      if (loginResponse == null) {
+      
+      var loginResponse = await api.authTokenPost(loginCredentialDto: loginCredentialDto);
+
+    
+     
+      if (loginResponse.statusCode != 200) {
         debugPrint('Login Response is null');
         return false;
       }
 
       return setSuccessLoginInfo(
-        accessToken: loginResponse.accessToken,
+        accessToken: loginResponse.data!.accessToken,
         serverUrl: serverUrl,
       );
     } catch (e) {
@@ -153,18 +157,20 @@ class Auth extends _$Auth {
     // UserPreferencesResponseDto? userPreferences;
     try {
 
-      userResponse = await ref.watch(apiServiceProvider).userUserinfoGet();
+      final userResp = await ref.watch(apiServiceProvider).userUserinfoGet();
+
+      if (userResp.statusCode == 200) {
+        userResponse = userResp.data;
+      }
 
       
-    } on ApiException catch (error, stackTrace) {
-      if (error.code == 401) {
+    }  on DioException catch (err)  {
+      if (err.response?.statusCode == 401) {
         log.severe("Unauthorized access, token likely expired. Logging out.");
         return false;
       }
       log.severe(
-        "Error getting user information from the server [API EXCEPTION]",
-        stackTrace,
-      );
+        "Error getting user information from the server [API EXCEPTION]");
     } catch (error, stackTrace) {
       log.severe(
         "Error getting user information from the server [CATCH ALL]",

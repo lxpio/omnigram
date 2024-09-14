@@ -54,13 +54,13 @@ Method | HTTP request | Description
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final accountId = accountId_example; // String | 
+final api = Openapi().getDefaultApi();
+final String accountId = accountId_example; // String | 
 
 try {
-    final result = api_instance.adminAccountsAccountIdDelete(accountId);
-    print(result);
-} catch (e) {
+    final response = api.adminAccountsAccountIdDelete(accountId);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->adminAccountsAccountIdDelete: $e\n');
 }
 ```
@@ -77,7 +77,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -97,17 +97,17 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final search = ; // String | 模糊搜索
-final email = ; // String | 邮箱
-final name = user1; // String | 用户名
-final pageNum = 56; // int | 页码
-final pageSize = 56; // int | 每页大小
+final api = Openapi().getDefaultApi();
+final String search = ; // String | 模糊搜索
+final String email = ; // String | 邮箱
+final String name = user1; // String | 用户名
+final int pageNum = 56; // int | 页码
+final int pageSize = 56; // int | 每页大小
 
 try {
-    final result = api_instance.adminAccountsGet(search, email, name, pageNum, pageSize);
-    print(result);
-} catch (e) {
+    final response = api.adminAccountsGet(search, email, name, pageNum, pageSize);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->adminAccountsGet: $e\n');
 }
 ```
@@ -128,7 +128,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -148,13 +148,13 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final createUserDto = CreateUserDto(); // CreateUserDto | 
+final api = Openapi().getDefaultApi();
+final CreateUserDto createUserDto = {"user_name":"test1","email":"email@test.com","password":"testpaswd"}; // CreateUserDto | 
 
 try {
-    final result = api_instance.adminAccountsPost(createUserDto);
-    print(result);
-} catch (e) {
+    final response = api.adminAccountsPost(createUserDto);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->adminAccountsPost: $e\n');
 }
 ```
@@ -171,7 +171,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -191,14 +191,14 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final userId = userId_example; // String | 
-final body = Object(); // Object | 
+final api = Openapi().getDefaultApi();
+final String userId = userId_example; // String | 
+final JsonObject body = Object; // JsonObject | 
 
 try {
-    final result = api_instance.adminAccountsUserIdGet(userId, body);
-    print(result);
-} catch (e) {
+    final response = api.adminAccountsUserIdGet(userId, body);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->adminAccountsUserIdGet: $e\n');
 }
 ```
@@ -208,7 +208,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **userId** | **String**|  | 
- **body** | **Object**|  | [optional] 
+ **body** | **JsonObject**|  | [optional] 
 
 ### Return type
 
@@ -216,7 +216,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -226,7 +226,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **authAccountsAccountIdApikeysGet**
-> List<ApikeyDto> authAccountsAccountIdApikeysGet(accountId)
+> BuiltList<ApikeyDto> authAccountsAccountIdApikeysGet(accountId)
 
 获取API Key列表
 
@@ -236,13 +236,13 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final accountId = accountId_example; // String | 
+final api = Openapi().getDefaultApi();
+final String accountId = accountId_example; // String | 
 
 try {
-    final result = api_instance.authAccountsAccountIdApikeysGet(accountId);
-    print(result);
-} catch (e) {
+    final response = api.authAccountsAccountIdApikeysGet(accountId);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->authAccountsAccountIdApikeysGet: $e\n');
 }
 ```
@@ -255,11 +255,11 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List<ApikeyDto>**](ApikeyDto.md)
+[**BuiltList&lt;ApikeyDto&gt;**](ApikeyDto.md)
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -279,14 +279,14 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final accountId = accountId_example; // String | 
-final keyId = keyId_example; // String | 
+final api = Openapi().getDefaultApi();
+final String accountId = accountId_example; // String | 
+final String keyId = keyId_example; // String | 
 
 try {
-    final result = api_instance.authAccountsAccountIdApikeysKeyIdDelete(accountId, keyId);
-    print(result);
-} catch (e) {
+    final response = api.authAccountsAccountIdApikeysKeyIdDelete(accountId, keyId);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->authAccountsAccountIdApikeysKeyIdDelete: $e\n');
 }
 ```
@@ -304,7 +304,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -324,14 +324,14 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final accountId = accountId_example; // String | 
-final authAccountsAccountIdApikeysPostRequest = AuthAccountsAccountIdApikeysPostRequest(); // AuthAccountsAccountIdApikeysPostRequest | 
+final api = Openapi().getDefaultApi();
+final String accountId = accountId_example; // String | 
+final AuthAccountsAccountIdApikeysPostRequest authAccountsAccountIdApikeysPostRequest = ; // AuthAccountsAccountIdApikeysPostRequest | 
 
 try {
-    final result = api_instance.authAccountsAccountIdApikeysPost(accountId, authAccountsAccountIdApikeysPostRequest);
-    print(result);
-} catch (e) {
+    final response = api.authAccountsAccountIdApikeysPost(accountId, authAccountsAccountIdApikeysPostRequest);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->authAccountsAccountIdApikeysPost: $e\n');
 }
 ```
@@ -349,7 +349,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -369,14 +369,14 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final accountId = accountId_example; // String | 
-final changePasswordDto = ChangePasswordDto(); // ChangePasswordDto | 
+final api = Openapi().getDefaultApi();
+final String accountId = accountId_example; // String | 
+final ChangePasswordDto changePasswordDto = {"id":100,"new_password":"xgfagag","code":""}; // ChangePasswordDto | 
 
 try {
-    final result = api_instance.authAccountsAccountIdResetPost(accountId, changePasswordDto);
-    print(result);
-} catch (e) {
+    final response = api.authAccountsAccountIdResetPost(accountId, changePasswordDto);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->authAccountsAccountIdResetPost: $e\n');
 }
 ```
@@ -394,7 +394,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -414,13 +414,13 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final loginCredentialDto = LoginCredentialDto(); // LoginCredentialDto | 
+final api = Openapi().getDefaultApi();
+final LoginCredentialDto loginCredentialDto = {"account":"ue$dB","password":"B60R"}; // LoginCredentialDto | 
 
 try {
-    final result = api_instance.authLoginPost(loginCredentialDto);
-    print(result);
-} catch (e) {
+    final response = api.authLoginPost(loginCredentialDto);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->authLoginPost: $e\n');
 }
 ```
@@ -457,12 +457,12 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
+final api = Openapi().getDefaultApi();
 
 try {
-    final result = api_instance.authLogoutPost();
-    print(result);
-} catch (e) {
+    final response = api.authLogoutPost();
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->authLogoutPost: $e\n');
 }
 ```
@@ -476,7 +476,7 @@ This endpoint does not need any parameter.
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -496,13 +496,13 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final loginCredentialDto = LoginCredentialDto(); // LoginCredentialDto | 
+final api = Openapi().getDefaultApi();
+final LoginCredentialDto loginCredentialDto = ; // LoginCredentialDto | 
 
 try {
-    final result = api_instance.authTokenPost(loginCredentialDto);
-    print(result);
-} catch (e) {
+    final response = api.authTokenPost(loginCredentialDto);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->authTokenPost: $e\n');
 }
 ```
@@ -529,7 +529,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **imgReaderCoversBookIdGet**
-> Object imgReaderCoversBookIdGet(bookId)
+> JsonObject imgReaderCoversBookIdGet(bookId)
 
 获取书籍封面图片
 
@@ -539,13 +539,13 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final bookId = bookId_example; // String | 
+final api = Openapi().getDefaultApi();
+final String bookId = bookId_example; // String | 
 
 try {
-    final result = api_instance.imgReaderCoversBookIdGet(bookId);
-    print(result);
-} catch (e) {
+    final response = api.imgReaderCoversBookIdGet(bookId);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->imgReaderCoversBookIdGet: $e\n');
 }
 ```
@@ -558,11 +558,11 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Object**](Object.md)
+[**JsonObject**](JsonObject.md)
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -572,7 +572,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **m4tTtsSimplePost**
-> Object m4tTtsSimplePost(m4tTtsStreamPostRequest)
+> JsonObject m4tTtsSimplePost(m4tTtsStreamPostRequest)
 
 文字转语音
 
@@ -582,13 +582,13 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final m4tTtsStreamPostRequest = M4tTtsStreamPostRequest(); // M4tTtsStreamPostRequest | 
+final api = Openapi().getDefaultApi();
+final M4tTtsStreamPostRequest m4tTtsStreamPostRequest = {"text":"hello world","lang":"en","audio_id":"female_0001","format":"wav","stream":true}; // M4tTtsStreamPostRequest | 
 
 try {
-    final result = api_instance.m4tTtsSimplePost(m4tTtsStreamPostRequest);
-    print(result);
-} catch (e) {
+    final response = api.m4tTtsSimplePost(m4tTtsStreamPostRequest);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->m4tTtsSimplePost: $e\n');
 }
 ```
@@ -601,11 +601,11 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Object**](Object.md)
+[**JsonObject**](JsonObject.md)
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -625,12 +625,12 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
+final api = Openapi().getDefaultApi();
 
 try {
-    final result = api_instance.m4tTtsSpeakersGet();
-    print(result);
-} catch (e) {
+    final response = api.m4tTtsSpeakersGet();
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->m4tTtsSpeakersGet: $e\n');
 }
 ```
@@ -644,7 +644,7 @@ This endpoint does not need any parameter.
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -664,14 +664,14 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final name = name_example; // String | 名称
-final wav = BINARY_DATA_HERE; // MultipartFile | 原始声音
+final api = Openapi().getDefaultApi();
+final String name = name_example; // String | 名称
+final MultipartFile wav = BINARY_DATA_HERE; // MultipartFile | 原始声音
 
 try {
-    final result = api_instance.m4tTtsSpeakersPost(name, wav);
-    print(result);
-} catch (e) {
+    final response = api.m4tTtsSpeakersPost(name, wav);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->m4tTtsSpeakersPost: $e\n');
 }
 ```
@@ -689,7 +689,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -699,7 +699,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **m4tTtsStreamPost**
-> Object m4tTtsStreamPost(m4tTtsStreamPostRequest)
+> JsonObject m4tTtsStreamPost(m4tTtsStreamPostRequest)
 
 文字转语音接口
 
@@ -709,13 +709,13 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final m4tTtsStreamPostRequest = M4tTtsStreamPostRequest(); // M4tTtsStreamPostRequest | 
+final api = Openapi().getDefaultApi();
+final M4tTtsStreamPostRequest m4tTtsStreamPostRequest = {"text":"hello world","lang":"en","audio_id":"female_0001","format":"wav","stream":true}; // M4tTtsStreamPostRequest | 
 
 try {
-    final result = api_instance.m4tTtsStreamPost(m4tTtsStreamPostRequest);
-    print(result);
-} catch (e) {
+    final response = api.m4tTtsStreamPost(m4tTtsStreamPostRequest);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->m4tTtsStreamPost: $e\n');
 }
 ```
@@ -728,11 +728,11 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Object**](Object.md)
+[**JsonObject**](JsonObject.md)
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -752,13 +752,13 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final bookId = bookId_example; // String | 
+final api = Openapi().getDefaultApi();
+final String bookId = bookId_example; // String | 
 
 try {
-    final result = api_instance.readerBooksBookIdGet(bookId);
-    print(result);
-} catch (e) {
+    final response = api.readerBooksBookIdGet(bookId);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->readerBooksBookIdGet: $e\n');
 }
 ```
@@ -775,7 +775,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -795,14 +795,14 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final bookId = bookId_example; // String | 
-final readerBooksBookIdPutRequest = ReaderBooksBookIdPutRequest(); // ReaderBooksBookIdPutRequest | 
+final api = Openapi().getDefaultApi();
+final String bookId = bookId_example; // String | 
+final ReaderBooksBookIdPutRequest readerBooksBookIdPutRequest = {"id":12345,"title":"Golang Programming","sub_title":"Mastering Go","language":"English","cover_url":"https://example.com/cover.jpg","isbn":"978-3-16-148410-0","asin":"B01N5K7PCC","category":"Programming","author":"John Doe","author_url":"https://example.com/author","author_sort":"Doe, John","publisher":"Tech Books Publishing","description":"A comprehensive guide to Go programming.","tags":["go","programming","tech"],"pubdate":"2023-07-15","rating":4.5,"publisher_url":"https://example.com/publisher"}; // ReaderBooksBookIdPutRequest | 
 
 try {
-    final result = api_instance.readerBooksBookIdPut(bookId, readerBooksBookIdPutRequest);
-    print(result);
-} catch (e) {
+    final response = api.readerBooksBookIdPut(bookId, readerBooksBookIdPutRequest);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->readerBooksBookIdPut: $e\n');
 }
 ```
@@ -820,7 +820,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -840,17 +840,17 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final search = ; // String | 模糊搜索字段
-final pageSize = 56; // int | 页数
-final pageNum = 56; // int | 页数大小
-final category = category_example; // String | 分类
-final author = author_example; // String | 作者
+final api = Openapi().getDefaultApi();
+final String search = ; // String | 模糊搜索字段
+final int pageSize = 56; // int | 页数
+final int pageNum = 56; // int | 页数大小
+final String category = category_example; // String | 分类
+final String author = author_example; // String | 作者
 
 try {
-    final result = api_instance.readerBooksGet(search, pageSize, pageNum, category, author);
-    print(result);
-} catch (e) {
+    final response = api.readerBooksGet(search, pageSize, pageNum, category, author);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->readerBooksGet: $e\n');
 }
 ```
@@ -871,7 +871,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -881,7 +881,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **readerDownloadBooksBookIdGet**
-> Object readerDownloadBooksBookIdGet(bookId)
+> JsonObject readerDownloadBooksBookIdGet(bookId)
 
 下载书籍
 
@@ -891,13 +891,13 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final bookId = bookId_example; // String | 
+final api = Openapi().getDefaultApi();
+final String bookId = bookId_example; // String | 
 
 try {
-    final result = api_instance.readerDownloadBooksBookIdGet(bookId);
-    print(result);
-} catch (e) {
+    final response = api.readerDownloadBooksBookIdGet(bookId);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->readerDownloadBooksBookIdGet: $e\n');
 }
 ```
@@ -910,16 +910,16 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Object**](Object.md)
+[**JsonObject**](JsonObject.md)
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: */*
+ - **Accept**: application/octet-stream
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -934,17 +934,17 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final search = ; // String | 模糊搜索字段
-final pageSize = 8.14; // num | 页数
-final pageNum = 8.14; // num | 页数大小
-final category = category_example; // String | 分类
-final author = author_example; // String | 作者
+final api = Openapi().getDefaultApi();
+final String search = ; // String | 模糊搜索字段
+final num pageSize = 8.14; // num | 页数
+final num pageNum = 8.14; // num | 页数大小
+final String category = category_example; // String | 分类
+final String author = author_example; // String | 作者
 
 try {
-    final result = api_instance.readerFavGet(search, pageSize, pageNum, category, author);
-    print(result);
-} catch (e) {
+    final response = api.readerFavGet(search, pageSize, pageNum, category, author);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->readerFavGet: $e\n');
 }
 ```
@@ -965,7 +965,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -985,14 +985,14 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final random = 10; // num | 随机书籍数量
-final recent = 12; // num | 最近阅读数量
+final api = Openapi().getDefaultApi();
+final num random = 10; // num | 随机书籍数量
+final num recent = 12; // num | 最近阅读数量
 
 try {
-    final result = api_instance.readerIndexGet(random, recent);
-    print(result);
-} catch (e) {
+    final response = api.readerIndexGet(random, recent);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->readerIndexGet: $e\n');
 }
 ```
@@ -1010,7 +1010,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -1030,17 +1030,17 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final search = ; // String | 模糊搜索字段
-final pageSize = 8.14; // num | 页数
-final pageNum = 8.14; // num | 页数大小
-final category = category_example; // String | 分类
-final author = author_example; // String | 作者
+final api = Openapi().getDefaultApi();
+final String search = ; // String | 模糊搜索字段
+final num pageSize = 8.14; // num | 页数
+final num pageNum = 8.14; // num | 页数大小
+final String category = category_example; // String | 分类
+final String author = author_example; // String | 作者
 
 try {
-    final result = api_instance.readerRecentGet(search, pageSize, pageNum, category, author);
-    print(result);
-} catch (e) {
+    final response = api.readerRecentGet(search, pageSize, pageNum, category, author);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->readerRecentGet: $e\n');
 }
 ```
@@ -1061,7 +1061,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -1081,12 +1081,12 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
+final api = Openapi().getDefaultApi();
 
 try {
-    final result = api_instance.readerStatsGet();
-    print(result);
-} catch (e) {
+    final response = api.readerStatsGet();
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->readerStatsGet: $e\n');
 }
 ```
@@ -1100,7 +1100,7 @@ This endpoint does not need any parameter.
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -1120,13 +1120,13 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final body = MultipartFile(); // MultipartFile | 
+final api = Openapi().getDefaultApi();
+final MultipartFile body = BINARY_DATA_HERE; // MultipartFile | 
 
 try {
-    final result = api_instance.readerUploadPost(body);
-    print(result);
-} catch (e) {
+    final response = api.readerUploadPost(body);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->readerUploadPost: $e\n');
 }
 ```
@@ -1143,7 +1143,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -1163,12 +1163,12 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
+final api = Openapi().getDefaultApi();
 
 try {
-    final result = api_instance.sysInfoGet();
-    print(result);
-} catch (e) {
+    final response = api.sysInfoGet();
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->sysInfoGet: $e\n');
 }
 ```
@@ -1182,7 +1182,7 @@ This endpoint does not need any parameter.
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -1202,13 +1202,13 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final sysInfoDto = SysInfoDto(); // SysInfoDto | 
+final api = Openapi().getDefaultApi();
+final SysInfoDto sysInfoDto = {"version":"0.0.1","system":"Linux","architecture":"AMD64","docs_data_path":"/data","disk_usage":"10/100T","m4t_support":true}; // SysInfoDto | 
 
 try {
-    final result = api_instance.sysInfoPut(sysInfoDto);
-    print(result);
-} catch (e) {
+    final response = api.sysInfoPut(sysInfoDto);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->sysInfoPut: $e\n');
 }
 ```
@@ -1225,7 +1225,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -1245,12 +1245,12 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
+final api = Openapi().getDefaultApi();
 
 try {
-    final result = api_instance.sysPingGet();
-    print(result);
-} catch (e) {
+    final response = api.sysPingGet();
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->sysPingGet: $e\n');
 }
 ```
@@ -1284,13 +1284,13 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final enableScanDto = EnableScanDto(); // EnableScanDto | 
+final api = Openapi().getDefaultApi();
+final EnableScanDto enableScanDto = ; // EnableScanDto | 
 
 try {
-    final result = api_instance.sysScanRunPost(enableScanDto);
-    print(result);
-} catch (e) {
+    final response = api.sysScanRunPost(enableScanDto);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->sysScanRunPost: $e\n');
 }
 ```
@@ -1307,7 +1307,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -1327,12 +1327,12 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
+final api = Openapi().getDefaultApi();
 
 try {
-    final result = api_instance.sysScanStatusGet();
-    print(result);
-} catch (e) {
+    final response = api.sysScanStatusGet();
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->sysScanStatusGet: $e\n');
 }
 ```
@@ -1346,7 +1346,7 @@ This endpoint does not need any parameter.
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -1366,12 +1366,12 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
+final api = Openapi().getDefaultApi();
 
 try {
-    final result = api_instance.sysScanStopPost();
-    print(result);
-} catch (e) {
+    final response = api.sysScanStopPost();
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->sysScanStopPost: $e\n');
 }
 ```
@@ -1385,7 +1385,7 @@ This endpoint does not need any parameter.
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -1405,13 +1405,13 @@ No authorization required
 ```dart
 import 'package:openapi/api.dart';
 
-final api_instance = DefaultApi();
-final body = Object(); // Object | 
+final api = Openapi().getDefaultApi();
+final JsonObject body = Object; // JsonObject | 
 
 try {
-    final result = api_instance.userUserinfoGet(body);
-    print(result);
-} catch (e) {
+    final response = api.userUserinfoGet(body);
+    print(response);
+} catch on DioException (e) {
     print('Exception when calling DefaultApi->userUserinfoGet: $e\n');
 }
 ```
@@ -1420,7 +1420,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | **Object**|  | [optional] 
+ **body** | **JsonObject**|  | [optional] 
 
 ### Return type
 
@@ -1428,7 +1428,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 

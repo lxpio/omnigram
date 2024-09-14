@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:omnigram/entities/book.entity.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'package:omnigram/providers/provider.dart';
-import 'package:omnigram/screens/reader/models/book_model.dart';
+
 
 class BookCard extends HookConsumerWidget {
   const BookCard({
@@ -14,13 +14,13 @@ class BookCard extends HookConsumerWidget {
     required this.height,
   });
 
-  final BookModel book;
+  final BookEntity book;
   final double width;
   final double height;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appConfig = ref.read(appConfigProvider);
+  
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -44,15 +44,15 @@ class BookCard extends HookConsumerWidget {
                   ),
                   height: height * .7,
                   width: width * 1,
-                  child: book.image.isNotEmpty
-                      ? FadeInImage(
+                  child: book.coverUrl == null ? FadeInImage(
                           placeholder: MemoryImage(kTransparentImage),
-                          image: NetworkImage(
-                            appConfig.baseUrl + book.image,
-                            headers: {
-                              "Authorization": "Bearer ${appConfig.token}"
-                            },
-                          ),
+                          image: const AssetImage('TODO image url'),
+                          // image: NetworkImage(
+                          //   appConfig.baseUrl + book.image,
+                          //   headers: {
+                          //     "Authorization": "Bearer ${appConfig.token}"
+                          //   },
+                          // ),
                           fit: BoxFit.fill,
                           imageErrorBuilder: (context, error, stackTrace) {
                             if (kDebugMode) {

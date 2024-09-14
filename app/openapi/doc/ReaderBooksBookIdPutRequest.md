@@ -20,7 +20,7 @@ Name | Type | Description | Notes
 **authorSort** | **String** |  | [optional] 
 **publisher** | **String** |  | [optional] 
 **description** | **String** |  | [optional] 
-**tags** | **List<String>** |  | [optional] [default to const []]
+**tags** | **BuiltList&lt;String&gt;** |  | [optional] 
 **pubdate** | **String** |  | [optional] 
 **rating** | **num** |  | [optional] 
 **publisherUrl** | **String** |  | [optional] 

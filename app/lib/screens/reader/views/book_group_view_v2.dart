@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/screens/reader/models/book_model.dart';
-import 'package:omnigram/screens/reader/providers/select_book.dart';
+import 'package:omnigram/entities/book.entity.dart';
 import 'package:omnigram/utils/constants.dart';
 
-import '../providers/books.dart';
+
 import 'book_card_view.dart';
 
 class BookReadingGroup extends HookConsumerWidget {
@@ -13,7 +12,7 @@ class BookReadingGroup extends HookConsumerWidget {
 
   final String title;
   final String viewmore;
-  final List<BookModel>? books;
+  final List<BookEntity>? books;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -60,22 +59,22 @@ class BookReadingGroup extends HookConsumerWidget {
                       ),
                     ),
                     onTap: () async {
-                      BookModel? b;
-                      //if progress or chapterPos is null , try request backend to get
-                      if (book.progress == null || book.progressIndex == null) {
-                        final api = ref.read(bookAPIProvider);
+                      // BookModel? b;
+                      // //if progress or chapterPos is null , try request backend to get
+                      // if (book.progress == null || book.progressIndex == null) {
+                      //   final api = ref.read(bookAPIProvider);
 
-                        final data = await api.getReadProcess(book.id);
+                      //   final data = await api.getReadProcess(book.id);
 
-                        if (data != null) {
-                          // await ref.read(selectBookProvider.notifier).refresh(book);
-                          b = book.copyWith(
-                              progress: (data["progress"] + 0.0),
-                              progressIndex: data["progress_index"]);
-                        }
-                      }
+                      //   if (data != null) {
+                      //     // await ref.read(selectBookProvider.notifier).refresh(book);
+                      //     b = book.copyWith(
+                      //         progress: (data["progress"] + 0.0),
+                      //         progressIndex: data["progress_index"]);
+                      //   }
+                      // }
                       if (!context.mounted) return;
-                      context.pushNamed(kSummaryPage, extra: b ?? book);
+                      context.pushNamed(kSummaryPage, extra:  book);
                     }
                     //'/reader/books/${book.id}'
                     );

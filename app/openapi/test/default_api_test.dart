@@ -1,22 +1,12 @@
-//
-// AUTO-GENERATED FILE, DO NOT MODIFY!
-//
-// @dart=2.18
-
-// ignore_for_file: unused_element, unused_import
-// ignore_for_file: always_put_required_named_parameters_first
-// ignore_for_file: constant_identifier_names
-// ignore_for_file: lines_longer_than_80_chars
-
-import 'package:openapi/api.dart';
 import 'package:test/test.dart';
+import 'package:openapi/openapi.dart';
 
 
 /// tests for DefaultApi
 void main() {
-  // final instance = DefaultApi();
+  final instance = Openapi().getDefaultApi();
 
-  group('tests for DefaultApi', () {
+  group(DefaultApi, () {
     // 删除账号
     //
     // 
@@ -48,7 +38,7 @@ void main() {
     //
     // 
     //
-    //Future<UserDto> adminAccountsUserIdGet(String userId, { Object body }) async
+    //Future<UserDto> adminAccountsUserIdGet(String userId, { JsonObject body }) async
     test('test adminAccountsUserIdGet', () async {
       // TODO
     });
@@ -57,7 +47,7 @@ void main() {
     //
     // 
     //
-    //Future<List<ApikeyDto>> authAccountsAccountIdApikeysGet(String accountId) async
+    //Future<BuiltList<ApikeyDto>> authAccountsAccountIdApikeysGet(String accountId) async
     test('test authAccountsAccountIdApikeysGet', () async {
       // TODO
     });
@@ -120,7 +110,7 @@ void main() {
     //
     // 
     //
-    //Future<Object> imgReaderCoversBookIdGet(String bookId) async
+    //Future<JsonObject> imgReaderCoversBookIdGet(String bookId) async
     test('test imgReaderCoversBookIdGet', () async {
       // TODO
     });
@@ -129,7 +119,7 @@ void main() {
     //
     // 
     //
-    //Future<Object> m4tTtsSimplePost({ M4tTtsStreamPostRequest m4tTtsStreamPostRequest }) async
+    //Future<JsonObject> m4tTtsSimplePost({ M4tTtsStreamPostRequest m4tTtsStreamPostRequest }) async
     test('test m4tTtsSimplePost', () async {
       // TODO
     });
@@ -156,7 +146,7 @@ void main() {
     //
     // 
     //
-    //Future<Object> m4tTtsStreamPost({ M4tTtsStreamPostRequest m4tTtsStreamPostRequest }) async
+    //Future<JsonObject> m4tTtsStreamPost({ M4tTtsStreamPostRequest m4tTtsStreamPostRequest }) async
     test('test m4tTtsStreamPost', () async {
       // TODO
     });
@@ -192,7 +182,7 @@ void main() {
     //
     // 
     //
-    //Future<Object> readerDownloadBooksBookIdGet(String bookId) async
+    //Future<JsonObject> readerDownloadBooksBookIdGet(String bookId) async
     test('test readerDownloadBooksBookIdGet', () async {
       // TODO
     });
@@ -300,7 +290,7 @@ void main() {
     //
     // 
     //
-    //Future<UserDto> userUserinfoGet({ Object body }) async
+    //Future<UserDto> userUserinfoGet({ JsonObject body }) async
     test('test userUserinfoGet', () async {
       // TODO
     });

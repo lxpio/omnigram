@@ -1,7 +1,8 @@
 import 'dart:ui';
 
 import 'package:isar/isar.dart';
-import 'package:openapi/api.dart';
+import 'package:openapi/openapi.dart';
+
 
 part 'user.entity.g.dart';
 
@@ -23,7 +24,7 @@ class User {
 
   });
 
-  Id get isarId => id;
+
   bool get isAdmin => roleId == 1;
 
 
@@ -88,7 +89,6 @@ class User {
   int roleId;
   String mobile;
   String profileImagePath;
-  @Enumerated(EnumType.ordinal)
   AvatarColorEnum avatarColor;
 
   @override
