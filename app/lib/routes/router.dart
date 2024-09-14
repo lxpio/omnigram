@@ -1,24 +1,21 @@
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/components/root_layout.dart';
-import 'package:omnigram/providers/auth.provider.dart';
-import 'package:omnigram/providers/user/user_model.dart';
+import 'package:omnigram/entities/book.entity.dart';
+
 import 'package:omnigram/screens/discover/discover_small_screen.dart';
 
-import 'package:omnigram/screens/chat/chat_page_screen.dart';
-import 'package:omnigram/screens/chat/models/conversation.dart';
+
 
 import 'package:omnigram/screens/coming_soon.dart';
 import 'package:omnigram/screens/profile/profile_mobile_screen.dart';
-import 'package:omnigram/screens/reader/models/book_model.dart';
 import 'package:omnigram/screens/reader/read_epub_screen.dart';
 import 'package:omnigram/screens/reader/reader_mobile_screen.dart';
 import 'package:omnigram/screens/splash_screen.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:go_router/go_router.dart';
 
-import '../screens/chat/chat_home_screen.dart';
 import '../screens/home/home_small_screen.dart';
 import '../screens/login_screen.dart';
 
@@ -70,7 +67,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: kSummaryPath,
         name: kSummaryPage,
         pageBuilder: (context, state) {
-          final book = state.extra as BookModel;
+          final book = state.extra as BookEntity;
           return MaterialPage(
             // key: _pageKey,
             child: ReaderMobileScreen(
@@ -104,33 +101,33 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           ),
         ),
       ),
-      GoRoute(
-        path: kChatPath,
-        name: kChatPage,
-        pageBuilder: (context, state) => const MaterialPage(
-          // key: _pageKey,
-          child: RootLayout(
-            // key: _scaffoldKey,
-            currentIndex: 2,
-            child: ChatHomeScreen(),
-          ),
-        ),
-        routes: [
-          GoRoute(
-            path: kChatPagePath,
-            name: kChatPagePath,
-            pageBuilder: (context, state) {
-              final Conversation conversation = state.extra is Conversation
-                  ? state.extra as Conversation
-                  : Conversation();
+      // GoRoute(
+      //   path: kChatPath,
+      //   name: kChatPage,
+      //   pageBuilder: (context, state) => const MaterialPage(
+      //     // key: _pageKey,
+      //     child: RootLayout(
+      //       // key: _scaffoldKey,
+      //       currentIndex: 2,
+      //       child: ChatHomeScreen(),
+      //     ),
+      //   ),
+      //   routes: [
+      //     GoRoute(
+      //       path: kChatPagePath,
+      //       name: kChatPagePath,
+      //       pageBuilder: (context, state) {
+      //         final Conversation conversation = state.extra is Conversation
+      //             ? state.extra as Conversation
+      //             : Conversation();
 
-              return MaterialPage(
-                child: ChatPageScreen(conversation: conversation),
-              );
-            },
-          ),
-        ],
-      ),
+      //         return MaterialPage(
+      //           child: ChatPageScreen(conversation: conversation),
+      //         );
+      //       },
+      //     ),
+      //   ],
+      // ),
       GoRoute(
         path: kManagerPath,
         name: kManagerPage,

@@ -2,9 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
-import 'package:omnigram/utils/localization.service.dart';
+import 'package:omnigram/providers/scan_status.provider.dart';
 
-import '../providers/scan_status.dart';
+
+
 
 class ScanStatusView extends HookConsumerWidget {
   const ScanStatusView({Key? key}) : super(key: key);
@@ -36,7 +37,7 @@ class ScanStatusView extends HookConsumerWidget {
                   trailing: status.running
                       ? IconButton(
                           onPressed: () {
-                            ref.read(scanAPIProvider.notifier).stop();
+                            ref.read(scanServiceProvider.notifier).stop();
                           },
                           icon: const Icon(Icons.stop_circle),
                           color: Theme.of(context).colorScheme.primary,
@@ -92,7 +93,7 @@ class ScanStatusView extends HookConsumerWidget {
                               //     Theme.of(context).colorScheme.tertiary,
                               color: Theme.of(context).colorScheme.tertiary,
                               onPressed: () {
-                                ref.read(scanAPIProvider.notifier).run();
+                                ref.read(scanServiceProvider.notifier).run();
                               },
                               icon: const Icon(Icons.refresh),
                               style: IconButton.styleFrom(

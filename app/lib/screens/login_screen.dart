@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/providers/provider.dart';
-import 'package:omnigram/providers/service/provider.dart';
+import 'package:omnigram/entities/isar_store.entity.dart';
+import 'package:omnigram/providers/auth.provider.dart';
 
-import 'package:omnigram/providers/user/oauth_model.dart';
-import 'package:omnigram/providers/user/user_model.dart';
 import 'package:omnigram/utils/show_snackbar.dart';
 import 'package:lottie/lottie.dart';
 
@@ -18,10 +16,10 @@ class LoginScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final serverAddr = ref.watch(appConfigProvider).baseUrl;
+    final serverAddr = IsarStore.tryGet(StoreKey.serverEndpoint);
 
     final serverController =
-        useTextEditingController(text: serverAddr.isEmpty ? null : serverAddr);
+        useTextEditingController(text: serverAddr);
 
     final accountController = useTextEditingController();
     final passwordController = useTextEditingController();
@@ -59,9 +57,7 @@ class LoginScreen extends HookConsumerWidget {
                 decoration: InputDecoration(
                   // contentPadding: EdgeInsets.all(0.0),
                   labelText: 'server_address_label'.tr(),
-                  hintText: serverAddr.isNotEmpty
-                      ? serverAddr
-                      : 'server_address_hint_text'.tr(),
+                  hintText: serverAddr?? 'server_address_hint_text'.tr(),
                   prefixIcon: const Icon(Icons.dns_outlined),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -128,12 +124,18 @@ class LoginScreen extends HookConsumerWidget {
               FilledButton(
                 onPressed: () {
                   //尝试获取用户登陆信息 如果失败则弹窗
-                  getOauthToken(
-                    serverController.text,
-                    accountController.text,
-                    passwordController.text,
-                  ).then((value) {
-                    _savedata(ref, value, serverController.text);
+
+
+                  ref.read(authProvider.notifier)
+                  .login(accountController.text, passwordController.text, serverController.text)
+                  .then((success) {
+
+                    if (!success) {
+                      // _savedata(ref, value, serverController.text); //登陆失败 TODO
+                      showSnackBar(context, 'network_error'.tr());
+                    }
+
+                    
                   }).onError((error, stackTrace) {
                     if (error is DioException) {
                       showSnackBar(context, 'network_error'.tr());
@@ -159,14 +161,5 @@ class LoginScreen extends HookConsumerWidget {
     );
   }
 
-  Future<void> _savedata(
-      WidgetRef ref, OauthModel oauth, String baseUrl) async {
-    await ref
-        .read(appConfigProvider.notifier)
-        .updateSever(apiserver: baseUrl, apikey: oauth.accessToken);
-    // get server config
-    await ref.read(serverProvider.notifier).update();
-    // get user config
-    await ref.read(userProvider.notifier).update();
-  }
+
 }

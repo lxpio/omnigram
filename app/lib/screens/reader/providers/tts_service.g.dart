@@ -3,30 +3,10 @@
 part of 'tts_service.dart';
 
 // **************************************************************************
-// JsonSerializableGenerator
-// **************************************************************************
-
-_$TTSStateImpl _$$TTSStateImplFromJson(Map<String, dynamic> json) =>
-    _$TTSStateImpl(
-      showbar: json['showbar'] as bool? ?? false,
-      playing: json['playing'] as bool? ?? false,
-      position: json['position'] == null
-          ? null
-          : Duration(microseconds: (json['position'] as num).toInt()),
-    );
-
-Map<String, dynamic> _$$TTSStateImplToJson(_$TTSStateImpl instance) =>
-    <String, dynamic>{
-      'showbar': instance.showbar,
-      'playing': instance.playing,
-      'position': instance.position?.inMicroseconds,
-    };
-
-// **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$ttsServiceHash() => r'c38508bd42c2fe06803f756979c0445e4fd1c599';
+String _$ttsServiceHash() => r'52e1383676b0a2c2268a6637940dd0eb832165ea';
 
 /// See also [TtsService].
 @ProviderFor(TtsService)

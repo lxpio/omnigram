@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
-import 'package:omnigram/providers/user/user_model.dart';
+import 'package:omnigram/providers/auth.provider.dart';
+
 import 'package:omnigram/utils/constants.dart';
 
 class NoConnectionScreen extends ConsumerWidget {
@@ -72,7 +73,7 @@ class NoConnectionScreen extends ConsumerWidget {
                     children: [
                       InkWell(
                         onTap: () {
-                          ref.read(userProvider.notifier).logout();
+                          ref.read(authProvider.notifier).logout();
                           context.goNamed(kLoginPage);
                         },
                         child: Text(

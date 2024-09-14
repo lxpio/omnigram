@@ -104,7 +104,8 @@ paths:
                     code: 42
                     message: ad ullamco in
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /auth/logout:
     post:
       summary: 用户登出
@@ -126,7 +127,8 @@ paths:
                     code: 200
                     message: success
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /auth/accounts/{account_id}/apikeys:
     post:
       summary: 创建API Key
@@ -173,7 +175,8 @@ paths:
                     code: 403
                     message: create error
           headers: {}
-      security: []
+      security:
+        - bearer: []
     get:
       summary: 获取API Key列表
       deprecated: false
@@ -211,7 +214,8 @@ paths:
                     code: 403
                     message: create error
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /auth/accounts/{account_id}/apikeys/{key_id}:
     delete:
       summary: 删除API Key
@@ -245,7 +249,8 @@ paths:
                     code: 200
                     message: ad ullamco in
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /auth/token:
     post:
       summary: 获取访问token
@@ -374,7 +379,8 @@ paths:
                     page_num: 65
                     page_size: 95
           headers: {}
-      security: []
+      security:
+        - bearer: []
     post:
       summary: 创建账号
       deprecated: false
@@ -436,7 +442,8 @@ paths:
                     ctime: 1723798599
                     utime: 1723798599
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /admin/accounts/{account_id}:
     delete:
       summary: 删除账号
@@ -466,7 +473,8 @@ paths:
                       Qtqpgneky yrstcffei yinjrgontz dkplfw npcnbpr jjzwa rbsn
                       cocgxo bil kufidv vivhq hkfdmoiqc eeccuggpaw.
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /admin/accounts/{user_id}:
     get:
       summary: 获取用户信息
@@ -509,7 +517,8 @@ paths:
                     ctime: 1723798547
                     utime: 1723798547
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /user/userinfo:
     get:
       summary: 当前用户信息
@@ -546,7 +555,8 @@ paths:
                     ctime: 1723798547
                     utime: 1723798547
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /reader/index:
     get:
       summary: 获取阅读索引页
@@ -762,7 +772,8 @@ paths:
                         progress_index: 68
                         para_position: 8
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /reader/books:
     get:
       summary: 获取书籍列表
@@ -846,7 +857,8 @@ paths:
                         progress_index: 12
                         para_position: 53
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /reader/recent:
     get:
       summary: 最近阅读
@@ -928,7 +940,8 @@ paths:
                         progress_index: 68
                         para_position: 1
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /reader/fav:
     get:
       summary: 喜欢的书
@@ -1010,7 +1023,8 @@ paths:
                         progress_index: 4
                         para_position: 24
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /reader/books/{book_id}:
     get:
       summary: 书籍详情
@@ -1072,7 +1086,8 @@ paths:
                           progress_index: 100
                           para_position: 100
           headers: {}
-      security: []
+      security:
+        - bearer: []
     put:
       summary: 修改书籍介绍信息
       deprecated: false
@@ -1213,7 +1228,8 @@ paths:
                           progress_index: 100
                           para_position: 100
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /reader/upload:
     post:
       summary: 上传书籍
@@ -1270,7 +1286,8 @@ paths:
                     progress_index: 22
                     para_position: 75
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /reader/download/books/{book_id}:
     get:
       summary: 下载书籍
@@ -1289,12 +1306,13 @@ paths:
         '200':
           description: 下载书
           content:
-            '*/*':
+            application/octet-stream:
               schema:
                 type: object
                 properties: {}
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /img/reader/covers/{book_id}:
     get:
       summary: 获取书籍封面图片
@@ -1318,7 +1336,8 @@ paths:
                 type: object
                 properties: {}
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /reader/stats:
     get:
       summary: 获取阅读统计数据
@@ -1361,7 +1380,8 @@ paths:
                     publisher: 23
                     tags: 87
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /sys/info:
     get:
       summary: 获取系统信息
@@ -1414,7 +1434,8 @@ paths:
                     disk_usage: 10/100T
                     m4t_support: true
           headers: {}
-      security: []
+      security:
+        - bearer: []
     put:
       summary: 修改系统信息
       deprecated: false
@@ -1446,7 +1467,8 @@ paths:
                     code: 200
                     message: ok
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /sys/ping:
     get:
       summary: 系统心跳
@@ -1509,7 +1531,8 @@ paths:
                     epub_count: 98
                     pdf_count: 43
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /sys/scan/run:
     post:
       summary: 启动扫描
@@ -1554,7 +1577,8 @@ paths:
                     epub_count: 6
                     pdf_count: 46
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /sys/scan/stop:
     post:
       summary: 停止扫描
@@ -1582,7 +1606,8 @@ paths:
                     epub_count: 46
                     pdf_count: 4
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /m4t/tts/speakers:
     get:
       summary: 获取声音列表
@@ -1621,7 +1646,8 @@ paths:
                         tag: normal
                         avatar_url: /img/ava
           headers: {}
-      security: []
+      security:
+        - bearer: []
     post:
       summary: 上传声音
       deprecated: false
@@ -1662,7 +1688,8 @@ paths:
                     tag: normal
                     avatar_url: /img/ava
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /m4t/tts/stream:
     post:
       summary: 文字转语音接口
@@ -1708,7 +1735,8 @@ paths:
                 type: object
                 properties: {}
           headers: {}
-      security: []
+      security:
+        - bearer: []
   /m4t/tts/simple:
     post:
       summary: 文字转语音
@@ -1754,7 +1782,8 @@ paths:
                 type: object
                 properties: {}
           headers: {}
-      security: []
+      security:
+        - bearer: []
 components:
   schemas:
     user_dto:
@@ -1872,6 +1901,9 @@ components:
         description:
           type: string
           title: 描述
+        fav_status:
+          type: boolean
+          title: 喜欢状态
         tags:
           type: array
           items:
@@ -2132,5 +2164,8 @@ components:
         - expired_in
         - refresh_token
         - access_token
-  securitySchemes: {}
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
 servers: []

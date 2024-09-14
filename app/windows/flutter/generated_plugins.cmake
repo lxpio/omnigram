@@ -6,7 +6,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
   desktop_window
   flutter_udid
   isar_flutter_libs
-  objectbox_flutter_libs
   share_plus
   url_launcher_windows
 )

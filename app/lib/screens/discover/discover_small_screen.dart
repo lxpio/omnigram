@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/providers/user/user_model.dart';
+
+import 'package:omnigram/providers/auth.provider.dart';
 import 'package:omnigram/utils/constants.dart';
-import 'package:omnigram/utils/localization.service.dart';
+
 
 import 'views/epub_index_view.dart';
 
@@ -18,7 +19,10 @@ class DiscoverSmallScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isAdmin = ref.watch(userProvider).roleId == 1;
+
+    final authState = ref.watch(authProvider);
+
+  
     final selected = ref.watch(selectBookProvider);
 
     final buttonFocusNode = useFocusNode(debugLabel: 'More Button');
@@ -166,7 +170,7 @@ class DiscoverSmallScreen extends HookConsumerWidget {
             },
           ),
           MenuAnchor(
-            menuChildren: MoreMenus(context, isAdmin),
+            menuChildren: MoreMenus(context, authState.isAdmin),
             builder: (context, controller, child) {
               return IconButton(
                 focusNode: buttonFocusNode,

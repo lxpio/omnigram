@@ -1,0 +1,68 @@
+diff --git a/app/openapi/lib/src/api/default_api.dart b/app/openapi/lib/src/api/default_api.dart
+index c157294..2caece1 100644
+--- a/app/openapi/lib/src/api/default_api.dart
++++ b/app/openapi/lib/src/api/default_api.dart
+@@ -1442,7 +1442,7 @@ class DefaultApi {
+   ///
+   /// Returns a [Future] containing a [Response] with a [JsonObject] as data
+   /// Throws [DioException] if API call or serialization fails
+-  Future<Response<JsonObject>> m4tTtsStreamPost({ 
++  Future<Response<T>> m4tTtsStreamPost<T>({ 
+     M4tTtsStreamPostRequest? m4tTtsStreamPostRequest,
+     CancelToken? cancelToken,
+     Map<String, dynamic>? headers,
+@@ -1469,6 +1469,7 @@ class DefaultApi {
+       },
+       contentType: 'application/json',
+       validateStatus: validateStatus,
++      responseType: ResponseType.stream,
+     );
+ 
+     dynamic _bodyData;
+@@ -1489,7 +1490,7 @@ class DefaultApi {
+       );
+     }
+ 
+-    final _response = await _dio.request<Object>(
++    return _dio.request<T>(
+       _path,
+       data: _bodyData,
+       options: _options,
+@@ -1497,36 +1498,7 @@ class DefaultApi {
+       onSendProgress: onSendProgress,
+       onReceiveProgress: onReceiveProgress,
+     );
+-
+-    JsonObject? _responseData;
+-
+-    try {
+-      final rawResponse = _response.data;
+-      _responseData = rawResponse == null ? null : _serializers.deserialize(
+-        rawResponse,
+-        specifiedType: const FullType(JsonObject),
+-      ) as JsonObject;
+-
+-    } catch (error, stackTrace) {
+-      throw DioException(
+-        requestOptions: _response.requestOptions,
+-        response: _response,
+-        type: DioExceptionType.unknown,
+-        error: error,
+-        stackTrace: stackTrace,
+-      );
+-    }
+-
+-    return Response<JsonObject>(
+-      data: _responseData,
+-      headers: _response.headers,
+-      isRedirect: _response.isRedirect,
+-      requestOptions: _response.requestOptions,
+-      redirects: _response.redirects,
+-      statusCode: _response.statusCode,
+-      statusMessage: _response.statusMessage,
+-      extra: _response.extra,
+-    );
++   
+   }
+ 
+   /// 书籍详情

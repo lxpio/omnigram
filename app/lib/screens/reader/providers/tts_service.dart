@@ -1,30 +1,34 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:omnigram/providers/service/provider.dart';
+
+import 'package:freezed/freezed.dart';
+import 'package:omnigram/providers/api.provider.dart';
 import 'package:omnigram/screens/reader/models/epub_document.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/wav.dart';
+import 'package:openapi/openapi.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:just_audio/just_audio.dart';
 import '../models/epub/epub.dart';
 import 'select_book.dart';
 
 part 'tts_service.g.dart';
-part 'tts_service.freezed.dart';
 
-@freezed
-class TTSState with _$TTSState {
-  const factory TTSState({
-    @Default(false) bool showbar,
-    @Default(false) bool playing,
-    Duration? position,
-  }) = _TTSState;
 
-  factory TTSState.fromJson(Map<String, Object?> json) =>
-      _$TTSStateFromJson(json);
+@Freezed()
+class TTSState  {
+
+   TTSState({
+    required this.showbar,
+    required this.playing,
+    this.position,
+  });
+
+  final bool showbar;
+  final bool playing;
+  late Duration? position;
 }
+
 
 @Riverpod(keepAlive: true)
 class TtsService extends _$TtsService {
@@ -33,7 +37,7 @@ class TtsService extends _$TtsService {
   @override
   TTSState build() {
     player = AudioPlayer();
-    return const TTSState();
+    return  TTSState(showbar: false, playing: false);
   }
 
   void toggle() {
@@ -76,7 +80,7 @@ class TtsService extends _$TtsService {
       //要先关闭现有的
       await ref.read(selectBookProvider.notifier).saveProcess(position);
     }
-    state = const TTSState();
+    state =  TTSState(showbar: false, playing: false);
 
     // ref.notifyListeners();
   }
@@ -85,7 +89,7 @@ class TtsService extends _$TtsService {
     if (state.playing) {
       return;
     }
-    state = const TTSState(showbar: true, playing: true);
+    state =  TTSState(showbar: true, playing: true);
 
     //获取当前index
     final index = ref.read(selectBookProvider.select((value) => value.index)) ??
@@ -131,7 +135,9 @@ class TtsService extends _$TtsService {
             .read(selectBookProvider.notifier)
             .updateProgress(current, document.progress(current));
       } else {
-        state = state.copyWith(playing: false);
+        
+        // state = state.copyWith(playing: false); 
+        state = TTSState(showbar: state.showbar, playing: false,position: state.position);
         break;
       }
     }
@@ -139,6 +145,8 @@ class TtsService extends _$TtsService {
   }
 
   Future<String> _fetchWavStream(EpubDocument document, int pos) async {
+
+    
     final bookApi = ref.read(apiServiceProvider);
 
     final content = document.getContent(pos);
@@ -152,19 +160,34 @@ class TtsService extends _$TtsService {
     }
 
     try {
-      final response = await bookApi.ttsStream<ResponseBody>(
-        "/m4t/pcm/stream",
-        body: {
-          "text": content,
-          "audio_id": "1",
-          "lang": 'zh-cn',
-        },
-        header: {"responseType": "application/json"},
+
+
+      final response = await bookApi.m4tTtsStreamPost(
+        m4tTtsStreamPostRequest: M4tTtsStreamPostRequest((b) => b
+          ..text = content
+          ..audioId = '1'
+          ..lang = 'zh-cn'
+          ),
+          // headers: responseType: ResponseType.stream);
       );
+
+
+      // final response = await bookApi.ttsStream<ResponseBody>(
+      //   "/m4t/pcm/stream",
+      //   body: {
+      //     "text": content,
+      //     "audio_id": "1",
+      //     "lang": 'zh-cn',
+      //   },
+      //   header: {"responseType": "application/json"},
+      // );
 
       if (response.statusCode == HttpStatus.ok) {
         // Pipe the stream to the StreamController
         final raw = Int16Wav(numChannels: 1, sampleRate: 24000);
+
+        // final raw = Int16Wav(numChannels: 1, sampleRate: 24000);
+
         await response.data!.stream.forEach((element) {
           raw.append(element);
         });

@@ -25,7 +25,9 @@ class IsarStore {
   /// clears all values from this store (cache and DB), only for testing!
   static Future<void> clear() {
     _cache.fillRange(0, _cache.length, null);
-    return _db.writeTxn(() => _db.storeValues.clear());
+    return _db.writeAsync((db) {
+      db.storeValues.clear();
+    });
   }
 
   /// Returns the stored value for the given key or if null the [defaultValue]
@@ -46,25 +48,25 @@ class IsarStore {
   static T? tryGet<T>(StoreKey<T> key) => _cache[key.id];
 
   /// Stores the value synchronously in the cache and asynchronously in the DB
-  static Future<void> put<T>(StoreKey<T> key, T value) {
+  static Future<void> put<T>(StoreKey<T> key, T value) async {
     if (_cache[key.id] == value) return Future.value();
     _cache[key.id] = value;
-    return _db.writeTxn(
-      () async => _db.storeValues.put(await StoreValue._of(value, key)),
-    );
+    final data = await StoreValue._of(value, key);
+
+    return _db.writeAsync((db) => db.storeValues.put(data));
   }
 
   /// Removes the value synchronously from the cache and asynchronously from the DB
   static Future<void> delete<T>(StoreKey<T> key) {
     if (_cache[key.id] == null) return Future.value();
     _cache[key.id] = null;
-    return _db.writeTxn(() => _db.storeValues.delete(key.id));
+    return _db.writeAsync((db) => db.storeValues.delete(key.id));
   }
 
   /// Fills the cache with the values from the DB
   static _populateCache() {
     for (StoreKey key in StoreKey.values) {
-      final StoreValue? value = _db.storeValues.getSync(key.id);
+      final StoreValue? value = _db.storeValues.get(key.id);
       if (value != null) {
         _cache[key.id] = value._extract(key);
       }
@@ -90,7 +92,7 @@ class IsarStore {
 @Collection(inheritance: false)
 class StoreValue {
   StoreValue(this.id, {this.intValue, this.strValue});
-  Id id;
+  int id;
   int? intValue;
   String? strValue;
 
@@ -132,7 +134,7 @@ class StoreValue {
         break;
       default:
         if (key.toDb != null) {
-          i = await key.toDb!.call(IsarStore._db, value);
+          key.toDb!.call(IsarStore._db, value);
           break;
         }
         throw TypeError();
@@ -204,16 +206,17 @@ enum StoreKey<T> {
   final int id;
   final Type type;
   final T? Function<T>(Isar, int)? fromDb;
-  final Future<int> Function<T>(Isar, T)? toDb;
+  final void Function<T>(Isar, T)? toDb;
 }
 
 T? _getUser<T>(Isar db, int i) {
-  final User? u = db.users.getSync(i);
+  final User? u = db.users.get(i);
   return u as T?;
 }
 
-Future<int> _toUser<T>(Isar db, T u) {
+void _toUser<T>(Isar db, T u) {
   if (u is User) {
+
     return db.users.put(u);
   }
   throw TypeError();

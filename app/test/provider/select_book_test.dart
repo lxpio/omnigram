@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:omnigram/screens/reader/models/book_model.dart';
+import 'package:omnigram/entities/book.entity.dart';
 import 'package:omnigram/screens/reader/models/epub_document.dart';
 
 import 'package:test/test.dart';
@@ -12,9 +12,9 @@ void main() {
 
 // factory LLMService.fromRawJson(String str) =>
 //       LLMService.fromJson(json.decode(str));
-    final book = BookModel.fromJson(json.decode(data));
+    final book = BookEntity.fromJson(json.decode(data));
 
-    expect(book.id, 1);
+    expect(book!.id, 1);
     // expect(book.chapterPos, "/text00002.html?12");
   });
 

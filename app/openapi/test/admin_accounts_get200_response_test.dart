@@ -1,27 +1,18 @@
-//
-// AUTO-GENERATED FILE, DO NOT MODIFY!
-//
-// @dart=2.18
-
-// ignore_for_file: unused_element, unused_import
-// ignore_for_file: always_put_required_named_parameters_first
-// ignore_for_file: constant_identifier_names
-// ignore_for_file: lines_longer_than_80_chars
-
-import 'package:openapi/api.dart';
 import 'package:test/test.dart';
+import 'package:openapi/openapi.dart';
 
 // tests for AdminAccountsGet200Response
 void main() {
-  // final instance = AdminAccountsGet200Response();
+  final instance = AdminAccountsGet200ResponseBuilder();
+  // TODO add properties to the builder and call build()
 
-  group('test AdminAccountsGet200Response', () {
+  group(AdminAccountsGet200Response, () {
     // int total
     test('to test the property `total`', () async {
       // TODO
     });
 
-    // List<UserDto> items (default value: const [])
+    // BuiltList<UserDto> items
     test('to test the property `items`', () async {
       // TODO
     });
@@ -36,7 +27,5 @@ void main() {
       // TODO
     });
 
-
   });
-
 }
