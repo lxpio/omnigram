@@ -59,5 +59,6 @@
   "snack_bar_ooops":"Ooops! 😓",
   "no_internet":"No internet connection found. Check your connection or try again.",
   "try_again":"Try again",
-  "config_server":"Config Server?"
+  "config_server":"Config Server?",
+  "login_for_more_features": "Login to Unlock More features"
 }

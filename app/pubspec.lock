@@ -534,14 +534,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  freezed:
-    dependency: "direct main"
-    description:
-      name: freezed
-      sha256: "62b248b2dfb06ded10c84b713215b25aea020a5b08c32e801a974361557ebc3f"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "3.0.0-0.0.dev"
   freezed_annotation:
     dependency: transitive
     description:

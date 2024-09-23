@@ -94,6 +94,6 @@ Future<Isar> loadDb() async {
   IsarStore.init(db);
 
       //初始化日志
-  OmnigramLogger.initialize(db);
+  OmnigramLogger.instance.initialize(db);
   return db;
 }

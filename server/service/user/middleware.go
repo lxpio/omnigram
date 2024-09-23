@@ -6,23 +6,25 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lxpio/omnigram/server/service/user/schema"
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/middleware"
+	"github.com/lxpio/omnigram/server/service/user/schema"
 	"github.com/lxpio/omnigram/server/utils"
 )
 
 const (
 	// apiKeyPrefix  = "api-key:"
-	userKeyPrefix = "user-key:"
+	cacheKeyUser    = "/user/apikeys/"
+	cacheKeySession = `/user/sessions/`
 )
 
 // OauthMiddleware 认证中间件，如果seesion 合法将用户ID存入上下文
 func OauthMiddleware(c *gin.Context) {
 
+	//获取到了APIKEY，校验APIKEY合法性
 	if apiKey := getAPIKey(c); apiKey != `` {
 
-		key := userKeyPrefix + apiKey
+		key := cacheKeyUser + apiKey
 
 		if info, ok := userInfoCache.Get(key); ok {
 
@@ -33,21 +35,29 @@ func OauthMiddleware(c *gin.Context) {
 
 		}
 
+		handleSession(c, apiKey)
+		return
 		//校验APIKey合法性
-		if token, err := schema.FirstTokenByAPIKey(orm, apiKey); err == nil {
+		// if token, err := schema.FirstTokenByAPIKey(orm, apiKey); err == nil {
 
-			if info, err1 := schema.FirstUserByID(orm, token.UserID); err1 == nil {
-				//Credential 信息需要抹掉
-				info.Credential = ``
-				userInfoCache.Add(key, info)
-				c.Set(middleware.XUserIDTag, info.ID)
-				c.Set(middleware.XUserInfoTag, info)
-				c.Next()
-				return
-			}
+		// 	if info, err1 := schema.FirstUserByID(orm, token.UserID); err1 == nil {
+		// 		//Credential 信息需要抹掉
+		// 		info.Credential = ``
+		// 		userInfoCache.Add(key, info)
+		// 		c.Set(middleware.XUserIDTag, info.ID)
+		// 		c.Set(middleware.XUserInfoTag, info)
+		// 		c.Next()
+		// 		return
+		// 	}
+
+		// }
+
+	} else {
+		//获取到了session，校验session合法性
+		if session := getSession(c); session != `` {
+			handleSession(c, session)
 
 		}
-
 	}
 
 	c.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrUnauthorized)
@@ -55,17 +65,14 @@ func OauthMiddleware(c *gin.Context) {
 	// handleSession(c)
 }
 
-func handleSession(c *gin.Context) {
-	//从 session 校验
-	session, err := getSession(c)
+func handleSession(c *gin.Context, sess string) {
 
+	session, err := getSessionData(sess)
 	if err != nil {
-		log.E(`获取Session 失败：`, err.Error())
-		c.JSON(401, utils.ErrSession)
-		c.Abort()
+		log.E(`session 获取失败: `, err)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrUnauthorized)
 		return
 	}
-
 	//校验session 合法性
 	//获取相对时间
 	// diff := (time.Now().Unix() - session.Utime)
@@ -77,23 +84,24 @@ func handleSession(c *gin.Context) {
 		// 删除
 		c.SetCookie(middleware.UserSessionTag, "", -1, "/", "", true, true)
 		// session.Clean(srv.orm)
-		c.JSON(401, utils.ErrSessionTimeout)
-		c.Abort()
+		c.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrSessionTimeout)
 		return
 	}
 
-	//session 有效时间小于1分钟 刷新session 过去事情
+	//session 有效时间小于1分钟 刷新session
 	if diff > 60 {
 
 		if err := orm.Table(`sessions`).Where(`id = ?`, session.Session).Update(`utime`, time.Now()).Error; err != nil {
 			log.E("刷新session失败: ", err)
 		}
+		sessionCache.Remove(cacheKeySession + session.Session)
 		log.D("刷新session")
 
 	}
 
 	c.Set(middleware.XUserInfoTag, session.UserInfo)
 	c.Set(middleware.XUserIDTag, session.UserInfo.ID)
+	c.Set(middleware.UserSessionTag, session.Session)
 
 	c.Next()
 }
@@ -122,14 +130,31 @@ func AdminMiddleware(c *gin.Context) {
 }
 
 // parseSessionUser 获取session 关联的用户信息，
-func getSession(c *gin.Context) (*schema.Session, error) {
-	id, err := c.Cookie(middleware.UserSessionTag)
-	if err != nil {
-		return nil, err
+func getSessionData(id string) (*schema.Session, error) {
+
+	key := cacheKeySession + id
+
+	if raw, ok := sessionCache.Get(key); ok {
+		log.D(`hit cachekey: `, key)
+		return raw, nil
 	}
 
-	return schema.FirstSessionByID(orm, id)
+	sess, err := schema.FirstSessionByID(orm, id)
 
+	if err == nil {
+		sessionCache.Add(key, sess)
+	}
+
+	return sess, nil
+
+}
+
+func getSession(c *gin.Context) string {
+	id, err := c.Cookie(middleware.UserSessionTag)
+	if err != nil {
+		return ``
+	}
+	return id
 }
 
 func getAPIKey(c *gin.Context) string {

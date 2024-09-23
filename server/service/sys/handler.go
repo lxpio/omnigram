@@ -10,23 +10,30 @@ import (
 	"github.com/lxpio/omnigram/server/utils"
 )
 
+//	{
+//		"version": "0.0.1",
+//		"system": "Linux",
+//		"architecture": "AMD64",
+//		"docs_data_path": "/data",
+//		"disk_usage": "10/100T",
+//		"m4t_support": true
+//	  }
 type ServerConfig struct {
-	Version     string `json:"version"`
-	ChatEnabled bool   `json:"chat_enabled,omitempty"`
-	M4tEnabled  bool   `json:"m4t_enabled,omitempty"`
-	// ScanStatus   selfhost.ScanStatus `json:"scan_stats"`
+	Version      string `json:"version"`
 	System       string `json:"system,omitempty"`
 	Architecture string `json:"architecture,omitempty"`
+	M4tEnabled   bool   `json:"m4t_support,omitempty"`
+
+	// ScanStatus   selfhost.ScanStatus `json:"scan_stats"`
 	DocsDataPath string `json:"docs_data_path"`
 
-	// DiskUsage int `json:"disk_usage"`
+	DiskUsage string `json:"disk_usage"`
 
+	ChatEnabled   bool   `json:"chat_enabled,omitempty"`
 	M4tServerAddr string `json:"m4t_server_addr,omitempty"`
-
-	OllamaAddr string `json:"ollama_addr,omitempty"`
-
-	OpenAIUrl    string `json:"openai_url,omitempty"`
-	OpenAIApiKey string `json:"openai_apikey,omitempty"`
+	OllamaAddr    string `json:"ollama_addr,omitempty"`
+	OpenAIUrl     string `json:"openai_url,omitempty"`
+	OpenAIApiKey  string `json:"openai_apikey,omitempty"`
 }
 
 // getSysInfoHandle get User Authorization
@@ -60,8 +67,18 @@ func getSysInfoHandle(c *gin.Context) {
 		// OpenAIApiKey:  "",
 	}
 
-	c.JSON(http.StatusOK, utils.SUCCESS.WithData(info))
+	c.JSON(http.StatusOK, info)
 
+}
+
+func getSysPingHandle(c *gin.Context) {
+	info := &ServerConfig{
+		Version:      conf.Version,
+		System:       "Linux", //TODO get real system info
+		Architecture: "AMD64", //TODO get real system info
+	}
+
+	c.JSON(http.StatusOK, info)
 }
 
 func updateSysInfoHandle(c *gin.Context) {
@@ -107,6 +124,6 @@ func updateSysInfoHandle(c *gin.Context) {
 		// OpenAIApiKey:  "",
 	}
 
-	c.JSON(http.StatusOK, utils.SUCCESS.WithData(info))
+	c.JSON(http.StatusOK, info)
 
 }

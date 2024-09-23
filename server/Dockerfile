@@ -1,5 +1,5 @@
 # stage 2: build golang backend
-FROM --platform=$BUILDPLATFORM golang:1.21.3-alpine3.18 as gobuilder
+FROM --platform=$BUILDPLATFORM golang:1.23.1-alpine3.20 as gobuilder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -30,7 +30,7 @@ RUN apk add build-base && \
 
 
 
-FROM --platform=$TARGETPLATFORM alpine:3.18.4
+FROM --platform=$TARGETPLATFORM alpine:3.20.3
 
 LABEL author="exppii" \
     description="omnigram-server"

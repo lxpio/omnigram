@@ -35,11 +35,12 @@ func Setup(router *gin.Engine) {
 	oauthMD := middleware.Get(middleware.OathMD)
 
 	// router.POST("/m4t/tts/wav", fakettsHandler)
-	router.POST("/m4t/pcm/stream", oauthMD, ttsStreamHandler)
+	router.POST("/m4t/tts/stream", oauthMD, ttsStreamHandler) //流式合成
+	router.POST("/m4t/tts/simple", oauthMD, ttsStreamHandler) //简单合成TODO
 
-	router.GET("/m4t/tts/speakers", oauthMD, getSpeakersHandler)
+	router.GET("/m4t/tts/speakers", oauthMD, getSpeakersHandler) //获取声音列表
 
-	router.POST("/m4t/tts/speakers", oauthMD, postSpeakerHandler)
+	router.POST("/m4t/tts/speakers", oauthMD, postSpeakerHandler) //添加声音
 
 	router.DELETE("/m4t/tts/speakers/:audio_id", oauthMD, delSpeakerHandler)
 }

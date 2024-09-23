@@ -83,6 +83,13 @@ func (m *User) VerifyPassword(str string) bool {
 
 }
 
+func (m *User) ResetPassword(store *gorm.DB, password string) error {
+	m.Credential = encryptPassword(password)
+
+	return store.Model(m).Update("credential", m.Credential).Error
+
+}
+
 // encryptPassword 加密密码
 func encryptPassword(raw string) (credential string) {
 	bytes, _ := bcrypt.GenerateFromPassword([]byte(raw), 8)

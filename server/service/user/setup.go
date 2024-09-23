@@ -22,7 +22,7 @@ import (
 var (
 	orm *gorm.DB
 
-	// apiKeyCache   *expirable.LRU[string, int64]
+	sessionCache  *expirable.LRU[string, *schema.Session]
 	userInfoCache *expirable.LRU[string, *schema.User]
 	// kv  schema.KV
 )
@@ -31,7 +31,7 @@ func Initialize(ctx context.Context, cf *conf.Config) {
 
 	if cf.DBOption.Driver == store.DRSQLite {
 		dbPath := filepath.Join(cf.DBOption.Host, `omnigram.db`)
-		log.I(`初始化数据库: ` + dbPath)
+		log.I(`初始化用户库: ` + dbPath)
 
 		var err error
 		orm, err = store.OpenDB(&store.Opt{
@@ -51,6 +51,7 @@ func Initialize(ctx context.Context, cf *conf.Config) {
 	log.I(`设置5分钟超时的LRU缓存...`)
 
 	userInfoCache = expirable.NewLRU[string, *schema.User](15, nil, time.Second*300)
+	sessionCache = expirable.NewLRU[string, *schema.Session](15, nil, time.Second*300)
 
 	middleware.Register(middleware.OathMD, OauthMiddleware)
 	middleware.Register(middleware.AdminMD, AdminMiddleware)
@@ -62,23 +63,23 @@ func Setup(router *gin.Engine) {
 	oauthMD := middleware.Get(middleware.OathMD)
 	adminMD := middleware.Get(middleware.AdminMD)
 
-	router.POST("/user/login", loginHandle)
+	router.POST("/auth/login", loginHandle)
+	router.POST("/auth/token", getAccessTokenHandle)
 
-	//
-	router.POST("/user/oauth2/token", getAPIKeyHandle)
+	router.POST("/auth/logout", oauthMD, logoutHandle)
 
-	router.DELETE("/user/logout", oauthMD, logoutHandle)
+	router.DELETE("/auth/accounts/:user_id/apikeys/:key_id", oauthMD, deleteAPIKeyHandle)
+	router.POST("/auth/accounts/:user_id/apikeys", oauthMD, createAPIKeyHandle)
+	router.GET(`/auth/accounts/:user_id/apikeys`, oauthMD, getAPIKeysHandle)
 
-	router.GET("/user/info", oauthMD, getUserInfoHandle)
+	router.POST(`/auth/accounts/:user_id/reset`, oauthMD, resetPasswordHandle)
 
-	router.DELETE("/user/apikeys/:id", oauthMD, deleteAPIKeyHandle)
-	router.POST("/user/accounts/:id/apikeys", oauthMD, createAPIKeyHandle)
-	router.GET(`/user/accounts/:id/apikeys`, oauthMD, getAPIKeysHandle)
+	router.GET("/user/userinfo", oauthMD, getUserInfoHandle) //获取用户信息
 
-	router.POST(`/admin/accounts`, oauthMD, adminMD, createAccountHandle)
-	router.GET(`/admin/accounts`, oauthMD, adminMD, listAccountHandle)
-	router.GET(`/admin/accounts/:id`, oauthMD, adminMD, getAccountHandle)
-	router.DELETE(`/admin/accounts/:id`, oauthMD, adminMD, deleteAccountHandle)
+	router.POST(`/admin/accounts`, oauthMD, adminMD, createAccountHandle)            //创建用户
+	router.GET(`/admin/accounts`, oauthMD, adminMD, listAccountHandle)               //获取用户列表
+	router.GET(`/admin/accounts/:user_id`, oauthMD, adminMD, getAccountHandle)       //获取用户信息（这里是关联接口获取
+	router.DELETE(`/admin/accounts/:user_id`, oauthMD, adminMD, deleteAccountHandle) //删除用户
 
 }
 
@@ -114,7 +115,7 @@ func InitData(cf *conf.Config) error {
 
 	return db.Transaction(func(tx *gorm.DB) error {
 
-		if err := tx.AutoMigrate(&schema.User{}, &schema.APIToken{}); err != nil {
+		if err := tx.AutoMigrate(&schema.User{}, &schema.APIToken{}, &schema.Session{}); err != nil {
 			return err
 		}
 

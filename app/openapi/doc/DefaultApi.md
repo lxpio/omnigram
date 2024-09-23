@@ -371,7 +371,7 @@ import 'package:openapi/api.dart';
 
 final api = Openapi().getDefaultApi();
 final String accountId = accountId_example; // String | 
-final ChangePasswordDto changePasswordDto = {"id":100,"new_password":"xgfagag","code":""}; // ChangePasswordDto | 
+final ChangePasswordDto changePasswordDto = {"new_password":"xgfagag","code":""}; // ChangePasswordDto | 
 
 try {
     final response = api.authAccountsAccountIdResetPost(accountId, changePasswordDto);

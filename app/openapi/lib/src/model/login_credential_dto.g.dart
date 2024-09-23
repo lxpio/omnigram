@@ -11,12 +11,15 @@ class _$LoginCredentialDto extends LoginCredentialDto {
   final String account;
   @override
   final String password;
+  @override
+  final String? deviceId;
 
   factory _$LoginCredentialDto(
           [void Function(LoginCredentialDtoBuilder)? updates]) =>
       (new LoginCredentialDtoBuilder()..update(updates))._build();
 
-  _$LoginCredentialDto._({required this.account, required this.password})
+  _$LoginCredentialDto._(
+      {required this.account, required this.password, this.deviceId})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(
         account, r'LoginCredentialDto', 'account');
@@ -38,7 +41,8 @@ class _$LoginCredentialDto extends LoginCredentialDto {
     if (identical(other, this)) return true;
     return other is LoginCredentialDto &&
         account == other.account &&
-        password == other.password;
+        password == other.password &&
+        deviceId == other.deviceId;
   }
 
   @override
@@ -46,6 +50,7 @@ class _$LoginCredentialDto extends LoginCredentialDto {
     var _$hash = 0;
     _$hash = $jc(_$hash, account.hashCode);
     _$hash = $jc(_$hash, password.hashCode);
+    _$hash = $jc(_$hash, deviceId.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -54,7 +59,8 @@ class _$LoginCredentialDto extends LoginCredentialDto {
   String toString() {
     return (newBuiltValueToStringHelper(r'LoginCredentialDto')
           ..add('account', account)
-          ..add('password', password))
+          ..add('password', password)
+          ..add('deviceId', deviceId))
         .toString();
   }
 }
@@ -71,6 +77,10 @@ class LoginCredentialDtoBuilder
   String? get password => _$this._password;
   set password(String? password) => _$this._password = password;
 
+  String? _deviceId;
+  String? get deviceId => _$this._deviceId;
+  set deviceId(String? deviceId) => _$this._deviceId = deviceId;
+
   LoginCredentialDtoBuilder() {
     LoginCredentialDto._defaults(this);
   }
@@ -80,6 +90,7 @@ class LoginCredentialDtoBuilder
     if ($v != null) {
       _account = $v.account;
       _password = $v.password;
+      _deviceId = $v.deviceId;
       _$v = null;
     }
     return this;
@@ -105,7 +116,8 @@ class LoginCredentialDtoBuilder
             account: BuiltValueNullFieldError.checkNotNull(
                 account, r'LoginCredentialDto', 'account'),
             password: BuiltValueNullFieldError.checkNotNull(
-                password, r'LoginCredentialDto', 'password'));
+                password, r'LoginCredentialDto', 'password'),
+            deviceId: deviceId);
     replace(_$result);
     return _$result;
   }

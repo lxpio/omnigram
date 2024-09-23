@@ -11,7 +11,7 @@ import 'package:omnigram/utils/url_helper.dart';
 import 'package:openapi/openapi.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:http/http.dart';
+
 import 'package:logging/logging.dart';
 
 part 'api.provider.g.dart';
@@ -33,49 +33,29 @@ class ApiService extends _$ApiService {
     
   }
 
-  setEndpoint(String endpoint)  {
+  setEndpoint()  {
 
-    final apiClient = _createApi();
-    state = apiClient;
+    state = _createApi();
+    // ref.notifyListeners();
   }
 
 
-  Future<String> resolveAndSetEndpoint(String serverUrl) async {
+  Future<bool> resolveAndSetEndpoint(String endpoint) async {
 
 
-    final endpoint = await _resolveEndpoint(serverUrl);
-    await setEndpoint(endpoint);
+    final status = await _isEndpointAvailable(endpoint);
+    if (status) {
+      debugPrint("Endpoint is available");
+      await setEndpoint();
+    }
 
-    // Save in hivebox for next startup
-    IsarStore.put(StoreKey.serverEndpoint, endpoint);
-    return endpoint;
-  }
-
-  
-
-   /// Takes a server URL and attempts to resolve the API endpoint.
-  ///
-  /// Input: [schema://]host[:port][/path]
-  ///  schema - optional (default: https)
-  ///  host   - required
-  ///  port   - optional (default: based on schema)
-  ///  path   - optional
-  Future<String> _resolveEndpoint(String serverUrl) async {
-    final url = sanitizeUrl(serverUrl);
-
-    await _isEndpointAvailable(serverUrl);
-
-
-    // Otherwise, assume the URL provided is the api endpoint
-    return url;
+    return status;
   }
 
 
-
-
-  Future<bool> _isEndpointAvailable(String serverUrl) async {
+  Future<bool> _isEndpointAvailable(String endpoint) async {
     
-    final dio = _createDio(serverUrl);
+    final dio = _createDio(endpoint);
 
     try {
       final response = await dio.get("/sys/ping");
@@ -87,6 +67,9 @@ class ApiService extends _$ApiService {
         );
         return false;
       }
+
+      
+
     } on TimeoutException catch (_) {
       return false;
     } on SocketException catch (_) {
@@ -121,6 +104,10 @@ class ApiService extends _$ApiService {
 
     final interceptors = [setDeviceHeadersInterceptor(),BearerAuthInterceptor()];
 
+    if (kDebugMode) {
+      interceptors.add(LogInterceptor(request: true,responseBody: true));
+    }
+
 
     final api = Openapi(dio: dio,interceptors: interceptors);
 
@@ -140,15 +127,15 @@ class ApiService extends _$ApiService {
       if (Platform.isIOS) {
       
         deviceInfoPlugin.iosInfo.then((iosInfo) {
-             headers['deviceModel'] = iosInfo.utsname.machine;
-             headers['deviceType'] = 'iOS';
+             headers['x-device-model'] = iosInfo.utsname.machine;
+             headers['x-device-type'] = 'iOS';
         });
      
       } else {
 
         deviceInfoPlugin.androidInfo.then((androidInfo){
-             headers['deviceModel'] = androidInfo.model;
-             headers['deviceType'] = 'Android';
+             headers['x-device-model'] = androidInfo.model;
+             headers['x-device-type'] = 'Android';
         });
     
       }
@@ -156,16 +143,46 @@ class ApiService extends _$ApiService {
       // log.warning("Failed to set device headers: $e");
     }
 
-
     return DeviceHeaderInterceptor(headers: headers);
 
+  }
+
+
+  static Map<String,String> getRequestHeaders() {
+
+    DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+    final Map<String,String> headers = {};
+    try {
+      if (Platform.isIOS) {
+      
+        deviceInfoPlugin.iosInfo.then((iosInfo) {
+             headers['x-device-model'] = iosInfo.utsname.machine;
+             headers['x-device-type'] = 'iOS';
+        });
+     
+      } else {
+
+        deviceInfoPlugin.androidInfo.then((androidInfo){
+             headers['x-device-model'] = androidInfo.model;
+             headers['x-device-type'] = 'Android';
+        });
+    
+      }
+    } catch (e) {
+      // log.warning("Failed to set device headers: $e");
+    }
+
+    final accessToken = IsarStore.get(StoreKey.accessToken, "");
+    headers['Authorization'] = 'Bearer $accessToken';
+
+    return headers;
   }
 
 }
 
 
 
-  
+
 
 
 class DeviceHeaderInterceptor extends Interceptor {

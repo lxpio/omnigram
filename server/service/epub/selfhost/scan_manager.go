@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/lxpio/omnigram/server/service/epub/schema"
 	"github.com/lxpio/omnigram/server/conf"
 	"github.com/lxpio/omnigram/server/log"
+	"github.com/lxpio/omnigram/server/service/epub/schema"
 	"github.com/lxpio/omnigram/server/store"
 	"github.com/lxpio/omnigram/server/utils"
 	"github.com/nutsdb/nutsdb"
@@ -175,7 +175,7 @@ func loadLastScanStatus(metapath string, orm *gorm.DB) (ScanStatus, error) {
 				return err
 			}
 
-			return json.Unmarshal(e.Value, &stats)
+			return json.Unmarshal(e, &stats)
 
 		})
 

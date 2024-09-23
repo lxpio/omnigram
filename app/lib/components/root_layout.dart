@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart' as go;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
+import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/localization.service.dart';
 
-import 'destinations.dart';
 // import 'views.dart';
 
 class RootLayout extends HookConsumerWidget {
@@ -26,9 +26,7 @@ class RootLayout extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     void onSelected(int index) {
       final destination = destinations[index];
-
       go.GoRouter.of(context).go(destination.route);
-      // router.go(destination.route);
     }
 
     return AdaptiveScaffold(
@@ -56,3 +54,19 @@ class RootLayout extends HookConsumerWidget {
     );
   }
 }
+
+
+
+class Destination {
+  const Destination(this.icon, this.label, this.route);
+  final Icon icon;
+  final String label;
+  final String route;
+}
+
+const List<Destination> destinations = <Destination>[
+  Destination(Icon(Icons.book), 'nav_read', kHomePath),
+  Destination(Icon(Icons.explore), 'nav_discover', kDiscoverPath),
+  Destination(Icon(Icons.messenger_outline_rounded), 'nav_chat', kChatPath),
+  Destination(Icon(Icons.person), 'nav_profile', kProfilePath),
+];
