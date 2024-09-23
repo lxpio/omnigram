@@ -10,7 +10,7 @@ import (
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/middleware"
 	"github.com/lxpio/omnigram/server/service/epub/schema"
-	"github.com/lxpio/omnigram/server/service/epub/selfhost"
+	"github.com/lxpio/omnigram/server/service/model"
 	"github.com/lxpio/omnigram/server/store"
 	"github.com/lxpio/omnigram/server/utils"
 	"gorm.io/gorm"
@@ -21,8 +21,6 @@ var (
 	kv  store.KV
 
 	uploadPath string
-
-	manager *selfhost.ScannerManager
 )
 
 // Setup reg router
@@ -30,13 +28,9 @@ func Setup(router *gin.Engine) {
 
 	oauthMD := middleware.Get(middleware.OathMD)
 
-	adminMD := middleware.Get(middleware.AdminMD)
+	// adminMD := middleware.Get(middleware.AdminMD)
 
 	book := router.Group("/book", oauthMD)
-
-	book.GET("/scan/status", adminMD, getScanStatusHandle)
-	book.POST("/scan/stop", adminMD, stopScanHandle)
-	book.POST("/scan/run", adminMD, runScanHandle)
 
 	book.GET("/covers/*book_cover_path", coverImageHandle)
 
@@ -66,43 +60,10 @@ func Setup(router *gin.Engine) {
 
 }
 
-func GetManager() *selfhost.ScannerManager {
-	return manager
-}
-
 func Initialize(ctx context.Context, cf *conf.Config) {
 
-	var err error
-
-	if cf.DBOption.Driver == store.DRSQLite {
-		dbPath := filepath.Join(cf.DBOption.Host, `epub.db`)
-		log.I(`初始化数据库: ` + dbPath)
-
-		var err error
-		orm, err = store.OpenDB(&store.Opt{
-			Driver:   store.DRSQLite,
-			Host:     dbPath,
-			LogLevel: cf.LogLevel,
-		})
-
-		if err != nil {
-			log.E(`open user db failed`, err)
-			os.Exit(1)
-		}
-	} else {
-		orm = ctx.Value(utils.DBContextKey).(*gorm.DB)
-	}
-
-	log.I(`初始化扫描管理`)
-
-	kv, err = store.OpenLocalDir(filepath.Join(cf.MetaDataPath, `epub`))
-
-	if err != nil {
-		// path/to/whatever does not exist
-		panic(err)
-	}
-
-	manager, _ = selfhost.NewScannerManager(ctx, cf, kv, orm)
+	kv = model.GetKV()
+	orm = model.GetORM()
 
 }
 

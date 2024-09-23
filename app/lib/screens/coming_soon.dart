@@ -4,7 +4,7 @@ import 'package:lottie/lottie.dart';
 
 
 class PhotoPageBody extends StatefulWidget {
-  const PhotoPageBody({Key? key}) : super(key: key);
+  const PhotoPageBody({super.key});
 
   @override
   State createState() => _PhotoPageBodyState();
@@ -19,13 +19,13 @@ class _PhotoPageBodyState extends State<PhotoPageBody> {
           appBar: AppBar(),
           // body: Stack(
           body: Center(
-            child: Container(
+            child: SizedBox(
               width: 300,
               height: 300,
               child: Column(
                 children: [
                   Center(
-                    child: Container(
+                    child: SizedBox(
                       width: 280,
                       height: 240,
                       child: Lottie.asset(
@@ -36,7 +36,7 @@ class _PhotoPageBodyState extends State<PhotoPageBody> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Text(
                     'coming_soon'.tr(),
                     // alignment: Alignment.topCenter,

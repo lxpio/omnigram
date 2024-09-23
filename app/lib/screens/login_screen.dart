@@ -2,10 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/entities/isar_store.entity.dart';
+import 'package:omnigram/providers/api.provider.dart';
 import 'package:omnigram/providers/auth.provider.dart';
+import 'package:omnigram/screens/profile/views/unauthorized_view.dart';
+import 'package:omnigram/utils/constants.dart';
 
 import 'package:omnigram/utils/show_snackbar.dart';
 import 'package:lottie/lottie.dart';
@@ -61,7 +65,7 @@ class LoginScreen extends HookConsumerWidget {
                   prefixIcon: const Icon(Icons.dns_outlined),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.surfaceVariant),
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest),
                   ),
 
                   focusedBorder: OutlineInputBorder(
@@ -80,7 +84,7 @@ class LoginScreen extends HookConsumerWidget {
                   prefixIcon: const Icon(Icons.person),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.surfaceVariant),
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest),
                     // borderRadius: BorderRadius.circular(16.0),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -101,7 +105,7 @@ class LoginScreen extends HookConsumerWidget {
                   prefixIcon: const Icon(Icons.key),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.surfaceVariant),
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest),
                     // borderRadius: BorderRadius.circular(16.0),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -122,27 +126,48 @@ class LoginScreen extends HookConsumerWidget {
               ),
               const SizedBox(height: 30),
               FilledButton(
-                onPressed: () {
+                onPressed: () async {
                   //尝试获取用户登陆信息 如果失败则弹窗
 
 
-                  ref.read(authProvider.notifier)
-                  .login(accountController.text, passwordController.text, serverController.text)
-                  .then((success) {
+                  final loginStatus = await ref.read(authProvider.notifier)
+                  .login(accountController.text, passwordController.text, serverController.text);
 
-                    if (!success) {
-                      // _savedata(ref, value, serverController.text); //登陆失败 TODO
+                  if (!loginStatus && context.mounted) {
                       showSnackBar(context, 'network_error'.tr());
-                    }
+                      return;
+                  } 
 
-                    
-                  }).onError((error, stackTrace) {
-                    if (error is DioException) {
-                      showSnackBar(context, 'network_error'.tr());
-                    } else {
-                      showSnackBar(context, error.toString());
+
+                  await ref.read(apiServiceProvider.notifier).setEndpoint();
+
+                  final authState = await ref.read(authProvider.notifier).setSuccessLoginInfo();
+
+                  if ( context.mounted) {
+                    if (authState) {
+                      context.goNamed(kHomePage);
+                    }else {
+                      showSnackBar(context, 'login_error'.tr());
                     }
-                  });
+                      
+                  }
+
+                },
+                style: FilledButton.styleFrom(
+                    backgroundColor:
+                        Theme.of(context).colorScheme.secondaryContainer,
+                    minimumSize: const Size.fromHeight(45)),
+                child: Text(
+                  'login'.tr(),
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                ),
+              ),
+              const SizedBox(height: 30),
+              FilledButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/register');
+
                 },
                 style: FilledButton.styleFrom(
                     backgroundColor:

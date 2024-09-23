@@ -24,26 +24,26 @@ class OmnigramLogger {
 
 
 
-  static final OmnigramLogger _instance = OmnigramLogger._internal();
+  static final OmnigramLogger instance = OmnigramLogger._internal();
 
   OmnigramLogger._internal();
 
-  static late final Isar _db;
+  late final Isar _db;
 
  
   final maxLogEntries = 1024;
   // final Isar _db = Isar.getInstance()!;
-  static late List<LoggerMessage> _msgBuffer = [];
-  static late Timer? _timer;
+  late List<LoggerMessage> _msgBuffer = [];
+  Timer? _timer;
 
   // factory OmnigramLogger() => _instance;
 
-  static void initialize(Isar db) async {
+  void initialize(Isar db) async {
     _db = db; 
-    _instance._removeOverflowMessages();
+    _removeOverflowMessages();
     final int levelId = IsarStore.get(StoreKey.logLevel, 5); // 5 is INFO
     Logger.root.level = Level.LEVELS[levelId];
-    Logger.root.onRecord.listen(_instance._writeLogToDatabase);
+    Logger.root.onRecord.listen(_writeLogToDatabase);
   }
 
   set level(Level level) => Logger.root.level = level;
@@ -132,7 +132,7 @@ class OmnigramLogger {
   }
 
   /// Flush pending log messages to persistent storage
-  static void flush() {
+  void flush() {
     if (_timer != null) {
       _timer!.cancel();
       _db.write((db) => db.loggerMessages.putAll(_msgBuffer));

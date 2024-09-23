@@ -1797,7 +1797,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [JsonObject] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<List<int>>> readerDownloadBooksBookIdGet({ 
+  Future<Response<JsonObject>> readerDownloadBooksBookIdGet({ 
     required String bookId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1823,7 +1823,6 @@ class DefaultApi {
         ...?extra,
       },
       validateStatus: validateStatus,
-      responseType: ResponseType.bytes,
     );
 
     final _response = await _dio.request<Object>(
@@ -1833,15 +1832,15 @@ class DefaultApi {
       onSendProgress: onSendProgress,
       onReceiveProgress: onReceiveProgress,
     );
-     List<int>? _responseData;
+
+    JsonObject? _responseData;
 
     try {
-
-      if (_response.statusCode == 200) {
-        return _response.data as Response<List<int>>;
-      }      
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _response.data as List<int>;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(JsonObject),
+      ) as JsonObject;
 
     } catch (error, stackTrace) {
       throw DioException(
@@ -1852,7 +1851,8 @@ class DefaultApi {
         stackTrace: stackTrace,
       );
     }
-    return Response<List<int>>(
+
+    return Response<JsonObject>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

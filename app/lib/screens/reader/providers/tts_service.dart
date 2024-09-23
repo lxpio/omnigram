@@ -1,24 +1,25 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:openapi/openapi.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import 'package:freezed/freezed.dart';
 import 'package:omnigram/providers/api.provider.dart';
 import 'package:omnigram/screens/reader/models/epub_document.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/wav.dart';
-import 'package:openapi/openapi.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:just_audio/just_audio.dart';
+
 import '../models/epub/epub.dart';
 import 'select_book.dart';
 
 part 'tts_service.g.dart';
 
+class TTSState {
 
-@Freezed()
-class TTSState  {
-
-   TTSState({
+  TTSState({
     required this.showbar,
     required this.playing,
     this.position,
@@ -26,7 +27,37 @@ class TTSState  {
 
   final bool showbar;
   final bool playing;
-  late Duration? position;
+  final Duration? position;
+
+  TTSState copyWith({
+    bool? showbar,
+    bool? playing,
+    Duration? position,
+  }) {
+    return TTSState(
+      showbar: showbar ?? this.showbar,
+      playing: playing ?? this.playing,
+      position: position ?? this.position,
+    );
+  }
+
+  @override
+  String toString() => 'TTSState(showbar: $showbar, playing: $playing)';
+
+  @override
+  bool operator ==(covariant TTSState other) {
+    if (identical(this, other)) return true;
+  
+    return 
+      other.showbar == showbar &&
+      other.playing == playing &&
+      other.position == position;
+
+      
+  }
+
+  @override
+  int get hashCode => showbar.hashCode ^ playing.hashCode ^ position.hashCode;
 }
 
 
@@ -136,8 +167,8 @@ class TtsService extends _$TtsService {
             .updateProgress(current, document.progress(current));
       } else {
         
-        // state = state.copyWith(playing: false); 
-        state = TTSState(showbar: state.showbar, playing: false,position: state.position);
+        state = state.copyWith(playing: false); 
+ 
         break;
       }
     }

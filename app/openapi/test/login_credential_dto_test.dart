@@ -19,5 +19,11 @@ void main() {
       // TODO
     });
 
+    // 登陆设备ID
+    // String deviceId
+    test('to test the property `deviceId`', () async {
+      // TODO
+    });
+
   });
 }

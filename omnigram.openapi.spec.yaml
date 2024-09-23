@@ -88,7 +88,6 @@ paths:
                 - code
               $ref: '#/components/schemas/change_password_dto'
             example:
-              id: 100
               new_password: xgfagag
               code: ''
       responses:
@@ -1495,12 +1494,7 @@ paths:
                 '1':
                   summary: 成功示例
                   value:
-                    version: 0.0.1
-                    system: Linux
-                    architecture: AMD64
-                    docs_data_path: /data
-                    disk_usage: 10/100T
-                    m4t_support: true
+                    version: sunt aute id quis
           headers: {}
       security: []
   /sys/scan/status:
@@ -1997,6 +1991,10 @@ components:
           type: string
           title: 登陆凭证
           description: 登陆凭证
+        device_id:
+          type: string
+          title: 登陆设备ID
+          description: 登陆设备ID
       required:
         - account
         - password

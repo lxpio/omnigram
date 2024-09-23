@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/providers/auth.provider.dart';
 import 'package:omnigram/providers/server_info.provider.dart';
+import 'package:omnigram/screens/profile/views/unauthorized_view.dart';
 
 
 
@@ -14,6 +15,11 @@ class ProfileSmallScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
+
+    if (!authState.isAuthenticated) {
+      debugPrint("User is un authenticated");
+      return const UnauthorizedView();
+    }
 
     final scrollController = useScrollController();
 
@@ -63,7 +69,7 @@ class ProfileSmallScreen extends HookConsumerWidget {
                         .withOpacity(0.2),
                     Theme.of(context)
                         .colorScheme
-                        .surfaceVariant
+                        .surfaceContainerHighest
                         .withOpacity(0.2),
                   ],
                 ),
@@ -152,7 +158,7 @@ class ProfileSmallScreen extends HookConsumerWidget {
 }
 
 class _SettingsWidget extends ConsumerWidget {
-  const _SettingsWidget({super.key});
+  const _SettingsWidget();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -167,7 +173,7 @@ class _SettingsWidget extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Settings"),
+          const Text("Settings"),
           const SizedBox(height: 8),
           const Divider(),
           const ListTile(
@@ -208,12 +214,12 @@ class _SettingsWidget extends ConsumerWidget {
             ),
           ),
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.headphones,
               // size: 64,
             ),
-            title: Text("听书"),
-            subtitle: Text("开启听书功能"),
+            title: const Text("听书"),
+            subtitle: const Text("开启听书功能"),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -228,11 +234,11 @@ class _SettingsWidget extends ConsumerWidget {
             ),
           ),
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.logout,
               // size: 64,
             ),
-            title: Text("登出"),
+            title: const Text("登出"),
             // subtitle: Text("开启听书功能"),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -278,3 +284,5 @@ class _SettingsWidget extends ConsumerWidget {
   //   );
   // }
 }
+
+

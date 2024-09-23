@@ -13,6 +13,7 @@ part 'login_credential_dto.g.dart';
 /// Properties:
 /// * [account] - 账号名/邮箱/手机号
 /// * [password] - 登陆凭证
+/// * [deviceId] - 登陆设备ID
 @BuiltValue()
 abstract class LoginCredentialDto implements Built<LoginCredentialDto, LoginCredentialDtoBuilder> {
   /// 账号名/邮箱/手机号
@@ -22,6 +23,10 @@ abstract class LoginCredentialDto implements Built<LoginCredentialDto, LoginCred
   /// 登陆凭证
   @BuiltValueField(wireName: r'password')
   String get password;
+
+  /// 登陆设备ID
+  @BuiltValueField(wireName: r'device_id')
+  String? get deviceId;
 
   LoginCredentialDto._();
 
@@ -56,6 +61,13 @@ class _$LoginCredentialDtoSerializer implements PrimitiveSerializer<LoginCredent
       object.password,
       specifiedType: const FullType(String),
     );
+    if (object.deviceId != null) {
+      yield r'device_id';
+      yield serializers.serialize(
+        object.deviceId,
+        specifiedType: const FullType(String),
+      );
+    }
   }
 
   @override
@@ -92,6 +104,13 @@ class _$LoginCredentialDtoSerializer implements PrimitiveSerializer<LoginCredent
             specifiedType: const FullType(String),
           ) as String;
           result.password = valueDes;
+          break;
+        case r'device_id':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.deviceId = valueDes;
           break;
         default:
           unhandled.add(key);

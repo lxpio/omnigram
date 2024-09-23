@@ -73,7 +73,7 @@ class AppLifeCycle extends _$AppLifeCycle {
     //   _ref.read(backupProvider.notifier).cancelBackup();
     // }
     // _ref.read(websocketProvider.notifier).disconnect();
-    OmnigramLogger.flush();
+    OmnigramLogger.instance.flush();
   }
 
   void handleAppDetached() {

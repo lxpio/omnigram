@@ -10,7 +10,7 @@ on:
     types: [published]
 
 jobs:
-  docker_build_and_push:
+  build_and_push_server:
     name: "Build and push Docker image"
     runs-on: ubuntu-latest
     strategy:
@@ -18,18 +18,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - context: "server/m4t"
-            file: "server/m4t/Dockerfile"
-            image: "m4t-server"
-            platforms: "linux/amd64"
-            image_type: "gpu"
-          - context: "server/m4t"
-            file: "server/m4t/Dockerfile"
-            image: "m4t-server"
-            platforms: "linux/amd64,linux/arm64"
-            image_type: "cpu"
-          - context: "server/api"
-            file: "server/api/Dockerfile"
+          # - context: "server/m4t"
+          #   file: "server/m4t/Dockerfile"
+          #   image: "m4t-server"
+          #   platforms: "linux/amd64"
+          #   image_type: "gpu"
+          # - context: "server/m4t"
+          #   file: "server/m4t/Dockerfile"
+          #   image: "m4t-server"
+          #   platforms: "linux/amd64,linux/arm64"
+          #   image_type: "cpu"
+          - context: "server"
+            file: "server/Dockerfile"
             image: "omnigram-server"
             platforms: "linux/arm64,linux/amd64"
             image_type: "alpine"

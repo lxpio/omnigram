@@ -51,6 +51,7 @@ func main() {
 	log.I(`omnigram-server version: `, conf.Version)
 	log.I(`git commit hash: `, GITHASH)
 	log.I(`utc build time: `, BUILDSTAMP)
+	log.D(`log level: `, cf.LogLevel)
 
 	defer log.Flush()
 

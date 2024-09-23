@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:omnigram/entities/user.entity.dart';
 import 'package:omnigram/providers/api.provider.dart';
 import 'package:logging/logging.dart';
 import 'package:omnigram/utils/hash.dart';
+import 'package:omnigram/utils/url_helper.dart';
 import 'package:openapi/openapi.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -44,45 +46,58 @@ class Auth extends _$Auth {
     String serverUrl,
   ) async {
 
-//这里应该是加载界面时执行，不应该放在登陆接口
+    //save server url
+    final endpoint = sanitizeUrl(serverUrl);
+    debugPrint('Endpoint: $endpoint');
+    await IsarStore.put(StoreKey.serverEndpoint, endpoint);
+
     try {
       // Resolve API server endpoint from user provided serverUrl
-      await ref.read(apiServiceProvider.notifier).resolveAndSetEndpoint(serverUrl);
+      final status = await ref.read(apiServiceProvider.notifier).resolveAndSetEndpoint(endpoint);
+
+      if (!status) {
+
+        return false;
+      }
       // await _apiService.serverInfoApi.pingServer();
     } catch (e) {
       debugPrint('Invalid Server Endpoint Url $e');
       return false;
     }
 
-   
-
     try {
 
+
+      // final deviceID = await FlutterUdid.consistentUdid;
       final api = ref.watch(apiServiceProvider);
+
 
       LoginCredentialDto loginCredentialDto =LoginCredentialDto((b) => b
       ..account = account
       ..password = password
+      // ..deviceId = deviceID
       );
-
+      // debugPrint('Login Credential Dto: $loginCredentialDto');
       
       var loginResponse = await api.authTokenPost(loginCredentialDto: loginCredentialDto);
 
-    
+
      
       if (loginResponse.statusCode != 200) {
         debugPrint('Login Response is null');
         return false;
       }
 
-      return setSuccessLoginInfo(
-        accessToken: loginResponse.data!.accessToken,
-        serverUrl: serverUrl,
-      );
+     
+      IsarStore.put(StoreKey.accessToken, loginResponse.data!.accessToken);
+
+      return true;
+      
     } catch (e) {
       debugPrint("Error logging in $e");
       return false;
     }
+
   }
 
   Future<void> logout() async {
@@ -141,15 +156,12 @@ class Auth extends _$Auth {
   //   }
   // }
 
-  Future<bool> setSuccessLoginInfo({
-    required String accessToken,
-    required String serverUrl,
-  }) async {
+  Future<bool> setSuccessLoginInfo() async {
 
     // Get the deviceid from the store if it exists, otherwise generate a new one
     String deviceId =
         IsarStore.tryGet(StoreKey.deviceId) ?? await FlutterUdid.consistentUdid;
-
+ 
     bool shouldChangePassword = false;
     User? user = IsarStore.tryGet(StoreKey.currentUser);
 
@@ -188,9 +200,6 @@ class Auth extends _$Auth {
       IsarStore.put(StoreKey.deviceId, deviceId);
       IsarStore.put(StoreKey.deviceIdHash, fastHash(deviceId));
       IsarStore.put(StoreKey.currentUser,user);
-      IsarStore.put(StoreKey.serverUrl, serverUrl);
-      IsarStore.put(StoreKey.accessToken, accessToken);
-
       
     } else {
       // If the user is null, the login was not successful
