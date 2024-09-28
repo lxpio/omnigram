@@ -56,9 +56,10 @@
   "snack_bar_failed": "Failed",
   "snack_bar_canceled": "Canceled",
   "snack_bar_copied": "Copied",
-  "snack_bar_ooops":"Ooops! 😓",
-  "no_internet":"No internet connection found. Check your connection or try again.",
-  "try_again":"Try again",
-  "config_server":"Config Server?",
+  "snack_bar_ooops": "Ooops! 😓",
+  "no_internet": "No internet connection found. Check your connection or try again.",
+  "try_again": "Try again",
+  "config_server": "Config Server?",
+  "get_user_info_error": "Failed to get user info",
   "login_for_more_features": "Login to Unlock More features"
 }

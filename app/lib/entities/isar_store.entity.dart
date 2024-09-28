@@ -51,9 +51,10 @@ class IsarStore {
   static Future<void> put<T>(StoreKey<T> key, T value) async {
     if (_cache[key.id] == value) return Future.value();
     _cache[key.id] = value;
-    final data = await StoreValue._of(value, key);
-
-    return _db.writeAsync((db) => db.storeValues.put(data));
+    final data = await StoreValue._of(_db,value, key);
+    return _db.writeAsync((db) async {
+      db.storeValues.put(data);
+    });
   }
 
   /// Removes the value synchronously from the cache and asynchronously from the DB
@@ -116,7 +117,7 @@ class StoreValue {
     throw TypeError();
   }
 
-  static Future<StoreValue> _of<T>(T? value, StoreKey<T> key) async {
+  static Future<StoreValue> _of<T>(Isar db ,T? value, StoreKey<T> key) async {
     int? i;
     String? s;
     switch (key.type) {
@@ -134,7 +135,7 @@ class StoreValue {
         break;
       default:
         if (key.toDb != null) {
-          key.toDb!.call(IsarStore._db, value);
+          i = await key.toDb!.call(db, value);
           break;
         }
         throw TypeError();
@@ -157,7 +158,7 @@ class StoreKeyNotFoundException implements Exception {
 enum StoreKey<T> {
   version<int>(0, type: int),
   assetETag<String>(1, type: String),
-  currentUser<User>(2, type: User, fromDb: _getUser, toDb: _toUser),
+  currentUser<User>(2, type: User, fromDb: _getUser,toDb: _toUser),
   deviceIdHash<int>(3, type: int),
   deviceId<String>(4, type: String),
   serverUrl<String>(10, type: String),
@@ -206,7 +207,7 @@ enum StoreKey<T> {
   final int id;
   final Type type;
   final T? Function<T>(Isar, int)? fromDb;
-  final void Function<T>(Isar, T)? toDb;
+  final Future<int> Function<T>(Isar, T)? toDb;
 }
 
 T? _getUser<T>(Isar db, int i) {
@@ -214,10 +215,12 @@ T? _getUser<T>(Isar db, int i) {
   return u as T?;
 }
 
-void _toUser<T>(Isar db, T u) {
+Future<int> _toUser<T>(Isar db, T u) async {
+  //这里逻辑不知道为什么要在这里开事务，正常应该在外面开
   if (u is User) {
-
-    return db.users.put(u);
+    await db.writeAsync((mydb) => mydb.users.put(u));
+    // db.users.put(u);
+    return u.id;
   }
   throw TypeError();
 }

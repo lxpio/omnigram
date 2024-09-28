@@ -13,39 +13,36 @@ import 'package:omnigram/utils/url_helper.dart';
 import 'package:openapi/openapi.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-
 part 'auth.provider.g.dart';
 
-
-@riverpod
+@Riverpod(keepAlive: true)
 class Auth extends _$Auth {
-
-
   final log = Logger("AuthNotifier");
 
   @override
   AuthState build() {
 
-    return AuthState(
-            deviceId: "",
-            userId: 0,
-            userEmail: "",
-            name: '',
-            profileImagePath: '',
-            isAdmin: false,
-            shouldChangePassword: false,
-            isAuthenticated: false,
-        );
-  }
-  
+    debugPrint("create Auth");
 
+   return  AuthState(
+      deviceId: "",
+      userId: 0,
+      userEmail: "",
+      name: '',
+      profileImagePath: '',
+      isAdmin: false,
+      shouldChangePassword: false,
+      isAuthenticated: false,
+    );
+  }
+
+  
 
   Future<bool> login(
     String account,
     String password,
     String serverUrl,
   ) async {
-
     //save server url
     final endpoint = sanitizeUrl(serverUrl);
     debugPrint('Endpoint: $endpoint');
@@ -53,10 +50,11 @@ class Auth extends _$Auth {
 
     try {
       // Resolve API server endpoint from user provided serverUrl
-      final status = await ref.read(apiServiceProvider.notifier).resolveAndSetEndpoint(endpoint);
+      final status = await ref
+          .read(apiServiceProvider.notifier)
+          .resolveAndSetEndpoint(endpoint);
 
       if (!status) {
-
         return false;
       }
       // await _apiService.serverInfoApi.pingServer();
@@ -66,38 +64,31 @@ class Auth extends _$Auth {
     }
 
     try {
-
-
       // final deviceID = await FlutterUdid.consistentUdid;
       final api = ref.watch(apiServiceProvider);
 
-
-      LoginCredentialDto loginCredentialDto =LoginCredentialDto((b) => b
-      ..account = account
-      ..password = password
-      // ..deviceId = deviceID
-      );
+      LoginCredentialDto loginCredentialDto = LoginCredentialDto((b) => b
+            ..account = account
+            ..password = password
+          // ..deviceId = deviceID
+          );
       // debugPrint('Login Credential Dto: $loginCredentialDto');
-      
-      var loginResponse = await api.authTokenPost(loginCredentialDto: loginCredentialDto);
 
+      var loginResponse =
+          await api.authTokenPost(loginCredentialDto: loginCredentialDto);
 
-     
       if (loginResponse.statusCode != 200) {
         debugPrint('Login Response is null');
         return false;
       }
 
-     
       IsarStore.put(StoreKey.accessToken, loginResponse.data!.accessToken);
 
       return true;
-      
     } catch (e) {
       debugPrint("Error logging in $e");
       return false;
     }
-
   }
 
   Future<void> logout() async {
@@ -105,7 +96,9 @@ class Auth extends _$Auth {
     try {
       String? userEmail = IsarStore.tryGet(StoreKey.currentUser)?.email;
 
-      await ref.watch(apiServiceProvider).authLogoutPost()
+      await ref
+          .watch(apiServiceProvider)
+          .authLogoutPost()
           .then((_) => log.info("Logout was successful for $userEmail"))
           .onError(
             (error, stackTrace) =>
@@ -157,32 +150,29 @@ class Auth extends _$Auth {
   // }
 
   Future<bool> setSuccessLoginInfo() async {
-
     // Get the deviceid from the store if it exists, otherwise generate a new one
     String deviceId =
         IsarStore.tryGet(StoreKey.deviceId) ?? await FlutterUdid.consistentUdid;
- 
+
     bool shouldChangePassword = false;
     User? user = IsarStore.tryGet(StoreKey.currentUser);
 
     UserDto? userResponse;
     // UserPreferencesResponseDto? userPreferences;
     try {
-
       final userResp = await ref.watch(apiServiceProvider).userUserinfoGet();
-
       if (userResp.statusCode == 200) {
         userResponse = userResp.data;
       }
-
-      
-    }  on DioException catch (err)  {
+    } on DioException catch (err) {
       if (err.response?.statusCode == 401) {
         log.severe("Unauthorized access, token likely expired. Logging out.");
         return false;
       }
+
       log.severe(
-        "Error getting user information from the server [API EXCEPTION]");
+          "Error getting user information from the server [API EXCEPTION]",
+          err);
     } catch (error, stackTrace) {
       log.severe(
         "Error getting user information from the server [CATCH ALL]",
@@ -195,64 +185,44 @@ class Auth extends _$Auth {
     // Due to the flow of the code, this will always happen on first login
     if (userResponse != null) {
 
-      // shouldChangePassword = userResponse.shouldChangePassword;
-      user = User.fromUserDto(userResponse);//userPreferences
-      IsarStore.put(StoreKey.deviceId, deviceId);
-      IsarStore.put(StoreKey.deviceIdHash, fastHash(deviceId));
-      IsarStore.put(StoreKey.currentUser,user);
-      
-    } else {
-      // If the user is null, the login was not successful
-    // and we don't have a local copy of the user from a prior successful login
-      log.severe("Unable to get user information from the server.");
-      state = state.copyWith(
-        deviceId: "",
-        userId: 0,
-        userEmail: "",
-        name: '',
-        profileImagePath: '',
-        isAdmin: false,
-        shouldChangePassword: false,
-        isAuthenticated: false,
-      );
-      return false;
-    }
+      user = User.fromUserDto(userResponse); //userPreferences
+      await IsarStore.put(StoreKey.deviceId, deviceId);
+      await IsarStore.put(StoreKey.deviceIdHash, fastHash(deviceId));
+      await IsarStore.put(StoreKey.currentUser, user);
 
-    // If the user is null, the login was not successful
-    // and we don't have a local copy of the user from a prior successful login
-    if (user == null) {
-      log.severe("Unable to get user information from the server.");
       state = state.copyWith(
-        deviceId: "",
-        userId: 0,
-        userEmail: "",
-        name: '',
-        profileImagePath: '',
-        isAdmin: false,
-        shouldChangePassword: false,
-        isAuthenticated: false,
+        isAuthenticated: true,
+        userId: user.id,
+        userEmail: user.email,
+        name: user.name,
+        profileImagePath: user.profileImagePath,
+        isAdmin: user.roleId < 100,
+        shouldChangePassword: shouldChangePassword,
+        deviceId: deviceId,
       );
-      return false;
-        return false;
-    }
 
     
-  
-    state = state.copyWith(
-      isAuthenticated: true,
-      userId: user.id,
-      userEmail: user.email,
-      name: user.name,
-      profileImagePath: user.profileImagePath,
-      isAdmin: user.roleId < 100,
-      shouldChangePassword: shouldChangePassword,
-      deviceId: deviceId,
-    );
-
-    return true;
+      return true;
+    
+    } else {
+      // If the user is null, the login was not successful
+      // and we don't have a local copy of the user from a prior successful login
+      log.severe("Unable to get user information from the server.");
+      state = state.copyWith(
+        deviceId: "",
+        userId: 0,
+        userEmail: "",
+        name: '',
+        profileImagePath: '',
+        isAdmin: false,
+        shouldChangePassword: false,
+        isAuthenticated: false,
+      );
+      return false;
+    }
+    
   }
 }
-
 
 class AuthState {
   final String deviceId;
@@ -284,7 +254,8 @@ class AuthState {
     bool? shouldChangePassword,
     String? profileImagePath,
   }) {
-    return AuthState(
+
+    final ret =  AuthState(
       deviceId: deviceId ?? this.deviceId,
       userId: userId ?? this.userId,
       userEmail: userEmail ?? this.userEmail,
@@ -294,6 +265,8 @@ class AuthState {
       shouldChangePassword: shouldChangePassword ?? this.shouldChangePassword,
       profileImagePath: profileImagePath ?? this.profileImagePath,
     );
+
+    return ret;
   }
 
   @override

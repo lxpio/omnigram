@@ -22,8 +22,7 @@ class LoginScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final serverAddr = IsarStore.tryGet(StoreKey.serverEndpoint);
 
-    final serverController =
-        useTextEditingController(text: serverAddr);
+    final serverController = useTextEditingController(text: serverAddr);
 
     final accountController = useTextEditingController();
     final passwordController = useTextEditingController();
@@ -45,7 +44,6 @@ class LoginScreen extends HookConsumerWidget {
               const SizedBox(height: 40),
               TextFormField(
                 controller: serverController,
-
                 validator: (text) {
                   if (text == null || text.isEmpty) {
                     return 'server_address_error'.tr();
@@ -61,11 +59,13 @@ class LoginScreen extends HookConsumerWidget {
                 decoration: InputDecoration(
                   // contentPadding: EdgeInsets.all(0.0),
                   labelText: 'server_address_label'.tr(),
-                  hintText: serverAddr?? 'server_address_hint_text'.tr(),
+                  hintText: serverAddr ?? 'server_address_hint_text'.tr(),
                   prefixIcon: const Icon(Icons.dns_outlined),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest),
                   ),
 
                   focusedBorder: OutlineInputBorder(
@@ -84,7 +84,9 @@ class LoginScreen extends HookConsumerWidget {
                   prefixIcon: const Icon(Icons.person),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest),
                     // borderRadius: BorderRadius.circular(16.0),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -105,7 +107,9 @@ class LoginScreen extends HookConsumerWidget {
                   prefixIcon: const Icon(Icons.key),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest),
                     // borderRadius: BorderRadius.circular(16.0),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -129,29 +133,29 @@ class LoginScreen extends HookConsumerWidget {
                 onPressed: () async {
                   //尝试获取用户登陆信息 如果失败则弹窗
 
-
-                  final loginStatus = await ref.read(authProvider.notifier)
-                  .login(accountController.text, passwordController.text, serverController.text);
+                  final loginStatus = await ref
+                      .read(authProvider.notifier)
+                      .login(accountController.text, passwordController.text,
+                          serverController.text);
 
                   if (!loginStatus && context.mounted) {
-                      showSnackBar(context, 'network_error'.tr());
-                      return;
-                  } 
-
-
-                  await ref.read(apiServiceProvider.notifier).setEndpoint();
-
-                  final authState = await ref.read(authProvider.notifier).setSuccessLoginInfo();
-
-                  if ( context.mounted) {
-                    if (authState) {
-                      context.goNamed(kHomePage);
-                    }else {
-                      showSnackBar(context, 'login_error'.tr());
-                    }
-                      
+                    showSnackBar(context, 'network_error'.tr());
+                    return;
                   }
 
+                  ref.read(apiServiceProvider.notifier).setEndpoint();
+
+                  final authState = await ref
+                      .read(authProvider.notifier)
+                      .setSuccessLoginInfo();
+
+                  if (context.mounted) {
+                    if (authState) {
+                      context.goNamed(kHomePage);
+                    } else {
+                      showSnackBar(context, 'get_user_info_error'.tr());
+                    }
+                  }
                 },
                 style: FilledButton.styleFrom(
                     backgroundColor:
@@ -167,7 +171,6 @@ class LoginScreen extends HookConsumerWidget {
               FilledButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/register');
-
                 },
                 style: FilledButton.styleFrom(
                     backgroundColor:
@@ -185,6 +188,4 @@ class LoginScreen extends HookConsumerWidget {
       ),
     );
   }
-
-
 }

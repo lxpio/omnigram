@@ -21,15 +21,6 @@ import '../screens/login_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
 
-  // final isAuth = ref.read(authProvider.select((value) => value.isAuthenticated));
-
-  
-
-  // final user = ref.watch(authProvider.select((value) => value.user));
-
- 
-  // final user = ref.watch(authProvider.select((value) => value.user));
-
 
   return GoRouter(
     // navigatorKey: _key,

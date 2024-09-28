@@ -57,10 +57,10 @@
   "snack_bar_failed": "失败",
   "snack_bar_canceled": "已经取消",
   "snack_bar_copied": "已复制",
-  "snack_bar_ooops":"糟糕! 😓",
-  "no_internet":"网络连接失败，检查您的配置或者重新请求。",
-  "try_again":"再次请求",
-  "config_server":"配置服务器地址?",
-  "login_for_more_features":"登录以体验更多功能"
+  "snack_bar_ooops": "糟糕! 😓",
+  "no_internet": "网络连接失败，检查您的配置或者重新请求。",
+  "try_again": "再次请求",
+  "config_server": "配置服务器地址?",
+  "get_user_info_error": "获取用户信息失败",
+  "login_for_more_features": "登录以体验更多功能"
 }
-

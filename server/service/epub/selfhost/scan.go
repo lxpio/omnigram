@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/lxpio/omnigram/server/service/epub/schema"
 	"github.com/lxpio/omnigram/server/log"
+	"github.com/lxpio/omnigram/server/service/epub/schema"
 	"github.com/nutsdb/nutsdb"
 )
 
@@ -175,12 +175,13 @@ func (m *Scanner) Walk(refresh bool) <-chan *schema.Book {
 				}
 
 				log.I(`扫描的到文件：`, path)
+				ctime := time.Now().Unix()
 				book := &schema.Book{
 					ID:            0,
 					Size:          info.Size(),
 					Path:          path,
-					CTime:         time.Now(),
-					UTime:         time.Now(),
+					CTime:         ctime,
+					UTime:         ctime,
 					Rating:        0,
 					PublishDate:   `1970-01-01`,
 					CountVisit:    0,

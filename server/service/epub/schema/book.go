@@ -9,7 +9,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/store"
@@ -20,11 +19,11 @@ import (
 )
 
 type Book struct {
-	ID    int64     `json:"id" gorm:"primaryKey;comment:ID"`
-	Size  int64     `json:"size" gorm:"comment:文件大小"`
-	Path  string    `json:"-" gorm:"comment:文件路径"` //本地文件路径不返回到界面上
-	CTime time.Time `json:"ctime" form:"ctime" gorm:"column:ctime;autoCreateTime;comment:创建时间"`
-	UTime time.Time `json:"utime" gorm:"column:utime;comment:更新时间"`
+	ID    int64  `json:"id" gorm:"primaryKey;comment:ID"`
+	Size  int64  `json:"size" gorm:"comment:文件大小"`
+	Path  string `json:"-" gorm:"comment:文件路径"` //本地文件路径不返回到界面上
+	CTime int64  `json:"ctime" form:"ctime" gorm:"column:ctime;autoCreateTime;comment:创建时间"`
+	UTime int64  `json:"utime" gorm:"column:utime;autoUpdateTime;comment:更新时间"`
 
 	Title string `json:"title" gorm:"index:idx_book_title;type:varchar(200);comment:标题"`
 	// SubTitle represents the EPUB sub-titles.

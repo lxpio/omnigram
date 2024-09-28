@@ -32,7 +32,7 @@ class User {
     UserDto dto,
     // UserPreferencesResponseDto? preferences,
   )   : id = dto.id,
-        updatedAt = DateTime.fromMillisecondsSinceEpoch(dto.utime,isUtc: true),
+        updatedAt = DateTime.fromMillisecondsSinceEpoch(dto.utime * 1000,isUtc: true),
         email = dto.email ?? '',
         name = dto.name, 
         nickName  = dto.nickName ?? '',
@@ -45,37 +45,9 @@ class User {
         avatarColor = AvatarColorEnum.primary ; //dto.avatarColor.toAvatarColor()
         
 
-  // User.fromPartnerDto(PartnerResponseDto dto)
-  //     : id = dto.id,
-  //       updatedAt = DateTime.now(),
-  //       email = dto.email,
-  //       name = dto.name,
-  //       isPartnerSharedBy = false,
-  //       isPartnerSharedWith = false,
-  //       profileImagePath = dto.profileImagePath,
-  //       isAdmin = false,
-  //       memoryEnabled = false,
-  //       avatarColor = dto.avatarColor.toAvatarColor(),
-  //       inTimeline = dto.inTimeline ?? false,
-  //       quotaUsageInBytes = 0,
-  //       quotaSizeInBytes = 0;
 
-  /// Base user dto used where the complete user object is not required
-  // User.fromSimpleUserDto(UserDto dto)
-  //     : id = dto.id,
-  //       email = dto.email,
-  //       name = dto.name,
-  //       profileImagePath = dto.profileImagePath,
-  //       avatarColor = dto.avatarColor.toAvatarColor(),
-  //       // Fill the remaining fields with placeholders
-  //       isAdmin = false,
-  //       inTimeline = false,
-  //       memoryEnabled = false,
-  //       isPartnerSharedBy = false,
-  //       isPartnerSharedWith = false,
-  //       updatedAt = DateTime.now(),
-  //       quotaUsageInBytes = 0,
-  //       quotaSizeInBytes = 0;
+
+
 
   // @Index(unique: true, replace: false, type: IndexType.hash)
   int id;

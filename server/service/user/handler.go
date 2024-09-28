@@ -16,8 +16,8 @@ import (
 func loginHandle(c *gin.Context) {
 
 	req := struct {
-		UserName  string `json:"username"`
-		Password  string `json:"password"`
+		UserName  string `json:"account" binding:"required"`
+		Password  string `json:"password" binding:"required"`
 		ClientID  string `json:"client_id"`
 		GrantType string `json:"grant_type"`
 	}{}
@@ -37,7 +37,7 @@ func loginHandle(c *gin.Context) {
 	}
 
 	if ok := u.VerifyPassword(req.Password); !ok {
-		log.E(`用户或者账号密码不对`, u.UserName)
+		log.E(`用户或者账号密码不对`, u.Name)
 		c.JSON(404, utils.ErrGetTokens)
 		return
 	}
@@ -97,7 +97,7 @@ func getUserInfoHandle(c *gin.Context) {
 	key := cacheKeyUser + strconv.FormatInt(userID, 10)
 
 	if user, ok := userInfoCache.Get(key); ok {
-		c.JSON(200, utils.SUCCESS.WithData(user))
+		c.JSON(200, user)
 		return
 	}
 
@@ -188,7 +188,7 @@ func getAccessTokenHandle(c *gin.Context) {
 	}
 
 	if ok := u.VerifyPassword(req.Password); !ok {
-		log.E(`用户或者账号密码不对`, u.UserName)
+		log.E(`用户或者账号密码不对`, u.Name)
 		c.JSON(404, utils.ErrGetTokens)
 		return
 	}
@@ -300,9 +300,9 @@ func createAccountHandle(c *gin.Context) {
 	}
 
 	u := schema.User{
-		UserName: req.UserName,
-		Email:    req.Email,
-		RoleID:   100,
+		Name:   req.UserName,
+		Email:  req.Email,
+		RoleID: 100,
 	}
 
 	if err := orm.Create(&u).Error; err != nil {
