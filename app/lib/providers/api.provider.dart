@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -16,45 +15,35 @@ import 'package:logging/logging.dart';
 
 part 'api.provider.g.dart';
 
-
 @Riverpod(keepAlive: true)
 class ApiService extends _$ApiService {
-
   // late ApiClient _apiClient;
 
   final log = Logger("ApiService");
 
   @override
   DefaultApi build() {
-
     log.info("ApiService build");
 
     return _createApi();
-    
   }
 
-  setEndpoint()  {
-
+  setEndpoint() {
     state = _createApi();
     // ref.notifyListeners();
   }
 
-
   Future<bool> resolveAndSetEndpoint(String endpoint) async {
-
-
     final status = await _isEndpointAvailable(endpoint);
     if (status) {
       debugPrint("Endpoint is available");
-      await setEndpoint();
+      setEndpoint();
     }
 
     return status;
   }
 
-
   Future<bool> _isEndpointAvailable(String endpoint) async {
-    
     final dio = _createDio(endpoint);
 
     try {
@@ -67,9 +56,6 @@ class ApiService extends _$ApiService {
         );
         return false;
       }
-
-      
-
     } on TimeoutException catch (_) {
       return false;
     } on SocketException catch (_) {
@@ -84,14 +70,13 @@ class ApiService extends _$ApiService {
     }
     return true;
   }
- 
 
- Dio _createDio(String? baseUrl) {
+  Dio _createDio(String? baseUrl) {
     return Dio(BaseOptions(
-              baseUrl: baseUrl ?? r'http://localhost',
-               connectTimeout: const Duration(seconds: 5),
-               receiveTimeout: const Duration(seconds: 10),
-            ));
+      baseUrl: baseUrl ?? r'http://localhost',
+      connectTimeout: const Duration(seconds: 5),
+      receiveTimeout: const Duration(seconds: 10),
+    ));
   }
 
   DefaultApi _createApi() {
@@ -101,72 +86,60 @@ class ApiService extends _$ApiService {
 
     final dio = _createDio(endpoint);
 
-
-    final interceptors = [setDeviceHeadersInterceptor(),BearerAuthInterceptor()];
+    final interceptors = [
+      setDeviceHeadersInterceptor(),
+      BearerAuthInterceptor()
+    ];
 
     if (kDebugMode) {
-      interceptors.add(LogInterceptor(request: true,responseBody: true));
+      interceptors.add(LogInterceptor(request: true, responseBody: true));
     }
 
-
-    final api = Openapi(dio: dio,interceptors: interceptors);
+    final api = Openapi(dio: dio, interceptors: interceptors);
 
     api.setBearerAuth('bearer', accessToken);
     return api.getDefaultApi();
   }
 
-
-
-  DeviceHeaderInterceptor setDeviceHeadersInterceptor()  {
+  DeviceHeaderInterceptor setDeviceHeadersInterceptor() {
     // Make sign-in request
     DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
 
-   final Map<String,String> headers = {};
+    final Map<String, String> headers = {};
 
     try {
       if (Platform.isIOS) {
-      
         deviceInfoPlugin.iosInfo.then((iosInfo) {
-             headers['x-device-model'] = iosInfo.utsname.machine;
-             headers['x-device-type'] = 'iOS';
+          headers['x-device-model'] = iosInfo.utsname.machine;
+          headers['x-device-type'] = 'iOS';
         });
-     
       } else {
-
-        deviceInfoPlugin.androidInfo.then((androidInfo){
-             headers['x-device-model'] = androidInfo.model;
-             headers['x-device-type'] = 'Android';
+        deviceInfoPlugin.androidInfo.then((androidInfo) {
+          headers['x-device-model'] = androidInfo.model;
+          headers['x-device-type'] = 'Android';
         });
-    
       }
     } catch (e) {
       // log.warning("Failed to set device headers: $e");
     }
 
     return DeviceHeaderInterceptor(headers: headers);
-
   }
 
-
-  static Map<String,String> getRequestHeaders() {
-
+  static Map<String, String> getRequestHeaders() {
     DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-    final Map<String,String> headers = {};
+    final Map<String, String> headers = {};
     try {
       if (Platform.isIOS) {
-      
         deviceInfoPlugin.iosInfo.then((iosInfo) {
-             headers['x-device-model'] = iosInfo.utsname.machine;
-             headers['x-device-type'] = 'iOS';
+          headers['x-device-model'] = iosInfo.utsname.machine;
+          headers['x-device-type'] = 'iOS';
         });
-     
       } else {
-
-        deviceInfoPlugin.androidInfo.then((androidInfo){
-             headers['x-device-model'] = androidInfo.model;
-             headers['x-device-type'] = 'Android';
+        deviceInfoPlugin.androidInfo.then((androidInfo) {
+          headers['x-device-model'] = androidInfo.model;
+          headers['x-device-type'] = 'Android';
         });
-    
       }
     } catch (e) {
       // log.warning("Failed to set device headers: $e");
@@ -177,18 +150,13 @@ class ApiService extends _$ApiService {
 
     return headers;
   }
-
 }
-
-
-
-
-
 
 class DeviceHeaderInterceptor extends Interceptor {
   final Map<String, String> headers;
 
-  DeviceHeaderInterceptor({Map<String, String>? headers}): headers = headers ?? {};
+  DeviceHeaderInterceptor({Map<String, String>? headers})
+      : headers = headers ?? {};
 
   @override
   void onRequest(
@@ -198,5 +166,4 @@ class DeviceHeaderInterceptor extends Interceptor {
     options.headers.addAll(headers);
     super.onRequest(options, handler);
   }
-
 }

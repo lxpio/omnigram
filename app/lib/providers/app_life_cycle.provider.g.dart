@@ -6,7 +6,7 @@ part of 'app_life_cycle.provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$appLifeCycleHash() => r'3b82d02db00a3fb56789c574464eb6fd901294cf';
+String _$appLifeCycleHash() => r'0b4888283099df0718aa771b442dc5e90e8efea7';
 
 /// See also [AppLifeCycle].
 @ProviderFor(AppLifeCycle)

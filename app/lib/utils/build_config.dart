@@ -7,6 +7,7 @@ import 'package:isar/isar.dart';
 import 'package:omnigram/entities/book.entity.dart';
 import 'package:omnigram/entities/logger_message.entity.dart';
 import 'package:omnigram/entities/isar_store.entity.dart';
+import 'package:omnigram/entities/user.entity.dart';
 import 'package:omnigram/services/logger.service.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/migration.dart';
@@ -85,6 +86,7 @@ Future<Isar> loadDb() async {
       StoreValueSchema,
       LoggerMessageSchema,
       BookEntitySchema,
+      UserSchema,
       // if (Platform.isAndroid) AndroidDeviceAssetSchema,
       // if (Platform.isIOS) IOSDeviceAssetSchema,
     ],

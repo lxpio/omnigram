@@ -75,10 +75,10 @@ func handleSession(c *gin.Context, sess string) {
 	}
 	//校验session 合法性
 	//获取相对时间
-	// diff := (time.Now().Unix() - session.Utime)
-	diff := time.Since(session.UTime) / 1000 / 1000 / 1000
+	diff := (time.Now().Unix() - session.UTime)
+	// diff := time.Since(session.UTime) / 1000 / 1000 / 1000
 
-	if diff-session.Duration > 0 {
+	if diff-int64(session.Duration) > 0 {
 
 		log.E(`session has expired `, session.Session)
 		// 删除

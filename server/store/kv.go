@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/lxpio/omnigram/server/log"
 )
@@ -46,7 +45,7 @@ type KV interface {
 type Object struct {
 	Key          string
 	Size         int64
-	LastModified time.Time
+	LastModified int64
 	Data         []byte
 }
 
@@ -121,7 +120,7 @@ func (m *LocalDir) GetObject(context context.Context, bucketName string, objectN
 	object := &Object{
 		Key:          objectName,
 		Size:         stat.Size(),
-		LastModified: stat.ModTime(), //读取文件最后修改时间
+		LastModified: stat.ModTime().Unix(), //读取文件最后修改时间
 		Data:         buf.Bytes(),
 	}
 

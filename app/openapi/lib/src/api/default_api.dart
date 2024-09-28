@@ -34,7 +34,6 @@ import 'package:openapi/src/model/sys_ping_get200_response.dart';
 import 'package:openapi/src/model/user_dto.dart';
 
 class DefaultApi {
-
   final Dio _dio;
 
   final Serializers _serializers;
@@ -42,10 +41,10 @@ class DefaultApi {
   const DefaultApi(this._dio, this._serializers);
 
   /// 删除账号
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [accountId] - 
+  /// * [accountId] -
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -55,7 +54,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [RespDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<RespDto>> adminAccountsAccountIdDelete({ 
+  Future<Response<RespDto>> adminAccountsAccountIdDelete({
     required String accountId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -64,7 +63,10 @@ class DefaultApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/admin/accounts/{account_id}'.replaceAll('{' r'account_id' '}', encodeQueryParameter(_serializers, accountId, const FullType(String)).toString());
+    final _path = r'/admin/accounts/{account_id}'.replaceAll(
+        '{' r'account_id' '}',
+        encodeQueryParameter(_serializers, accountId, const FullType(String))
+            .toString());
     final _options = Options(
       method: r'DELETE',
       headers: <String, dynamic>{
@@ -95,11 +97,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(RespDto),
-      ) as RespDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(RespDto),
+            ) as RespDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -123,7 +126,7 @@ class DefaultApi {
   }
 
   /// 获取用户列表
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [search] - 模糊搜索
@@ -140,7 +143,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [AdminAccountsGet200Response] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AdminAccountsGet200Response>> adminAccountsGet({ 
+  Future<Response<AdminAccountsGet200Response>> adminAccountsGet({
     String? search,
     String? email,
     String? name,
@@ -173,11 +176,21 @@ class DefaultApi {
     );
 
     final _queryParameters = <String, dynamic>{
-      if (search != null) r'search': encodeQueryParameter(_serializers, search, const FullType(String)),
-      if (email != null) r'email': encodeQueryParameter(_serializers, email, const FullType(String)),
-      if (name != null) r'name': encodeQueryParameter(_serializers, name, const FullType(String)),
-      if (pageNum != null) r'page_num': encodeQueryParameter(_serializers, pageNum, const FullType(int)),
-      if (pageSize != null) r'page_size': encodeQueryParameter(_serializers, pageSize, const FullType(int)),
+      if (search != null)
+        r'search':
+            encodeQueryParameter(_serializers, search, const FullType(String)),
+      if (email != null)
+        r'email':
+            encodeQueryParameter(_serializers, email, const FullType(String)),
+      if (name != null)
+        r'name':
+            encodeQueryParameter(_serializers, name, const FullType(String)),
+      if (pageNum != null)
+        r'page_num':
+            encodeQueryParameter(_serializers, pageNum, const FullType(int)),
+      if (pageSize != null)
+        r'page_size':
+            encodeQueryParameter(_serializers, pageSize, const FullType(int)),
     };
 
     final _response = await _dio.request<Object>(
@@ -193,11 +206,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(AdminAccountsGet200Response),
-      ) as AdminAccountsGet200Response;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(AdminAccountsGet200Response),
+            ) as AdminAccountsGet200Response;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -224,7 +238,7 @@ class DefaultApi {
   /// 创建普通用户
   ///
   /// Parameters:
-  /// * [createUserDto] 
+  /// * [createUserDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -234,7 +248,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [UserDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<UserDto>> adminAccountsPost({ 
+  Future<Response<UserDto>> adminAccountsPost({
     CreateUserDto? createUserDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -267,11 +281,12 @@ class DefaultApi {
 
     try {
       const _type = FullType(CreateUserDto);
-      _bodyData = createUserDto == null ? null : _serializers.serialize(createUserDto, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = createUserDto == null
+          ? null
+          : _serializers.serialize(createUserDto, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -294,11 +309,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(UserDto),
-      ) as UserDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(UserDto),
+            ) as UserDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -322,11 +338,11 @@ class DefaultApi {
   }
 
   /// 获取用户信息
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [userId] - 
-  /// * [body] 
+  /// * [userId] -
+  /// * [body]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -336,7 +352,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [UserDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<UserDto>> adminAccountsUserIdGet({ 
+  Future<Response<UserDto>> adminAccountsUserIdGet({
     required String userId,
     JsonObject? body,
     CancelToken? cancelToken,
@@ -346,7 +362,10 @@ class DefaultApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/admin/accounts/{user_id}'.replaceAll('{' r'user_id' '}', encodeQueryParameter(_serializers, userId, const FullType(String)).toString());
+    final _path = r'/admin/accounts/{user_id}'.replaceAll(
+        '{' r'user_id' '}',
+        encodeQueryParameter(_serializers, userId, const FullType(String))
+            .toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -370,10 +389,9 @@ class DefaultApi {
 
     try {
       _bodyData = body;
-
-    } catch(error, stackTrace) {
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -396,11 +414,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(UserDto),
-      ) as UserDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(UserDto),
+            ) as UserDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -424,10 +443,10 @@ class DefaultApi {
   }
 
   /// 获取API Key列表
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [accountId] - 
+  /// * [accountId] -
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -437,7 +456,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [BuiltList<ApikeyDto>] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<BuiltList<ApikeyDto>>> authAccountsAccountIdApikeysGet({ 
+  Future<Response<BuiltList<ApikeyDto>>> authAccountsAccountIdApikeysGet({
     required String accountId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -446,7 +465,10 @@ class DefaultApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/auth/accounts/{account_id}/apikeys'.replaceAll('{' r'account_id' '}', encodeQueryParameter(_serializers, accountId, const FullType(String)).toString());
+    final _path = r'/auth/accounts/{account_id}/apikeys'.replaceAll(
+        '{' r'account_id' '}',
+        encodeQueryParameter(_serializers, accountId, const FullType(String))
+            .toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -477,11 +499,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(BuiltList, [FullType(ApikeyDto)]),
-      ) as BuiltList<ApikeyDto>;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(BuiltList, [FullType(ApikeyDto)]),
+            ) as BuiltList<ApikeyDto>;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -505,11 +528,11 @@ class DefaultApi {
   }
 
   /// 删除API Key
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [accountId] - 
-  /// * [keyId] - 
+  /// * [accountId] -
+  /// * [keyId] -
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -519,7 +542,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [RespDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<RespDto>> authAccountsAccountIdApikeysKeyIdDelete({ 
+  Future<Response<RespDto>> authAccountsAccountIdApikeysKeyIdDelete({
     required String accountId,
     required String keyId,
     CancelToken? cancelToken,
@@ -529,7 +552,16 @@ class DefaultApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/auth/accounts/{account_id}/apikeys/{key_id}'.replaceAll('{' r'account_id' '}', encodeQueryParameter(_serializers, accountId, const FullType(String)).toString()).replaceAll('{' r'key_id' '}', encodeQueryParameter(_serializers, keyId, const FullType(String)).toString());
+    final _path = r'/auth/accounts/{account_id}/apikeys/{key_id}'
+        .replaceAll(
+            '{' r'account_id' '}',
+            encodeQueryParameter(
+                    _serializers, accountId, const FullType(String))
+                .toString())
+        .replaceAll(
+            '{' r'key_id' '}',
+            encodeQueryParameter(_serializers, keyId, const FullType(String))
+                .toString());
     final _options = Options(
       method: r'DELETE',
       headers: <String, dynamic>{
@@ -560,11 +592,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(RespDto),
-      ) as RespDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(RespDto),
+            ) as RespDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -588,11 +621,11 @@ class DefaultApi {
   }
 
   /// 创建API Key
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [accountId] - 
-  /// * [authAccountsAccountIdApikeysPostRequest] 
+  /// * [accountId] -
+  /// * [authAccountsAccountIdApikeysPostRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -602,9 +635,10 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [ApikeyDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ApikeyDto>> authAccountsAccountIdApikeysPost({ 
+  Future<Response<ApikeyDto>> authAccountsAccountIdApikeysPost({
     required String accountId,
-    AuthAccountsAccountIdApikeysPostRequest? authAccountsAccountIdApikeysPostRequest,
+    AuthAccountsAccountIdApikeysPostRequest?
+        authAccountsAccountIdApikeysPostRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -612,7 +646,10 @@ class DefaultApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/auth/accounts/{account_id}/apikeys'.replaceAll('{' r'account_id' '}', encodeQueryParameter(_serializers, accountId, const FullType(String)).toString());
+    final _path = r'/auth/accounts/{account_id}/apikeys'.replaceAll(
+        '{' r'account_id' '}',
+        encodeQueryParameter(_serializers, accountId, const FullType(String))
+            .toString());
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -636,11 +673,13 @@ class DefaultApi {
 
     try {
       const _type = FullType(AuthAccountsAccountIdApikeysPostRequest);
-      _bodyData = authAccountsAccountIdApikeysPostRequest == null ? null : _serializers.serialize(authAccountsAccountIdApikeysPostRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = authAccountsAccountIdApikeysPostRequest == null
+          ? null
+          : _serializers.serialize(authAccountsAccountIdApikeysPostRequest,
+              specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -663,11 +702,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(ApikeyDto),
-      ) as ApikeyDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(ApikeyDto),
+            ) as ApikeyDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -691,11 +731,11 @@ class DefaultApi {
   }
 
   /// 重置账号密码
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [accountId] - 
-  /// * [changePasswordDto] 
+  /// * [accountId] -
+  /// * [changePasswordDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -705,7 +745,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [RespDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<RespDto>> authAccountsAccountIdResetPost({ 
+  Future<Response<RespDto>> authAccountsAccountIdResetPost({
     required String accountId,
     ChangePasswordDto? changePasswordDto,
     CancelToken? cancelToken,
@@ -715,7 +755,10 @@ class DefaultApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/auth/accounts/{account_id}/reset'.replaceAll('{' r'account_id' '}', encodeQueryParameter(_serializers, accountId, const FullType(String)).toString());
+    final _path = r'/auth/accounts/{account_id}/reset'.replaceAll(
+        '{' r'account_id' '}',
+        encodeQueryParameter(_serializers, accountId, const FullType(String))
+            .toString());
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -739,11 +782,12 @@ class DefaultApi {
 
     try {
       const _type = FullType(ChangePasswordDto);
-      _bodyData = changePasswordDto == null ? null : _serializers.serialize(changePasswordDto, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = changePasswordDto == null
+          ? null
+          : _serializers.serialize(changePasswordDto, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -766,11 +810,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(RespDto),
-      ) as RespDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(RespDto),
+            ) as RespDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -794,10 +839,10 @@ class DefaultApi {
   }
 
   /// 用户登录
-  /// 用户登录接口，认证成功以后返回200 ok ，并set-cookie 
+  /// 用户登录接口，认证成功以后返回200 ok ，并set-cookie
   ///
   /// Parameters:
-  /// * [loginCredentialDto] 
+  /// * [loginCredentialDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -807,7 +852,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [RespDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<RespDto>> authLoginPost({ 
+  Future<Response<RespDto>> authLoginPost({
     LoginCredentialDto? loginCredentialDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -834,11 +879,12 @@ class DefaultApi {
 
     try {
       const _type = FullType(LoginCredentialDto);
-      _bodyData = loginCredentialDto == null ? null : _serializers.serialize(loginCredentialDto, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = loginCredentialDto == null
+          ? null
+          : _serializers.serialize(loginCredentialDto, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -861,11 +907,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(RespDto),
-      ) as RespDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(RespDto),
+            ) as RespDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -901,7 +948,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [RespDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<RespDto>> authLogoutPost({ 
+  Future<Response<RespDto>> authLogoutPost({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -940,11 +987,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(RespDto),
-      ) as RespDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(RespDto),
+            ) as RespDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -968,10 +1016,10 @@ class DefaultApi {
   }
 
   /// 获取访问token
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [loginCredentialDto] 
+  /// * [loginCredentialDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -981,7 +1029,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [AccessTokenDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AccessTokenDto>> authTokenPost({ 
+  Future<Response<AccessTokenDto>> authTokenPost({
     LoginCredentialDto? loginCredentialDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1008,11 +1056,12 @@ class DefaultApi {
 
     try {
       const _type = FullType(LoginCredentialDto);
-      _bodyData = loginCredentialDto == null ? null : _serializers.serialize(loginCredentialDto, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = loginCredentialDto == null
+          ? null
+          : _serializers.serialize(loginCredentialDto, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -1035,11 +1084,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(AccessTokenDto),
-      ) as AccessTokenDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(AccessTokenDto),
+            ) as AccessTokenDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1063,10 +1113,10 @@ class DefaultApi {
   }
 
   /// 获取书籍封面图片
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [bookId] - 
+  /// * [bookId] -
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1076,7 +1126,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [JsonObject] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<JsonObject>> imgReaderCoversBookIdGet({ 
+  Future<Response<JsonObject>> imgReaderCoversBookIdGet({
     required String bookId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1085,7 +1135,10 @@ class DefaultApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/img/reader/covers/{book_id}'.replaceAll('{' r'book_id' '}', encodeQueryParameter(_serializers, bookId, const FullType(String)).toString());
+    final _path = r'/img/reader/covers/{book_id}'.replaceAll(
+        '{' r'book_id' '}',
+        encodeQueryParameter(_serializers, bookId, const FullType(String))
+            .toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -1116,11 +1169,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(JsonObject),
-      ) as JsonObject;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(JsonObject),
+            ) as JsonObject;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1144,10 +1198,10 @@ class DefaultApi {
   }
 
   /// 文字转语音
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [m4tTtsStreamPostRequest] 
+  /// * [m4tTtsStreamPostRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1157,7 +1211,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [JsonObject] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<JsonObject>> m4tTtsSimplePost({ 
+  Future<Response<JsonObject>> m4tTtsSimplePost({
     M4tTtsStreamPostRequest? m4tTtsStreamPostRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1190,11 +1244,13 @@ class DefaultApi {
 
     try {
       const _type = FullType(M4tTtsStreamPostRequest);
-      _bodyData = m4tTtsStreamPostRequest == null ? null : _serializers.serialize(m4tTtsStreamPostRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = m4tTtsStreamPostRequest == null
+          ? null
+          : _serializers.serialize(m4tTtsStreamPostRequest,
+              specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -1217,11 +1273,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(JsonObject),
-      ) as JsonObject;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(JsonObject),
+            ) as JsonObject;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1245,7 +1302,7 @@ class DefaultApi {
   }
 
   /// 获取声音列表
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
@@ -1257,7 +1314,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [SpeakerListDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SpeakerListDto>> m4tTtsSpeakersGet({ 
+  Future<Response<SpeakerListDto>> m4tTtsSpeakersGet({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -1296,11 +1353,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(SpeakerListDto),
-      ) as SpeakerListDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(SpeakerListDto),
+            ) as SpeakerListDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1324,7 +1382,7 @@ class DefaultApi {
   }
 
   /// 上传声音
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [name] - 名称
@@ -1338,7 +1396,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [SpeakerDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SpeakerDto>> m4tTtsSpeakersPost({ 
+  Future<Response<SpeakerDto>> m4tTtsSpeakersPost({
     String? name,
     MultipartFile? wav,
     CancelToken? cancelToken,
@@ -1372,13 +1430,14 @@ class DefaultApi {
 
     try {
       _bodyData = FormData.fromMap(<String, dynamic>{
-        if (name != null) r'name': encodeFormParameter(_serializers, name, const FullType(String)),
+        if (name != null)
+          r'name':
+              encodeFormParameter(_serializers, name, const FullType(String)),
         if (wav != null) r'wav': wav,
       });
-
-    } catch(error, stackTrace) {
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -1401,11 +1460,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(SpeakerDto),
-      ) as SpeakerDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(SpeakerDto),
+            ) as SpeakerDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1429,10 +1489,10 @@ class DefaultApi {
   }
 
   /// 文字转语音接口
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [m4tTtsStreamPostRequest] 
+  /// * [m4tTtsStreamPostRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1442,7 +1502,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [JsonObject] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<T>> m4tTtsStreamPost<T>({ 
+  Future<Response<T>> m4tTtsStreamPost<T>({
     M4tTtsStreamPostRequest? m4tTtsStreamPostRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1476,11 +1536,13 @@ class DefaultApi {
 
     try {
       const _type = FullType(M4tTtsStreamPostRequest);
-      _bodyData = m4tTtsStreamPostRequest == null ? null : _serializers.serialize(m4tTtsStreamPostRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = m4tTtsStreamPostRequest == null
+          ? null
+          : _serializers.serialize(m4tTtsStreamPostRequest,
+              specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -1498,14 +1560,13 @@ class DefaultApi {
       onSendProgress: onSendProgress,
       onReceiveProgress: onReceiveProgress,
     );
-   
   }
 
   /// 书籍详情
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [bookId] - 
+  /// * [bookId] -
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1515,7 +1576,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [EbookDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EbookDto>> readerBooksBookIdGet({ 
+  Future<Response<EbookDto>> readerBooksBookIdGet({
     required String bookId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1524,7 +1585,10 @@ class DefaultApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/reader/books/{book_id}'.replaceAll('{' r'book_id' '}', encodeQueryParameter(_serializers, bookId, const FullType(String)).toString());
+    final _path = r'/reader/books/{book_id}'.replaceAll(
+        '{' r'book_id' '}',
+        encodeQueryParameter(_serializers, bookId, const FullType(String))
+            .toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -1555,11 +1619,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(EbookDto),
-      ) as EbookDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(EbookDto),
+            ) as EbookDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1583,11 +1648,11 @@ class DefaultApi {
   }
 
   /// 修改书籍介绍信息
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [bookId] - 
-  /// * [readerBooksBookIdPutRequest] 
+  /// * [bookId] -
+  /// * [readerBooksBookIdPutRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1597,7 +1662,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [EbookDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EbookDto>> readerBooksBookIdPut({ 
+  Future<Response<EbookDto>> readerBooksBookIdPut({
     required String bookId,
     ReaderBooksBookIdPutRequest? readerBooksBookIdPutRequest,
     CancelToken? cancelToken,
@@ -1607,7 +1672,10 @@ class DefaultApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/reader/books/{book_id}'.replaceAll('{' r'book_id' '}', encodeQueryParameter(_serializers, bookId, const FullType(String)).toString());
+    final _path = r'/reader/books/{book_id}'.replaceAll(
+        '{' r'book_id' '}',
+        encodeQueryParameter(_serializers, bookId, const FullType(String))
+            .toString());
     final _options = Options(
       method: r'PUT',
       headers: <String, dynamic>{
@@ -1631,11 +1699,13 @@ class DefaultApi {
 
     try {
       const _type = FullType(ReaderBooksBookIdPutRequest);
-      _bodyData = readerBooksBookIdPutRequest == null ? null : _serializers.serialize(readerBooksBookIdPutRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = readerBooksBookIdPutRequest == null
+          ? null
+          : _serializers.serialize(readerBooksBookIdPutRequest,
+              specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -1658,11 +1728,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(EbookDto),
-      ) as EbookDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(EbookDto),
+            ) as EbookDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1686,7 +1757,7 @@ class DefaultApi {
   }
 
   /// 获取书籍列表
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [search] - 模糊搜索字段
@@ -1703,7 +1774,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [EbookListDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EbookListDto>> readerBooksGet({ 
+  Future<Response<EbookListDto>> readerBooksGet({
     String? search,
     int? pageSize,
     int? pageNum,
@@ -1736,11 +1807,21 @@ class DefaultApi {
     );
 
     final _queryParameters = <String, dynamic>{
-      if (search != null) r'search': encodeQueryParameter(_serializers, search, const FullType(String)),
-      if (pageSize != null) r'page_size': encodeQueryParameter(_serializers, pageSize, const FullType(int)),
-      if (pageNum != null) r'page_num': encodeQueryParameter(_serializers, pageNum, const FullType(int)),
-      if (category != null) r'category': encodeQueryParameter(_serializers, category, const FullType(String)),
-      if (author != null) r'author': encodeQueryParameter(_serializers, author, const FullType(String)),
+      if (search != null)
+        r'search':
+            encodeQueryParameter(_serializers, search, const FullType(String)),
+      if (pageSize != null)
+        r'page_size':
+            encodeQueryParameter(_serializers, pageSize, const FullType(int)),
+      if (pageNum != null)
+        r'page_num':
+            encodeQueryParameter(_serializers, pageNum, const FullType(int)),
+      if (category != null)
+        r'category': encodeQueryParameter(
+            _serializers, category, const FullType(String)),
+      if (author != null)
+        r'author':
+            encodeQueryParameter(_serializers, author, const FullType(String)),
     };
 
     final _response = await _dio.request<Object>(
@@ -1756,11 +1837,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(EbookListDto),
-      ) as EbookListDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(EbookListDto),
+            ) as EbookListDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1784,10 +1866,10 @@ class DefaultApi {
   }
 
   /// 下载书籍
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [bookId] - 
+  /// * [bookId] -
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1797,7 +1879,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [JsonObject] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<JsonObject>> readerDownloadBooksBookIdGet({ 
+  Future<Response<JsonObject>> readerDownloadBooksBookIdGet({
     required String bookId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1806,7 +1888,10 @@ class DefaultApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/reader/download/books/{book_id}'.replaceAll('{' r'book_id' '}', encodeQueryParameter(_serializers, bookId, const FullType(String)).toString());
+    final _path = r'/reader/download/books/{book_id}'.replaceAll(
+        '{' r'book_id' '}',
+        encodeQueryParameter(_serializers, bookId, const FullType(String))
+            .toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -1837,11 +1922,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(JsonObject),
-      ) as JsonObject;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(JsonObject),
+            ) as JsonObject;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1865,7 +1951,7 @@ class DefaultApi {
   }
 
   /// 喜欢的书
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [search] - 模糊搜索字段
@@ -1882,7 +1968,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [EbookListDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EbookListDto>> readerFavGet({ 
+  Future<Response<EbookListDto>> readerFavGet({
     String? search,
     num? pageSize,
     num? pageNum,
@@ -1915,11 +2001,21 @@ class DefaultApi {
     );
 
     final _queryParameters = <String, dynamic>{
-      if (search != null) r'search': encodeQueryParameter(_serializers, search, const FullType(String)),
-      if (pageSize != null) r'page_size': encodeQueryParameter(_serializers, pageSize, const FullType(num)),
-      if (pageNum != null) r'page_num': encodeQueryParameter(_serializers, pageNum, const FullType(num)),
-      if (category != null) r'category': encodeQueryParameter(_serializers, category, const FullType(String)),
-      if (author != null) r'author': encodeQueryParameter(_serializers, author, const FullType(String)),
+      if (search != null)
+        r'search':
+            encodeQueryParameter(_serializers, search, const FullType(String)),
+      if (pageSize != null)
+        r'page_size':
+            encodeQueryParameter(_serializers, pageSize, const FullType(num)),
+      if (pageNum != null)
+        r'page_num':
+            encodeQueryParameter(_serializers, pageNum, const FullType(num)),
+      if (category != null)
+        r'category': encodeQueryParameter(
+            _serializers, category, const FullType(String)),
+      if (author != null)
+        r'author':
+            encodeQueryParameter(_serializers, author, const FullType(String)),
     };
 
     final _response = await _dio.request<Object>(
@@ -1935,11 +2031,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(EbookListDto),
-      ) as EbookListDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(EbookListDto),
+            ) as EbookListDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1963,7 +2060,7 @@ class DefaultApi {
   }
 
   /// 获取阅读索引页
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [random] - 随机书籍数量
@@ -1977,7 +2074,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [EbookIndexDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EbookIndexDto>> readerIndexGet({ 
+  Future<Response<EbookIndexDto>> readerIndexGet({
     num? random,
     num? recent,
     CancelToken? cancelToken,
@@ -2007,8 +2104,12 @@ class DefaultApi {
     );
 
     final _queryParameters = <String, dynamic>{
-      if (random != null) r'random': encodeQueryParameter(_serializers, random, const FullType(num)),
-      if (recent != null) r'recent': encodeQueryParameter(_serializers, recent, const FullType(num)),
+      if (random != null)
+        r'random':
+            encodeQueryParameter(_serializers, random, const FullType(num)),
+      if (recent != null)
+        r'recent':
+            encodeQueryParameter(_serializers, recent, const FullType(num)),
     };
 
     final _response = await _dio.request<Object>(
@@ -2024,11 +2125,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(EbookIndexDto),
-      ) as EbookIndexDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(EbookIndexDto),
+            ) as EbookIndexDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -2052,7 +2154,7 @@ class DefaultApi {
   }
 
   /// 最近阅读
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [search] - 模糊搜索字段
@@ -2069,7 +2171,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [EbookListDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EbookListDto>> readerRecentGet({ 
+  Future<Response<EbookListDto>> readerRecentGet({
     String? search,
     num? pageSize,
     num? pageNum,
@@ -2102,11 +2204,21 @@ class DefaultApi {
     );
 
     final _queryParameters = <String, dynamic>{
-      if (search != null) r'search': encodeQueryParameter(_serializers, search, const FullType(String)),
-      if (pageSize != null) r'page_size': encodeQueryParameter(_serializers, pageSize, const FullType(num)),
-      if (pageNum != null) r'page_num': encodeQueryParameter(_serializers, pageNum, const FullType(num)),
-      if (category != null) r'category': encodeQueryParameter(_serializers, category, const FullType(String)),
-      if (author != null) r'author': encodeQueryParameter(_serializers, author, const FullType(String)),
+      if (search != null)
+        r'search':
+            encodeQueryParameter(_serializers, search, const FullType(String)),
+      if (pageSize != null)
+        r'page_size':
+            encodeQueryParameter(_serializers, pageSize, const FullType(num)),
+      if (pageNum != null)
+        r'page_num':
+            encodeQueryParameter(_serializers, pageNum, const FullType(num)),
+      if (category != null)
+        r'category': encodeQueryParameter(
+            _serializers, category, const FullType(String)),
+      if (author != null)
+        r'author':
+            encodeQueryParameter(_serializers, author, const FullType(String)),
     };
 
     final _response = await _dio.request<Object>(
@@ -2122,11 +2234,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(EbookListDto),
-      ) as EbookListDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(EbookListDto),
+            ) as EbookListDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -2150,7 +2263,7 @@ class DefaultApi {
   }
 
   /// 获取阅读统计数据
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
@@ -2162,7 +2275,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [ReaderStatsDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ReaderStatsDto>> readerStatsGet({ 
+  Future<Response<ReaderStatsDto>> readerStatsGet({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -2201,11 +2314,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(ReaderStatsDto),
-      ) as ReaderStatsDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(ReaderStatsDto),
+            ) as ReaderStatsDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -2229,10 +2343,10 @@ class DefaultApi {
   }
 
   /// 上传书籍
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [body] 
+  /// * [body]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -2242,7 +2356,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [EbookDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EbookDto>> readerUploadPost({ 
+  Future<Response<EbookDto>> readerUploadPost({
     MultipartFile? body,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -2275,10 +2389,9 @@ class DefaultApi {
 
     try {
       _bodyData = body?.finalize();
-
-    } catch(error, stackTrace) {
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -2301,11 +2414,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(EbookDto),
-      ) as EbookDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(EbookDto),
+            ) as EbookDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -2341,7 +2455,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [SysInfoDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SysInfoDto>> sysInfoGet({ 
+  Future<Response<SysInfoDto>> sysInfoGet({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -2380,11 +2494,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(SysInfoDto),
-      ) as SysInfoDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(SysInfoDto),
+            ) as SysInfoDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -2408,10 +2523,10 @@ class DefaultApi {
   }
 
   /// 修改系统信息
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [sysInfoDto] 
+  /// * [sysInfoDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -2421,7 +2536,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [SysInfoDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SysInfoDto>> sysInfoPut({ 
+  Future<Response<SysInfoDto>> sysInfoPut({
     SysInfoDto? sysInfoDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -2454,11 +2569,12 @@ class DefaultApi {
 
     try {
       const _type = FullType(SysInfoDto);
-      _bodyData = sysInfoDto == null ? null : _serializers.serialize(sysInfoDto, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = sysInfoDto == null
+          ? null
+          : _serializers.serialize(sysInfoDto, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -2481,11 +2597,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(SysInfoDto),
-      ) as SysInfoDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(SysInfoDto),
+            ) as SysInfoDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -2521,7 +2638,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [SysPingGet200Response] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SysPingGet200Response>> sysPingGet({ 
+  Future<Response<SysPingGet200Response>> sysPingGet({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -2554,11 +2671,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(SysPingGet200Response),
-      ) as SysPingGet200Response;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(SysPingGet200Response),
+            ) as SysPingGet200Response;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -2585,7 +2703,7 @@ class DefaultApi {
   /// 启动扫描目录（管理员权限）
   ///
   /// Parameters:
-  /// * [enableScanDto] 
+  /// * [enableScanDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -2595,7 +2713,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [ScanStatsDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ScanStatsDto>> sysScanRunPost({ 
+  Future<Response<ScanStatsDto>> sysScanRunPost({
     EnableScanDto? enableScanDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -2628,11 +2746,12 @@ class DefaultApi {
 
     try {
       const _type = FullType(EnableScanDto);
-      _bodyData = enableScanDto == null ? null : _serializers.serialize(enableScanDto, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = enableScanDto == null
+          ? null
+          : _serializers.serialize(enableScanDto, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -2655,11 +2774,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(ScanStatsDto),
-      ) as ScanStatsDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(ScanStatsDto),
+            ) as ScanStatsDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -2683,7 +2803,7 @@ class DefaultApi {
   }
 
   /// 获取当前扫描状态
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
@@ -2695,7 +2815,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [ScanStatsDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ScanStatsDto>> sysScanStatusGet({ 
+  Future<Response<ScanStatsDto>> sysScanStatusGet({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -2734,11 +2854,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(ScanStatsDto),
-      ) as ScanStatsDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(ScanStatsDto),
+            ) as ScanStatsDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -2774,7 +2895,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [ScanStatsDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ScanStatsDto>> sysScanStopPost({ 
+  Future<Response<ScanStatsDto>> sysScanStopPost({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -2813,11 +2934,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(ScanStatsDto),
-      ) as ScanStatsDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(ScanStatsDto),
+            ) as ScanStatsDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -2841,10 +2963,10 @@ class DefaultApi {
   }
 
   /// 当前用户信息
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [body] 
+  /// * [body]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -2854,7 +2976,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [UserDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<UserDto>> userUserinfoGet({ 
+  Future<Response<UserDto>> userUserinfoGet({
     JsonObject? body,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -2887,10 +3009,9 @@ class DefaultApi {
 
     try {
       _bodyData = body;
-
-    } catch(error, stackTrace) {
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -2913,11 +3034,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(UserDto),
-      ) as UserDto;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(UserDto),
+            ) as UserDto;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -2939,5 +3061,4 @@ class DefaultApi {
       extra: _response.extra,
     );
   }
-
 }
