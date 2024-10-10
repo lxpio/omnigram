@@ -5,7 +5,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/providers/book.provider.dart';
 import 'package:omnigram/screens/no_connection.dart';
 import 'package:omnigram/screens/reader/views/book_group_view.dart';
-import 'package:omnigram/utils/localization.service.dart';
 
 class EpubIndexView extends StatefulHookConsumerWidget {
   const EpubIndexView({super.key});

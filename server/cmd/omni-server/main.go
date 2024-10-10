@@ -39,12 +39,14 @@ func main() {
 		os.Exit(0)
 	}
 
-	cf, err := conf.InitConfig(confFile)
+	err := conf.InitConfig(confFile)
 
 	if err != nil {
 		fmt.Println(`open config file with err:`, err.Error())
 		os.Exit(1)
 	}
+
+	cf := conf.GetConfig()
 
 	log.Init(cf.LogDir, cf.LogLevel)
 
@@ -62,11 +64,11 @@ func main() {
 	var app *server.App
 
 	if initFlag {
-		server.InitServerData(cf)
+		server.InitServerData(ctx)
 		os.Exit(0)
 	} else {
 		//open api server
-		app := server.NewAPPWithConfig(cf)
+		app = server.NewAPP()
 		app.StartContext(ctx)
 	}
 

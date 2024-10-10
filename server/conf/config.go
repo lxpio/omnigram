@@ -5,13 +5,14 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/lxpio/omnigram/server/store"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/yaml.v2"
 )
 
 var (
 	Version = ""
+
+	gconfig *Config // 全局配置
 )
 
 // Config 定义 配置结构图
@@ -28,7 +29,7 @@ type Config struct {
 
 	M4tOptions M4tOptions `yaml:"m4t_options" json:"m4t_options"`
 
-	DBOption *store.Opt `yaml:"db_options" json:"db_options"`
+	DBOption *Opt `yaml:"db_options" json:"db_options"`
 
 	ModelOptions []ModelOptions `yaml:"model_options" json:"model_options"`
 
@@ -37,21 +38,21 @@ type Config struct {
 	filePath string `yaml:"-" json:"-"`
 }
 
-func InitConfig(path string) (*Config, error) {
+func InitConfig(path string) error {
 
 	f, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("cannot read config file: %w", err)
+		return fmt.Errorf("cannot read config file: %w", err)
 	}
 
 	cf := defaultConfig(path)
 
 	if err := yaml.Unmarshal(f, cf); err != nil {
-		return nil, fmt.Errorf("cannot unmarshal config file: %w", err)
+		return fmt.Errorf("cannot unmarshal config file: %w", err)
 	}
 
 	if cf.DBOption == nil {
-		cf.DBOption = &store.Opt{
+		cf.DBOption = &Opt{
 			Driver:   "sqlite3",
 			Host:     filepath.Join(cf.MetaDataPath, "db"),
 			LogLevel: cf.LogLevel,
@@ -65,7 +66,8 @@ func InitConfig(path string) (*Config, error) {
 		cf.M4tOptions.RemoteAddr = `localhost:50051`
 	}
 
-	return cf, err
+	gconfig = cf
+	return err
 }
 
 func defaultConfig(path string) *Config {
@@ -77,6 +79,10 @@ func defaultConfig(path string) *Config {
 		filePath:     path,
 	}
 	return cf
+}
+
+func (c *Config) MetaPath() string {
+	return filepath.Join(c.MetaDataPath, `meta`)
 }
 
 func (c *Config) Save() error {
@@ -105,4 +111,8 @@ type EpubOptions struct {
 
 type M4tOptions struct {
 	RemoteAddr string `json:"remote_addr" yaml:"remote_addr"`
+}
+
+func GetConfig() *Config {
+	return gconfig
 }

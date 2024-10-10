@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/lxpio/omnigram/server/conf"
 	"github.com/lxpio/omnigram/server/log"
 	"go.uber.org/zap/zapcore"
 	"gorm.io/driver/mysql"
@@ -14,28 +15,10 @@ import (
 )
 
 // Driver 定义数据库类型
-type Driver string
+type Opt conf.Opt
 
-const (
-	// DRPostgres driver name for pg
-	DRPostgres Driver = "postgres"
-	// DRMySQL driver name for mysql
-	DRMySQL Driver = "mysql"
-	// DRSqlite driver name for mysql
-	DRSQLite Driver = "sqlite3"
-)
-
-// Opt PG 数据库配置
-type Opt struct {
-	Driver   Driver        `yaml:"driver" json:"driver"`       //数据库类型
-	LogLevel zapcore.Level `yaml:"log_level" json:"log_level"` //日志等级
-	Host     string        `yaml:"host" json:"host"`           //数据地址
-	Port     int           `yaml:"port" json:"port"`           //端口
-	User     string        `yaml:"user" json:"user"`           //用户名
-	DBName   string        `yaml:"dbname" json:"dbname"`       //数据库名
-	Passwd   string        `yaml:"passwd" json:"passwd"`       //密码
-	SSLMode  string        `yaml:"sslmode" json:"sslmode"`     // disable, varify-full //SSL选项
-	Args     string        `yaml:"args" json:"args"`           // charset=utf8 //额外选项
+func FromConfig(c *conf.Config) *Opt {
+	return (*Opt)(c.DBOption)
 }
 
 // OpenDB 直接打开数据库连接 如果失败立即返回错误
@@ -159,7 +142,7 @@ func (opt *Opt) SQLiteDSN() gorm.Dialector {
 }
 
 func (opt *Opt) String() string {
-	if opt.Driver == DRSQLite {
+	if opt.Driver == conf.DRSQLite {
 		return "driver=" + string(opt.Driver) + " path=" + opt.Host
 	}
 	return "driver=" + string(opt.Driver) + " host=" + opt.Host + " port=" + strconv.Itoa(opt.Port) + " user=" + opt.User + " dbname=" + opt.DBName + " password=xxxxxx sslmode=" + opt.SSLMode

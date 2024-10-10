@@ -9,7 +9,7 @@ openapi:
 	@openapi-generator-cli generate -g dart-dio -i ./omnigram.openapi.spec.yaml -o app/openapi 
 	#@openapi-generator generate -g dart -i ./omnigram.openapi.spec.yaml -o app/openapi 
 	@cd app/openapi && dart run build_runner build
-	@patch -p1 < patch/tts_stream.patch
+	# @patch -p1 < patch/tts_stream.patch
 
 build_runner:
 	@echo "build_runner build"

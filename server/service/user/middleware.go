@@ -8,7 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/middleware"
-	"github.com/lxpio/omnigram/server/service/user/schema"
+	"github.com/lxpio/omnigram/server/schema"
+	"github.com/lxpio/omnigram/server/store"
 	"github.com/lxpio/omnigram/server/utils"
 )
 
@@ -29,6 +30,7 @@ func OauthMiddleware(c *gin.Context) {
 		if info, ok := userInfoCache.Get(key); ok {
 
 			c.Set(middleware.XUserIDTag, info.ID)
+			log.D(`get user info from cache:`, info)
 			c.Set(middleware.XUserInfoTag, info)
 			c.Next()
 			return
@@ -91,14 +93,13 @@ func handleSession(c *gin.Context, sess string) {
 	//session 有效时间小于1分钟 刷新session
 	if diff > 60 {
 
-		if err := orm.Table(`sessions`).Where(`id = ?`, session.Session).Update(`utime`, time.Now()).Error; err != nil {
+		if err := store.Store().Table(`sessions`).Where(`session = ?`, session.Session).Update(`utime`, time.Now().Unix()).Error; err != nil {
 			log.E("刷新session失败: ", err)
 		}
 		sessionCache.Remove(cacheKeySession + session.Session)
 		log.D("刷新session")
 
 	}
-
 	c.Set(middleware.XUserInfoTag, session.UserInfo)
 	c.Set(middleware.XUserIDTag, session.UserInfo.ID)
 	c.Set(middleware.UserSessionTag, session.Session)
@@ -116,14 +117,12 @@ func AdminMiddleware(c *gin.Context) {
 
 	user, ok := info.(*schema.User)
 
-	if !ok || user.RoleID != 1 {
-
-		log.D("userID: ", user.RoleID)
+	if !ok || user.RoleID > 100 {
+		//不是管理元
+		log.D("不是管理员，当前用户角色ID: ", user.RoleID)
 		c.AbortWithStatusJSON(http.StatusForbidden, utils.ErrForbidden)
 		return
 	}
-	//简化处理，user ID 为1的即管理员
-	log.D("userID: ", user.RoleID)
 
 	c.Next()
 
@@ -139,13 +138,13 @@ func getSessionData(id string) (*schema.Session, error) {
 		return raw, nil
 	}
 
-	sess, err := schema.FirstSessionByID(orm, id)
+	sess, err := schema.FirstSessionByID(store.Store(), id)
 
 	if err == nil {
 		sessionCache.Add(key, sess)
 	}
 
-	return sess, nil
+	return sess, err
 
 }
 

@@ -1,8 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:openapi/openapi.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -138,7 +137,7 @@ class TtsService extends _$TtsService {
   }
 
   Future<void> runtask(EpubDocument document, ChapterIndex index) async {
-    print('runtask  ${document.book.Title}');
+    debugPrint('runtask  ${document.book.Title}');
 
     var current = index;
     var pos = document.absParagraphIndex(index) ?? 0;
@@ -172,7 +171,7 @@ class TtsService extends _$TtsService {
         break;
       }
     }
-    print('exit runtask');
+    debugPrint('exit runtask');
   }
 
   Future<String> _fetchWavStream(EpubDocument document, int pos) async {
@@ -181,7 +180,7 @@ class TtsService extends _$TtsService {
     final bookApi = ref.read(apiServiceProvider);
 
     final content = document.getContent(pos);
-    print(content);
+    
     final fileName = '$globalCachePath/${document.id}_$pos.wav';
 
     final exists = await File(fileName).exists();

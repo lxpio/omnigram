@@ -36,24 +36,12 @@ type ServerConfig struct {
 	OpenAIApiKey  string `json:"openai_apikey,omitempty"`
 }
 
-// getSysInfoHandle get User Authorization
-/**
- * @api {get} /sys/info Get Current Server Info
- * @apiName getSysInfoHandle
- * @apiGroup sys
- * @apiDescription Get server configs. if chat server has configed, or the
- * m4t service is support.
- *
- * @apiHeader {String} Authorization Users unique auth key.
- *
- * @apiSuccess {Boolean} chatserver     Always set to Bearer.
- * @apiSuccess {Number} expires_in     Number of seconds that the included access token is valid for.
- * @apiSuccess {String} refresh_token  Issued if the original scope parameter included offline_access.
- * @apiSuccess {String} access_token   Issued for the scopes that were requested.
- */
+// getSysInfoHandle get sys info
 func getSysInfoHandle(c *gin.Context) {
 
 	// mng := epub.GetManager()
+
+	cf := conf.GetConfig()
 
 	info := &ServerConfig{
 		Version:       conf.Version,
@@ -61,8 +49,8 @@ func getSysInfoHandle(c *gin.Context) {
 		M4tEnabled:    true,
 		System:        "Linux", //TODO get real system info
 		Architecture:  "AMD64", //TODO get real system info
-		DocsDataPath:  gcf.EpubOptions.DataPath,
-		M4tServerAddr: gcf.M4tOptions.RemoteAddr,
+		DocsDataPath:  cf.EpubOptions.DataPath,
+		M4tServerAddr: cf.M4tOptions.RemoteAddr,
 		// OpenAIUrl:     "",
 		// OpenAIApiKey:  "",
 	}
@@ -103,6 +91,8 @@ func updateSysInfoHandle(c *gin.Context) {
 		c.JSON(200, utils.ErrUpdateM4tServerAddr.WithMessage(err.Error()))
 		return
 	}
+
+	gcf := conf.GetConfig()
 
 	gcf.M4tOptions.RemoteAddr = req.M4tServerAddr
 

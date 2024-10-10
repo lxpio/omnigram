@@ -14,7 +14,7 @@ class ChatAvatar extends StatelessWidget {
   final Color? backgroundColor;
   final Color? color;
   const ChatAvatar({
-    Key? key,
+    super.key,
     required this.source,
     this.width = 44,
     this.height = 44,
@@ -23,7 +23,7 @@ class ChatAvatar extends StatelessWidget {
     this.padding,
     this.backgroundColor,
     this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

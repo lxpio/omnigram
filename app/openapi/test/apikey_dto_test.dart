@@ -7,6 +7,12 @@ void main() {
   // TODO add properties to the builder and call build()
 
   group(ApikeyDto, () {
+    // ID 编号
+    // int id
+    test('to test the property `id`', () async {
+      // TODO
+    });
+
     // String name
     test('to test the property `name`', () async {
       // TODO

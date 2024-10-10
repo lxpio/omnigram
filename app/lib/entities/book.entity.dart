@@ -2,7 +2,6 @@
 //
 import 'dart:convert';
 
-import 'package:collection/collection.dart';
 import 'package:isar/isar.dart';
 import 'package:openapi/openapi.dart';
 

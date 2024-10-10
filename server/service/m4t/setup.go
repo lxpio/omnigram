@@ -17,7 +17,9 @@ var (
 	cachedSpeaker *Speakers //存储远端m4t-server中 speaker 信息
 )
 
-func Initialize(ctx context.Context, cf *conf.Config) {
+func Initialize(ctx context.Context) {
+
+	cf := conf.GetConfig()
 
 	remoteServer = &grpcServer{remoteAddr: cf.M4tOptions.RemoteAddr}
 

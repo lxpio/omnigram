@@ -53,7 +53,7 @@ class DiscoverSmallScreen extends HookConsumerWidget {
           floating: true,
           stretch: true,
           centerTitle: true,
-          title: isScrolled.value ? Text("发现") : null,
+          title: isScrolled.value ? const Text("发现") : null,
           // backgroundColor: Colors.grey.shade50,
           flexibleSpace: FlexibleSpaceBar(
             collapseMode: CollapseMode.parallax,
@@ -79,7 +79,7 @@ class DiscoverSmallScreen extends HookConsumerWidget {
                         .withOpacity(0.2),
                     Theme.of(context)
                         .colorScheme
-                        .surfaceVariant
+                        .surfaceContainerHighest
                         .withOpacity(0.2),
                   ],
                 ),

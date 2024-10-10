@@ -8,6 +8,7 @@ import 'package:openapi/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**id** | **int** | ID 编号 | 
 **name** | **String** |  | 
 **apikey** | **String** |  | 
 **ctime** | **int** |  | 

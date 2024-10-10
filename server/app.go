@@ -3,33 +3,28 @@ package server
 import (
 	"context"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 
 	"github.com/lxpio/omnigram/server/conf"
 	"github.com/lxpio/omnigram/server/log"
+	"github.com/lxpio/omnigram/server/schema"
 	"github.com/lxpio/omnigram/server/service"
 	"github.com/lxpio/omnigram/server/store"
-	"github.com/lxpio/omnigram/server/utils"
 
 	"go.uber.org/zap/zapcore"
 )
 
 type App struct {
-	cf *conf.Config
-
 	srv *http.Server //http server
 
 	ctx context.Context
 }
 
-// NewAPPWithConfig with config
-func NewAPPWithConfig(cf *conf.Config) *App {
+// NewAPP with config
+func NewAPP() *App {
 
 	return &App{
-
-		cf: cf,
 
 		// srv: srv,
 	}
@@ -41,32 +36,22 @@ func (m *App) StartContext(ctx context.Context) error {
 
 	m.ctx = ctx
 
-	// m.mng.Load() may be slow，in order not to block the main process，
+	// 初始化数据库连接
+	// store.Initialize(ctx) may be slow，in order not to block the main process，
 	// goroutine is used here, so we can use ctrl+c to terminate it
 	go func() {
 
-		var dbctx context.Context
+		store.Initialize(ctx)
 
-		// 如果数据库为sqlite3，则将不同的模块子目录创建额外的sqlite3文件
-		if m.cf.DBOption.Driver == store.DRSQLite {
-			dbctx = m.ctx
-		} else {
-			db, err := store.OpenDB(m.cf.DBOption)
-			if err != nil {
-				log.E(`open db failed`, err)
-				os.Exit(1)
-			}
-			dbctx = context.WithValue(m.ctx, utils.DBContextKey, db)
-		}
-
-		service.Initialize(dbctx, m.cf)
+		service.Initialize(ctx)
 
 		log.I(`init http router...`)
+		cf := conf.GetConfig()
 
-		router := m.initGinRoute()
+		router := m.initGinRoute(cf.LogLevel)
 
-		m.srv = &http.Server{Addr: m.cf.APIAddr, Handler: router}
-		log.I(`HTTP server address: `, m.cf.APIAddr)
+		m.srv = &http.Server{Addr: cf.APIAddr, Handler: router}
+		log.I(`HTTP server address: `, cf.APIAddr)
 		m.srv.ListenAndServe()
 
 	}()
@@ -86,9 +71,9 @@ func (m *App) GracefulStop() {
 
 }
 
-func (m *App) initGinRoute() *gin.Engine {
+func (m *App) initGinRoute(level zapcore.Level) *gin.Engine {
 
-	if m.cf.LogLevel == zapcore.DebugLevel {
+	if level == zapcore.DebugLevel {
 		gin.SetMode(gin.DebugMode)
 	} else {
 		gin.SetMode(gin.ReleaseMode)
@@ -106,9 +91,10 @@ func (m *App) initGinRoute() *gin.Engine {
 	return router
 }
 
-func InitServerData(cf *conf.Config) {
+func InitServerData(ctx context.Context) {
 	//初始化数据库连接
-
-	service.InitData(cf)
+	cf := conf.GetConfig()
+	store.InitStore(cf)
+	schema.InitData()
 
 }

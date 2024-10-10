@@ -7,7 +7,7 @@ VERSION=v0.0.1
 BUILD_DATE=$(shell date -u '+%Y-%m-%d_%I_%M_%S%p')
 BUILD_HASH=$(shell git rev-parse HEAD)
 LDFLAGS="-X main.BUILDSTAMP=${BUILD_DATE} -X main.GITHASH=${BUILD_HASH} -X github.com/lxpio/omnigram/server/conf.Version=${VERSION} -s -w"
-# SHELL := /bin/bash
+SHELL := /bin/bash
 DESTDIR=${PROJECT_PATH}/build/omnigram-server-${VERSION}
 
 
@@ -31,7 +31,7 @@ protos: service/m4t/m4t_grpc.pb.go service/m4t/m4t.pb.go
 
 omnigram-server: service/m4t/m4t_grpc.pb.go service/m4t/m4t.pb.go
 	@echo "create omnigram-server-${VERSION} "
-	@#debian上直接使用mkdir不会创建，需要额外调用 bash-c 
+	@# debian上直接使用mkdir不会创建，需要额外调用 bash-c 
 	@bash -c "mkdir -p ${DESTDIR}/{conf,bin,data}"
 
 	@echo "copy default configure file"
@@ -40,9 +40,6 @@ omnigram-server: service/m4t/m4t_grpc.pb.go service/m4t/m4t.pb.go
 	@echo "build github.com/lxpio/omnigram-server"
 	@env  go build -ldflags ${LDFLAGS} -o ${DESTDIR}/bin/omni-server github.com/lxpio/omnigram/server/cmd/omni-server
 
-docs:
-    # you should install apidoc cli first by `npx install -g apidoc`
-	@apidoc -i ./  -f ".*\\.go$" -o apidoc
 
 
 docker:

@@ -27,7 +27,7 @@ class SelectBookProvider extends Notifier<SelectBook> {
   @override
   SelectBook build() {
     if (kDebugMode) {
-      print('SelectBook init build');
+      debugPrint('SelectBook init build');
     }
 
     return SelectBook(book: null);
@@ -35,7 +35,7 @@ class SelectBookProvider extends Notifier<SelectBook> {
 
   Future<void> refresh({required BookEntity book}) async {
     if (kDebugMode) {
-      print(
+      debugPrint(
           'refresh select book: ${book.hashCode} and ${state.book?.hashCode}');
     }
 
@@ -49,14 +49,15 @@ class SelectBookProvider extends Notifier<SelectBook> {
     state = updater;
 
     if (kDebugMode) {
-      print('refresh select book: ${book.id}');
+      debugPrint('refresh select book: ${book.id}');
     }
     // ref.notifyListeners();
   }
 
   void updateProgress(ChapterIndex index, double progress) {
+
     if (kDebugMode) {
-      print(
+      debugPrint(
           'updateProgress book: ${index.chapterIndex} - ${index.paragraphIndex} ');
     }
     state.progress = progress;
@@ -72,7 +73,7 @@ class SelectBookProvider extends Notifier<SelectBook> {
     if (state.index == null ||
         current.chapterIndex != state.index!.chapterIndex ||
         (current.paragraphIndex - state.index!.paragraphIndex).abs() > 5) {
-      print('updateProcess ${state.book?.id}');
+      debugPrint('updateProcess ${state.book?.id}');
       state.index = current;
       ref.notifyListeners();
     }
@@ -83,7 +84,7 @@ class SelectBookProvider extends Notifier<SelectBook> {
       return;
     }
 
-    print('saveProcess todo handle  ${state.book!.id}');
+    debugPrint('saveProcess todo handle  ${state.book!.id}');
 
 
     final bk = state.book!.copyWith(progress: state.progress, progressIndex: state.index?.chapterIndex, paraPosition: position);;

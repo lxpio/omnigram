@@ -20,12 +20,16 @@ import 'package:openapi/src/model/apikey_dto.dart';
 import 'package:openapi/src/model/auth_accounts_account_id_apikeys_post_request.dart';
 import 'package:openapi/src/model/change_password_dto.dart';
 import 'package:openapi/src/model/create_user_dto.dart';
+import 'package:openapi/src/model/delta_sync_dto.dart';
 import 'package:openapi/src/model/ebook_dto.dart';
 import 'package:openapi/src/model/ebook_index_dto.dart';
 import 'package:openapi/src/model/ebook_list_dto.dart';
 import 'package:openapi/src/model/enable_scan_dto.dart';
+import 'package:openapi/src/model/full_sync_dto.dart';
 import 'package:openapi/src/model/login_credential_dto.dart';
 import 'package:openapi/src/model/m4t_tts_stream_post_request.dart';
+import 'package:openapi/src/model/read_progress_dto.dart';
+import 'package:openapi/src/model/reader_books_book_id_progress_put_request.dart';
 import 'package:openapi/src/model/reader_books_book_id_put_request.dart';
 import 'package:openapi/src/model/reader_stats_dto.dart';
 import 'package:openapi/src/model/resp_dto.dart';
@@ -45,12 +49,16 @@ part 'serializers.g.dart';
   AuthAccountsAccountIdApikeysPostRequest,
   ChangePasswordDto,
   CreateUserDto,
+  DeltaSyncDto,
   EbookDto,
   EbookIndexDto,
   EbookListDto,
   EnableScanDto,
+  FullSyncDto,
   LoginCredentialDto,
   M4tTtsStreamPostRequest,
+  ReadProgressDto,
+  ReaderBooksBookIdProgressPutRequest,
   ReaderBooksBookIdPutRequest,
   ReaderStatsDto,
   RespDto,
