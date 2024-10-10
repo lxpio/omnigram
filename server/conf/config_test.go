@@ -7,13 +7,13 @@ import (
 
 func TestInitConfig(t *testing.T) {
 
-	got, err := InitConfig(`../../examples/app/conf.yaml`)
+	err := InitConfig(`../../examples/app/conf.yaml`)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	j, _ := json.Marshal(got)
+	j, _ := json.Marshal(GetConfig())
 
 	println(string(j))
 
@@ -21,11 +21,13 @@ func TestInitConfig(t *testing.T) {
 
 func TestSaveConfig(t *testing.T) {
 
-	got, err := InitConfig(`../../examples/build/conf2.yaml`)
+	err := InitConfig(`../../examples/build/conf2.yaml`)
 
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	got := GetConfig()
 
 	j, _ := json.Marshal(got)
 

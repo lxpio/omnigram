@@ -7,7 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/middleware"
-	"github.com/lxpio/omnigram/server/service/user/schema"
+	"github.com/lxpio/omnigram/server/schema"
+	"github.com/lxpio/omnigram/server/store"
 	"github.com/lxpio/omnigram/server/utils"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -28,7 +29,7 @@ func loginHandle(c *gin.Context) {
 		return
 	}
 
-	u, err := schema.FirstUserByAccount(orm, req.UserName)
+	u, err := schema.FirstUserByAccount(store.Store(), req.UserName)
 
 	if err != nil {
 		log.E(`用户未找到用户失败：`, err.Error())
@@ -56,7 +57,7 @@ func loginHandle(c *gin.Context) {
 		UserInfo:    u,
 	}
 
-	if err := session.Save(orm); err != nil {
+	if err := session.Save(store.Store()); err != nil {
 		log.E(`保存session失败：`, err.Error())
 		c.JSON(500, utils.ErrSaveToken)
 
@@ -74,7 +75,7 @@ func logoutHandle(c *gin.Context) {
 	sessin := c.GetString(middleware.UserSessionTag)
 
 	//delete session from db
-	err := schema.DeleteSessionByID(orm, sessin)
+	err := schema.DeleteSessionByID(store.Store(), sessin)
 
 	if err != nil {
 		log.E(`删除session失败：`, err.Error())
@@ -101,7 +102,7 @@ func getUserInfoHandle(c *gin.Context) {
 		return
 	}
 
-	user, err := schema.FirstUserByID(orm, userID)
+	user, err := schema.FirstUserByID(store.Store(), userID)
 
 	if err != nil {
 		log.E(`获取用户信息失败：`, err.Error())
@@ -122,7 +123,7 @@ func createAPIKeyHandle(c *gin.Context) {
 
 	token := schema.NewAPIToken(userID)
 
-	if err := token.Save(orm); err != nil {
+	if err := token.Save(store.Store()); err != nil {
 		log.E(`创建APIKey失败：`, err.Error())
 		c.JSON(500, utils.ErrSaveToken)
 		return
@@ -137,7 +138,7 @@ func deleteAPIKeyHandle(c *gin.Context) {
 
 	id := c.Param(`id`)
 
-	if err := schema.DeleteAPIKey(orm, id); err != nil {
+	if err := schema.DeleteAPIKey(store.Store(), id); err != nil {
 		log.E(`删除APIKey失败：`, err.Error())
 		c.JSON(500, utils.ErrDeleteToken)
 		return
@@ -147,23 +148,6 @@ func deleteAPIKeyHandle(c *gin.Context) {
 
 }
 
-// getAPIKeyHandle get User Authorization
-/**
- * @api {post} /user/oauth2/token Resource Owner Password Credentials
- * @apiName User Authorization
- * @apiGroup User
- * @apiDescription This is the Description.
- * It is multiline capable.
- *
- * @apiBody {String} username          UserName, or Email of the User.
- * @apiBody {String} password          Password of the user.
-* @apiBody {String} [client_id]          client id.
- *
- * @apiSuccess {String} token_type     Always set to Bearer.
- * @apiSuccess {Number} expired_in     Number of seconds that the included access token is valid for.
- * @apiSuccess {String} refresh_token  Issued if the original scope parameter included offline_access.
- * @apiSuccess {String} access_token   Issued for the scopes that were requested.
-*/
 func getAccessTokenHandle(c *gin.Context) {
 
 	req := struct {
@@ -179,7 +163,7 @@ func getAccessTokenHandle(c *gin.Context) {
 		return
 	}
 
-	u, err := schema.FirstUserByAccount(orm, req.UserName)
+	u, err := schema.FirstUserByAccount(store.Store(), req.UserName)
 
 	if err != nil {
 		log.E(`用户未找到用户失败：`, err.Error())
@@ -207,7 +191,7 @@ func getAccessTokenHandle(c *gin.Context) {
 		UserInfo:    u,
 	}
 
-	if err := session.Save(orm); err != nil {
+	if err := session.Save(store.Store()); err != nil {
 		log.E(`保存session失败：`, err.Error())
 		c.JSON(500, utils.ErrSaveToken)
 
@@ -229,7 +213,7 @@ func getAPIKeysHandle(c *gin.Context) {
 
 	log.D(`userID`, userID)
 
-	keys, err := schema.GetAPIKeysByUserID(orm, userID)
+	keys, err := schema.GetAPIKeysByUserID(store.Store(), userID)
 
 	if err != nil {
 		log.E(`获取APIKey失败：`, err.Error())
@@ -262,7 +246,7 @@ func resetPasswordHandle(c *gin.Context) {
 		return
 	}
 
-	u, err := schema.FirstUserByID(orm, userID)
+	u, err := schema.FirstUserByID(store.Store(), userID)
 
 	if err != nil {
 		log.E(`获取用户失败：`, err.Error())
@@ -277,7 +261,7 @@ func resetPasswordHandle(c *gin.Context) {
 	// 	return
 	// }
 
-	if err := u.ResetPassword(orm, req.Password); err != nil {
+	if err := u.ResetPassword(store.Store(), req.Password); err != nil {
 		log.E(`重置密码失败：`, err.Error())
 		c.JSON(500, utils.ErrGetTokens)
 		return
@@ -302,22 +286,22 @@ func createAccountHandle(c *gin.Context) {
 	u := schema.User{
 		Name:   req.UserName,
 		Email:  req.Email,
-		RoleID: 100,
+		RoleID: 1000,
 	}
 
-	if err := orm.Create(&u).Error; err != nil {
+	if err := store.Store().Create(&u).Error; err != nil {
 		log.E(`创建用户失败：`, err.Error())
 		c.JSON(500, utils.ErrCreateUser)
 	}
 
-	c.JSON(200, u)
+	c.JSON(200, u.Masking())
 
 }
 
 // listAccountHandle list accounts
 func listAccountHandle(c *gin.Context) {
 
-	users, err := schema.AllUsers(orm)
+	users, err := schema.AllUsers(store.Store())
 
 	if err != nil {
 		log.E(`获取用户列表失败：`, err.Error())
@@ -346,7 +330,7 @@ func getAccountHandle(c *gin.Context) {
 		return
 	}
 
-	u, err := schema.FirstUserByID(orm, userID)
+	u, err := schema.FirstUserByID(store.Store(), userID)
 	if err != nil {
 		log.E(`获取用户失败：`, err.Error())
 		c.JSON(404, utils.ErrNoFound)
@@ -373,21 +357,21 @@ func deleteAccountHandle(c *gin.Context) {
 		return
 	}
 
-	u, err := schema.FirstUserByID(orm, userID)
+	u, err := schema.FirstUserByID(store.Store(), userID)
 	if err != nil {
 		log.E(`获取用户失败：`, err.Error())
 		c.JSON(404, utils.ErrNoFound)
 		return
 	}
 
-	orm.Transaction(func(tx *gorm.DB) error {
+	store.Store().Transaction(func(tx *gorm.DB) error {
 		//删除用户
-		if err = tx.Exec(`DELETE FROM users WHERE user_id = ?`, u.ID).Error; err != nil {
+		if err = tx.Exec(`DELETE FROM users WHERE id = ?`, u.ID).Error; err != nil {
 			return err
 		}
 		//删除用户的所有session
 		var sessions []schema.Session
-		if err = tx.Clauses(clause.Returning{Columns: []clause.Column{{Name: "session"}, {Name: "user_id"}}}).Where(`id = ?`, u.ID).
+		if err = tx.Clauses(clause.Returning{Columns: []clause.Column{{Name: "session"}, {Name: "user_id"}}}).Where(`user_id = ?`, u.ID).
 			Delete(&sessions).Error; err != nil {
 			return err
 		}

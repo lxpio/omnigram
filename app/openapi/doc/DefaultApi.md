@@ -20,12 +20,14 @@ Method | HTTP request | Description
 [**authLoginPost**](DefaultApi.md#authloginpost) | **POST** /auth/login | 用户登录
 [**authLogoutPost**](DefaultApi.md#authlogoutpost) | **POST** /auth/logout | 用户登出
 [**authTokenPost**](DefaultApi.md#authtokenpost) | **POST** /auth/token | 获取访问token
-[**imgReaderCoversBookIdGet**](DefaultApi.md#imgreadercoversbookidget) | **GET** /img/reader/covers/{book_id} | 获取书籍封面图片
+[**imgCoversCoverIdGet**](DefaultApi.md#imgcoverscoveridget) | **GET** /img/covers/{cover_id} | 获取书籍封面图片
 [**m4tTtsSimplePost**](DefaultApi.md#m4tttssimplepost) | **POST** /m4t/tts/simple | 文字转语音
 [**m4tTtsSpeakersGet**](DefaultApi.md#m4tttsspeakersget) | **GET** /m4t/tts/speakers | 获取声音列表
 [**m4tTtsSpeakersPost**](DefaultApi.md#m4tttsspeakerspost) | **POST** /m4t/tts/speakers | 上传声音
 [**m4tTtsStreamPost**](DefaultApi.md#m4tttsstreampost) | **POST** /m4t/tts/stream | 文字转语音接口
 [**readerBooksBookIdGet**](DefaultApi.md#readerbooksbookidget) | **GET** /reader/books/{book_id} | 书籍详情
+[**readerBooksBookIdProgressGet**](DefaultApi.md#readerbooksbookidprogressget) | **GET** /reader/books/{book_id}/progress | 查看书籍阅读进度
+[**readerBooksBookIdProgressPut**](DefaultApi.md#readerbooksbookidprogressput) | **PUT** /reader/books/{book_id}/progress | 更新书籍阅读进度
 [**readerBooksBookIdPut**](DefaultApi.md#readerbooksbookidput) | **PUT** /reader/books/{book_id} | 修改书籍介绍信息
 [**readerBooksGet**](DefaultApi.md#readerbooksget) | **GET** /reader/books | 获取书籍列表
 [**readerDownloadBooksBookIdGet**](DefaultApi.md#readerdownloadbooksbookidget) | **GET** /reader/download/books/{book_id} | 下载书籍
@@ -34,6 +36,8 @@ Method | HTTP request | Description
 [**readerRecentGet**](DefaultApi.md#readerrecentget) | **GET** /reader/recent | 最近阅读
 [**readerStatsGet**](DefaultApi.md#readerstatsget) | **GET** /reader/stats | 获取阅读统计数据
 [**readerUploadPost**](DefaultApi.md#readeruploadpost) | **POST** /reader/upload | 上传书籍
+[**syncDeltaPost**](DefaultApi.md#syncdeltapost) | **POST** /sync/delta | 增量同步
+[**syncFullPost**](DefaultApi.md#syncfullpost) | **POST** /sync/full | 全量同步
 [**sysInfoGet**](DefaultApi.md#sysinfoget) | **GET** /sys/info | 获取系统信息
 [**sysInfoPut**](DefaultApi.md#sysinfoput) | **PUT** /sys/info | 修改系统信息
 [**sysPingGet**](DefaultApi.md#syspingget) | **GET** /sys/ping | 系统心跳
@@ -528,8 +532,8 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **imgReaderCoversBookIdGet**
-> JsonObject imgReaderCoversBookIdGet(bookId)
+# **imgCoversCoverIdGet**
+> JsonObject imgCoversCoverIdGet(coverId)
 
 获取书籍封面图片
 
@@ -540,13 +544,13 @@ No authorization required
 import 'package:openapi/api.dart';
 
 final api = Openapi().getDefaultApi();
-final String bookId = bookId_example; // String | 
+final String coverId = 2e2397f81f9a24a30d3d6fe551df626fImage00000.jpg; // String | 
 
 try {
-    final response = api.imgReaderCoversBookIdGet(bookId);
+    final response = api.imgCoversCoverIdGet(coverId);
     print(response);
 } catch on DioException (e) {
-    print('Exception when calling DefaultApi->imgReaderCoversBookIdGet: $e\n');
+    print('Exception when calling DefaultApi->imgCoversCoverIdGet: $e\n');
 }
 ```
 
@@ -554,7 +558,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **bookId** | **String**|  | 
+ **coverId** | **String**|  | 
 
 ### Return type
 
@@ -780,6 +784,94 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **readerBooksBookIdProgressGet**
+> ReadProgressDto readerBooksBookIdProgressGet(bookId)
+
+查看书籍阅读进度
+
+
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getDefaultApi();
+final String bookId = bookId_example; // String | 
+
+try {
+    final response = api.readerBooksBookIdProgressGet(bookId);
+    print(response);
+} catch on DioException (e) {
+    print('Exception when calling DefaultApi->readerBooksBookIdProgressGet: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **bookId** | **String**|  | 
+
+### Return type
+
+[**ReadProgressDto**](ReadProgressDto.md)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **readerBooksBookIdProgressPut**
+> ReadProgressDto readerBooksBookIdProgressPut(bookId, readerBooksBookIdProgressPutRequest)
+
+更新书籍阅读进度
+
+
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getDefaultApi();
+final String bookId = bookId_example; // String | 
+final ReaderBooksBookIdProgressPutRequest readerBooksBookIdProgressPutRequest = ; // ReaderBooksBookIdProgressPutRequest | 
+
+try {
+    final response = api.readerBooksBookIdProgressPut(bookId, readerBooksBookIdProgressPutRequest);
+    print(response);
+} catch on DioException (e) {
+    print('Exception when calling DefaultApi->readerBooksBookIdProgressPut: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **bookId** | **String**|  | 
+ **readerBooksBookIdProgressPutRequest** | [**ReaderBooksBookIdProgressPutRequest**](ReaderBooksBookIdProgressPutRequest.md)|  | [optional] 
+
+### Return type
+
+[**ReadProgressDto**](ReadProgressDto.md)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
@@ -1148,6 +1240,92 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: application/octet-stream
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **syncDeltaPost**
+> EbookListDto syncDeltaPost(fullSyncDto)
+
+增量同步
+
+全量同步数据（文档）
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getDefaultApi();
+final FullSyncDto fullSyncDto = ; // FullSyncDto | 
+
+try {
+    final response = api.syncDeltaPost(fullSyncDto);
+    print(response);
+} catch on DioException (e) {
+    print('Exception when calling DefaultApi->syncDeltaPost: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **fullSyncDto** | [**FullSyncDto**](FullSyncDto.md)|  | [optional] 
+
+### Return type
+
+[**EbookListDto**](EbookListDto.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **syncFullPost**
+> EbookListDto syncFullPost(fullSyncDto)
+
+全量同步
+
+全量同步数据（文档）
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getDefaultApi();
+final FullSyncDto fullSyncDto = ; // FullSyncDto | 
+
+try {
+    final response = api.syncFullPost(fullSyncDto);
+    print(response);
+} catch on DioException (e) {
+    print('Exception when calling DefaultApi->syncFullPost: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **fullSyncDto** | [**FullSyncDto**](FullSyncDto.md)|  | [optional] 
+
+### Return type
+
+[**EbookListDto**](EbookListDto.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

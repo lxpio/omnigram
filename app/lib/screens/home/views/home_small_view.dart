@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/entities/book.entity.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:omnigram/screens/reader/views/book_group_view.dart';
-import 'package:omnigram/utils/localization.service.dart';
 
 import '../../reader/views/book_group_view_v2.dart';
 

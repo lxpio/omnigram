@@ -8,6 +8,8 @@ part of 'apikey_dto.dart';
 
 class _$ApikeyDto extends ApikeyDto {
   @override
+  final int id;
+  @override
   final String name;
   @override
   final String apikey;
@@ -17,8 +19,13 @@ class _$ApikeyDto extends ApikeyDto {
   factory _$ApikeyDto([void Function(ApikeyDtoBuilder)? updates]) =>
       (new ApikeyDtoBuilder()..update(updates))._build();
 
-  _$ApikeyDto._({required this.name, required this.apikey, required this.ctime})
+  _$ApikeyDto._(
+      {required this.id,
+      required this.name,
+      required this.apikey,
+      required this.ctime})
       : super._() {
+    BuiltValueNullFieldError.checkNotNull(id, r'ApikeyDto', 'id');
     BuiltValueNullFieldError.checkNotNull(name, r'ApikeyDto', 'name');
     BuiltValueNullFieldError.checkNotNull(apikey, r'ApikeyDto', 'apikey');
     BuiltValueNullFieldError.checkNotNull(ctime, r'ApikeyDto', 'ctime');
@@ -35,6 +42,7 @@ class _$ApikeyDto extends ApikeyDto {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is ApikeyDto &&
+        id == other.id &&
         name == other.name &&
         apikey == other.apikey &&
         ctime == other.ctime;
@@ -43,6 +51,7 @@ class _$ApikeyDto extends ApikeyDto {
   @override
   int get hashCode {
     var _$hash = 0;
+    _$hash = $jc(_$hash, id.hashCode);
     _$hash = $jc(_$hash, name.hashCode);
     _$hash = $jc(_$hash, apikey.hashCode);
     _$hash = $jc(_$hash, ctime.hashCode);
@@ -53,6 +62,7 @@ class _$ApikeyDto extends ApikeyDto {
   @override
   String toString() {
     return (newBuiltValueToStringHelper(r'ApikeyDto')
+          ..add('id', id)
           ..add('name', name)
           ..add('apikey', apikey)
           ..add('ctime', ctime))
@@ -62,6 +72,10 @@ class _$ApikeyDto extends ApikeyDto {
 
 class ApikeyDtoBuilder implements Builder<ApikeyDto, ApikeyDtoBuilder> {
   _$ApikeyDto? _$v;
+
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   String? _name;
   String? get name => _$this._name;
@@ -82,6 +96,7 @@ class ApikeyDtoBuilder implements Builder<ApikeyDto, ApikeyDtoBuilder> {
   ApikeyDtoBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
+      _id = $v.id;
       _name = $v.name;
       _apikey = $v.apikey;
       _ctime = $v.ctime;
@@ -107,6 +122,7 @@ class ApikeyDtoBuilder implements Builder<ApikeyDto, ApikeyDtoBuilder> {
   _$ApikeyDto _build() {
     final _$result = _$v ??
         new _$ApikeyDto._(
+            id: BuiltValueNullFieldError.checkNotNull(id, r'ApikeyDto', 'id'),
             name: BuiltValueNullFieldError.checkNotNull(
                 name, r'ApikeyDto', 'name'),
             apikey: BuiltValueNullFieldError.checkNotNull(

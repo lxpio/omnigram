@@ -1,8 +1,8 @@
 diff --git a/app/openapi/lib/src/api/default_api.dart b/app/openapi/lib/src/api/default_api.dart
-index c157294..2caece1 100644
+index 8a5a349..0ad0a26 100644
 --- a/app/openapi/lib/src/api/default_api.dart
 +++ b/app/openapi/lib/src/api/default_api.dart
-@@ -1442,7 +1442,7 @@ class DefaultApi {
+@@ -1445,7 +1445,7 @@ class DefaultApi {
    ///
    /// Returns a [Future] containing a [Response] with a [JsonObject] as data
    /// Throws [DioException] if API call or serialization fails
@@ -11,7 +11,7 @@ index c157294..2caece1 100644
      M4tTtsStreamPostRequest? m4tTtsStreamPostRequest,
      CancelToken? cancelToken,
      Map<String, dynamic>? headers,
-@@ -1469,6 +1469,7 @@ class DefaultApi {
+@@ -1472,6 +1472,7 @@ class DefaultApi {
        },
        contentType: 'application/json',
        validateStatus: validateStatus,
@@ -19,20 +19,19 @@ index c157294..2caece1 100644
      );
  
      dynamic _bodyData;
-@@ -1489,7 +1490,7 @@ class DefaultApi {
+@@ -1492,7 +1493,7 @@ class DefaultApi {
        );
      }
  
 -    final _response = await _dio.request<Object>(
-+    return _dio.request<T>(
++    return await _dio.request<Object>(
        _path,
        data: _bodyData,
        options: _options,
-@@ -1497,36 +1498,7 @@ class DefaultApi {
-       onSendProgress: onSendProgress,
+@@ -1501,35 +1502,6 @@ class DefaultApi {
        onReceiveProgress: onReceiveProgress,
      );
--
+ 
 -    JsonObject? _responseData;
 -
 -    try {
@@ -62,7 +61,6 @@ index c157294..2caece1 100644
 -      statusMessage: _response.statusMessage,
 -      extra: _response.extra,
 -    );
-+   
    }
  
    /// 书籍详情

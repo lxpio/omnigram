@@ -11,7 +11,7 @@ func getScanStatusHandle(c *gin.Context) {
 	log.I(`获取当前扫描状态数据`)
 	states := manager.Status()
 
-	c.JSON(200, utils.SUCCESS.WithData(states))
+	c.JSON(200, states)
 
 }
 
@@ -21,7 +21,7 @@ func stopScanHandle(c *gin.Context) {
 	log.I(`停止当前扫描`)
 	manager.Stop()
 
-	c.JSON(200, utils.SUCCESS.WithData(manager.Status()))
+	c.JSON(200, manager.Status())
 
 }
 
@@ -40,13 +40,13 @@ func runScanHandle(c *gin.Context) {
 	}{}
 
 	if err := c.ShouldBind(req); err != nil {
-		log.I(`用户登录参数异常`, err)
+		log.I(`用户登录参数异常`, err.Error())
 		c.JSON(200, utils.ErrReqArgs.WithMessage(err.Error()))
 		return
 	}
 
 	manager.Start(req.MaxThread, req.Refresh)
 
-	c.JSON(200, utils.SUCCESS.WithData(manager.Status()))
+	c.JSON(200, manager.Status())
 
 }

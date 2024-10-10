@@ -110,8 +110,8 @@ void main() {
     //
     // 
     //
-    //Future<JsonObject> imgReaderCoversBookIdGet(String bookId) async
-    test('test imgReaderCoversBookIdGet', () async {
+    //Future<JsonObject> imgCoversCoverIdGet(String coverId) async
+    test('test imgCoversCoverIdGet', () async {
       // TODO
     });
 
@@ -157,6 +157,24 @@ void main() {
     //
     //Future<EbookDto> readerBooksBookIdGet(String bookId) async
     test('test readerBooksBookIdGet', () async {
+      // TODO
+    });
+
+    // 查看书籍阅读进度
+    //
+    // 
+    //
+    //Future<ReadProgressDto> readerBooksBookIdProgressGet(String bookId) async
+    test('test readerBooksBookIdProgressGet', () async {
+      // TODO
+    });
+
+    // 更新书籍阅读进度
+    //
+    // 
+    //
+    //Future<ReadProgressDto> readerBooksBookIdProgressPut(String bookId, { ReaderBooksBookIdProgressPutRequest readerBooksBookIdProgressPutRequest }) async
+    test('test readerBooksBookIdProgressPut', () async {
       // TODO
     });
 
@@ -229,6 +247,24 @@ void main() {
     //
     //Future<EbookDto> readerUploadPost({ MultipartFile body }) async
     test('test readerUploadPost', () async {
+      // TODO
+    });
+
+    // 增量同步
+    //
+    // 全量同步数据（文档）
+    //
+    //Future<EbookListDto> syncDeltaPost({ FullSyncDto fullSyncDto }) async
+    test('test syncDeltaPost', () async {
+      // TODO
+    });
+
+    // 全量同步
+    //
+    // 全量同步数据（文档）
+    //
+    //Future<EbookListDto> syncFullPost({ FullSyncDto fullSyncDto }) async
+    test('test syncFullPost', () async {
       // TODO
     });
 

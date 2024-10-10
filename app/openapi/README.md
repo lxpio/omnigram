@@ -76,12 +76,14 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**authLoginPost**](doc/DefaultApi.md#authloginpost) | **POST** /auth/login | 用户登录
 [*DefaultApi*](doc/DefaultApi.md) | [**authLogoutPost**](doc/DefaultApi.md#authlogoutpost) | **POST** /auth/logout | 用户登出
 [*DefaultApi*](doc/DefaultApi.md) | [**authTokenPost**](doc/DefaultApi.md#authtokenpost) | **POST** /auth/token | 获取访问token
-[*DefaultApi*](doc/DefaultApi.md) | [**imgReaderCoversBookIdGet**](doc/DefaultApi.md#imgreadercoversbookidget) | **GET** /img/reader/covers/{book_id} | 获取书籍封面图片
+[*DefaultApi*](doc/DefaultApi.md) | [**imgCoversCoverIdGet**](doc/DefaultApi.md#imgcoverscoveridget) | **GET** /img/covers/{cover_id} | 获取书籍封面图片
 [*DefaultApi*](doc/DefaultApi.md) | [**m4tTtsSimplePost**](doc/DefaultApi.md#m4tttssimplepost) | **POST** /m4t/tts/simple | 文字转语音
 [*DefaultApi*](doc/DefaultApi.md) | [**m4tTtsSpeakersGet**](doc/DefaultApi.md#m4tttsspeakersget) | **GET** /m4t/tts/speakers | 获取声音列表
 [*DefaultApi*](doc/DefaultApi.md) | [**m4tTtsSpeakersPost**](doc/DefaultApi.md#m4tttsspeakerspost) | **POST** /m4t/tts/speakers | 上传声音
 [*DefaultApi*](doc/DefaultApi.md) | [**m4tTtsStreamPost**](doc/DefaultApi.md#m4tttsstreampost) | **POST** /m4t/tts/stream | 文字转语音接口
 [*DefaultApi*](doc/DefaultApi.md) | [**readerBooksBookIdGet**](doc/DefaultApi.md#readerbooksbookidget) | **GET** /reader/books/{book_id} | 书籍详情
+[*DefaultApi*](doc/DefaultApi.md) | [**readerBooksBookIdProgressGet**](doc/DefaultApi.md#readerbooksbookidprogressget) | **GET** /reader/books/{book_id}/progress | 查看书籍阅读进度
+[*DefaultApi*](doc/DefaultApi.md) | [**readerBooksBookIdProgressPut**](doc/DefaultApi.md#readerbooksbookidprogressput) | **PUT** /reader/books/{book_id}/progress | 更新书籍阅读进度
 [*DefaultApi*](doc/DefaultApi.md) | [**readerBooksBookIdPut**](doc/DefaultApi.md#readerbooksbookidput) | **PUT** /reader/books/{book_id} | 修改书籍介绍信息
 [*DefaultApi*](doc/DefaultApi.md) | [**readerBooksGet**](doc/DefaultApi.md#readerbooksget) | **GET** /reader/books | 获取书籍列表
 [*DefaultApi*](doc/DefaultApi.md) | [**readerDownloadBooksBookIdGet**](doc/DefaultApi.md#readerdownloadbooksbookidget) | **GET** /reader/download/books/{book_id} | 下载书籍
@@ -90,6 +92,8 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**readerRecentGet**](doc/DefaultApi.md#readerrecentget) | **GET** /reader/recent | 最近阅读
 [*DefaultApi*](doc/DefaultApi.md) | [**readerStatsGet**](doc/DefaultApi.md#readerstatsget) | **GET** /reader/stats | 获取阅读统计数据
 [*DefaultApi*](doc/DefaultApi.md) | [**readerUploadPost**](doc/DefaultApi.md#readeruploadpost) | **POST** /reader/upload | 上传书籍
+[*DefaultApi*](doc/DefaultApi.md) | [**syncDeltaPost**](doc/DefaultApi.md#syncdeltapost) | **POST** /sync/delta | 增量同步
+[*DefaultApi*](doc/DefaultApi.md) | [**syncFullPost**](doc/DefaultApi.md#syncfullpost) | **POST** /sync/full | 全量同步
 [*DefaultApi*](doc/DefaultApi.md) | [**sysInfoGet**](doc/DefaultApi.md#sysinfoget) | **GET** /sys/info | 获取系统信息
 [*DefaultApi*](doc/DefaultApi.md) | [**sysInfoPut**](doc/DefaultApi.md#sysinfoput) | **PUT** /sys/info | 修改系统信息
 [*DefaultApi*](doc/DefaultApi.md) | [**sysPingGet**](doc/DefaultApi.md#syspingget) | **GET** /sys/ping | 系统心跳
@@ -107,12 +111,16 @@ Class | Method | HTTP request | Description
  - [AuthAccountsAccountIdApikeysPostRequest](doc/AuthAccountsAccountIdApikeysPostRequest.md)
  - [ChangePasswordDto](doc/ChangePasswordDto.md)
  - [CreateUserDto](doc/CreateUserDto.md)
+ - [DeltaSyncDto](doc/DeltaSyncDto.md)
  - [EbookDto](doc/EbookDto.md)
  - [EbookIndexDto](doc/EbookIndexDto.md)
  - [EbookListDto](doc/EbookListDto.md)
  - [EnableScanDto](doc/EnableScanDto.md)
+ - [FullSyncDto](doc/FullSyncDto.md)
  - [LoginCredentialDto](doc/LoginCredentialDto.md)
  - [M4tTtsStreamPostRequest](doc/M4tTtsStreamPostRequest.md)
+ - [ReadProgressDto](doc/ReadProgressDto.md)
+ - [ReaderBooksBookIdProgressPutRequest](doc/ReaderBooksBookIdProgressPutRequest.md)
  - [ReaderBooksBookIdPutRequest](doc/ReaderBooksBookIdPutRequest.md)
  - [ReaderStatsDto](doc/ReaderStatsDto.md)
  - [RespDto](doc/RespDto.md)

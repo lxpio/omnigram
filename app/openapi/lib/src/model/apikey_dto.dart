@@ -11,11 +11,16 @@ part 'apikey_dto.g.dart';
 /// ApikeyDto
 ///
 /// Properties:
+/// * [id] - ID 编号
 /// * [name] 
 /// * [apikey] 
 /// * [ctime] 
 @BuiltValue()
 abstract class ApikeyDto implements Built<ApikeyDto, ApikeyDtoBuilder> {
+  /// ID 编号
+  @BuiltValueField(wireName: r'id')
+  int get id;
+
   @BuiltValueField(wireName: r'name')
   String get name;
 
@@ -48,6 +53,11 @@ class _$ApikeyDtoSerializer implements PrimitiveSerializer<ApikeyDto> {
     ApikeyDto object, {
     FullType specifiedType = FullType.unspecified,
   }) sync* {
+    yield r'id';
+    yield serializers.serialize(
+      object.id,
+      specifiedType: const FullType(int),
+    );
     yield r'name';
     yield serializers.serialize(
       object.name,
@@ -86,6 +96,13 @@ class _$ApikeyDtoSerializer implements PrimitiveSerializer<ApikeyDto> {
       final key = serializedList[i] as String;
       final value = serializedList[i + 1];
       switch (key) {
+        case r'id':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(int),
+          ) as int;
+          result.id = valueDes;
+          break;
         case r'name':
           final valueDes = serializers.deserialize(
             value,

@@ -3,20 +3,14 @@ info:
   title: omnigram
   description: ''
   version: 1.0.0
-tags:
-  - name: 登录认证
-  - name: 用户管理
-  - name: 阅读管理
-  - name: 系统管理
-  - name: 语音服务
+tags: []
 paths:
   /auth/login:
     post:
       summary: 用户登录
       deprecated: false
       description: '用户登录接口，认证成功以后返回200 ok ，并set-cookie '
-      tags:
-        - 登录认证
+      tags: []
       parameters: []
       requestBody:
         content:
@@ -61,8 +55,7 @@ paths:
       summary: 重置账号密码
       deprecated: false
       description: ''
-      tags:
-        - 登录认证
+      tags: []
       parameters:
         - name: account_id
           in: path
@@ -110,8 +103,7 @@ paths:
       summary: 用户登出
       deprecated: false
       description: 用户登出接口，将清理 cookie
-      tags:
-        - 登录认证
+      tags: []
       parameters: []
       responses:
         '200':
@@ -133,8 +125,7 @@ paths:
       summary: 创建API Key
       deprecated: false
       description: ''
-      tags:
-        - 登录认证
+      tags: []
       parameters:
         - name: account_id
           in: path
@@ -180,8 +171,7 @@ paths:
       summary: 获取API Key列表
       deprecated: false
       description: ''
-      tags:
-        - 登录认证
+      tags: []
       parameters:
         - name: account_id
           in: path
@@ -220,8 +210,7 @@ paths:
       summary: 删除API Key
       deprecated: false
       description: ''
-      tags:
-        - 登录认证
+      tags: []
       parameters:
         - name: account_id
           in: path
@@ -255,8 +244,7 @@ paths:
       summary: 获取访问token
       deprecated: false
       description: ''
-      tags:
-        - 登录认证
+      tags: []
       parameters: []
       requestBody:
         content:
@@ -290,8 +278,7 @@ paths:
       summary: 获取用户列表
       deprecated: false
       description: ''
-      tags:
-        - 用户管理
+      tags: []
       parameters:
         - name: search
           in: query
@@ -384,8 +371,7 @@ paths:
       summary: 创建账号
       deprecated: false
       description: 创建普通用户
-      tags:
-        - 用户管理
+      tags: []
       parameters: []
       requestBody:
         content:
@@ -448,8 +434,7 @@ paths:
       summary: 删除账号
       deprecated: false
       description: ''
-      tags:
-        - 用户管理
+      tags: []
       parameters:
         - name: account_id
           in: path
@@ -479,8 +464,7 @@ paths:
       summary: 获取用户信息
       deprecated: false
       description: ''
-      tags:
-        - 用户管理
+      tags: []
       parameters:
         - name: user_id
           in: path
@@ -523,8 +507,7 @@ paths:
       summary: 当前用户信息
       deprecated: false
       description: ''
-      tags:
-        - 用户管理
+      tags: []
       parameters: []
       requestBody:
         content:
@@ -561,8 +544,7 @@ paths:
       summary: 获取阅读索引页
       deprecated: false
       description: ''
-      tags:
-        - 阅读管理
+      tags: []
       parameters:
         - name: random
           in: query
@@ -778,8 +760,7 @@ paths:
       summary: 获取书籍列表
       deprecated: false
       description: ''
-      tags:
-        - 阅读管理
+      tags: []
       parameters:
         - name: search
           in: query
@@ -863,8 +844,7 @@ paths:
       summary: 最近阅读
       deprecated: false
       description: ''
-      tags:
-        - 阅读管理
+      tags: []
       parameters:
         - name: search
           in: query
@@ -946,8 +926,7 @@ paths:
       summary: 喜欢的书
       deprecated: false
       description: ''
-      tags:
-        - 阅读管理
+      tags: []
       parameters:
         - name: search
           in: query
@@ -1029,8 +1008,7 @@ paths:
       summary: 书籍详情
       deprecated: false
       description: ''
-      tags:
-        - 阅读管理
+      tags: []
       parameters:
         - name: book_id
           in: path
@@ -1091,8 +1069,7 @@ paths:
       summary: 修改书籍介绍信息
       deprecated: false
       description: ''
-      tags:
-        - 阅读管理
+      tags: []
       parameters:
         - name: book_id
           in: path
@@ -1234,8 +1211,7 @@ paths:
       summary: 上传书籍
       deprecated: false
       description: ''
-      tags:
-        - 阅读管理
+      tags: []
       parameters: []
       requestBody:
         content:
@@ -1292,8 +1268,7 @@ paths:
       summary: 下载书籍
       deprecated: false
       description: ''
-      tags:
-        - 阅读管理
+      tags: []
       parameters:
         - name: book_id
           in: path
@@ -1312,18 +1287,112 @@ paths:
           headers: {}
       security:
         - bearer: []
-  /img/reader/covers/{book_id}:
+  /reader/books/{book_id}/progress:
     get:
-      summary: 获取书籍封面图片
+      summary: 查看书籍阅读进度
       deprecated: false
       description: ''
-      tags:
-        - 阅读管理
+      tags: []
       parameters:
         - name: book_id
           in: path
           description: ''
           required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 阅读进度
+          content:
+            application/json:
+              schema: &ref_6
+                $ref: '#/components/schemas/read_progress_dto'
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    id: 1
+                    book_id: 1001
+                    user_id: 2001
+                    start_date: 1638400000
+                    updated_at: 1638400000
+                    expt_end_date: 1640995200
+                    end_date: 0
+                    progress_index: 5
+                    progress: 0.75
+                    para_position: 150
+          headers: {}
+      security:
+        - bearer: []
+    put:
+      summary: 更新书籍阅读进度
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: book_id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                updated_at:
+                  type: integer
+                progress_index:
+                  type: integer
+                progress:
+                  type: number
+                para_position:
+                  type: integer
+              required:
+                - user_id
+                - updated_at
+                - progress_index
+                - progress
+                - para_position
+      responses:
+        '200':
+          description: 阅读进度
+          content:
+            application/json:
+              schema: *ref_6
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    id: 1
+                    book_id: 1001
+                    user_id: 2001
+                    start_date: 1638400000
+                    updated_at: 1638400000
+                    expt_end_date: 1640995200
+                    end_date: 0
+                    progress_index: 5
+                    progress: 0.75
+                    para_position: 150
+          headers: {}
+      security:
+        - bearer: []
+  /img/covers/{cover_id}:
+    get:
+      summary: 获取书籍封面图片
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: cover_id
+          in: path
+          description: ''
+          required: true
+          example: 2e2397f81f9a24a30d3d6fe551df626fImage00000.jpg
           schema:
             type: string
       responses:
@@ -1342,8 +1411,7 @@ paths:
       summary: 获取阅读统计数据
       deprecated: false
       description: ''
-      tags:
-        - 阅读管理
+      tags: []
       parameters: []
       responses:
         '200':
@@ -1386,15 +1454,14 @@ paths:
       summary: 获取系统信息
       deprecated: false
       description: 获取当前系统后台信息（管理员权限）
-      tags:
-        - 系统管理
+      tags: []
       parameters: []
       responses:
         '200':
           description: 系统信息详情
           content:
             application/json:
-              schema: &ref_6
+              schema: &ref_7
                 properties:
                   version:
                     type: string
@@ -1439,13 +1506,12 @@ paths:
       summary: 修改系统信息
       deprecated: false
       description: ''
-      tags:
-        - 系统管理
+      tags: []
       parameters: []
       requestBody:
         content:
           application/json:
-            schema: *ref_6
+            schema: *ref_7
             example:
               version: 0.0.1
               system: Linux
@@ -1458,7 +1524,7 @@ paths:
           description: 修改后的详情
           content:
             application/json:
-              schema: *ref_6
+              schema: *ref_7
               examples:
                 '1':
                   summary: 成功示例
@@ -1473,8 +1539,7 @@ paths:
       summary: 系统心跳
       deprecated: false
       description: 获取当前系统后台信息（管理员权限）
-      tags:
-        - 系统管理
+      tags: []
       parameters: []
       responses:
         '200':
@@ -1502,15 +1567,14 @@ paths:
       summary: 获取当前扫描状态
       deprecated: false
       description: ''
-      tags:
-        - 系统管理
+      tags: []
       parameters: []
       responses:
         '200':
           description: 当前扫描状态
           content:
             application/json:
-              schema: &ref_7
+              schema: &ref_8
                 $ref: '#/components/schemas/scan_stats_dto'
               examples:
                 '1':
@@ -1532,8 +1596,7 @@ paths:
       summary: 启动扫描
       deprecated: false
       description: 启动扫描目录（管理员权限）
-      tags:
-        - 系统管理
+      tags: []
       parameters: []
       requestBody:
         content:
@@ -1557,7 +1620,7 @@ paths:
           description: ''
           content:
             application/json:
-              schema: *ref_7
+              schema: *ref_8
               examples:
                 '1':
                   summary: 成功示例
@@ -1578,15 +1641,14 @@ paths:
       summary: 停止扫描
       deprecated: false
       description: 停止扫描目录（管理员权限）
-      tags:
-        - 系统管理
+      tags: []
       parameters: []
       responses:
         '200':
           description: 当前状态
           content:
             application/json:
-              schema: *ref_7
+              schema: *ref_8
               examples:
                 '1':
                   summary: 成功示例
@@ -1602,13 +1664,123 @@ paths:
           headers: {}
       security:
         - bearer: []
+  /sync/full:
+    post:
+      summary: 全量同步
+      deprecated: false
+      description: 全量同步数据（文档）
+      tags: []
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: &ref_9
+              $ref: '#/components/schemas/full_sync_dto'
+      responses:
+        '200':
+          description: 书籍列表
+          content:
+            application/json:
+              schema: *ref_4
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    total: 51
+                    items:
+                      - id: 79
+                        size: 45
+                        ctime: '2017-09-22 06:12:40'
+                        utime: '1972-08-03 06:00:09'
+                        title: 书何效内当
+                        sub_title: 律给将离志转问
+                        language: laboris labore dolor ipsum voluptate
+                        cover_url: http://clsn.sr/ybahcn
+                        uuid: '55'
+                        isbn: adipisicing minim qui laboris
+                        asin: eiusmod ea
+                        identifier: '11'
+                        category: tempor ut Excepteur consequat dolor
+                        author: proident Excepteur dolore
+                        author_url: http://lkvmhd.com.cn/rtjwlvd
+                        author_sort: ex ut amet aute
+                        publisher: officia consectetur exercitation amet deserunt
+                        description: >-
+                          记主导反分圆们照何办两通品容积。处特明际百比组儿想将油拉该。时作权月不段三导组他样加育。收究过达他无花求心所如科认团。根国想把家引建各情级装后图委管生名。
+                        tags:
+                          - Ut
+                          - commodo deserunt Duis anim
+                        pubdate: '1975-03-27'
+                        rating: 20
+                        publisher_url: http://txbjtyp.jm/ktebevpfd
+                        count_visit: 50
+                        count_download: 95
+                        progress: 3
+                        progress_index: 12
+                        para_position: 53
+          headers: {}
+      security: []
+  /sync/delta:
+    post:
+      summary: 增量同步
+      deprecated: false
+      description: 全量同步数据（文档）
+      tags: []
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: *ref_9
+      responses:
+        '200':
+          description: 书籍列表
+          content:
+            application/json:
+              schema: *ref_4
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    total: 51
+                    items:
+                      - id: 79
+                        size: 45
+                        ctime: '2017-09-22 06:12:40'
+                        utime: '1972-08-03 06:00:09'
+                        title: 书何效内当
+                        sub_title: 律给将离志转问
+                        language: laboris labore dolor ipsum voluptate
+                        cover_url: http://clsn.sr/ybahcn
+                        uuid: '55'
+                        isbn: adipisicing minim qui laboris
+                        asin: eiusmod ea
+                        identifier: '11'
+                        category: tempor ut Excepteur consequat dolor
+                        author: proident Excepteur dolore
+                        author_url: http://lkvmhd.com.cn/rtjwlvd
+                        author_sort: ex ut amet aute
+                        publisher: officia consectetur exercitation amet deserunt
+                        description: >-
+                          记主导反分圆们照何办两通品容积。处特明际百比组儿想将油拉该。时作权月不段三导组他样加育。收究过达他无花求心所如科认团。根国想把家引建各情级装后图委管生名。
+                        tags:
+                          - Ut
+                          - commodo deserunt Duis anim
+                        pubdate: '1975-03-27'
+                        rating: 20
+                        publisher_url: http://txbjtyp.jm/ktebevpfd
+                        count_visit: 50
+                        count_download: 95
+                        progress: 3
+                        progress_index: 12
+                        para_position: 53
+          headers: {}
+      security: []
   /m4t/tts/speakers:
     get:
       summary: 获取声音列表
       deprecated: false
       description: ''
-      tags:
-        - 语音服务
+      tags: []
       parameters: []
       responses:
         '200':
@@ -1646,8 +1818,7 @@ paths:
       summary: 上传声音
       deprecated: false
       description: ''
-      tags:
-        - 语音服务
+      tags: []
       parameters: []
       requestBody:
         content:
@@ -1669,7 +1840,7 @@ paths:
           description: 上传后id 记录
           content:
             application/json:
-              schema: &ref_8
+              schema: &ref_10
                 $ref: '#/components/schemas/speaker_dto'
               examples:
                 '1':
@@ -1689,8 +1860,7 @@ paths:
       summary: 文字转语音接口
       deprecated: false
       description: ''
-      tags:
-        - 语音服务
+      tags: []
       parameters: []
       requestBody:
         content:
@@ -1736,8 +1906,7 @@ paths:
       summary: 文字转语音
       deprecated: false
       description: ''
-      tags:
-        - 语音服务
+      tags: []
       parameters: []
       requestBody:
         content:
@@ -1967,6 +2136,10 @@ components:
     apikey_dto:
       type: object
       properties:
+        id:
+          type: integer
+          description: ID 编号
+          title: ID
         name:
           type: string
           title: 备注名
@@ -1980,6 +2153,7 @@ components:
         - name
         - apikey
         - ctime
+        - id
     login_credential_dto:
       type: object
       properties:
@@ -2142,7 +2316,7 @@ components:
           type: integer
         items:
           type: array
-          items: *ref_8
+          items: *ref_10
       required:
         - total
         - items
@@ -2162,6 +2336,84 @@ components:
         - expired_in
         - refresh_token
         - access_token
+    full_sync_dto:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          title: 用户ID
+          description: 用户ID
+        limit:
+          type: integer
+          title: 限制大小
+          description: 数量限制
+        utime:
+          type: integer
+          title: 更新时间
+          description: 文件更新的时间
+        file_type:
+          type: integer
+          title: 文件类型
+          description: 文件类型
+      required:
+        - limit
+        - utime
+    delta_sync_dto:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          title: 用户ID
+          description: 用户ID
+        limit:
+          type: integer
+          title: 限制大小
+          description: 数量限制
+        utime:
+          type: integer
+          title: 更新时间
+          description: 文件更新的时间
+        file_type:
+          type: integer
+          title: 文件类型
+          description: 文件类型
+      required:
+        - limit
+        - utime
+    read_progress_dto:
+      type: object
+      properties:
+        id:
+          type: integer
+        book_id:
+          type: integer
+        user_id:
+          type: integer
+        start_date:
+          type: integer
+        updated_at:
+          type: integer
+        expt_end_date:
+          type: integer
+        end_date:
+          type: integer
+        progress_index:
+          type: integer
+        progress:
+          type: number
+        para_position:
+          type: integer
+      required:
+        - id
+        - book_id
+        - user_id
+        - start_date
+        - updated_at
+        - expt_end_date
+        - end_date
+        - progress_index
+        - progress
+        - para_position
   securitySchemes:
     bearer:
       type: http

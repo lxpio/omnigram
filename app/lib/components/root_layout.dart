@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart' as go;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:omnigram/utils/constants.dart';
-import 'package:omnigram/utils/localization.service.dart';
 
 // import 'views.dart';
 

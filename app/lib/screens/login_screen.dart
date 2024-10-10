@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -8,7 +7,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/entities/isar_store.entity.dart';
 import 'package:omnigram/providers/api.provider.dart';
 import 'package:omnigram/providers/auth.provider.dart';
-import 'package:omnigram/screens/profile/views/unauthorized_view.dart';
 import 'package:omnigram/utils/constants.dart';
 
 import 'package:omnigram/utils/show_snackbar.dart';
