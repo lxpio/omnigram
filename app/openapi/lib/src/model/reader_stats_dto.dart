@@ -14,7 +14,7 @@ part 'reader_stats_dto.g.dart';
 /// * [total] 
 /// * [authors] 
 /// * [publisher] 
-/// * [tags] 
+/// * [categorys] - 分组
 @BuiltValue()
 abstract class ReaderStatsDto implements Built<ReaderStatsDto, ReaderStatsDtoBuilder> {
   @BuiltValueField(wireName: r'total')
@@ -26,8 +26,9 @@ abstract class ReaderStatsDto implements Built<ReaderStatsDto, ReaderStatsDtoBui
   @BuiltValueField(wireName: r'publisher')
   int get publisher;
 
-  @BuiltValueField(wireName: r'tags')
-  int get tags;
+  /// 分组
+  @BuiltValueField(wireName: r'categorys')
+  int get categorys;
 
   ReaderStatsDto._();
 
@@ -67,9 +68,9 @@ class _$ReaderStatsDtoSerializer implements PrimitiveSerializer<ReaderStatsDto> 
       object.publisher,
       specifiedType: const FullType(int),
     );
-    yield r'tags';
+    yield r'categorys';
     yield serializers.serialize(
-      object.tags,
+      object.categorys,
       specifiedType: const FullType(int),
     );
   }
@@ -116,12 +117,12 @@ class _$ReaderStatsDtoSerializer implements PrimitiveSerializer<ReaderStatsDto> 
           ) as int;
           result.publisher = valueDes;
           break;
-        case r'tags':
+        case r'categorys':
           final valueDes = serializers.deserialize(
             value,
             specifiedType: const FullType(int),
           ) as int;
-          result.tags = valueDes;
+          result.categorys = valueDes;
           break;
         default:
           unhandled.add(key);

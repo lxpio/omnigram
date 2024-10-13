@@ -24,7 +24,6 @@ Future setDesktopWindow() async {
 Future<void> main() async {
 //加载数据前动画效果
   WidgetsFlutterBinding.ensureInitialized();
- 
 
   if (Platform.isAndroid) {
     SystemUiOverlayStyle systemUiOverlayStyle = const SystemUiOverlayStyle(
@@ -37,7 +36,7 @@ Future<void> main() async {
     setDesktopWindow();
   }
 
- // if (kReleaseMode && Platform.isAndroid) {
+  // if (kReleaseMode && Platform.isAndroid) {
   //   try {
   //     await FlutterDisplayMode.setHighRefreshRate();
   //     debugPrint("Enabled high refresh mode");
@@ -47,7 +46,6 @@ Future<void> main() async {
   // }
 
   final db = await BuildConfig.initialize();
-
 
   //加载proxy配置
   // HttpOverrides.global = HttpProxyOverrides();
@@ -60,18 +58,15 @@ Future<void> main() async {
   );
 }
 
-
-class OmnigramApp extends ConsumerStatefulWidget{
-
+class OmnigramApp extends ConsumerStatefulWidget {
   const OmnigramApp({super.key});
 
   @override
   ConsumerState<OmnigramApp> createState() => _OmnigramAppState();
 }
 
-class _OmnigramAppState extends ConsumerState<OmnigramApp> with WidgetsBindingObserver {
- 
-
+class _OmnigramAppState extends ConsumerState<OmnigramApp>
+    with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final router = ref.watch(appRouterProvider);
@@ -84,19 +79,18 @@ class _OmnigramAppState extends ConsumerState<OmnigramApp> with WidgetsBindingOb
       home: MaterialApp.router(
         title: 'Omnigram',
         debugShowCheckedModeBanner: false,
-     
+
         themeMode: ref.watch(themeModeProvider),
         darkTheme: omnigramDarkTheme,
         theme: omnigramLightTheme,
         routerConfig: router,
-        // routeInformationParser: router.routeInformationParser, 
+        // routeInformationParser: router.routeInformationParser,
         // routerDelegate: router.routerDelegate,
       ),
     );
   }
 
-
- @override
+  @override
   void initState() {
     super.initState();
 
@@ -108,15 +102,13 @@ class _OmnigramAppState extends ConsumerState<OmnigramApp> with WidgetsBindingOb
     });
   }
 
-
-@override
+  @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
-
- @override
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
@@ -142,7 +134,7 @@ class _OmnigramAppState extends ConsumerState<OmnigramApp> with WidgetsBindingOb
     }
   }
 
-   Future<void> _initApp() async {
+  Future<void> _initApp() async {
     WidgetsBinding.instance.addObserver(this);
 
     // Draw the app from edge to edge
@@ -164,14 +156,8 @@ class _OmnigramAppState extends ConsumerState<OmnigramApp> with WidgetsBindingOb
     SystemChrome.setSystemUIOverlayStyle(overlayStyle);
     //TODO : check if this is needed
     // await ref.read(localNotificationService).setup();
-
-
   }
 }
-
-
-
-
 
 // ignore: prefer-single-widget-per-file
 class MainWidget extends StatelessWidget {

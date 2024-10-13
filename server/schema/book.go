@@ -6,14 +6,18 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
+	"fmt"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/store"
 	"github.com/lxpio/omnigram/server/utils"
 	"github.com/nexptr/epub"
+
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -61,7 +65,7 @@ func ParseFileType(filename string) FileType {
 }
 
 type Book struct {
-	ID    int64  `json:"id" gorm:"primaryKey;comment:ID"`
+	ID    string `json:"id" gorm:"type:char(24);primaryKey;comment:ID"`
 	Size  int64  `json:"size" gorm:"comment:文件大小"`
 	Path  string `json:"-" gorm:"comment:文件路径"` //本地文件路径不返回到界面上
 	CTime int64  `json:"ctime" form:"ctime" gorm:"column:ctime;autoCreateTime;comment:创建时间"`
@@ -216,7 +220,7 @@ func RandomBooks(store *gorm.DB, limit int, omits []int64) (BookResp, error) {
 
 }
 
-func FirstBookById(store *gorm.DB, id int) (*Book, error) {
+func FirstBookById(store *gorm.DB, id string) (*Book, error) {
 	//获取Book信息
 	book := &Book{}
 
@@ -272,14 +276,42 @@ func SearchBooks(store *gorm.DB, query *Query) (BookResp, error) {
 }
 
 // SyncFullBooks 模糊搜索书籍
-func SyncFullBooks(store *gorm.DB, limit, ctime int64, fileType FileType) (BookResp, error) {
+func SyncFullBooks(store *gorm.DB, limit, until int64, fileType FileType) (<-chan []Book, error) {
 
-	resp := BookResp{
-		0,
-		[]Book{},
+	db := store.Model(Book{}).Where(`utime <= ?`, until)
+
+	if fileType > 0 {
+		db.Where(`file_type = ?`, fileType)
 	}
 
-	tx := store.Model(Book{}).Where(`ctime >= ?`, ctime)
+	bookChan := make(chan []Book)
+
+	defer close(bookChan)
+
+	var books []Book
+
+	result := db.FindInBatches(&books, int(limit), func(tx *gorm.DB, batch int) error {
+		bookChan <- books
+		return nil
+	})
+
+	if result.Error != nil {
+		log.E("Error When get data:", result.Error)
+	} else {
+		log.D(`Completed get books all batches`)
+	}
+}
+
+// SyncDeltaBooks 模糊搜索书籍
+func SyncDeltaBooks(store *gorm.DB, utime int64, fileType FileType) (interface{}, error) {
+
+	resp := struct {
+		Deleted      []string `json:"deleted"`
+		NeedFullSync bool     `json:"need_full_sync"`
+		Upserted     []Book   `json:"upserted"`
+	}{}
+
+	tx := store.Model(Book{}).Where(`utime > ?`, utime)
 
 	if fileType > 0 {
 		tx.Where(`file_type = ?`, fileType)
@@ -292,10 +324,16 @@ func SyncFullBooks(store *gorm.DB, limit, ctime int64, fileType FileType) (BookR
 		if err := tx.Count(&count).Error; err != nil {
 			return resp, err
 		}
-		resp.Total = int(count)
+
+		if count > 100000 {
+			resp.NeedFullSync = true
+			return resp, nil
+		}
 	}
 
-	err := tx.Limit(int(limit)).Find(&resp.Books).Error
+	err := tx.Find(&resp.Upserted).Error
+
+	//deleted data current not support
 
 	return resp, err
 
@@ -530,4 +568,17 @@ func elt2FirstStr(elt []epub.Element) string {
 // 替换路径字符串中'/'为'-'
 func replacePath(path string) string {
 	return strings.ReplaceAll(path, "/", "-")
+}
+
+func GenBookID(now time.Time) string {
+
+	// 获取当前时间并格式化为字符串作为订单号的一部分
+	currentTime := now.Format("20060102150405")
+
+	milli := now.Nanosecond() + rand.Intn(10000000000)
+
+	// 构建订单号
+	id := fmt.Sprintf("%s%09d", currentTime, milli)
+
+	return id
 }

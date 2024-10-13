@@ -3,7 +3,6 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
@@ -31,7 +30,6 @@ part 'ebook_dto.g.dart';
 /// * [publisher] 
 /// * [description] 
 /// * [favStatus] 
-/// * [tags] 
 /// * [pubdate] 
 /// * [rating] 
 /// * [publisherUrl] 
@@ -43,16 +41,16 @@ part 'ebook_dto.g.dart';
 @BuiltValue()
 abstract class EbookDto implements Built<EbookDto, EbookDtoBuilder> {
   @BuiltValueField(wireName: r'id')
-  int get id;
+  String get id;
 
   @BuiltValueField(wireName: r'size')
   int? get size;
 
   @BuiltValueField(wireName: r'ctime')
-  String? get ctime;
+  int? get ctime;
 
   @BuiltValueField(wireName: r'utime')
-  String? get utime;
+  int? get utime;
 
   @BuiltValueField(wireName: r'title')
   String get title;
@@ -98,9 +96,6 @@ abstract class EbookDto implements Built<EbookDto, EbookDtoBuilder> {
 
   @BuiltValueField(wireName: r'fav_status')
   bool? get favStatus;
-
-  @BuiltValueField(wireName: r'tags')
-  BuiltList<String>? get tags;
 
   @BuiltValueField(wireName: r'pubdate')
   String? get pubdate;
@@ -152,7 +147,7 @@ class _$EbookDtoSerializer implements PrimitiveSerializer<EbookDto> {
     yield r'id';
     yield serializers.serialize(
       object.id,
-      specifiedType: const FullType(int),
+      specifiedType: const FullType(String),
     );
     if (object.size != null) {
       yield r'size';
@@ -165,14 +160,14 @@ class _$EbookDtoSerializer implements PrimitiveSerializer<EbookDto> {
       yield r'ctime';
       yield serializers.serialize(
         object.ctime,
-        specifiedType: const FullType(String),
+        specifiedType: const FullType(int),
       );
     }
     if (object.utime != null) {
       yield r'utime';
       yield serializers.serialize(
         object.utime,
-        specifiedType: const FullType(String),
+        specifiedType: const FullType(int),
       );
     }
     yield r'title';
@@ -276,13 +271,6 @@ class _$EbookDtoSerializer implements PrimitiveSerializer<EbookDto> {
         specifiedType: const FullType(bool),
       );
     }
-    if (object.tags != null) {
-      yield r'tags';
-      yield serializers.serialize(
-        object.tags,
-        specifiedType: const FullType(BuiltList, [FullType(String)]),
-      );
-    }
     if (object.pubdate != null) {
       yield r'pubdate';
       yield serializers.serialize(
@@ -365,8 +353,8 @@ class _$EbookDtoSerializer implements PrimitiveSerializer<EbookDto> {
         case r'id':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType(int),
-          ) as int;
+            specifiedType: const FullType(String),
+          ) as String;
           result.id = valueDes;
           break;
         case r'size':
@@ -379,15 +367,15 @@ class _$EbookDtoSerializer implements PrimitiveSerializer<EbookDto> {
         case r'ctime':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType(String),
-          ) as String;
+            specifiedType: const FullType(int),
+          ) as int;
           result.ctime = valueDes;
           break;
         case r'utime':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType(String),
-          ) as String;
+            specifiedType: const FullType(int),
+          ) as int;
           result.utime = valueDes;
           break;
         case r'title':
@@ -494,13 +482,6 @@ class _$EbookDtoSerializer implements PrimitiveSerializer<EbookDto> {
             specifiedType: const FullType(bool),
           ) as bool;
           result.favStatus = valueDes;
-          break;
-        case r'tags':
-          final valueDes = serializers.deserialize(
-            value,
-            specifiedType: const FullType(BuiltList, [FullType(String)]),
-          ) as BuiltList<String>;
-          result.tags.replace(valueDes);
           break;
         case r'pubdate':
           final valueDes = serializers.deserialize(

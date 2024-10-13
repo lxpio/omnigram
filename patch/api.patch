@@ -1,0 +1,128 @@
+diff --git a/app/openapi/lib/src/api/default_api.dart b/app/openapi/lib/src/api/default_api.dart
+index 917f42c..0b31b3d 100644
+--- a/app/openapi/lib/src/api/default_api.dart
++++ b/app/openapi/lib/src/api/default_api.dart
+@@ -1446,7 +1446,7 @@ class DefaultApi {
+   ///
+   /// Returns a [Future] containing a [Response] with a [JsonObject] as data
+   /// Throws [DioException] if API call or serialization fails
+-  Future<Response<JsonObject>> m4tTtsStreamPost({ 
++  Future<Response<T>> m4tTtsStreamPost<T>({ 
+     M4tTtsStreamPostRequest? m4tTtsStreamPostRequest,
+     CancelToken? cancelToken,
+     Map<String, dynamic>? headers,
+@@ -1473,6 +1473,7 @@ class DefaultApi {
+       },
+       contentType: 'application/json',
+       validateStatus: validateStatus,
++      responseType: ResponseType.stream,
+     );
+ 
+     dynamic _bodyData;
+@@ -1493,7 +1494,7 @@ class DefaultApi {
+       );
+     }
+ 
+-    final _response = await _dio.request<Object>(
++    return await _dio.request<T>(
+       _path,
+       data: _bodyData,
+       options: _options,
+@@ -1502,35 +1503,6 @@ class DefaultApi {
+       onReceiveProgress: onReceiveProgress,
+     );
+ 
+-    JsonObject? _responseData;
+-
+-    try {
+-      final rawResponse = _response.data;
+-      _responseData = rawResponse == null ? null : _serializers.deserialize(
+-        rawResponse,
+-        specifiedType: const FullType(JsonObject),
+-      ) as JsonObject;
+-
+-    } catch (error, stackTrace) {
+-      throw DioException(
+-        requestOptions: _response.requestOptions,
+-        response: _response,
+-        type: DioExceptionType.unknown,
+-        error: error,
+-        stackTrace: stackTrace,
+-      );
+-    }
+-
+-    return Response<JsonObject>(
+-      data: _responseData,
+-      headers: _response.headers,
+-      isRedirect: _response.isRedirect,
+-      requestOptions: _response.requestOptions,
+-      redirects: _response.redirects,
+-      statusCode: _response.statusCode,
+-      statusMessage: _response.statusMessage,
+-      extra: _response.extra,
+-    );
+   }
+ 
+   /// 书籍详情
+@@ -2653,7 +2625,7 @@ class DefaultApi {
+   ///
+   /// Returns a [Future] containing a [Response] with a [JsonObject] as data
+   /// Throws [DioException] if API call or serialization fails
+-  Future<Response<JsonObject>> syncFullPost({ 
++  Future<Response<T>> syncFullPost<T>({ 
+     FullSyncDto? fullSyncDto,
+     CancelToken? cancelToken,
+     Map<String, dynamic>? headers,
+@@ -2674,6 +2646,7 @@ class DefaultApi {
+       },
+       contentType: 'application/json',
+       validateStatus: validateStatus,
++      responseType: ResponseType.stream,
+     );
+ 
+     dynamic _bodyData;
+@@ -2694,7 +2667,7 @@ class DefaultApi {
+       );
+     }
+ 
+-    final _response = await _dio.request<Object>(
++    return await _dio.request<T>(
+       _path,
+       data: _bodyData,
+       options: _options,
+@@ -2703,35 +2676,7 @@ class DefaultApi {
+       onReceiveProgress: onReceiveProgress,
+     );
+ 
+-    JsonObject? _responseData;
+ 
+-    try {
+-      final rawResponse = _response.data;
+-      _responseData = rawResponse == null ? null : _serializers.deserialize(
+-        rawResponse,
+-        specifiedType: const FullType(JsonObject),
+-      ) as JsonObject;
+-
+-    } catch (error, stackTrace) {
+-      throw DioException(
+-        requestOptions: _response.requestOptions,
+-        response: _response,
+-        type: DioExceptionType.unknown,
+-        error: error,
+-        stackTrace: stackTrace,
+-      );
+-    }
+-
+-    return Response<JsonObject>(
+-      data: _responseData,
+-      headers: _response.headers,
+-      isRedirect: _response.isRedirect,
+-      requestOptions: _response.requestOptions,
+-      redirects: _response.redirects,
+-      statusCode: _response.statusCode,
+-      statusMessage: _response.statusMessage,
+-      extra: _response.extra,
+-    );
+   }
+ 
+   /// 获取系统信息

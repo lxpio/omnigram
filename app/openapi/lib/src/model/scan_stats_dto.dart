@@ -17,8 +17,6 @@ part 'scan_stats_dto.g.dart';
 /// * [scanCount] 
 /// * [errs] 
 /// * [diskUsage] 
-/// * [epubCount] 
-/// * [pdfCount] 
 @BuiltValue()
 abstract class ScanStatsDto implements Built<ScanStatsDto, ScanStatsDtoBuilder> {
   @BuiltValueField(wireName: r'total')
@@ -35,12 +33,6 @@ abstract class ScanStatsDto implements Built<ScanStatsDto, ScanStatsDtoBuilder> 
 
   @BuiltValueField(wireName: r'disk_usage')
   int get diskUsage;
-
-  @BuiltValueField(wireName: r'epub_count')
-  int get epubCount;
-
-  @BuiltValueField(wireName: r'pdf_count')
-  int get pdfCount;
 
   ScanStatsDto._();
 
@@ -90,16 +82,6 @@ class _$ScanStatsDtoSerializer implements PrimitiveSerializer<ScanStatsDto> {
     yield r'disk_usage';
     yield serializers.serialize(
       object.diskUsage,
-      specifiedType: const FullType(int),
-    );
-    yield r'epub_count';
-    yield serializers.serialize(
-      object.epubCount,
-      specifiedType: const FullType(int),
-    );
-    yield r'pdf_count';
-    yield serializers.serialize(
-      object.pdfCount,
       specifiedType: const FullType(int),
     );
   }
@@ -159,20 +141,6 @@ class _$ScanStatsDtoSerializer implements PrimitiveSerializer<ScanStatsDto> {
             specifiedType: const FullType(int),
           ) as int;
           result.diskUsage = valueDes;
-          break;
-        case r'epub_count':
-          final valueDes = serializers.deserialize(
-            value,
-            specifiedType: const FullType(int),
-          ) as int;
-          result.epubCount = valueDes;
-          break;
-        case r'pdf_count':
-          final valueDes = serializers.deserialize(
-            value,
-            specifiedType: const FullType(int),
-          ) as int;
-          result.pdfCount = valueDes;
           break;
         default:
           unhandled.add(key);

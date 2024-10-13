@@ -22,8 +22,9 @@ void main() {
       // TODO
     });
 
-    // int tags
-    test('to test the property `tags`', () async {
+    // 分组
+    // int categorys
+    test('to test the property `categorys`', () async {
       // TODO
     });
 

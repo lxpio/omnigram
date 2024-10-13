@@ -10,7 +10,7 @@ class _$ReadProgressDto extends ReadProgressDto {
   @override
   final int id;
   @override
-  final int bookId;
+  final String bookId;
   @override
   final int userId;
   @override
@@ -128,9 +128,9 @@ class ReadProgressDtoBuilder
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
-  int? _bookId;
-  int? get bookId => _$this._bookId;
-  set bookId(int? bookId) => _$this._bookId = bookId;
+  String? _bookId;
+  String? get bookId => _$this._bookId;
+  set bookId(String? bookId) => _$this._bookId = bookId;
 
   int? _userId;
   int? get userId => _$this._userId;

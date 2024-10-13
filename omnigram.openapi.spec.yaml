@@ -1664,9 +1664,9 @@ paths:
           headers: {}
       security:
         - bearer: []
-  /sync/full:
+  /sync/delta:
     post:
-      summary: 全量同步
+      summary: 增量同步
       deprecated: false
       description: 全量同步数据（文档）
       tags: []
@@ -1681,50 +1681,121 @@ paths:
           description: 书籍列表
           content:
             application/json:
-              schema: *ref_4
+              schema:
+                properties:
+                  need_full_sync:
+                    type: boolean
+                  deleted:
+                    type: array
+                    items:
+                      type: string
+                  upserted:
+                    type: array
+                    items:
+                      $ref: '#/definitions/114858659'
+                required:
+                  - need_full_sync
+                  - deleted
+                  - upserted
+                $ref: '#/components/schemas/delta_sync_resp_dto'
               examples:
                 '1':
                   summary: 成功示例
                   value:
-                    total: 51
-                    items:
-                      - id: 79
-                        size: 45
-                        ctime: '2017-09-22 06:12:40'
-                        utime: '1972-08-03 06:00:09'
-                        title: 书何效内当
-                        sub_title: 律给将离志转问
-                        language: laboris labore dolor ipsum voluptate
-                        cover_url: http://clsn.sr/ybahcn
-                        uuid: '55'
-                        isbn: adipisicing minim qui laboris
-                        asin: eiusmod ea
-                        identifier: '11'
-                        category: tempor ut Excepteur consequat dolor
-                        author: proident Excepteur dolore
-                        author_url: http://lkvmhd.com.cn/rtjwlvd
-                        author_sort: ex ut amet aute
-                        publisher: officia consectetur exercitation amet deserunt
-                        description: >-
-                          记主导反分圆们照何办两通品容积。处特明际百比组儿想将油拉该。时作权月不段三导组他样加育。收究过达他无花求心所如科认团。根国想把家引建各情级装后图委管生名。
-                        tags:
-                          - Ut
-                          - commodo deserunt Duis anim
-                        pubdate: '1975-03-27'
-                        rating: 20
-                        publisher_url: http://txbjtyp.jm/ktebevpfd
-                        count_visit: 50
-                        count_download: 95
-                        progress: 3
-                        progress_index: 12
-                        para_position: 53
+                    need_full_sync: true
+                    deleted:
+                      - id non culpa Ut
+                      - elit in Duis
+                      - ea sit occaecat deserunt
+                    upserted:
+                      - id: '37'
+                        size: 63
+                        ctime: 1733240255514
+                        utime: 1720013871485
+                        title: 世会强
+                        sub_title: 决记声
+                        language: Duis ea
+                        cover_url: https://yearly-knitting.name
+                        uuid: '43'
+                        isbn: in occaecat ipsum et
+                        asin: magna do minim
+                        identifier: '24'
+                        category: dolor
+                        author: commodo in amet nulla
+                        author_url: https://our-apricot.biz
+                        author_sort: minim ipsum amet consequat
+                        publisher: Duis aliquip adipisicing
+                        description: 然任增光美工天。则米公。六式题办电新。特解集转关采及所严记。且界即装水。明向会。
+                        fav_status: false
+                        pubdate: '2025-07-19'
+                        rating: 83
+                        publisher_url: https://lively-markup.org
+                        count_visit: 8
+                        count_download: 67
+                        progress: 9
+                        progress_index: 11
+                        para_position: 56
+                      - id: '86'
+                        size: 62
+                        ctime: 1754781601112
+                        utime: 1748970853346
+                        title: 上飞量
+                        sub_title: 在命周
+                        language: dolore commodo Lorem
+                        cover_url: https://insignificant-blowgun.com/
+                        uuid: '38'
+                        isbn: ea elit irure dolor nisi
+                        asin: esse ex anim mollit
+                        identifier: '47'
+                        category: quis Excepteur reprehenderit do aliquip
+                        author: ut commodo
+                        author_url: https://optimistic-obedience.com/
+                        author_sort: reprehenderit labore sint nostrud
+                        publisher: quis occaecat adipisicing non aliqua
+                        description: 市表照单备素要候。身部引。
+                        fav_status: false
+                        pubdate: '2025-02-26'
+                        rating: 86
+                        publisher_url: https://early-guard.com/
+                        count_visit: 14
+                        count_download: 54
+                        progress: 12
+                        progress_index: 74
+                        para_position: 98
+                      - id: '35'
+                        size: 76
+                        ctime: 1751608069094
+                        utime: 1729302685786
+                        title: 以西叫
+                        sub_title: 民般角
+                        language: ad in
+                        cover_url: https://abandoned-kettledrum.net/
+                        uuid: '64'
+                        isbn: ea in pariatur sit magna
+                        asin: magna deserunt
+                        identifier: '98'
+                        category: do aliquip
+                        author: ipsum dolor
+                        author_url: https://important-nougat.net
+                        author_sort: magna voluptate velit deserunt
+                        publisher: dolore sed consectetur
+                        description: 程理六影为上省利常。局值准商什。要形也业指完。看的律标。格都领下表切今。
+                        fav_status: false
+                        pubdate: '2025-03-02'
+                        rating: 51
+                        publisher_url: https://alert-flight.info
+                        count_visit: 66
+                        count_download: 64
+                        progress: 37
+                        progress_index: 88
+                        para_position: 97
           headers: {}
       security: []
-  /sync/delta:
+  /sync/full:
     post:
-      summary: 增量同步
+      summary: 全量同步
       deprecated: false
-      description: 全量同步数据（文档）
+      description: ''
       tags: []
       parameters: []
       requestBody:
@@ -1733,46 +1804,12 @@ paths:
             schema: *ref_9
       responses:
         '200':
-          description: 书籍列表
+          description: 流式返回数据
           content:
-            application/json:
-              schema: *ref_4
-              examples:
-                '1':
-                  summary: 成功示例
-                  value:
-                    total: 51
-                    items:
-                      - id: 79
-                        size: 45
-                        ctime: '2017-09-22 06:12:40'
-                        utime: '1972-08-03 06:00:09'
-                        title: 书何效内当
-                        sub_title: 律给将离志转问
-                        language: laboris labore dolor ipsum voluptate
-                        cover_url: http://clsn.sr/ybahcn
-                        uuid: '55'
-                        isbn: adipisicing minim qui laboris
-                        asin: eiusmod ea
-                        identifier: '11'
-                        category: tempor ut Excepteur consequat dolor
-                        author: proident Excepteur dolore
-                        author_url: http://lkvmhd.com.cn/rtjwlvd
-                        author_sort: ex ut amet aute
-                        publisher: officia consectetur exercitation amet deserunt
-                        description: >-
-                          记主导反分圆们照何办两通品容积。处特明际百比组儿想将油拉该。时作权月不段三导组他样加育。收究过达他无花求心所如科认团。根国想把家引建各情级装后图委管生名。
-                        tags:
-                          - Ut
-                          - commodo deserunt Duis anim
-                        pubdate: '1975-03-27'
-                        rating: 20
-                        publisher_url: http://txbjtyp.jm/ktebevpfd
-                        count_visit: 50
-                        count_download: 95
-                        progress: 3
-                        progress_index: 12
-                        para_position: 53
+            text/event-stream:
+              schema:
+                type: object
+                properties: {}
           headers: {}
       security: []
   /m4t/tts/speakers:
@@ -2011,16 +2048,16 @@ components:
       type: object
       properties:
         id:
-          type: integer
+          type: string
           title: 书ID
         size:
           type: integer
           title: 文件大小
         ctime:
-          type: string
+          type: integer
           title: 创建时间
         utime:
-          type: string
+          type: integer
           title: 更新时间
         title:
           type: string
@@ -2067,11 +2104,6 @@ components:
         fav_status:
           type: boolean
           title: 喜欢状态
-        tags:
-          type: array
-          items:
-            type: string
-          title: 标签
         pubdate:
           type: string
           title: 出版日期
@@ -2120,19 +2152,11 @@ components:
         disk_usage:
           type: integer
           title: 磁盘使用
-        epub_count:
-          type: integer
-          title: EPUB计数
-        pdf_count:
-          type: integer
-          title: PDF计数
       required:
         - total
         - running
         - scan_count
         - disk_usage
-        - epub_count
-        - pdf_count
     apikey_dto:
       type: object
       properties:
@@ -2217,14 +2241,15 @@ components:
         publisher:
           type: integer
           title: 出版社数
-        tags:
+        categorys:
           type: integer
           title: 标签数
+          description: 分组
       required:
         - total
         - authors
         - publisher
-        - tags
+        - categorys
     sys_info_dto:
       type: object
       properties:
@@ -2336,7 +2361,7 @@ components:
         - expired_in
         - refresh_token
         - access_token
-    full_sync_dto:
+    full_sync_dto: &ref_11
       type: object
       properties:
         user_id:
@@ -2358,35 +2383,14 @@ components:
       required:
         - limit
         - utime
-    delta_sync_dto:
-      type: object
-      properties:
-        user_id:
-          type: integer
-          title: 用户ID
-          description: 用户ID
-        limit:
-          type: integer
-          title: 限制大小
-          description: 数量限制
-        utime:
-          type: integer
-          title: 更新时间
-          description: 文件更新的时间
-        file_type:
-          type: integer
-          title: 文件类型
-          description: 文件类型
-      required:
-        - limit
-        - utime
+    delta_sync_dto: *ref_11
     read_progress_dto:
       type: object
       properties:
         id:
           type: integer
         book_id:
-          type: integer
+          type: string
         user_id:
           type: integer
         start_date:
@@ -2414,6 +2418,22 @@ components:
         - progress_index
         - progress
         - para_position
+    delta_sync_resp_dto:
+      type: object
+      properties:
+        need_full_sync:
+          type: boolean
+        deleted:
+          type: array
+          items:
+            type: string
+        upserted:
+          type: array
+          items: *ref_5
+      required:
+        - need_full_sync
+        - deleted
+        - upserted
   securitySchemes:
     bearer:
       type: http

@@ -112,6 +112,7 @@ Class | Method | HTTP request | Description
  - [ChangePasswordDto](doc/ChangePasswordDto.md)
  - [CreateUserDto](doc/CreateUserDto.md)
  - [DeltaSyncDto](doc/DeltaSyncDto.md)
+ - [DeltaSyncRespDto](doc/DeltaSyncRespDto.md)
  - [EbookDto](doc/EbookDto.md)
  - [EbookIndexDto](doc/EbookIndexDto.md)
  - [EbookListDto](doc/EbookListDto.md)

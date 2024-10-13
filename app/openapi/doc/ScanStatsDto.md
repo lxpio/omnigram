@@ -13,8 +13,6 @@ Name | Type | Description | Notes
 **scanCount** | **int** |  | 
 **errs** | **BuiltList&lt;String&gt;** |  | [optional] 
 **diskUsage** | **int** |  | 
-**epubCount** | **int** |  | 
-**pdfCount** | **int** |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

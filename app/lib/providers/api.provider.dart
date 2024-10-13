@@ -33,10 +33,16 @@ class ApiService extends _$ApiService {
     // ref.notifyListeners();
   }
 
-  Future<bool> resolveAndSetEndpoint(String endpoint) async {
+  Future<bool> resolveAndSetEndpoint(String serverUrl) async {
+
+    //save server url
+    final endpoint = sanitizeUrl(serverUrl);
     final status = await _isEndpointAvailable(endpoint);
     if (status) {
-      debugPrint("Endpoint is available");
+
+
+      debugPrint('Endpoint: $endpoint');
+      await IsarStore.put(StoreKey.serverEndpoint, endpoint);
       setEndpoint();
     }
 
@@ -83,7 +89,7 @@ class ApiService extends _$ApiService {
     final endpoint = IsarStore.tryGet(StoreKey.serverEndpoint);
     final accessToken = IsarStore.get(StoreKey.accessToken, "");
     // final customHeadersStr = IsarStore.get(StoreKey.customHeaders, "");
-
+    debugPrint('set access token: $accessToken');
     final dio = _createDio(endpoint);
 
     final interceptors = [

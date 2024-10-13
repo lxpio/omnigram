@@ -32,15 +32,5 @@ void main() {
       // TODO
     });
 
-    // int epubCount
-    test('to test the property `epubCount`', () async {
-      // TODO
-    });
-
-    // int pdfCount
-    test('to test the property `pdfCount`', () async {
-      // TODO
-    });
-
   });
 }

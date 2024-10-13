@@ -21,6 +21,7 @@ import 'package:openapi/src/model/auth_accounts_account_id_apikeys_post_request.
 import 'package:openapi/src/model/change_password_dto.dart';
 import 'package:openapi/src/model/create_user_dto.dart';
 import 'package:openapi/src/model/delta_sync_dto.dart';
+import 'package:openapi/src/model/delta_sync_resp_dto.dart';
 import 'package:openapi/src/model/ebook_dto.dart';
 import 'package:openapi/src/model/ebook_index_dto.dart';
 import 'package:openapi/src/model/ebook_list_dto.dart';
@@ -50,6 +51,7 @@ part 'serializers.g.dart';
   ChangePasswordDto,
   CreateUserDto,
   DeltaSyncDto,
+  DeltaSyncRespDto,
   EbookDto,
   EbookIndexDto,
   EbookListDto,

@@ -1245,7 +1245,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **syncDeltaPost**
-> EbookListDto syncDeltaPost(fullSyncDto)
+> DeltaSyncRespDto syncDeltaPost(fullSyncDto)
 
 增量同步
 
@@ -1274,7 +1274,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**EbookListDto**](EbookListDto.md)
+[**DeltaSyncRespDto**](DeltaSyncRespDto.md)
 
 ### Authorization
 
@@ -1288,11 +1288,11 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **syncFullPost**
-> EbookListDto syncFullPost(fullSyncDto)
+> JsonObject syncFullPost(fullSyncDto)
 
 全量同步
 
-全量同步数据（文档）
+
 
 ### Example
 ```dart
@@ -1317,7 +1317,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**EbookListDto**](EbookListDto.md)
+[**JsonObject**](JsonObject.md)
 
 ### Authorization
 
@@ -1326,7 +1326,7 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: application/json
+ - **Accept**: text/event-stream
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

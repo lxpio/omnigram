@@ -38,7 +38,7 @@ func (m *Session) Clean(store *gorm.DB) {
 
 func DeleteSessionByID(store *gorm.DB, id string) error {
 
-	return store.Exec(`DELETE FROM sessions WHERE id = ?`, id).Error
+	return store.Exec(`DELETE FROM sessions WHERE session = ?`, id).Error
 
 }
 

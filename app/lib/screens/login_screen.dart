@@ -131,17 +131,22 @@ class LoginScreen extends HookConsumerWidget {
                 onPressed: () async {
                   //尝试获取用户登陆信息 如果失败则弹窗
 
+                  final serverStatus = await ref.read(apiServiceProvider.notifier).resolveAndSetEndpoint(serverController.text);
+
+                  if (!serverStatus && context.mounted) {
+                    showSnackBar(context, 'network_error'.tr());
+                    return;
+                  }
+
                   final loginStatus = await ref
                       .read(authProvider.notifier)
-                      .login(accountController.text, passwordController.text,
-                          serverController.text);
+                      .login(accountController.text, passwordController.text);
 
                   if (!loginStatus && context.mounted) {
                     showSnackBar(context, 'network_error'.tr());
                     return;
                   }
 
-                  ref.read(apiServiceProvider.notifier).setEndpoint();
 
                   final authState = await ref
                       .read(authProvider.notifier)

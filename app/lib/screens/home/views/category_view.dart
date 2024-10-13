@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/entities/book.entity.dart';
 import 'package:omnigram/utils/constants.dart';
 
-import 'book_card_view.dart';
-
-class BookReadingGroup extends HookConsumerWidget {
-  const BookReadingGroup(this.title, this.viewmore, this.books, {super.key});
-
+class CategoryData {
+  final Icon icon;
   final String title;
-  final String viewmore;
-  final List<BookEntity>? books;
+
+  const CategoryData(this.icon, this.title);
+}
+
+class CategoryGroup extends HookConsumerWidget {
+  const CategoryGroup(this.categorys, {super.key});
+
+  final List<CategoryData>? categorys;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,44 +21,35 @@ class BookReadingGroup extends HookConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        ListTile(
-          title: Text(
-            title,
-            style: TextStyle(
-                color: Colors.grey[700],
-                fontSize: 18,
-                fontWeight: FontWeight.bold),
-          ),
-          trailing: Text(
-            viewmore,
-            style: TextStyle(
-                color: Colors.blue[700],
-                // fontSize: 18,
-                fontWeight: FontWeight.bold),
-          ),
-        ),
         Container(
           // padding: EdgeInsets.all(20),
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          height: 230,
+          height: 48,
           // child: ListView.builder(itemBuilder: itemBuilder, itemCount: books.length),
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: books?.length ?? 0,
+            itemCount: categorys?.length ?? 0,
             itemBuilder: (context, index) {
-              if (books != null && index < books!.length) {
-                final book = books![index];
+              if (categorys != null && index < categorys!.length) {
+                final book = categorys![index];
 
                 return GestureDetector(
                     child: Container(
-                      padding: const EdgeInsets.all(8),
-                      width: 180,
-                      child: BookCard(
-                        book: book,
-                        width: 180,
-                        height: 230,
+                      padding: const EdgeInsets.all(1),
+                      // width: 150,
+                      child: Card(
+                        child: Row(
+                          children: [
+                            const SizedBox(width: 12),
+                            book.icon,
+                            Text(book.title),
+                            const SizedBox(width: 12),
+                          ],
+                        ),
                       ),
                     ),
+                    // onTap:(){},
+                    // ),
                     onTap: () async {
                       // BookModel? b;
                       // //if progress or chapterPos is null , try request backend to get

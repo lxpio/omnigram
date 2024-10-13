@@ -9,7 +9,7 @@ import 'package:openapi/api.dart';
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **int** |  | 
-**bookId** | **int** |  | 
+**bookId** | **String** |  | 
 **userId** | **int** |  | 
 **startDate** | **int** |  | 
 **updatedAt** | **int** |  | 

@@ -1,7 +1,6 @@
 
 
 
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:omnigram/providers/api.provider.dart';
 import 'package:openapi/openapi.dart';
