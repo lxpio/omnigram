@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/entities/book.entity.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:omnigram/screens/home/views/category_view.dart';
 import 'package:omnigram/screens/reader/views/book_group_view.dart';
+import 'package:omnigram/screens/reader/views/book_group_view_v2.dart';
 
-import '../../reader/views/book_group_view_v2.dart';
+// import 'package:omnigram/screens/home/views/category_view.dart';
 
 class HomeSmallView extends HookConsumerWidget {
   const HomeSmallView({super.key, required this.nav});
@@ -30,6 +32,17 @@ class HomeSmallView extends HookConsumerWidget {
       scrollController.addListener(someCallback);
       return () => scrollController.removeListener(someCallback);
     }, [scrollController]);
+
+    final List<CategoryData> categorys = [
+      CategoryData(Icon(Icons.book), 'category1 one '.tr()),
+      CategoryData(Icon(Icons.book), 'category1  '.tr()),
+      CategoryData(Icon(Icons.book), 'shot'.tr()),
+      CategoryData(Icon(Icons.book), 'loooooooooooooong'.tr()),
+      CategoryData(Icon(Icons.book), 'category1'.tr()),
+      CategoryData(Icon(Icons.book), 'category1'.tr()),
+      CategoryData(Icon(Icons.book), 'category1'.tr()),
+      CategoryData(Icon(Icons.book), 'category1'.tr())
+    ];
 
     return CustomScrollView(
       slivers: [
@@ -68,12 +81,9 @@ class HomeSmallView extends HookConsumerWidget {
         ),
         SliverList(
           delegate: SliverChildListDelegate([
-            BookReadingGroup(
-                'keepreading'.tr(), 'viewmore'.tr(), nav.readings),
-            BookGroup(
-                'likedbooks'.tr(), 'viewmore'.tr(), nav.likes),
-            // BookGroup(
-            //     'randombooks'.tr(), 'viewmore'.tr(), nav.random),
+            CategoryGroup(categorys),
+            BookReadingGroup('keepreading'.tr(), 'viewmore'.tr(), nav.readings),
+            BookGroup('likedbooks'.tr(), 'viewmore'.tr(), nav.likes),
           ]),
         ),
       ],

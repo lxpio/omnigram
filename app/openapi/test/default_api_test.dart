@@ -254,16 +254,16 @@ void main() {
     //
     // 全量同步数据（文档）
     //
-    //Future<EbookListDto> syncDeltaPost({ FullSyncDto fullSyncDto }) async
+    //Future<DeltaSyncRespDto> syncDeltaPost({ FullSyncDto fullSyncDto }) async
     test('test syncDeltaPost', () async {
       // TODO
     });
 
     // 全量同步
     //
-    // 全量同步数据（文档）
+    // 
     //
-    //Future<EbookListDto> syncFullPost({ FullSyncDto fullSyncDto }) async
+    //Future<JsonObject> syncFullPost({ FullSyncDto fullSyncDto }) async
     test('test syncFullPost', () async {
       // TODO
     });

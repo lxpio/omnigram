@@ -8,13 +8,13 @@ part of 'ebook_dto.dart';
 
 class _$EbookDto extends EbookDto {
   @override
-  final int id;
+  final String id;
   @override
   final int? size;
   @override
-  final String? ctime;
+  final int? ctime;
   @override
-  final String? utime;
+  final int? utime;
   @override
   final String title;
   @override
@@ -45,8 +45,6 @@ class _$EbookDto extends EbookDto {
   final String? description;
   @override
   final bool? favStatus;
-  @override
-  final BuiltList<String>? tags;
   @override
   final String? pubdate;
   @override
@@ -87,7 +85,6 @@ class _$EbookDto extends EbookDto {
       this.publisher,
       this.description,
       this.favStatus,
-      this.tags,
       this.pubdate,
       this.rating,
       this.publisherUrl,
@@ -133,7 +130,6 @@ class _$EbookDto extends EbookDto {
         publisher == other.publisher &&
         description == other.description &&
         favStatus == other.favStatus &&
-        tags == other.tags &&
         pubdate == other.pubdate &&
         rating == other.rating &&
         publisherUrl == other.publisherUrl &&
@@ -166,7 +162,6 @@ class _$EbookDto extends EbookDto {
     _$hash = $jc(_$hash, publisher.hashCode);
     _$hash = $jc(_$hash, description.hashCode);
     _$hash = $jc(_$hash, favStatus.hashCode);
-    _$hash = $jc(_$hash, tags.hashCode);
     _$hash = $jc(_$hash, pubdate.hashCode);
     _$hash = $jc(_$hash, rating.hashCode);
     _$hash = $jc(_$hash, publisherUrl.hashCode);
@@ -201,7 +196,6 @@ class _$EbookDto extends EbookDto {
           ..add('publisher', publisher)
           ..add('description', description)
           ..add('favStatus', favStatus)
-          ..add('tags', tags)
           ..add('pubdate', pubdate)
           ..add('rating', rating)
           ..add('publisherUrl', publisherUrl)
@@ -217,21 +211,21 @@ class _$EbookDto extends EbookDto {
 class EbookDtoBuilder implements Builder<EbookDto, EbookDtoBuilder> {
   _$EbookDto? _$v;
 
-  int? _id;
-  int? get id => _$this._id;
-  set id(int? id) => _$this._id = id;
+  String? _id;
+  String? get id => _$this._id;
+  set id(String? id) => _$this._id = id;
 
   int? _size;
   int? get size => _$this._size;
   set size(int? size) => _$this._size = size;
 
-  String? _ctime;
-  String? get ctime => _$this._ctime;
-  set ctime(String? ctime) => _$this._ctime = ctime;
+  int? _ctime;
+  int? get ctime => _$this._ctime;
+  set ctime(int? ctime) => _$this._ctime = ctime;
 
-  String? _utime;
-  String? get utime => _$this._utime;
-  set utime(String? utime) => _$this._utime = utime;
+  int? _utime;
+  int? get utime => _$this._utime;
+  set utime(int? utime) => _$this._utime = utime;
 
   String? _title;
   String? get title => _$this._title;
@@ -293,10 +287,6 @@ class EbookDtoBuilder implements Builder<EbookDto, EbookDtoBuilder> {
   bool? get favStatus => _$this._favStatus;
   set favStatus(bool? favStatus) => _$this._favStatus = favStatus;
 
-  ListBuilder<String>? _tags;
-  ListBuilder<String> get tags => _$this._tags ??= new ListBuilder<String>();
-  set tags(ListBuilder<String>? tags) => _$this._tags = tags;
-
   String? _pubdate;
   String? get pubdate => _$this._pubdate;
   set pubdate(String? pubdate) => _$this._pubdate = pubdate;
@@ -357,7 +347,6 @@ class EbookDtoBuilder implements Builder<EbookDto, EbookDtoBuilder> {
       _publisher = $v.publisher;
       _description = $v.description;
       _favStatus = $v.favStatus;
-      _tags = $v.tags?.toBuilder();
       _pubdate = $v.pubdate;
       _rating = $v.rating;
       _publisherUrl = $v.publisherUrl;
@@ -386,51 +375,37 @@ class EbookDtoBuilder implements Builder<EbookDto, EbookDtoBuilder> {
   EbookDto build() => _build();
 
   _$EbookDto _build() {
-    _$EbookDto _$result;
-    try {
-      _$result = _$v ??
-          new _$EbookDto._(
-              id: BuiltValueNullFieldError.checkNotNull(id, r'EbookDto', 'id'),
-              size: size,
-              ctime: ctime,
-              utime: utime,
-              title: BuiltValueNullFieldError.checkNotNull(
-                  title, r'EbookDto', 'title'),
-              subTitle: subTitle,
-              language: language,
-              coverUrl: coverUrl,
-              uuid: uuid,
-              isbn: isbn,
-              asin: asin,
-              identifier: BuiltValueNullFieldError.checkNotNull(
-                  identifier, r'EbookDto', 'identifier'),
-              category: category,
-              author: author,
-              authorUrl: authorUrl,
-              authorSort: authorSort,
-              publisher: publisher,
-              description: description,
-              favStatus: favStatus,
-              tags: _tags?.build(),
-              pubdate: pubdate,
-              rating: rating,
-              publisherUrl: publisherUrl,
-              countVisit: countVisit,
-              countDownload: countDownload,
-              progress: progress,
-              progressIndex: progressIndex,
-              paraPosition: paraPosition);
-    } catch (_) {
-      late String _$failedField;
-      try {
-        _$failedField = 'tags';
-        _tags?.build();
-      } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            r'EbookDto', _$failedField, e.toString());
-      }
-      rethrow;
-    }
+    final _$result = _$v ??
+        new _$EbookDto._(
+            id: BuiltValueNullFieldError.checkNotNull(id, r'EbookDto', 'id'),
+            size: size,
+            ctime: ctime,
+            utime: utime,
+            title: BuiltValueNullFieldError.checkNotNull(
+                title, r'EbookDto', 'title'),
+            subTitle: subTitle,
+            language: language,
+            coverUrl: coverUrl,
+            uuid: uuid,
+            isbn: isbn,
+            asin: asin,
+            identifier: BuiltValueNullFieldError.checkNotNull(
+                identifier, r'EbookDto', 'identifier'),
+            category: category,
+            author: author,
+            authorUrl: authorUrl,
+            authorSort: authorSort,
+            publisher: publisher,
+            description: description,
+            favStatus: favStatus,
+            pubdate: pubdate,
+            rating: rating,
+            publisherUrl: publisherUrl,
+            countVisit: countVisit,
+            countDownload: countDownload,
+            progress: progress,
+            progressIndex: progressIndex,
+            paraPosition: paraPosition);
     replace(_$result);
     return _$result;
   }

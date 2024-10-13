@@ -267,14 +267,15 @@ func newWalkDirFunc(bookChan chan<- *schema.Book, dbfn getDBFn, maxDepth int, re
 			}
 
 			log.I(`扫描的到文件：`, path)
-			// ctime := time.Now().Unix()
+			now := time.Now()
+
 			book := &schema.Book{
-				ID:            0,
+				ID:            schema.GenBookID(now),
 				BookType:      fileType,
 				Size:          info.Size(),
 				Path:          path,
-				CTime:         info.ModTime().Unix(),
-				UTime:         info.ModTime().Unix(),
+				CTime:         info.ModTime().UnixMilli(),
+				UTime:         now.UnixMilli(),
 				Rating:        0,
 				PublishDate:   `1970-01-01`,
 				CountVisit:    0,

@@ -17,10 +17,6 @@ class _$ScanStatsDto extends ScanStatsDto {
   final BuiltList<String>? errs;
   @override
   final int diskUsage;
-  @override
-  final int epubCount;
-  @override
-  final int pdfCount;
 
   factory _$ScanStatsDto([void Function(ScanStatsDtoBuilder)? updates]) =>
       (new ScanStatsDtoBuilder()..update(updates))._build();
@@ -30,9 +26,7 @@ class _$ScanStatsDto extends ScanStatsDto {
       required this.running,
       required this.scanCount,
       this.errs,
-      required this.diskUsage,
-      required this.epubCount,
-      required this.pdfCount})
+      required this.diskUsage})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(total, r'ScanStatsDto', 'total');
     BuiltValueNullFieldError.checkNotNull(running, r'ScanStatsDto', 'running');
@@ -40,10 +34,6 @@ class _$ScanStatsDto extends ScanStatsDto {
         scanCount, r'ScanStatsDto', 'scanCount');
     BuiltValueNullFieldError.checkNotNull(
         diskUsage, r'ScanStatsDto', 'diskUsage');
-    BuiltValueNullFieldError.checkNotNull(
-        epubCount, r'ScanStatsDto', 'epubCount');
-    BuiltValueNullFieldError.checkNotNull(
-        pdfCount, r'ScanStatsDto', 'pdfCount');
   }
 
   @override
@@ -61,9 +51,7 @@ class _$ScanStatsDto extends ScanStatsDto {
         running == other.running &&
         scanCount == other.scanCount &&
         errs == other.errs &&
-        diskUsage == other.diskUsage &&
-        epubCount == other.epubCount &&
-        pdfCount == other.pdfCount;
+        diskUsage == other.diskUsage;
   }
 
   @override
@@ -74,8 +62,6 @@ class _$ScanStatsDto extends ScanStatsDto {
     _$hash = $jc(_$hash, scanCount.hashCode);
     _$hash = $jc(_$hash, errs.hashCode);
     _$hash = $jc(_$hash, diskUsage.hashCode);
-    _$hash = $jc(_$hash, epubCount.hashCode);
-    _$hash = $jc(_$hash, pdfCount.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -87,9 +73,7 @@ class _$ScanStatsDto extends ScanStatsDto {
           ..add('running', running)
           ..add('scanCount', scanCount)
           ..add('errs', errs)
-          ..add('diskUsage', diskUsage)
-          ..add('epubCount', epubCount)
-          ..add('pdfCount', pdfCount))
+          ..add('diskUsage', diskUsage))
         .toString();
   }
 }
@@ -118,14 +102,6 @@ class ScanStatsDtoBuilder
   int? get diskUsage => _$this._diskUsage;
   set diskUsage(int? diskUsage) => _$this._diskUsage = diskUsage;
 
-  int? _epubCount;
-  int? get epubCount => _$this._epubCount;
-  set epubCount(int? epubCount) => _$this._epubCount = epubCount;
-
-  int? _pdfCount;
-  int? get pdfCount => _$this._pdfCount;
-  set pdfCount(int? pdfCount) => _$this._pdfCount = pdfCount;
-
   ScanStatsDtoBuilder() {
     ScanStatsDto._defaults(this);
   }
@@ -138,8 +114,6 @@ class ScanStatsDtoBuilder
       _scanCount = $v.scanCount;
       _errs = $v.errs?.toBuilder();
       _diskUsage = $v.diskUsage;
-      _epubCount = $v.epubCount;
-      _pdfCount = $v.pdfCount;
       _$v = null;
     }
     return this;
@@ -172,11 +146,7 @@ class ScanStatsDtoBuilder
                   scanCount, r'ScanStatsDto', 'scanCount'),
               errs: _errs?.build(),
               diskUsage: BuiltValueNullFieldError.checkNotNull(
-                  diskUsage, r'ScanStatsDto', 'diskUsage'),
-              epubCount: BuiltValueNullFieldError.checkNotNull(
-                  epubCount, r'ScanStatsDto', 'epubCount'),
-              pdfCount: BuiltValueNullFieldError.checkNotNull(
-                  pdfCount, r'ScanStatsDto', 'pdfCount'));
+                  diskUsage, r'ScanStatsDto', 'diskUsage'));
     } catch (_) {
       late String _$failedField;
       try {

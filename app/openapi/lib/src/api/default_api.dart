@@ -17,6 +17,7 @@ import 'package:openapi/src/model/apikey_dto.dart';
 import 'package:openapi/src/model/auth_accounts_account_id_apikeys_post_request.dart';
 import 'package:openapi/src/model/change_password_dto.dart';
 import 'package:openapi/src/model/create_user_dto.dart';
+import 'package:openapi/src/model/delta_sync_resp_dto.dart';
 import 'package:openapi/src/model/ebook_dto.dart';
 import 'package:openapi/src/model/ebook_index_dto.dart';
 import 'package:openapi/src/model/ebook_list_dto.dart';
@@ -1493,7 +1494,7 @@ class DefaultApi {
       );
     }
 
-    return await _dio.request<Object>(
+    return await _dio.request<T>(
       _path,
       data: _bodyData,
       options: _options,
@@ -2527,9 +2528,9 @@ class DefaultApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [EbookListDto] as data
+  /// Returns a [Future] containing a [Response] with a [DeltaSyncRespDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EbookListDto>> syncDeltaPost({ 
+  Future<Response<DeltaSyncRespDto>> syncDeltaPost({ 
     FullSyncDto? fullSyncDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -2579,14 +2580,14 @@ class DefaultApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    EbookListDto? _responseData;
+    DeltaSyncRespDto? _responseData;
 
     try {
       final rawResponse = _response.data;
       _responseData = rawResponse == null ? null : _serializers.deserialize(
         rawResponse,
-        specifiedType: const FullType(EbookListDto),
-      ) as EbookListDto;
+        specifiedType: const FullType(DeltaSyncRespDto),
+      ) as DeltaSyncRespDto;
 
     } catch (error, stackTrace) {
       throw DioException(
@@ -2598,7 +2599,7 @@ class DefaultApi {
       );
     }
 
-    return Response<EbookListDto>(
+    return Response<DeltaSyncRespDto>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -2611,7 +2612,7 @@ class DefaultApi {
   }
 
   /// 全量同步
-  /// 全量同步数据（文档）
+  /// 
   ///
   /// Parameters:
   /// * [fullSyncDto] 
@@ -2622,9 +2623,9 @@ class DefaultApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [EbookListDto] as data
+  /// Returns a [Future] containing a [Response] with a [JsonObject] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EbookListDto>> syncFullPost({ 
+  Future<Response<T>> syncFullPost<T>({ 
     FullSyncDto? fullSyncDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -2645,6 +2646,7 @@ class DefaultApi {
       },
       contentType: 'application/json',
       validateStatus: validateStatus,
+      responseType: ResponseType.stream,
     );
 
     dynamic _bodyData;
@@ -2665,7 +2667,7 @@ class DefaultApi {
       );
     }
 
-    final _response = await _dio.request<Object>(
+    return await _dio.request<T>(
       _path,
       data: _bodyData,
       options: _options,
@@ -2674,35 +2676,7 @@ class DefaultApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    EbookListDto? _responseData;
 
-    try {
-      final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(EbookListDto),
-      ) as EbookListDto;
-
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _response.requestOptions,
-        response: _response,
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    return Response<EbookListDto>(
-      data: _responseData,
-      headers: _response.headers,
-      isRedirect: _response.isRedirect,
-      requestOptions: _response.requestOptions,
-      redirects: _response.redirects,
-      statusCode: _response.statusCode,
-      statusMessage: _response.statusMessage,
-      extra: _response.extra,
-    );
   }
 
   /// 获取系统信息

@@ -1,6 +1,9 @@
 package reader
 
 import (
+	"encoding/json"
+	"io"
+
 	"github.com/gin-gonic/gin"
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/schema"
@@ -29,15 +32,36 @@ func syncFullHandle(c *gin.Context) {
 		return
 	}
 
-	recentBooks, err := schema.SyncFullBooks(store.FileStore(), req.Limit, req.Utime, req.FileType)
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Expose-Headers", "Content-Type")
 
+	c.Header("Content-Type", "text/event-stream")
+	c.Header("Cache-Control", "no-cache")
+	c.Header("Connection", "keep-alive")
+	c.Writer.Header().Set("Transfer-Encoding", "chunked")
+
+	bookChan, err := schema.SyncFullBooks(store.FileStore(), req.Limit, req.Utime, req.FileType)
 	if err != nil {
 		log.I(`用户登录参数异常`, err)
 		c.JSON(200, utils.ErrInnerServer.WithMessage(err.Error()))
 		return
 	}
 
-	c.JSON(200, recentBooks)
+	c.Stream(func(w io.Writer) bool {
+
+		// select {
+		// 	case <-
+		// }
+
+		if books, ok := <-bookChan; ok {
+
+			msg, _ := json.Marshal(books)
+			c.SSEvent("message", msg)
+			return true
+		}
+		return false
+
+	})
 
 }
 
@@ -50,7 +74,7 @@ func syncDeltaHandle(c *gin.Context) {
 		return
 	}
 
-	recentBooks, err := schema.SyncFullBooks(store.FileStore(), req.Limit, req.Utime, req.FileType)
+	recentBooks, err := schema.SyncDeltaBooks(store.FileStore(), req.Utime, req.FileType)
 
 	if err != nil {
 		log.I(`用户登录参数异常`, err)

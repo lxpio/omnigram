@@ -72,15 +72,21 @@ void main() {
   // });
 
   test('simple get should be created2', () async {
+    //  WidgetsFlutterBinding.ensureInitialized();
+
+    // await AppStore.initialize('db');
+
+    // final ref = ProviderContainer();
+
+    // final p = ref.read(conversationProvider);
     final dio = Dio();
-    final onGetResponse =
-        await dio.post("http://192.168.1.202:8080/m4t/pcm/stream",
-            data: {
-              "text": "社会主义接班人李强出席首届中国国际供应链促进博览会开幕式暨全球供应链创新发展论坛并发表主旨演讲",
-              "lang": "zh",
-              "audio_id": "female_001",
-            },
-            options: Options(responseType: ResponseType.stream));
+    final onGetResponse = await dio.post("http://192.168.1.202:8080/m4t/pcm/stream",
+        data: {
+          "text": "你未看此花时，此花与汝同归于寂；你来看此花时，则此花颜色一时明白起来，便知此花不在你的心外。",
+          "lang": "zh",
+          "audio_id": "female_001",
+        },
+        options: Options(responseType: ResponseType.stream));
     // print(onGetResponse.data); // {message: Successfully mocked GET!}
     final Float32Wav raw = Float32Wav(
       numChannels: 1,

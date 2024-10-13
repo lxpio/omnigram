@@ -10,9 +10,9 @@ import (
 
 // UserBookShip 用户阅读进度表
 type ReadProgress struct {
-	ID     int64 `json:"id" gorm:"primary_key,comment:进度ID"`
-	BookID int64 `json:"book_id" gorm:"uniqueIndex:uni_idx_read_bookid_userid,comment:书籍ID"`
-	UserID int64 `json:"user_id" gorm:"uniqueIndex:uni_idx_read_bookid_userid,comment:用户ID"`
+	ID     int64  `json:"id" gorm:"primary_key,comment:进度ID"`
+	BookID string `json:"book_id" gorm:"uniqueIndex:uni_idx_read_bookid_userid,comment:书籍ID"`
+	UserID int64  `json:"user_id" gorm:"uniqueIndex:uni_idx_read_bookid_userid,comment:用户ID"`
 
 	StartDate int64 `json:"start_date" gorm:"comment:阅读开始日期"`
 
@@ -31,14 +31,14 @@ func (p *ReadProgress) BeforeCreate(db *gorm.DB) error {
 	p.StartDate = time.Now().Unix()
 	p.ExptEndDate = time.Now().AddDate(0, 0, 15).Unix() //根据数据推测完成时间，
 
-	if p.BookID == 0 || p.UserID == 0 {
+	if p.BookID == `` || p.UserID == 0 {
 		return errors.New("book_id or user_id not set")
 	}
 
 	return nil
 }
 
-func NewReadProgress(bookID, userID int64) *ReadProgress {
+func NewReadProgress(bookID string, userID int64) *ReadProgress {
 	return &ReadProgress{
 		BookID:        bookID,
 		UserID:        userID,

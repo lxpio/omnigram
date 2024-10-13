@@ -14,7 +14,7 @@ class _$ReaderStatsDto extends ReaderStatsDto {
   @override
   final int publisher;
   @override
-  final int tags;
+  final int categorys;
 
   factory _$ReaderStatsDto([void Function(ReaderStatsDtoBuilder)? updates]) =>
       (new ReaderStatsDtoBuilder()..update(updates))._build();
@@ -23,14 +23,15 @@ class _$ReaderStatsDto extends ReaderStatsDto {
       {required this.total,
       required this.authors,
       required this.publisher,
-      required this.tags})
+      required this.categorys})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(total, r'ReaderStatsDto', 'total');
     BuiltValueNullFieldError.checkNotNull(
         authors, r'ReaderStatsDto', 'authors');
     BuiltValueNullFieldError.checkNotNull(
         publisher, r'ReaderStatsDto', 'publisher');
-    BuiltValueNullFieldError.checkNotNull(tags, r'ReaderStatsDto', 'tags');
+    BuiltValueNullFieldError.checkNotNull(
+        categorys, r'ReaderStatsDto', 'categorys');
   }
 
   @override
@@ -48,7 +49,7 @@ class _$ReaderStatsDto extends ReaderStatsDto {
         total == other.total &&
         authors == other.authors &&
         publisher == other.publisher &&
-        tags == other.tags;
+        categorys == other.categorys;
   }
 
   @override
@@ -57,7 +58,7 @@ class _$ReaderStatsDto extends ReaderStatsDto {
     _$hash = $jc(_$hash, total.hashCode);
     _$hash = $jc(_$hash, authors.hashCode);
     _$hash = $jc(_$hash, publisher.hashCode);
-    _$hash = $jc(_$hash, tags.hashCode);
+    _$hash = $jc(_$hash, categorys.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -68,7 +69,7 @@ class _$ReaderStatsDto extends ReaderStatsDto {
           ..add('total', total)
           ..add('authors', authors)
           ..add('publisher', publisher)
-          ..add('tags', tags))
+          ..add('categorys', categorys))
         .toString();
   }
 }
@@ -89,9 +90,9 @@ class ReaderStatsDtoBuilder
   int? get publisher => _$this._publisher;
   set publisher(int? publisher) => _$this._publisher = publisher;
 
-  int? _tags;
-  int? get tags => _$this._tags;
-  set tags(int? tags) => _$this._tags = tags;
+  int? _categorys;
+  int? get categorys => _$this._categorys;
+  set categorys(int? categorys) => _$this._categorys = categorys;
 
   ReaderStatsDtoBuilder() {
     ReaderStatsDto._defaults(this);
@@ -103,7 +104,7 @@ class ReaderStatsDtoBuilder
       _total = $v.total;
       _authors = $v.authors;
       _publisher = $v.publisher;
-      _tags = $v.tags;
+      _categorys = $v.categorys;
       _$v = null;
     }
     return this;
@@ -132,8 +133,8 @@ class ReaderStatsDtoBuilder
                 authors, r'ReaderStatsDto', 'authors'),
             publisher: BuiltValueNullFieldError.checkNotNull(
                 publisher, r'ReaderStatsDto', 'publisher'),
-            tags: BuiltValueNullFieldError.checkNotNull(
-                tags, r'ReaderStatsDto', 'tags'));
+            categorys: BuiltValueNullFieldError.checkNotNull(
+                categorys, r'ReaderStatsDto', 'categorys'));
     replace(_$result);
     return _$result;
   }

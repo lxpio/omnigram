@@ -22,7 +22,7 @@ const BookEntitySchema = IsarGeneratedSchema(
     properties: [
       IsarPropertySchema(
         name: 'remoteId',
-        type: IsarType.long,
+        type: IsarType.string,
       ),
       IsarPropertySchema(
         name: 'localPath',
@@ -38,11 +38,11 @@ const BookEntitySchema = IsarGeneratedSchema(
       ),
       IsarPropertySchema(
         name: 'ctime',
-        type: IsarType.string,
+        type: IsarType.long,
       ),
       IsarPropertySchema(
         name: 'utime',
-        type: IsarType.string,
+        type: IsarType.long,
       ),
       IsarPropertySchema(
         name: 'title',
@@ -146,6 +146,14 @@ const BookEntitySchema = IsarGeneratedSchema(
         unique: false,
         hash: false,
       ),
+      IsarIndexSchema(
+        name: 'identifier',
+        properties: [
+          "identifier",
+        ],
+        unique: true,
+        hash: false,
+      ),
     ],
   ),
   converter: IsarObjectConverter<int, BookEntity>(
@@ -158,7 +166,14 @@ const BookEntitySchema = IsarGeneratedSchema(
 
 @isarProtected
 int serializeBookEntity(IsarWriter writer, BookEntity object) {
-  IsarCore.writeLong(writer, 1, object.remoteId ?? -9223372036854775808);
+  {
+    final value = object.remoteId;
+    if (value == null) {
+      IsarCore.writeNull(writer, 1);
+    } else {
+      IsarCore.writeString(writer, 1, value);
+    }
+  }
   {
     final value = object.localPath;
     if (value == null) {
@@ -176,22 +191,8 @@ int serializeBookEntity(IsarWriter writer, BookEntity object) {
     }
   }
   IsarCore.writeLong(writer, 4, object.size ?? -9223372036854775808);
-  {
-    final value = object.ctime;
-    if (value == null) {
-      IsarCore.writeNull(writer, 5);
-    } else {
-      IsarCore.writeString(writer, 5, value);
-    }
-  }
-  {
-    final value = object.utime;
-    if (value == null) {
-      IsarCore.writeNull(writer, 6);
-    } else {
-      IsarCore.writeString(writer, 6, value);
-    }
-  }
+  IsarCore.writeLong(writer, 5, object.ctime ?? -9223372036854775808);
+  IsarCore.writeLong(writer, 6, object.utime ?? -9223372036854775808);
   IsarCore.writeString(writer, 7, object.title);
   {
     final value = object.subTitle;
@@ -320,15 +321,8 @@ int serializeBookEntity(IsarWriter writer, BookEntity object) {
 BookEntity deserializeBookEntity(IsarReader reader) {
   final int _id;
   _id = IsarCore.readId(reader);
-  final int? _remoteId;
-  {
-    final value = IsarCore.readLong(reader, 1);
-    if (value == -9223372036854775808) {
-      _remoteId = null;
-    } else {
-      _remoteId = value;
-    }
-  }
+  final String? _remoteId;
+  _remoteId = IsarCore.readString(reader, 1);
   final String? _localPath;
   _localPath = IsarCore.readString(reader, 2);
   final String? _coverPath;
@@ -342,10 +336,24 @@ BookEntity deserializeBookEntity(IsarReader reader) {
       _size = value;
     }
   }
-  final String? _ctime;
-  _ctime = IsarCore.readString(reader, 5);
-  final String? _utime;
-  _utime = IsarCore.readString(reader, 6);
+  final int? _ctime;
+  {
+    final value = IsarCore.readLong(reader, 5);
+    if (value == -9223372036854775808) {
+      _ctime = null;
+    } else {
+      _ctime = value;
+    }
+  }
+  final int? _utime;
+  {
+    final value = IsarCore.readLong(reader, 6);
+    if (value == -9223372036854775808) {
+      _utime = null;
+    } else {
+      _utime = value;
+    }
+  }
   final String _title;
   _title = IsarCore.readString(reader, 7) ?? '';
   final String? _subTitle;
@@ -475,14 +483,7 @@ dynamic deserializeBookEntityProp(IsarReader reader, int property) {
     case 0:
       return IsarCore.readId(reader);
     case 1:
-      {
-        final value = IsarCore.readLong(reader, 1);
-        if (value == -9223372036854775808) {
-          return null;
-        } else {
-          return value;
-        }
-      }
+      return IsarCore.readString(reader, 1);
     case 2:
       return IsarCore.readString(reader, 2);
     case 3:
@@ -497,9 +498,23 @@ dynamic deserializeBookEntityProp(IsarReader reader, int property) {
         }
       }
     case 5:
-      return IsarCore.readString(reader, 5);
+      {
+        final value = IsarCore.readLong(reader, 5);
+        if (value == -9223372036854775808) {
+          return null;
+        } else {
+          return value;
+        }
+      }
     case 6:
-      return IsarCore.readString(reader, 6);
+      {
+        final value = IsarCore.readLong(reader, 6);
+        if (value == -9223372036854775808) {
+          return null;
+        } else {
+          return value;
+        }
+      }
     case 7:
       return IsarCore.readString(reader, 7) ?? '';
     case 8:
@@ -596,12 +611,12 @@ dynamic deserializeBookEntityProp(IsarReader reader, int property) {
 sealed class _BookEntityUpdate {
   bool call({
     required int id,
-    int? remoteId,
+    String? remoteId,
     String? localPath,
     String? coverPath,
     int? size,
-    String? ctime,
-    String? utime,
+    int? ctime,
+    int? utime,
     String? title,
     String? subTitle,
     String? language,
@@ -669,12 +684,12 @@ class _BookEntityUpdateImpl implements _BookEntityUpdate {
     return collection.updateProperties([
           id
         ], {
-          if (remoteId != ignore) 1: remoteId as int?,
+          if (remoteId != ignore) 1: remoteId as String?,
           if (localPath != ignore) 2: localPath as String?,
           if (coverPath != ignore) 3: coverPath as String?,
           if (size != ignore) 4: size as int?,
-          if (ctime != ignore) 5: ctime as String?,
-          if (utime != ignore) 6: utime as String?,
+          if (ctime != ignore) 5: ctime as int?,
+          if (utime != ignore) 6: utime as int?,
           if (title != ignore) 7: title as String?,
           if (subTitle != ignore) 8: subTitle as String?,
           if (language != ignore) 9: language as String?,
@@ -706,12 +721,12 @@ class _BookEntityUpdateImpl implements _BookEntityUpdate {
 sealed class _BookEntityUpdateAll {
   int call({
     required List<int> id,
-    int? remoteId,
+    String? remoteId,
     String? localPath,
     String? coverPath,
     int? size,
-    String? ctime,
-    String? utime,
+    int? ctime,
+    int? utime,
     String? title,
     String? subTitle,
     String? language,
@@ -777,12 +792,12 @@ class _BookEntityUpdateAllImpl implements _BookEntityUpdateAll {
     Object? paraPosition = ignore,
   }) {
     return collection.updateProperties(id, {
-      if (remoteId != ignore) 1: remoteId as int?,
+      if (remoteId != ignore) 1: remoteId as String?,
       if (localPath != ignore) 2: localPath as String?,
       if (coverPath != ignore) 3: coverPath as String?,
       if (size != ignore) 4: size as int?,
-      if (ctime != ignore) 5: ctime as String?,
-      if (utime != ignore) 6: utime as String?,
+      if (ctime != ignore) 5: ctime as int?,
+      if (utime != ignore) 6: utime as int?,
       if (title != ignore) 7: title as String?,
       if (subTitle != ignore) 8: subTitle as String?,
       if (language != ignore) 9: language as String?,
@@ -818,12 +833,12 @@ extension BookEntityUpdate on IsarCollection<int, BookEntity> {
 
 sealed class _BookEntityQueryUpdate {
   int call({
-    int? remoteId,
+    String? remoteId,
     String? localPath,
     String? coverPath,
     int? size,
-    String? ctime,
-    String? utime,
+    int? ctime,
+    int? utime,
     String? title,
     String? subTitle,
     String? language,
@@ -889,12 +904,12 @@ class _BookEntityQueryUpdateImpl implements _BookEntityQueryUpdate {
     Object? paraPosition = ignore,
   }) {
     return query.updateProperties(limit: limit, {
-      if (remoteId != ignore) 1: remoteId as int?,
+      if (remoteId != ignore) 1: remoteId as String?,
       if (localPath != ignore) 2: localPath as String?,
       if (coverPath != ignore) 3: coverPath as String?,
       if (size != ignore) 4: size as int?,
-      if (ctime != ignore) 5: ctime as String?,
-      if (utime != ignore) 6: utime as String?,
+      if (ctime != ignore) 5: ctime as int?,
+      if (utime != ignore) 6: utime as int?,
       if (title != ignore) 7: title as String?,
       if (subTitle != ignore) 8: subTitle as String?,
       if (language != ignore) 9: language as String?,
@@ -970,12 +985,12 @@ class _BookEntityQueryBuilderUpdateImpl implements _BookEntityQueryUpdate {
     final q = query.build();
     try {
       return q.updateProperties(limit: limit, {
-        if (remoteId != ignore) 1: remoteId as int?,
+        if (remoteId != ignore) 1: remoteId as String?,
         if (localPath != ignore) 2: localPath as String?,
         if (coverPath != ignore) 3: coverPath as String?,
         if (size != ignore) 4: size as int?,
-        if (ctime != ignore) 5: ctime as String?,
-        if (utime != ignore) 6: utime as String?,
+        if (ctime != ignore) 5: ctime as int?,
+        if (utime != ignore) 6: utime as int?,
         if (title != ignore) 7: title as String?,
         if (subTitle != ignore) 8: subTitle as String?,
         if (language != ignore) 9: language as String?,
@@ -1113,13 +1128,15 @@ extension BookEntityQueryFilter
   }
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> remoteIdEqualTo(
-    int? value,
-  ) {
+    String? value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
           property: 1,
           value: value,
+          caseSensitive: caseSensitive,
         ),
       );
     });
@@ -1127,13 +1144,15 @@ extension BookEntityQueryFilter
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition>
       remoteIdGreaterThan(
-    int? value,
-  ) {
+    String? value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
           property: 1,
           value: value,
+          caseSensitive: caseSensitive,
         ),
       );
     });
@@ -1141,26 +1160,30 @@ extension BookEntityQueryFilter
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition>
       remoteIdGreaterThanOrEqualTo(
-    int? value,
-  ) {
+    String? value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
           property: 1,
           value: value,
+          caseSensitive: caseSensitive,
         ),
       );
     });
   }
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> remoteIdLessThan(
-    int? value,
-  ) {
+    String? value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
           property: 1,
           value: value,
+          caseSensitive: caseSensitive,
         ),
       );
     });
@@ -1168,28 +1191,115 @@ extension BookEntityQueryFilter
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition>
       remoteIdLessThanOrEqualTo(
-    int? value,
-  ) {
+    String? value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
           property: 1,
           value: value,
+          caseSensitive: caseSensitive,
         ),
       );
     });
   }
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> remoteIdBetween(
-    int? lower,
-    int? upper,
-  ) {
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
           property: 1,
           lower: lower,
           upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition>
+      remoteIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 1,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> remoteIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 1,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> remoteIdContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 1,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> remoteIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 1,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition>
+      remoteIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(
+          property: 1,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition>
+      remoteIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(
+          property: 1,
+          value: '',
         ),
       );
     });
@@ -1686,30 +1796,26 @@ extension BookEntityQueryFilter
   }
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> ctimeEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    int? value,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
           property: 5,
           value: value,
-          caseSensitive: caseSensitive,
         ),
       );
     });
   }
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> ctimeGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    int? value,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
           property: 5,
           value: value,
-          caseSensitive: caseSensitive,
         ),
       );
     });
@@ -1717,30 +1823,26 @@ extension BookEntityQueryFilter
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition>
       ctimeGreaterThanOrEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    int? value,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
           property: 5,
           value: value,
-          caseSensitive: caseSensitive,
         ),
       );
     });
   }
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> ctimeLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    int? value,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
           property: 5,
           value: value,
-          caseSensitive: caseSensitive,
         ),
       );
     });
@@ -1748,113 +1850,28 @@ extension BookEntityQueryFilter
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition>
       ctimeLessThanOrEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    int? value,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
           property: 5,
           value: value,
-          caseSensitive: caseSensitive,
         ),
       );
     });
   }
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> ctimeBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    int? lower,
+    int? upper,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
           property: 5,
           lower: lower,
           upper: upper,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> ctimeStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        StartsWithCondition(
-          property: 5,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> ctimeEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        EndsWithCondition(
-          property: 5,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> ctimeContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        ContainsCondition(
-          property: 5,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> ctimeMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        MatchesCondition(
-          property: 5,
-          wildcard: pattern,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> ctimeIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const EqualCondition(
-          property: 5,
-          value: '',
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition>
-      ctimeIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const GreaterCondition(
-          property: 5,
-          value: '',
         ),
       );
     });
@@ -1873,30 +1890,26 @@ extension BookEntityQueryFilter
   }
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> utimeEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    int? value,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
           property: 6,
           value: value,
-          caseSensitive: caseSensitive,
         ),
       );
     });
   }
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> utimeGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    int? value,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
           property: 6,
           value: value,
-          caseSensitive: caseSensitive,
         ),
       );
     });
@@ -1904,30 +1917,26 @@ extension BookEntityQueryFilter
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition>
       utimeGreaterThanOrEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    int? value,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
           property: 6,
           value: value,
-          caseSensitive: caseSensitive,
         ),
       );
     });
   }
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> utimeLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    int? value,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
           property: 6,
           value: value,
-          caseSensitive: caseSensitive,
         ),
       );
     });
@@ -1935,113 +1944,28 @@ extension BookEntityQueryFilter
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition>
       utimeLessThanOrEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    int? value,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
           property: 6,
           value: value,
-          caseSensitive: caseSensitive,
         ),
       );
     });
   }
 
   QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> utimeBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    int? lower,
+    int? upper,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
           property: 6,
           lower: lower,
           upper: upper,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> utimeStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        StartsWithCondition(
-          property: 6,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> utimeEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        EndsWithCondition(
-          property: 6,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> utimeContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        ContainsCondition(
-          property: 6,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> utimeMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        MatchesCondition(
-          property: 6,
-          wildcard: pattern,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> utimeIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const EqualCondition(
-          property: 6,
-          value: '',
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition>
-      utimeIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const GreaterCondition(
-          property: 6,
-          value: '',
         ),
       );
     });
@@ -5709,15 +5633,24 @@ extension BookEntityQuerySortBy
     });
   }
 
-  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> sortByRemoteId() {
+  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> sortByRemoteId(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(1);
+      return query.addSortBy(
+        1,
+        caseSensitive: caseSensitive,
+      );
     });
   }
 
-  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> sortByRemoteIdDesc() {
+  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> sortByRemoteIdDesc(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(1, sort: Sort.desc);
+      return query.addSortBy(
+        1,
+        sort: Sort.desc,
+        caseSensitive: caseSensitive,
+      );
     });
   }
 
@@ -5775,45 +5708,27 @@ extension BookEntityQuerySortBy
     });
   }
 
-  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> sortByCtime(
-      {bool caseSensitive = true}) {
+  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> sortByCtime() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(
-        5,
-        caseSensitive: caseSensitive,
-      );
+      return query.addSortBy(5);
     });
   }
 
-  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> sortByCtimeDesc(
-      {bool caseSensitive = true}) {
+  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> sortByCtimeDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(
-        5,
-        sort: Sort.desc,
-        caseSensitive: caseSensitive,
-      );
+      return query.addSortBy(5, sort: Sort.desc);
     });
   }
 
-  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> sortByUtime(
-      {bool caseSensitive = true}) {
+  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> sortByUtime() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(
-        6,
-        caseSensitive: caseSensitive,
-      );
+      return query.addSortBy(6);
     });
   }
 
-  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> sortByUtimeDesc(
-      {bool caseSensitive = true}) {
+  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> sortByUtimeDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(
-        6,
-        sort: Sort.desc,
-        caseSensitive: caseSensitive,
-      );
+      return query.addSortBy(6, sort: Sort.desc);
     });
   }
 
@@ -6252,15 +6167,17 @@ extension BookEntityQuerySortThenBy
     });
   }
 
-  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> thenByRemoteId() {
+  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> thenByRemoteId(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(1);
+      return query.addSortBy(1, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> thenByRemoteIdDesc() {
+  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> thenByRemoteIdDesc(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(1, sort: Sort.desc);
+      return query.addSortBy(1, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 
@@ -6304,31 +6221,27 @@ extension BookEntityQuerySortThenBy
     });
   }
 
-  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> thenByCtime(
-      {bool caseSensitive = true}) {
+  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> thenByCtime() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(5, caseSensitive: caseSensitive);
+      return query.addSortBy(5);
     });
   }
 
-  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> thenByCtimeDesc(
-      {bool caseSensitive = true}) {
+  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> thenByCtimeDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(5, sort: Sort.desc, caseSensitive: caseSensitive);
+      return query.addSortBy(5, sort: Sort.desc);
     });
   }
 
-  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> thenByUtime(
-      {bool caseSensitive = true}) {
+  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> thenByUtime() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(6, caseSensitive: caseSensitive);
+      return query.addSortBy(6);
     });
   }
 
-  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> thenByUtimeDesc(
-      {bool caseSensitive = true}) {
+  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> thenByUtimeDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(6, sort: Sort.desc, caseSensitive: caseSensitive);
+      return query.addSortBy(6, sort: Sort.desc);
     });
   }
 
@@ -6643,9 +6556,10 @@ extension BookEntityQuerySortThenBy
 
 extension BookEntityQueryWhereDistinct
     on QueryBuilder<BookEntity, BookEntity, QDistinct> {
-  QueryBuilder<BookEntity, BookEntity, QAfterDistinct> distinctByRemoteId() {
+  QueryBuilder<BookEntity, BookEntity, QAfterDistinct> distinctByRemoteId(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(1);
+      return query.addDistinctBy(1, caseSensitive: caseSensitive);
     });
   }
 
@@ -6669,17 +6583,15 @@ extension BookEntityQueryWhereDistinct
     });
   }
 
-  QueryBuilder<BookEntity, BookEntity, QAfterDistinct> distinctByCtime(
-      {bool caseSensitive = true}) {
+  QueryBuilder<BookEntity, BookEntity, QAfterDistinct> distinctByCtime() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(5, caseSensitive: caseSensitive);
+      return query.addDistinctBy(5);
     });
   }
 
-  QueryBuilder<BookEntity, BookEntity, QAfterDistinct> distinctByUtime(
-      {bool caseSensitive = true}) {
+  QueryBuilder<BookEntity, BookEntity, QAfterDistinct> distinctByUtime() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(6, caseSensitive: caseSensitive);
+      return query.addDistinctBy(6);
     });
   }
 
@@ -6849,7 +6761,7 @@ extension BookEntityQueryProperty1
     });
   }
 
-  QueryBuilder<BookEntity, int?, QAfterProperty> remoteIdProperty() {
+  QueryBuilder<BookEntity, String?, QAfterProperty> remoteIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(1);
     });
@@ -6873,13 +6785,13 @@ extension BookEntityQueryProperty1
     });
   }
 
-  QueryBuilder<BookEntity, String?, QAfterProperty> ctimeProperty() {
+  QueryBuilder<BookEntity, int?, QAfterProperty> ctimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(5);
     });
   }
 
-  QueryBuilder<BookEntity, String?, QAfterProperty> utimeProperty() {
+  QueryBuilder<BookEntity, int?, QAfterProperty> utimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(6);
     });
@@ -7032,7 +6944,7 @@ extension BookEntityQueryProperty2<R>
     });
   }
 
-  QueryBuilder<BookEntity, (R, int?), QAfterProperty> remoteIdProperty() {
+  QueryBuilder<BookEntity, (R, String?), QAfterProperty> remoteIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(1);
     });
@@ -7056,13 +6968,13 @@ extension BookEntityQueryProperty2<R>
     });
   }
 
-  QueryBuilder<BookEntity, (R, String?), QAfterProperty> ctimeProperty() {
+  QueryBuilder<BookEntity, (R, int?), QAfterProperty> ctimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(5);
     });
   }
 
-  QueryBuilder<BookEntity, (R, String?), QAfterProperty> utimeProperty() {
+  QueryBuilder<BookEntity, (R, int?), QAfterProperty> utimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(6);
     });
@@ -7216,7 +7128,7 @@ extension BookEntityQueryProperty3<R1, R2>
     });
   }
 
-  QueryBuilder<BookEntity, (R1, R2, int?), QOperations> remoteIdProperty() {
+  QueryBuilder<BookEntity, (R1, R2, String?), QOperations> remoteIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(1);
     });
@@ -7240,13 +7152,13 @@ extension BookEntityQueryProperty3<R1, R2>
     });
   }
 
-  QueryBuilder<BookEntity, (R1, R2, String?), QOperations> ctimeProperty() {
+  QueryBuilder<BookEntity, (R1, R2, int?), QOperations> ctimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(5);
     });
   }
 
-  QueryBuilder<BookEntity, (R1, R2, String?), QOperations> utimeProperty() {
+  QueryBuilder<BookEntity, (R1, R2, int?), QOperations> utimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(6);
     });

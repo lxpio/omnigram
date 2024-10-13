@@ -4,6 +4,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"testing"
+	"time"
 
 	"github.com/lxpio/omnigram/server/conf"
 	"github.com/lxpio/omnigram/server/schema"
@@ -29,4 +30,9 @@ func TestGetReadProcessBooks(t *testing.T) {
 
 	println(data[0].Title)
 
+}
+
+func TestGenBookID(t *testing.T) {
+
+	println(schema.GenBookID(time.Now()))
 }

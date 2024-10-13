@@ -41,27 +41,8 @@ class Auth extends _$Auth {
   Future<bool> login(
     String account,
     String password,
-    String serverUrl,
   ) async {
-    //save server url
-    final endpoint = sanitizeUrl(serverUrl);
-    debugPrint('Endpoint: $endpoint');
-    await IsarStore.put(StoreKey.serverEndpoint, endpoint);
 
-    try {
-      // Resolve API server endpoint from user provided serverUrl
-      final status = await ref
-          .read(apiServiceProvider.notifier)
-          .resolveAndSetEndpoint(endpoint);
-
-      if (!status) {
-        return false;
-      }
-      // await _apiService.serverInfoApi.pingServer();
-    } catch (e) {
-      debugPrint('Invalid Server Endpoint Url $e');
-      return false;
-    }
 
     try {
       // final deviceID = await FlutterUdid.consistentUdid;
@@ -82,7 +63,11 @@ class Auth extends _$Auth {
         return false;
       }
 
+      debugPrint('set access token: ${loginResponse.data!.accessToken}');
+
       IsarStore.put(StoreKey.accessToken, loginResponse.data!.accessToken);
+
+      ref.watch(apiServiceProvider.notifier).setEndpoint();
 
       return true;
     } catch (e) {
@@ -196,7 +181,7 @@ class Auth extends _$Auth {
         userEmail: user.email,
         name: user.name,
         profileImagePath: user.profileImagePath,
-        isAdmin: user.roleId < 100,
+        isAdmin: user.roleId <= 100,
         shouldChangePassword: shouldChangePassword,
         deviceId: deviceId,
       );

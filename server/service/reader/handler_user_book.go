@@ -1,8 +1,6 @@
 package reader
 
 import (
-	"strconv"
-
 	"github.com/gin-gonic/gin"
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/middleware"
@@ -94,21 +92,21 @@ func PersonalBooksHandle(c *gin.Context) {
 
 // 获取个人阅读进度
 func getReadBookHandle(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param(`book_id`))
-	if err != nil || id < 1 {
+	id := c.Param(`book_id`)
+	if id == `` {
 		log.E(`图书ID为空`)
-		c.JSON(200, utils.ErrReqArgs)
+		c.JSON(400, utils.ErrReqArgs)
 		return
 	}
 
 	userID := c.GetInt64(middleware.XUserIDTag)
 
-	p := &schema.ReadProgress{UserID: userID, BookID: int64(id)}
+	p := &schema.ReadProgress{UserID: userID, BookID: id}
 
 	if err := p.First(orm); err != nil {
 
 		if err == gorm.ErrRecordNotFound {
-			p = schema.NewReadProgress(int64(id), userID)
+			p = schema.NewReadProgress(id, userID)
 
 		} else {
 			log.E(`创建阅读进度失败：`, err)
@@ -124,14 +122,13 @@ func getReadBookHandle(c *gin.Context) {
 
 func updateReadBookHandle(c *gin.Context) {
 
-	id, err := strconv.Atoi(c.Param(`book_id`))
-	if err != nil || id < 1 {
+	id := c.Param(`book_id`)
+	if id == `` {
 		log.E(`图书ID为空`)
-		c.JSON(200, utils.ErrReqArgs)
+		c.JSON(400, utils.ErrReqArgs)
 		return
 	}
-
-	req := &schema.ReadProgress{BookID: int64(id)}
+	req := &schema.ReadProgress{BookID: id}
 
 	if err := c.ShouldBind(req); err != nil {
 		log.I(`用户登录参数异常`, err)

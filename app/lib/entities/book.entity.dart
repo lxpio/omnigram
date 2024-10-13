@@ -9,12 +9,11 @@ part 'book.entity.g.dart';
 
 @Collection(inheritance: false)
 class BookEntity {
-  
   @Id()
   final int id;
 
   @Index(unique: false)
-  final int? remoteId;
+  final String? remoteId;
 
   //本地存储文件路径
   final String? localPath;
@@ -24,40 +23,32 @@ class BookEntity {
 
   final int? size;
 
-  final String? ctime;
+  final int? ctime;
 
-  final String? utime;
+  final int? utime;
 
   final String title;
 
-
   final String? subTitle;
 
- 
   final String? language;
-
 
   final String? coverUrl;
 
-
   final String? uuid;
-
 
   final String? isbn;
 
-
   final String? asin;
-
+  @Index(unique: true)
   final String identifier;
-
 
   final String? category;
 
-  
   final String? author;
 
   final String? authorUrl;
- 
+
   final String? authorSort;
 
   final String? publisher;
@@ -115,17 +106,14 @@ class BookEntity {
     this.paraPosition,
   });
 
-  
- 
-
   BookEntity copyWith({
     int? id,
-    int? remoteId,
+    String? remoteId,
     String? localPath,
     String? coverPath,
     int? size,
-    String? ctime,
-    String? utime,
+    int? ctime,
+    int? utime,
     String? title,
     String? subTitle,
     String? language,
@@ -222,12 +210,12 @@ class BookEntity {
   factory BookEntity.fromMap(Map<String, dynamic> map) {
     return BookEntity(
       id: map['id'] as int,
-      remoteId: map['remoteId'] != null ? map['remoteId'] as int : null,
+      remoteId: map['remoteId'] != null ? map['remoteId'] as String : null,
       localPath: map['localPath'] != null ? map['localPath'] as String : null,
       coverPath: map['coverPath'] != null ? map['coverPath'] as String : null,
       size: map['size'] != null ? map['size'] as int : null,
-      ctime: map['ctime'] != null ? map['ctime'] as String : null,
-      utime: map['utime'] != null ? map['utime'] as String : null,
+      ctime: map['ctime'] != null ? map['ctime'] as int : null,
+      utime: map['utime'] != null ? map['utime'] as int : null,
       title: map['title'] as String,
       subTitle: map['subTitle'] != null ? map['subTitle'] as String : null,
       language: map['language'] != null ? map['language'] as String : null,
@@ -265,75 +253,42 @@ class BookEntity {
 
   @override
   bool operator ==(covariant BookEntity other) {
-    if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.remoteId == remoteId &&
-      other.localPath == localPath &&
-      other.coverPath == coverPath &&
-      other.size == size &&
-      other.ctime == ctime &&
-      other.utime == utime &&
-      other.title == title &&
-      other.subTitle == subTitle &&
-      other.language == language &&
-      other.coverUrl == coverUrl &&
-      other.uuid == uuid &&
-      other.isbn == isbn &&
-      other.asin == asin &&
-      other.identifier == identifier &&
-      other.category == category &&
-      other.author == author &&
-      other.authorUrl == authorUrl &&
-      other.authorSort == authorSort &&
-      other.publisher == publisher &&
-      other.description == description &&
-      other.pubdate == pubdate &&
-      other.rating == rating &&
-      other.publisherUrl == publisherUrl &&
-      other.favStatus == favStatus &&
-      other.countVisit == countVisit &&
-      other.countDownload == countDownload &&
-      other.progress == progress &&
-      other.progressIndex == progressIndex &&
-      other.paraPosition == paraPosition;
+    return other.identifier == identifier;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      remoteId.hashCode ^
-      localPath.hashCode ^
-      coverPath.hashCode ^
-      size.hashCode ^
-      ctime.hashCode ^
-      utime.hashCode ^
-      title.hashCode ^
-      subTitle.hashCode ^
-      language.hashCode ^
-      coverUrl.hashCode ^
-      uuid.hashCode ^
-      isbn.hashCode ^
-      asin.hashCode ^
-      identifier.hashCode ^
-      category.hashCode ^
-      author.hashCode ^
-      authorUrl.hashCode ^
-      authorSort.hashCode ^
-      publisher.hashCode ^
-      description.hashCode ^
-      pubdate.hashCode ^
-      rating.hashCode ^
-      publisherUrl.hashCode ^
-      favStatus.hashCode ^
-      countVisit.hashCode ^
-      countDownload.hashCode ^
-      progress.hashCode ^
-      progressIndex.hashCode ^
-      paraPosition.hashCode;
+        remoteId.hashCode ^
+        localPath.hashCode ^
+        coverPath.hashCode ^
+        size.hashCode ^
+        ctime.hashCode ^
+        utime.hashCode ^
+        title.hashCode ^
+        subTitle.hashCode ^
+        language.hashCode ^
+        coverUrl.hashCode ^
+        uuid.hashCode ^
+        isbn.hashCode ^
+        asin.hashCode ^
+        identifier.hashCode ^
+        category.hashCode ^
+        author.hashCode ^
+        authorUrl.hashCode ^
+        authorSort.hashCode ^
+        publisher.hashCode ^
+        description.hashCode ^
+        pubdate.hashCode ^
+        rating.hashCode ^
+        publisherUrl.hashCode ^
+        favStatus.hashCode ^
+        countVisit.hashCode ^
+        countDownload.hashCode ^
+        progress.hashCode ^
+        progressIndex.hashCode ^
+        paraPosition.hashCode;
   }
-
 
   @ignore
   bool get isLocal => localPath != null;
@@ -354,8 +309,15 @@ class BookEntity {
     }
   }
 
+  /// Returns `true` if this [Asset] can updated with values from parameter [a]
+  bool canUpdate(BookEntity a) {
+    assert(identifier == a.identifier);
+
+    return (a.utime ?? 0) > (utime ?? 0) || a.isRemote && !isRemote || a.isLocal && !isLocal;
+  }
+
   BookEntity.remote(EbookDto ebookDto)
-      : id = ebookDto.id,
+      : id = 0,
         remoteId = ebookDto.id,
         localPath = null,
         coverPath = null,
@@ -386,10 +348,11 @@ class BookEntity {
         progressIndex = ebookDto.progressIndex,
         paraPosition = ebookDto.paraPosition;
 
-  void put(Isar db)  {
-     db.bookEntitys.put(this);
+  void put(Isar db) {
+    db.bookEntitys.put(this);
   }
 
+  static int compareByChecksum(BookEntity a, BookEntity b) => a.identifier.compareTo(b.identifier);
 }
 
 /// Describes where the information of this asset came from:
@@ -420,4 +383,12 @@ class BookNav {
     required this.readings,
     required this.likes,
   });
+}
+
+extension BookEntityHelper on IsarCollection<int, BookEntity> {
+  //  QueryBuilder<Asset, Asset, QAfterWhereClause>
+  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> remote(
+    Iterable<String> ids,
+  ) =>
+      where().anyOf(ids, (q, id) => q.remoteIdEqualTo(id));
 }

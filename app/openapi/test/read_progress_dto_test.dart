@@ -12,7 +12,7 @@ void main() {
       // TODO
     });
 
-    // int bookId
+    // String bookId
     test('to test the property `bookId`', () async {
       // TODO
     });

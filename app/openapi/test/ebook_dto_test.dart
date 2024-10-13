@@ -7,7 +7,7 @@ void main() {
   // TODO add properties to the builder and call build()
 
   group(EbookDto, () {
-    // int id
+    // String id
     test('to test the property `id`', () async {
       // TODO
     });
@@ -17,12 +17,12 @@ void main() {
       // TODO
     });
 
-    // String ctime
+    // int ctime
     test('to test the property `ctime`', () async {
       // TODO
     });
 
-    // String utime
+    // int utime
     test('to test the property `utime`', () async {
       // TODO
     });
@@ -99,11 +99,6 @@ void main() {
 
     // bool favStatus
     test('to test the property `favStatus`', () async {
-      // TODO
-    });
-
-    // BuiltList<String> tags
-    test('to test the property `tags`', () async {
       // TODO
     });
 

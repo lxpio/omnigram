@@ -4,7 +4,6 @@ import (
 	"context"
 	"net/http"
 	"path/filepath"
-	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -42,10 +41,10 @@ func coverImageHandle(c *gin.Context) {
 
 func BookDetail(c *gin.Context) {
 
-	id, err := strconv.Atoi(c.Param(`book_id`))
-	if err != nil || id < 1 {
+	id := c.Param(`book_id`)
+	if id == `` {
 		log.E(`图书ID为空`)
-		c.JSON(200, utils.ErrReqArgs)
+		c.JSON(400, utils.ErrReqArgs)
 		return
 	}
 
@@ -106,10 +105,10 @@ func bookUploadHandle(c *gin.Context) {
 // /books/:book_id/download
 func bookDownloadHandle(c *gin.Context) {
 
-	id, err := strconv.Atoi(c.Param(`book_id`))
-	if err != nil || id < 1 {
+	id := c.Param(`book_id`)
+	if id == `` {
 		log.E(`图书ID为空`)
-		c.JSON(200, utils.ErrReqArgs)
+		c.JSON(400, utils.ErrReqArgs)
 		return
 	}
 

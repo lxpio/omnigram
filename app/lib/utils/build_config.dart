@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:omnigram/entities/book.entity.dart';
+import 'package:omnigram/entities/etag.entity.dart';
 import 'package:omnigram/entities/logger_message.entity.dart';
 import 'package:omnigram/entities/isar_store.entity.dart';
 import 'package:omnigram/entities/user.entity.dart';
@@ -87,6 +88,7 @@ Future<Isar> loadDb() async {
       LoggerMessageSchema,
       BookEntitySchema,
       UserSchema,
+      ETagSchema, //存储扫描相关结果
       // if (Platform.isAndroid) AndroidDeviceAssetSchema,
       // if (Platform.isIOS) IOSDeviceAssetSchema,
     ],

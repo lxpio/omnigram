@@ -27,7 +27,7 @@ abstract class ReadProgressDto implements Built<ReadProgressDto, ReadProgressDto
   int get id;
 
   @BuiltValueField(wireName: r'book_id')
-  int get bookId;
+  String get bookId;
 
   @BuiltValueField(wireName: r'user_id')
   int get userId;
@@ -84,7 +84,7 @@ class _$ReadProgressDtoSerializer implements PrimitiveSerializer<ReadProgressDto
     yield r'book_id';
     yield serializers.serialize(
       object.bookId,
-      specifiedType: const FullType(int),
+      specifiedType: const FullType(String),
     );
     yield r'user_id';
     yield serializers.serialize(
@@ -159,8 +159,8 @@ class _$ReadProgressDtoSerializer implements PrimitiveSerializer<ReadProgressDto
         case r'book_id':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType(int),
-          ) as int;
+            specifiedType: const FullType(String),
+          ) as String;
           result.bookId = valueDes;
           break;
         case r'user_id':

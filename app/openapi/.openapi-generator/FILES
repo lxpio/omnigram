@@ -10,6 +10,7 @@ doc/ChangePasswordDto.md
 doc/CreateUserDto.md
 doc/DefaultApi.md
 doc/DeltaSyncDto.md
+doc/DeltaSyncRespDto.md
 doc/EbookDto.md
 doc/EbookIndexDto.md
 doc/EbookListDto.md
@@ -46,6 +47,7 @@ lib/src/model/change_password_dto.dart
 lib/src/model/create_user_dto.dart
 lib/src/model/date.dart
 lib/src/model/delta_sync_dto.dart
+lib/src/model/delta_sync_resp_dto.dart
 lib/src/model/ebook_dto.dart
 lib/src/model/ebook_index_dto.dart
 lib/src/model/ebook_list_dto.dart
@@ -74,6 +76,7 @@ test/change_password_dto_test.dart
 test/create_user_dto_test.dart
 test/default_api_test.dart
 test/delta_sync_dto_test.dart
+test/delta_sync_resp_dto_test.dart
 test/ebook_dto_test.dart
 test/ebook_index_dto_test.dart
 test/ebook_list_dto_test.dart

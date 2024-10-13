@@ -14,6 +14,7 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(ChangePasswordDto.serializer)
       ..add(CreateUserDto.serializer)
       ..add(DeltaSyncDto.serializer)
+      ..add(DeltaSyncRespDto.serializer)
       ..add(EbookDto.serializer)
       ..add(EbookIndexDto.serializer)
       ..add(EbookListDto.serializer)
@@ -53,6 +54,9 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(String)]),
           () => new ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(EbookDto)]),
+          () => new ListBuilder<EbookDto>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(UserDto)]),
           () => new ListBuilder<UserDto>()))

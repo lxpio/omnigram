@@ -8,10 +8,10 @@ import 'package:openapi/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **int** |  | 
+**id** | **String** |  | 
 **size** | **int** |  | [optional] 
-**ctime** | **String** |  | [optional] 
-**utime** | **String** |  | [optional] 
+**ctime** | **int** |  | [optional] 
+**utime** | **int** |  | [optional] 
 **title** | **String** |  | 
 **subTitle** | **String** |  | [optional] 
 **language** | **String** |  | [optional] 
@@ -27,7 +27,6 @@ Name | Type | Description | Notes
 **publisher** | **String** |  | [optional] 
 **description** | **String** |  | [optional] 
 **favStatus** | **bool** |  | [optional] 
-**tags** | **BuiltList&lt;String&gt;** |  | [optional] 
 **pubdate** | **String** |  | [optional] 
 **rating** | **num** |  | [optional] 
 **publisherUrl** | **String** |  | [optional] 

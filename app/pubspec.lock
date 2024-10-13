@@ -231,13 +231,13 @@ packages:
     source: hosted
     version: "4.10.0"
   collection:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: collection
-      sha256: a1ace0a119f20aabc852d165077c036cd864315bd99b7eaa10a60100341941bf
+      sha256: ee67cb0715911d28db6bf4af1026078bd6f0128b07a5f66fb2ed94ec6783c09a
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.19.0"
+    version: "1.18.0"
   convert:
     dependency: transitive
     description:
@@ -493,10 +493,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_riverpod
-      sha256: "0f1974eff5bbe774bf1d870e406fc6f29e3d6f1c46bd9c58e7172ff68a785d7d"
+      sha256: "711d916456563f715bde1e139d7cfdca009f8264befab3ac9f8ded8b6ec26405"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.5.1"
+    version: "2.5.3"
   flutter_slidable:
     dependency: "direct main"
     description:
@@ -610,10 +610,10 @@ packages:
     dependency: "direct main"
     description:
       name: hooks_riverpod
-      sha256: "97266a91c994951a06ef0ff3a1c7fb261e52ec7f74e87f0614ea0b7411b859b2"
+      sha256: "534ca8af331235f700f3916a74e4579cdfdd708e2fbed342fc8aa969d41a7af0"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.5.2"
+    version: "2.5.4"
   hotreloader:
     dependency: transitive
     description:
@@ -1001,10 +1001,10 @@ packages:
     dependency: transitive
     description:
       name: riverpod
-      sha256: f21b32ffd26a36555e501b04f4a5dca43ed59e16343f1a30c13632b2351dfa4d
+      sha256: c86fedfb45dd1da98ee6493dd9374325cdf494e7d523ebfb0c387eecc5f7b5c9
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.5.1"
+    version: "2.5.3"
   riverpod_analyzer_utils:
     dependency: transitive
     description:
@@ -1017,10 +1017,10 @@ packages:
     dependency: "direct main"
     description:
       name: riverpod_annotation
-      sha256: e5e796c0eba4030c704e9dae1b834a6541814963292839dcf9638d53eba84f5c
+      sha256: "77fdedb87d09344809e8b514ab864d0537b1cb580a93d09bf579b0403aa6203a"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.3.5"
+    version: "2.5.3"
   riverpod_generator:
     dependency: "direct dev"
     description:
