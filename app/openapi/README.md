@@ -115,7 +115,7 @@ Class | Method | HTTP request | Description
  - [DeltaSyncRespDto](doc/DeltaSyncRespDto.md)
  - [EbookDto](doc/EbookDto.md)
  - [EbookIndexDto](doc/EbookIndexDto.md)
- - [EbookListDto](doc/EbookListDto.md)
+ - [EbookRespDto](doc/EbookRespDto.md)
  - [EnableScanDto](doc/EnableScanDto.md)
  - [FullSyncDto](doc/FullSyncDto.md)
  - [LoginCredentialDto](doc/LoginCredentialDto.md)

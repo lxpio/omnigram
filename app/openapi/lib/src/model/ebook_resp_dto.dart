@@ -8,42 +8,42 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
-part 'ebook_list_dto.g.dart';
+part 'ebook_resp_dto.g.dart';
 
-/// EbookListDto
+/// EbookRespDto
 ///
 /// Properties:
 /// * [total] 
 /// * [items] 
 @BuiltValue()
-abstract class EbookListDto implements Built<EbookListDto, EbookListDtoBuilder> {
+abstract class EbookRespDto implements Built<EbookRespDto, EbookRespDtoBuilder> {
   @BuiltValueField(wireName: r'total')
   int get total;
 
   @BuiltValueField(wireName: r'items')
   BuiltList<EbookDto> get items;
 
-  EbookListDto._();
+  EbookRespDto._();
 
-  factory EbookListDto([void updates(EbookListDtoBuilder b)]) = _$EbookListDto;
+  factory EbookRespDto([void updates(EbookRespDtoBuilder b)]) = _$EbookRespDto;
 
   @BuiltValueHook(initializeBuilder: true)
-  static void _defaults(EbookListDtoBuilder b) => b;
+  static void _defaults(EbookRespDtoBuilder b) => b;
 
   @BuiltValueSerializer(custom: true)
-  static Serializer<EbookListDto> get serializer => _$EbookListDtoSerializer();
+  static Serializer<EbookRespDto> get serializer => _$EbookRespDtoSerializer();
 }
 
-class _$EbookListDtoSerializer implements PrimitiveSerializer<EbookListDto> {
+class _$EbookRespDtoSerializer implements PrimitiveSerializer<EbookRespDto> {
   @override
-  final Iterable<Type> types = const [EbookListDto, _$EbookListDto];
+  final Iterable<Type> types = const [EbookRespDto, _$EbookRespDto];
 
   @override
-  final String wireName = r'EbookListDto';
+  final String wireName = r'EbookRespDto';
 
   Iterable<Object?> _serializeProperties(
     Serializers serializers,
-    EbookListDto object, {
+    EbookRespDto object, {
     FullType specifiedType = FullType.unspecified,
   }) sync* {
     yield r'total';
@@ -61,7 +61,7 @@ class _$EbookListDtoSerializer implements PrimitiveSerializer<EbookListDto> {
   @override
   Object serialize(
     Serializers serializers,
-    EbookListDto object, {
+    EbookRespDto object, {
     FullType specifiedType = FullType.unspecified,
   }) {
     return _serializeProperties(serializers, object, specifiedType: specifiedType).toList();
@@ -72,7 +72,7 @@ class _$EbookListDtoSerializer implements PrimitiveSerializer<EbookListDto> {
     Object serialized, {
     FullType specifiedType = FullType.unspecified,
     required List<Object?> serializedList,
-    required EbookListDtoBuilder result,
+    required EbookRespDtoBuilder result,
     required List<Object?> unhandled,
   }) {
     for (var i = 0; i < serializedList.length; i += 2) {
@@ -102,12 +102,12 @@ class _$EbookListDtoSerializer implements PrimitiveSerializer<EbookListDto> {
   }
 
   @override
-  EbookListDto deserialize(
+  EbookRespDto deserialize(
     Serializers serializers,
     Object serialized, {
     FullType specifiedType = FullType.unspecified,
   }) {
-    final result = EbookListDtoBuilder();
+    final result = EbookRespDtoBuilder();
     final serializedList = (serialized as Iterable<Object?>).toList();
     final unhandled = <Object?>[];
     _deserializeProperties(

@@ -1,6 +1,3 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:omnigram/providers/api.provider.dart';
 import 'package:openapi/openapi.dart';
@@ -32,7 +29,6 @@ class ScanService extends _$ScanService {
     } catch (e) {
       // return ApiResponse(code: 500, message: 'stop scan task failed');
       debugPrint("Error [getDiskInfo] ${e.toString()}");
-
     }
     return null;
   }
@@ -45,12 +41,10 @@ class ScanService extends _$ScanService {
     final api = ref.read(apiServiceProvider);
 
     try {
-
       final resp = await api.sysScanRunPost(
-        enableScanDto:EnableScanDto((b) => b
-      ..maxThread = maxThread
-      ..refresh = refresh)
-        );
+          enableScanDto: EnableScanDto((b) => b
+            ..maxThread = maxThread
+            ..refresh = refresh));
 
       if (resp.statusCode == 200) {
         //notify to fetch status
@@ -71,20 +65,21 @@ class ScanService extends _$ScanService {
     var running = true;
 
     while (running) {
-
       ScanStatsDto stats;
 
       try {
-
         final resp = await api.sysScanStatusGet();
 
-        stats =
-            resp.statusCode == 200 ? resp.data! :  ScanStatsDto( (b) => b..running = false,);
-
+        stats = resp.statusCode == 200
+            ? resp.data!
+            : ScanStatsDto(
+                (b) => b..running = false,
+              );
       } catch (e) {
-        stats =  ScanStatsDto( (b) => b..running = false,);
+        stats = ScanStatsDto(
+          (b) => b..running = false,
+        );
       }
-      
 
       running = stats.running;
       // state = running;
@@ -99,31 +94,28 @@ Stream<ScanStatsDto> scanStatus(ScanStatusRef ref) async* {
   // Connect to an API using sockets, and decode the output
   final api = ref.watch(apiServiceProvider);
 
-    var running = true;
+  var running = true;
 
-    while (running) {
+  while (running) {
+    ScanStatsDto stats;
 
-      ScanStatsDto stats;
+    try {
+      final resp = await api.sysScanStatusGet();
 
-      try {
-
-        final resp = await api.sysScanStatusGet();
-
-        stats =
-            resp.statusCode == 200 ? resp.data! :  ScanStatsDto( (b) => b..running = false,);
-
-      } catch (e) {
-        stats =  ScanStatsDto( (b) => b..running = false,);
-      }
-      
-
-      running = stats.running;
-      // state = running;
-      yield stats;
-      await Future<void>.delayed(const Duration(seconds: 1));
+      stats = resp.statusCode == 200
+          ? resp.data!
+          : ScanStatsDto(
+              (b) => b..running = false,
+            );
+    } catch (e) {
+      stats = ScanStatsDto(
+        (b) => b..running = false,
+      );
     }
 
-  
-
+    running = stats.running;
+    // state = running;
+    yield stats;
+    await Future<void>.delayed(const Duration(seconds: 1));
+  }
 }
-

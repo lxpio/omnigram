@@ -191,7 +191,7 @@ void main() {
     //
     // 
     //
-    //Future<EbookListDto> readerBooksGet({ String search, int pageSize, int pageNum, String category, String author }) async
+    //Future<EbookRespDto> readerBooksGet({ String search, int pageSize, int pageNum, String category, String author }) async
     test('test readerBooksGet', () async {
       // TODO
     });
@@ -209,7 +209,7 @@ void main() {
     //
     // 
     //
-    //Future<EbookListDto> readerFavGet({ String search, num pageSize, num pageNum, String category, String author }) async
+    //Future<EbookRespDto> readerFavGet({ String search, num pageSize, num pageNum, String category, String author }) async
     test('test readerFavGet', () async {
       // TODO
     });
@@ -227,7 +227,7 @@ void main() {
     //
     // 
     //
-    //Future<EbookListDto> readerRecentGet({ String search, num pageSize, num pageNum, String category, String author }) async
+    //Future<EbookRespDto> readerRecentGet({ String search, num pageSize, num pageNum, String category, String author }) async
     test('test readerRecentGet', () async {
       // TODO
     });
@@ -263,7 +263,7 @@ void main() {
     //
     // 
     //
-    //Future<JsonObject> syncFullPost({ FullSyncDto fullSyncDto }) async
+    //Future<BuiltList<EbookDto>> syncFullPost({ FullSyncDto fullSyncDto }) async
     test('test syncFullPost', () async {
       // TODO
     });

@@ -1,4 +1,4 @@
-# openapi.model.EbookListDto
+# openapi.model.EbookRespDto
 
 ## Load the model package
 ```dart

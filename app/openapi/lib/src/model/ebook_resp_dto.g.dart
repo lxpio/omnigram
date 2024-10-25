@@ -1,36 +1,36 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ebook_list_dto.dart';
+part of 'ebook_resp_dto.dart';
 
 // **************************************************************************
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$EbookListDto extends EbookListDto {
+class _$EbookRespDto extends EbookRespDto {
   @override
   final int total;
   @override
   final BuiltList<EbookDto> items;
 
-  factory _$EbookListDto([void Function(EbookListDtoBuilder)? updates]) =>
-      (new EbookListDtoBuilder()..update(updates))._build();
+  factory _$EbookRespDto([void Function(EbookRespDtoBuilder)? updates]) =>
+      (new EbookRespDtoBuilder()..update(updates))._build();
 
-  _$EbookListDto._({required this.total, required this.items}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(total, r'EbookListDto', 'total');
-    BuiltValueNullFieldError.checkNotNull(items, r'EbookListDto', 'items');
+  _$EbookRespDto._({required this.total, required this.items}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(total, r'EbookRespDto', 'total');
+    BuiltValueNullFieldError.checkNotNull(items, r'EbookRespDto', 'items');
   }
 
   @override
-  EbookListDto rebuild(void Function(EbookListDtoBuilder) updates) =>
+  EbookRespDto rebuild(void Function(EbookRespDtoBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  EbookListDtoBuilder toBuilder() => new EbookListDtoBuilder()..replace(this);
+  EbookRespDtoBuilder toBuilder() => new EbookRespDtoBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is EbookListDto &&
+    return other is EbookRespDto &&
         total == other.total &&
         items == other.items;
   }
@@ -46,16 +46,16 @@ class _$EbookListDto extends EbookListDto {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper(r'EbookListDto')
+    return (newBuiltValueToStringHelper(r'EbookRespDto')
           ..add('total', total)
           ..add('items', items))
         .toString();
   }
 }
 
-class EbookListDtoBuilder
-    implements Builder<EbookListDto, EbookListDtoBuilder> {
-  _$EbookListDto? _$v;
+class EbookRespDtoBuilder
+    implements Builder<EbookRespDto, EbookRespDtoBuilder> {
+  _$EbookRespDto? _$v;
 
   int? _total;
   int? get total => _$this._total;
@@ -66,11 +66,11 @@ class EbookListDtoBuilder
       _$this._items ??= new ListBuilder<EbookDto>();
   set items(ListBuilder<EbookDto>? items) => _$this._items = items;
 
-  EbookListDtoBuilder() {
-    EbookListDto._defaults(this);
+  EbookRespDtoBuilder() {
+    EbookRespDto._defaults(this);
   }
 
-  EbookListDtoBuilder get _$this {
+  EbookRespDtoBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
       _total = $v.total;
@@ -81,26 +81,26 @@ class EbookListDtoBuilder
   }
 
   @override
-  void replace(EbookListDto other) {
+  void replace(EbookRespDto other) {
     ArgumentError.checkNotNull(other, 'other');
-    _$v = other as _$EbookListDto;
+    _$v = other as _$EbookRespDto;
   }
 
   @override
-  void update(void Function(EbookListDtoBuilder)? updates) {
+  void update(void Function(EbookRespDtoBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  EbookListDto build() => _build();
+  EbookRespDto build() => _build();
 
-  _$EbookListDto _build() {
-    _$EbookListDto _$result;
+  _$EbookRespDto _build() {
+    _$EbookRespDto _$result;
     try {
       _$result = _$v ??
-          new _$EbookListDto._(
+          new _$EbookRespDto._(
               total: BuiltValueNullFieldError.checkNotNull(
-                  total, r'EbookListDto', 'total'),
+                  total, r'EbookRespDto', 'total'),
               items: items.build());
     } catch (_) {
       late String _$failedField;
@@ -109,7 +109,7 @@ class EbookListDtoBuilder
         items.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            r'EbookListDto', _$failedField, e.toString());
+            r'EbookRespDto', _$failedField, e.toString());
       }
       rethrow;
     }

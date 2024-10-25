@@ -18,21 +18,16 @@ import 'package:logging/logging.dart';
 import 'package:universal_platform/universal_platform.dart';
 
 class BuildConfig {
- 
-
   static final BuildConfig instance = BuildConfig._internal();
 
   BuildConfig._internal();
 
   static Future<Isar> initialize() async {
-
     //初始化数据库
-    final db = await loadDb();
+    final dir = await getApplicationDocumentsDirectory();
+    final db = await loadDb(dir.path);
 
-
-
-
-    var log = Logger("ImmichErrorLogger");
+    var log = Logger("OmnigramErrorLogger");
 
     FlutterError.onError = (details) {
       FlutterError.presentError(details);
@@ -51,11 +46,11 @@ class BuildConfig {
     //初始化时区
     initializeTimeZones();
 
-if (UniversalPlatform.isWeb) {
+    if (UniversalPlatform.isWeb) {
       //TODO 使用远程API接口调用返回
     } else {
       final docsDir = await getApplicationDocumentsDirectory();
-  //创建文档存储目录
+      //创建文档存储目录
       globalEpubPath = '${docsDir.path}/local_epubs';
 
       if (!await Directory(globalEpubPath).exists()) {
@@ -69,20 +64,14 @@ if (UniversalPlatform.isWeb) {
 
     await migrateDatabaseIfNeeded(db);
 
-
     await EasyLocalization.ensureInitialized();
-  
 
     return db;
   }
 }
 
-
-Future<Isar> loadDb() async {
-  final dir = await getApplicationDocumentsDirectory();
-
-
-  final db =  Isar.open(
+Future<Isar> loadDb(String dbPath) async {
+  final db = Isar.open(
     schemas: [
       StoreValueSchema,
       LoggerMessageSchema,
@@ -92,12 +81,12 @@ Future<Isar> loadDb() async {
       // if (Platform.isAndroid) AndroidDeviceAssetSchema,
       // if (Platform.isIOS) IOSDeviceAssetSchema,
     ],
-    directory: dir.path,
+    directory: dbPath,
     maxSizeMiB: 1024,
   );
   IsarStore.init(db);
 
-      //初始化日志
+  //初始化日志
   OmnigramLogger.instance.initialize(db);
   return db;
 }

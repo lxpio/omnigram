@@ -3,7 +3,6 @@ package sys
 
 import (
 	"context"
-	"encoding/json"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -13,7 +12,7 @@ import (
 
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/schema"
-	"github.com/nutsdb/nutsdb"
+	"github.com/lxpio/omnigram/server/store"
 )
 
 const scanStatsKey = `last_scan_status_v2`
@@ -23,38 +22,28 @@ type Scanner struct {
 	Running bool     `json:"running"`
 	Count   int      `json:"count"` //扫描文件计数
 	Errs    []string `json:"errors"`
-	root    string   `json:"-"` //扫描错误详情信息
+	root    string   `json:"-"` //扫描文件根目录
 	ctx     context.Context
-	cached  *nutsdb.DB
-	wg      *sync.WaitGroup `json:"-"`
+
+	wg *sync.WaitGroup `json:"-"`
 }
 
-func NewScan(ctx context.Context, root, meta string) (*Scanner, error) {
-
-	db, err := nutsdb.Open(
-		nutsdb.DefaultOptions,
-		nutsdb.WithDir(meta),
-	)
-
-	if err != nil {
-		log.E("打开metadata失败：", err.Error())
-		return nil, err
-	}
+func NewScan(ctx context.Context, dataPath string) (*Scanner, error) {
 
 	return &Scanner{
-		Count:  0,
-		root:   root,
-		cached: db,
-		ctx:    ctx,
-		wg:     new(sync.WaitGroup),
-		Errs:   []string{},
+		Count: 0,
+		root:  dataPath,
+
+		ctx:  ctx,
+		wg:   new(sync.WaitGroup),
+		Errs: []string{},
 	}, nil
 
 }
 
-func (m *Scanner) Start(manager *ScannerManager, refresh bool) {
+func (m *Scanner) Start(refresh bool) {
 	//默认最多扫描5层目录
-	m.scanFiles(manager, m.Walk(refresh, 5))
+	m.scanFiles(m.Walk(refresh, 5))
 
 }
 
@@ -63,21 +52,7 @@ func (m *Scanner) Stop() {
 	if m.wg != nil {
 		m.wg.Wait()
 	}
-	if m.cached != nil {
-		log.I(`关闭缓存数据库`)
-		m.cached.Close()
-	}
-}
 
-func (m *Scanner) KVFn() *nutsdb.DB {
-
-	select {
-	case <-m.ctx.Done():
-		return nil
-	default:
-		return m.cached
-	}
-	// return m.cached
 }
 
 // Walk 遍历扫描路径下文件
@@ -88,7 +63,7 @@ func (m *Scanner) Walk(refresh bool, maxDepth int) <-chan *schema.Book {
 	m.wg.Add(1)
 	go func() {
 		defer m.wg.Done()
-		err := filepath.WalkDir(m.root, newWalkDirFunc(books, m.KVFn, maxDepth, refresh))
+		err := filepath.WalkDir(m.root, newWalkDirFunc(m.ctx, books, maxDepth, refresh))
 
 		if err != nil {
 			log.E(`扫描路径失败：`, err.Error())
@@ -100,7 +75,7 @@ func (m *Scanner) Walk(refresh bool, maxDepth int) <-chan *schema.Book {
 	return books
 }
 
-func (m *Scanner) scanFiles(manager *ScannerManager, books <-chan *schema.Book) {
+func (m *Scanner) scanFiles(books <-chan *schema.Book) {
 
 	errs := []string{}
 	statusChan := make(chan ScanStatus) // 新增一个状态通道
@@ -139,16 +114,16 @@ func (m *Scanner) scanFiles(manager *ScannerManager, books <-chan *schema.Book) 
 					return
 				}
 				m.Count++
-				log.D(`开始解析: `, book.Path, ` 到数据库`)
+				// log.D(`开始解析: `, book.Path, ` 到数据库`)
 
 				if err := book.GetMetadataFromFile(); err != nil {
 					log.E(`获取图书基本元素失败 `, err.Error())
 					errs = append(errs, `文件：`+book.Path+` 解析失败：`+err.Error())
 				} else {
-					if err := book.Save(m.ctx, manager.orm, manager.kv); err != nil {
+					if err := book.Save(m.ctx); err != nil {
 						errs = append(errs, err.Error())
 					} else {
-						m.cacheFilePath(book.Path)
+						m.cacheFilePath(m.ctx, book.Path, book.Identifier)
 					}
 					//
 
@@ -164,53 +139,26 @@ func (m *Scanner) scanFiles(manager *ScannerManager, books <-chan *schema.Book) 
 	go func() {
 		defer m.wg.Done()
 		for status := range statusChan {
-			manager.updateStatus(status)
+			updateStatus(status)
 		}
 		//关闭扫描器
-		manager.dumpStats(m.cached)
-		log.D(`exit m.cached.Close()`)
-		m.cached.Close()
-		m.cached = nil
+		dumpStatus()
+
 	}()
 
 }
 
-func (m *Scanner) cacheFilePath(path string) error {
-	return m.cached.Update(
-		func(tx *nutsdb.Tx) error {
-			if err := tx.Put(`files/`, []byte(path), []byte{}, 0); err != nil {
-				return err
-			}
-			return nil
-		})
+func (m *Scanner) cacheFilePath(ctx context.Context, path, identifier string) error {
+
+	return store.GetKV().Put(ctx, `files`, path, []byte(identifier))
 
 }
 
-func (m *Scanner) filePathExists(path string) bool {
+func filePathExists(ctx context.Context, path string) bool {
 
-	err := m.cached.View(func(tx *nutsdb.Tx) error {
-
-		_, err := tx.Get(`files/`, []byte(path))
-		return err
-
-	})
+	_, err := store.GetKV().Get(ctx, `files`, path)
 
 	return err == nil
-
-}
-
-func filePathExists(cached *nutsdb.DB, path string) bool {
-
-	if cached == nil {
-		return false
-	}
-
-	return cached.View(func(tx *nutsdb.Tx) error {
-
-		_, err := tx.Get(`files/`, []byte(path))
-		return err
-
-	}) == nil
 }
 
 func (m *Scanner) status(errs []string, done bool) ScanStatus {
@@ -221,23 +169,7 @@ func (m *Scanner) status(errs []string, done bool) ScanStatus {
 	}
 }
 
-func (m *Scanner) dumpStats(status ScanStatus) error {
-
-	bytes, _ := json.Marshal(status)
-
-	return m.cached.Update(
-		func(tx *nutsdb.Tx) error {
-			if err := tx.Put(`sys`, []byte(scanStatsKey), bytes, 0); err != nil {
-				return err
-			}
-			return nil
-		})
-
-}
-
-type getDBFn func() *nutsdb.DB
-
-func newWalkDirFunc(bookChan chan<- *schema.Book, dbfn getDBFn, maxDepth int, refresh bool) fs.WalkDirFunc {
+func newWalkDirFunc(ctx context.Context, bookChan chan<- *schema.Book, maxDepth int, refresh bool) fs.WalkDirFunc {
 
 	return func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
@@ -256,7 +188,13 @@ func newWalkDirFunc(bookChan chan<- *schema.Book, dbfn getDBFn, maxDepth int, re
 
 			fileType := schema.ParseFileType(filepath.Ext(d.Name()))
 
-			if fileType == schema.UnkownFile || (filePathExists(dbfn(), path) && !refresh) {
+			if fileType == schema.UnkownFile {
+				log.W(`未知文件类型：`, path)
+				return nil
+			}
+			//文件已经扫描过，并且不刷新
+			if filePathExists(ctx, path) && !refresh {
+				log.W(`文件已经扫描过，并且不刷新：`, path)
 				return nil
 			}
 

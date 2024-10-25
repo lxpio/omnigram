@@ -21,8 +21,8 @@ type Session struct {
 	DistrictId  int32         `json:"district_id" gorm:"column:district_id;type:int8;comment:登录城市id"`
 	FromUrl     string        `json:"from_url" gorm:"column:from_url;type:varchar(255);comment:登录上一跳服务"`
 	Duration    time.Duration `json:"duration" gorm:"type:int8;comment:会话有效时间"`
-	CTime       int64         `json:"ctime" form:"ctime" gorm:"column:ctime;autoCreateTime;comment:创建时间"`
-	UTime       int64         `json:"utime" form:"utime" gorm:"column:utime;autoUpdateTime;comment:更新时间"`
+	CTime       int64         `json:"ctime" form:"ctime" gorm:"column:ctime;autoCreateTime:milli;comment:创建时间"`
+	UTime       int64         `json:"utime" form:"utime" gorm:"column:utime;autoUpdateTime:milli;comment:更新时间"`
 	UserInfo    *User         `json:"user_info" gorm:"-"`
 }
 
@@ -79,7 +79,7 @@ func FirstSessionByID(store *gorm.DB, id string) (*Session, error) {
 // BeforeCreate BeforeCreate
 func (m *Session) BeforeCreate(_ *gorm.DB) error {
 
-	m.CTime = time.Now().Unix()
+	m.CTime = time.Now().UnixMilli()
 
 	h := sha1.New()
 

@@ -50,34 +50,61 @@ class HomeSmallView extends HookConsumerWidget {
           expandedHeight: 300.0,
           elevation: 0,
           pinned: true,
-          floating: true,
+          floating: false,
           stretch: true,
           backgroundColor: Colors.grey.shade50,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(100),
+              child: CircleAvatar(
+                radius: 24,
+                backgroundColor: Colors.grey[400],
+                // backgroundImage: NetworkImage(
+                //     'https://randomuser.me/api/portraits/men/81.jpg'),
+              ),
+            ),
+          ),
           flexibleSpace: FlexibleSpaceBar(
             collapseMode: CollapseMode.pin,
-            titlePadding:
-                const EdgeInsets.only(left: 20, right: 30, bottom: 100),
+            // titlePadding:
+            //     const EdgeInsets.only(left: 20, right: 30, bottom: 100),
             stretchModes: const [
               StretchMode.zoomBackground,
-              // StretchMode.fadeTitle
+              StretchMode.fadeTitle
             ],
-            // title: AnimatedOpacity(
-            //   opacity: isScrolled.value ? 0.0 : 1.0,
-            //   duration: const Duration(milliseconds: 500),
-            //   child: Container(
-            //     child: Text(
-            //       "Start your reading today",
-            //       style: TextStyle(
-            //         color: Colors.black,
-            //         fontSize: 20.0,
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            background: Image.asset("assets/images/girl_reading.png",
-                fit: BoxFit.cover),
+            centerTitle: false,
+            title: AnimatedOpacity(
+              opacity: isScrolled.value ? 1.0 : 0,
+              duration: const Duration(milliseconds: 500),
+              child: Container(
+                child: const Text(
+                  "HOOOOME",
+                  // style: TextStyle(
+                  //   color: Colors,
+                  //   fontSize: 30.0,
+                  // ),
+                ),
+              ),
+            ),
+            background: Container(
+                // height: 250,
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                margin: const EdgeInsets.only(top: 20),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    image: DecorationImage(
+                        image: AssetImage("assets/images/girl_reading.png"),
+                        fit: BoxFit.cover),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.white,
+                          blurRadius: 10,
+                          offset: Offset(0, 10))
+                    ])),
           ),
-          bottom: AppBar(actions: const []),
+          // bottom: AppBar(actions: const []),
         ),
         SliverList(
           delegate: SliverChildListDelegate([

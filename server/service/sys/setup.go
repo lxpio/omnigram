@@ -4,35 +4,22 @@ import (
 	"context"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lxpio/omnigram/server/conf"
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/middleware"
-
-	"github.com/lxpio/omnigram/server/store"
-	"gorm.io/gorm"
 )
 
 var (
-	orm     *gorm.DB
-	kv      store.KV
 	manager *ScannerManager
 )
 
 func Initialize(ctx context.Context) {
 	log.I(`Initialize sys service`)
-	orm = store.FileStore()
-	kv = store.GetKV()
-	cf := conf.GetConfig()
-	manager, _ = NewScannerManager(ctx, cf, kv, orm)
+
+	manager, _ = NewScannerManager(ctx)
 }
 
 // Setup reg router
 func Setup(router *gin.Engine) {
-
-	// if err := mng.Load(); err != nil {
-	// 	log.E(`load model failed: `, err.Error())
-	// 	os.Exit(1)
-	// }
 
 	oauthMD := middleware.Get(middleware.OathMD)
 

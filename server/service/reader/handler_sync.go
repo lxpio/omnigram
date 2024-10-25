@@ -1,7 +1,6 @@
 package reader
 
 import (
-	"encoding/json"
 	"io"
 
 	"github.com/gin-gonic/gin"
@@ -55,8 +54,10 @@ func syncFullHandle(c *gin.Context) {
 
 		if books, ok := <-bookChan; ok {
 
-			msg, _ := json.Marshal(books)
-			c.SSEvent("message", msg)
+			// msg, _ := json.Marshal(books)
+			c.SSEvent("message", books)
+			log.I("books", len(books))
+
 			return true
 		}
 		return false

@@ -11,7 +11,6 @@ import (
 
 var (
 	orm *gorm.DB
-	kv  store.KV
 
 	uploadPath string
 )
@@ -27,7 +26,7 @@ func Setup(router *gin.Engine) {
 
 	book.GET("/stats", GetBookStats)
 	book.GET("/index", Index)
-	book.GET("/search", SearchBook)
+	book.GET("/books", SearchBook)
 	book.GET("/recent", RecentBook)
 
 	book.GET("/fav", FavBookHandle)
@@ -46,9 +45,9 @@ func Setup(router *gin.Engine) {
 	router.GET("/img/covers/*book_cover_path", oauthMD, coverImageHandle)
 	// router.GET("/reader/books/:book_id/cover", oauthMD, coverImageByIDHandle)
 
-	router.GET("/sync/full", oauthMD, syncFullHandle) //同步全量数据
+	router.POST("/sync/full", oauthMD, syncFullHandle) //同步全量数据
 
-	router.GET("/sync/delta", oauthMD, syncDeltaHandle) //同步增量数据
+	router.POST("/sync/delta", oauthMD, syncDeltaHandle) //同步增量数据
 	// router.GET("/books/:book_id/delete", BookDelete)
 	// router.GET("/books/:book_id/edit", BookEdit)
 
@@ -60,7 +59,6 @@ func Setup(router *gin.Engine) {
 
 func Initialize(ctx context.Context) {
 
-	kv = store.GetKV()
 	orm = store.FileStore()
 
 }
