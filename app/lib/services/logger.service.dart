@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-
-
 import 'package:flutter/widgets.dart';
 
 import 'package:isar/isar.dart';
@@ -12,7 +10,7 @@ import 'package:omnigram/entities/isar_store.entity.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-/// [ImmichLogger] is a custom logger that is built on top of the [logging] package.
+/// [OmnigramLogger] is a custom logger that is built on top of the [logging] package.
 /// The logs are written to the database and onto console, using `debugPrint` method.
 ///
 /// The logs are deleted when exceeding the `maxLogEntries` (default 500) property
@@ -21,16 +19,12 @@ import 'package:share_plus/share_plus.dart';
 /// Logs can be shared by calling the `shareLogs` method, which will open a share dialog
 /// and generate a csv file.
 class OmnigramLogger {
-
-
-
   static final OmnigramLogger instance = OmnigramLogger._internal();
 
   OmnigramLogger._internal();
 
   late final Isar _db;
 
- 
   final maxLogEntries = 1024;
   // final Isar _db = Isar.getInstance()!;
   late List<LoggerMessage> _msgBuffer = [];
@@ -39,7 +33,7 @@ class OmnigramLogger {
   // factory OmnigramLogger() => _instance;
 
   void initialize(Isar db) async {
-    _db = db; 
+    _db = db;
     _removeOverflowMessages();
     final int levelId = IsarStore.get(StoreKey.logLevel, 5); // 5 is INFO
     Logger.root.level = Level.LEVELS[levelId];
@@ -49,8 +43,7 @@ class OmnigramLogger {
   set level(Level level) => Logger.root.level = level;
 
   List<LoggerMessage> get messages {
-    final inDb =
-        _db.loggerMessages.where().sortByIdDesc().findAll();
+    final inDb = _db.loggerMessages.where().sortByIdDesc().findAll();
     return _msgBuffer.isEmpty ? inDb : _msgBuffer.reversed.toList() + inDb;
   }
 
@@ -60,7 +53,8 @@ class OmnigramLogger {
       final numberOfEntryToBeDeleted = msgCount - maxLogEntries;
       _db.write(
         (db) => db.loggerMessages
-            .where().deleteAll(limit: numberOfEntryToBeDeleted),
+            .where()
+            .deleteAll(limit: numberOfEntryToBeDeleted),
       );
     }
   }
@@ -139,4 +133,3 @@ class OmnigramLogger {
     }
   }
 }
-

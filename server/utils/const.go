@@ -35,11 +35,13 @@ var (
 	ErrParseUserID = Response{Code: 1101, Message: `parse user id error`}
 
 	ErrUpdateM4tServerAddr = Response{Code: 1100, Message: `update m4t server address error`}
+
+	ErrInvalidKVType = Response{Code: 1200, Message: `invalid kv type`}
 )
 
 const (
 	//config 目录
-	ConfigBucket = `config`
+	// MetaBucket = `meta`
 
 	DBContextKey = `context_db_key`
 )

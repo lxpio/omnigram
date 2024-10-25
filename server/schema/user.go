@@ -21,9 +21,9 @@ type User struct {
 	Credential string `json:"credential" form:"credential" gorm:"type:varchar(100); comment:加密密码"`
 	Locked     bool   `json:"locked" form:"locked" gorm:"comment:用户是否被锁定"`
 	MFASwitch  int    `json:"mfa_switch" form:"mfa_switch" gorm:"column:mfa_switch;default:1;comment:mfa虚拟认证"`
-	CTime      int64  `json:"ctime" form:"ctime" gorm:"column:ctime;autoCreateTime;comment:创建时间"`
-	UTime      int64  `json:"utime" form:"utime" gorm:"column:utime;autoUpdateTime;comment:更新时间"`
-	ATime      int64  `json:"atime" form:"uatime" gorm:"column:atime;autoCreateTime;comment:访问时间"`
+	CTime      int64  `json:"ctime" form:"ctime" gorm:"column:ctime;autoCreateTime:milli;comment:创建时间"`
+	UTime      int64  `json:"utime" form:"utime" gorm:"column:utime;autoUpdateTime:milli;comment:更新时间"`
+	ATime      int64  `json:"atime" form:"uatime" gorm:"column:atime;autoCreateTime:milli;comment:访问时间"`
 }
 
 func (m *User) Masking() *User {
@@ -54,7 +54,7 @@ func AllUsers(store *gorm.DB) ([]User, error) {
 	var users []User
 	//获取用户基本信息
 
-	err := store.Select("id", "name", "mobile", "email", "role_id", "nick_name", "AvatarUrl", "locked").Limit(10).Find(&users).Error
+	err := store.Select("id", "name", "mobile", "email", "role_id", "nick_name", "AvatarUrl", "locked", "mfa_switch", "ctime", "atime").Limit(10).Find(&users).Error
 
 	return users, err
 
@@ -101,7 +101,7 @@ func (m *User) CreateSession(store *gorm.DB, UA, From, IP string) (*Session, err
 		FromUrl:   From,
 		RemoteIP:  IP,
 		Duration:  1800,
-		UTime:     time.Now().Unix(),
+		UTime:     time.Now().UnixMilli(),
 	}
 
 	err := session.Save(store)

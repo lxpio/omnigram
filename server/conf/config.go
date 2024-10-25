@@ -27,6 +27,8 @@ type Config struct {
 
 	MetaDataPath string `yaml:"metadata_path" json:"metadata_path"`
 
+	KVType KVType `yaml:"kv_type" json:"kv_type"`
+
 	M4tOptions M4tOptions `yaml:"m4t_options" json:"m4t_options"`
 
 	DBOption *Opt `yaml:"db_options" json:"db_options"`
@@ -75,6 +77,7 @@ func defaultConfig(path string) *Config {
 		APIAddr:      "0.0.0.0:8080",
 		LogLevel:     zapcore.InfoLevel,
 		LogDir:       "./logs",
+		KVType:       KVTypeBadgerDB,
 		MetaDataPath: "./metadata",
 		filePath:     path,
 	}

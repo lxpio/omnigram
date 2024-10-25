@@ -13,7 +13,7 @@ doc/DeltaSyncDto.md
 doc/DeltaSyncRespDto.md
 doc/EbookDto.md
 doc/EbookIndexDto.md
-doc/EbookListDto.md
+doc/EbookRespDto.md
 doc/EnableScanDto.md
 doc/FullSyncDto.md
 doc/LoginCredentialDto.md
@@ -50,7 +50,7 @@ lib/src/model/delta_sync_dto.dart
 lib/src/model/delta_sync_resp_dto.dart
 lib/src/model/ebook_dto.dart
 lib/src/model/ebook_index_dto.dart
-lib/src/model/ebook_list_dto.dart
+lib/src/model/ebook_resp_dto.dart
 lib/src/model/enable_scan_dto.dart
 lib/src/model/full_sync_dto.dart
 lib/src/model/login_credential_dto.dart
@@ -79,7 +79,7 @@ test/delta_sync_dto_test.dart
 test/delta_sync_resp_dto_test.dart
 test/ebook_dto_test.dart
 test/ebook_index_dto_test.dart
-test/ebook_list_dto_test.dart
+test/ebook_resp_dto_test.dart
 test/enable_scan_dto_test.dart
 test/full_sync_dto_test.dart
 test/login_credential_dto_test.dart

@@ -40,27 +40,29 @@ func initStore() *gorm.DB {
 
 func TestScanBooks(t *testing.T) {
 
-	cf := &conf.Config{
-		APIAddr:      "",
-		LogLevel:     0,
-		LogDir:       "",
-		DBOption:     &conf.Opt{},
-		MetaDataPath: basePath + `build`,
-		EpubOptions: conf.EpubOptions{
-			DataPath:           basePath + `build/epub`,
-			SaveCoverBesideSrc: false,
-			MaxEpubSize:        0,
-		},
-	}
+	// cf := &conf.Config{
+	// 	APIAddr:      "",
+	// 	LogLevel:     0,
+	// 	LogDir:       "",
+	// 	DBOption:     &conf.Opt{},
+	// 	MetaDataPath: basePath + `build`,
+	// 	EpubOptions: conf.EpubOptions{
+	// 		DataPath:           basePath + `build/epub`,
+	// 		SaveCoverBesideSrc: false,
+	// 		MaxEpubSize:        0,
+	// 	},
+	// }
 
+	// cf := conf.GetConfig()
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, os.Interrupt, syscall.SIGTERM)
 
 	log.I(`初始化扫描管理`)
 
-	kv, _ := store.OpenLocalDir(basePath + `build`)
+	// kv, _ := store.OpenLocalDir(basePath + `build`)
+	initStore()
 
-	manager, _ := NewScannerManager(context.TODO(), cf, kv, initStore())
+	manager, _ := NewScannerManager(context.TODO())
 
 	manager.Start(2, false)
 	ticker := time.NewTicker(3 * time.Second)

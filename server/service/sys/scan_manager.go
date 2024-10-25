@@ -3,16 +3,12 @@ package sys
 import (
 	"context"
 	"encoding/json"
-	"path/filepath"
 	"sync"
 
 	"github.com/lxpio/omnigram/server/conf"
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/schema"
 	"github.com/lxpio/omnigram/server/store"
-	"github.com/lxpio/omnigram/server/utils"
-	"github.com/nutsdb/nutsdb"
-	"gorm.io/gorm"
 )
 
 // const statsCachePath = `config`
@@ -30,9 +26,6 @@ type ScanStatus struct {
 type ScannerManager struct {
 	// cf *conf.Config
 	dataPath string
-	metaPath string
-	kv       store.KV
-	orm      *gorm.DB
 
 	ctx context.Context
 
@@ -44,28 +37,15 @@ type ScannerManager struct {
 	stats ScanStatus
 }
 
-func NewScannerManager(ctx context.Context, cf *conf.Config, kv store.KV, orm *gorm.DB) (*ScannerManager, error) {
+func NewScannerManager(ctx context.Context) (*ScannerManager, error) {
 
-	metapath := filepath.Join(cf.MetaDataPath, utils.ConfigBucket)
-
-	stats, err := loadLastScanStatus(metapath, orm)
-
-	if err != nil {
-		return nil, err
-	}
-
-	scanner := &ScannerManager{
-		dataPath: cf.EpubOptions.DataPath,
-		metaPath: metapath,
-		kv:       kv,
-		orm:      orm,
-		stats:    stats,
-		ctx:      ctx,
+	mng := &ScannerManager{
+		ctx: ctx,
 	}
 
 	//获取本地存储的状态
 	log.I(`扫描器初始化完成`)
-	return scanner, nil
+	return mng.load()
 }
 
 func (m *ScannerManager) IsRunning() bool {
@@ -110,7 +90,7 @@ func (m *ScannerManager) newScan(refresh bool) {
 	var ctx context.Context
 	ctx, m.cancelFunc = context.WithCancel(m.ctx)
 
-	scan, err := NewScan(ctx, m.dataPath, m.metaPath) //new scanner
+	scan, err := NewScan(ctx, m.dataPath) //new scanner
 
 	if err != nil {
 		m.Unlock()
@@ -121,7 +101,7 @@ func (m *ScannerManager) newScan(refresh bool) {
 	m.stats.Errs = nil
 	m.Unlock()
 
-	scan.Start(m, refresh)
+	scan.Start(refresh)
 }
 
 func (m *ScannerManager) Stop() {
@@ -141,53 +121,52 @@ func (m *ScannerManager) updateStatus(stats ScanStatus) {
 	m.Lock()
 	defer m.Unlock()
 	stats.Errs = append(stats.Errs, m.stats.Errs...)
-	// stats.Total = m.stats.Total + int64(m.stats.ScanCount)
+
 	m.stats = stats
 
 }
 
-func (m *ScannerManager) dumpStats(cached *nutsdb.DB) error {
+func (m *ScannerManager) dumpStatus(cached store.KV) error {
 
 	bytes, _ := json.Marshal(m.Status())
 
-	return cached.Update(
-		func(tx *nutsdb.Tx) error {
-			if err := tx.Put(`sys`, []byte(scanStatsKey), bytes, 0); err != nil {
-				return err
-			}
-			return nil
-		})
+	return cached.Put(m.ctx, `sys`, scanStatsKey, bytes)
 
 }
 
-func loadLastScanStatus(metapath string, orm *gorm.DB) (ScanStatus, error) {
+func updateStatus(stats ScanStatus) {
 
-	stats := ScanStatus{}
+	if manager != nil {
+		manager.updateStatus(stats)
+	}
+}
 
-	db, err := nutsdb.Open(
-		nutsdb.DefaultOptions,
-		nutsdb.WithDir(metapath),
-	)
+func dumpStatus() error {
 
+	if manager != nil {
+
+		return manager.dumpStatus(store.GetKV())
+	}
+	return nil
+}
+
+func (m *ScannerManager) load() (*ScannerManager, error) {
+	cf := conf.GetConfig()
+
+	m.dataPath = cf.EpubOptions.DataPath
+
+	m.stats = ScanStatus{}
+
+	e, err := store.GetKV().Get(m.ctx, `sys`, scanStatsKey)
 	if err != nil {
-		return stats, err
+		return m, err
 	}
 
-	defer db.Close()
+	if err = json.Unmarshal(e, &m.stats); err != nil {
+		return m, err
+	}
 
-	db.View(
-		func(tx *nutsdb.Tx) error {
+	m.stats.Total, err = schema.CountBook(store.FileStore())
 
-			e, err := tx.Get(`sys`, []byte(scanStatsKey))
-			if err != nil {
-				return err
-			}
-
-			return json.Unmarshal(e, &stats)
-
-		})
-
-	stats.Total, err = schema.CountBook(orm)
-
-	return stats, err
+	return m, err
 }

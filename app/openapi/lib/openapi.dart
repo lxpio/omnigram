@@ -22,7 +22,7 @@ export 'package:openapi/src/model/delta_sync_dto.dart';
 export 'package:openapi/src/model/delta_sync_resp_dto.dart';
 export 'package:openapi/src/model/ebook_dto.dart';
 export 'package:openapi/src/model/ebook_index_dto.dart';
-export 'package:openapi/src/model/ebook_list_dto.dart';
+export 'package:openapi/src/model/ebook_resp_dto.dart';
 export 'package:openapi/src/model/enable_scan_dto.dart';
 export 'package:openapi/src/model/full_sync_dto.dart';
 export 'package:openapi/src/model/login_credential_dto.dart';

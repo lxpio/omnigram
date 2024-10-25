@@ -16,7 +16,7 @@ type ReadProgress struct {
 
 	StartDate int64 `json:"start_date" gorm:"comment:阅读开始日期"`
 
-	UpdatedAt int64 `json:"updated_at" gorm:"autoUpdateTime,comment:阅读更新时间"`
+	UpdatedAt int64 `json:"updated_at" gorm:"autoUpdateTime:milli,comment:阅读更新时间"`
 	//预计完成日期
 	ExptEndDate int64 `json:"expt_end_date" gorm:"comment:预计完成日期"`
 	EndDate     int64 `json:"end_date" gorm:"comment:阅读结束日期"`
@@ -28,8 +28,8 @@ type ReadProgress struct {
 }
 
 func (p *ReadProgress) BeforeCreate(db *gorm.DB) error {
-	p.StartDate = time.Now().Unix()
-	p.ExptEndDate = time.Now().AddDate(0, 0, 15).Unix() //根据数据推测完成时间，
+	p.StartDate = time.Now().UnixMilli()
+	p.ExptEndDate = time.Now().AddDate(0, 0, 15).UnixMilli() //根据数据推测完成时间，
 
 	if p.BookID == `` || p.UserID == 0 {
 		return errors.New("book_id or user_id not set")
@@ -43,8 +43,8 @@ func NewReadProgress(bookID string, userID int64) *ReadProgress {
 		BookID:        bookID,
 		UserID:        userID,
 		Progress:      0,
-		StartDate:     time.Now().Unix(),
-		ExptEndDate:   time.Now().AddDate(0, 0, 15).Unix(), //根据数据推测完成时间，
+		StartDate:     time.Now().UnixMilli(),
+		ExptEndDate:   time.Now().AddDate(0, 0, 15).UnixMilli(), //根据数据推测完成时间，
 		EndDate:       0,
 		ProgressIndex: 0,
 	}
@@ -60,8 +60,8 @@ func (b *Book) CreateReadProcess(db *gorm.DB, userID int64) (*ReadProgress, erro
 		BookID:        b.ID,
 		UserID:        userID,
 		Progress:      0,
-		StartDate:     time.Now().Unix(),
-		ExptEndDate:   time.Now().AddDate(0, 0, 15).Unix(), //根据数据推测完成时间，
+		StartDate:     time.Now().UnixMilli(),
+		ExptEndDate:   time.Now().AddDate(0, 0, 15).UnixMilli(), //根据数据推测完成时间，
 		EndDate:       0,
 		ProgressIndex: 0,
 	}

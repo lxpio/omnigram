@@ -922,7 +922,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **readerBooksGet**
-> EbookListDto readerBooksGet(search, pageSize, pageNum, category, author)
+> EbookRespDto readerBooksGet(search, pageSize, pageNum, category, author)
 
 获取书籍列表
 
@@ -959,7 +959,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**EbookListDto**](EbookListDto.md)
+[**EbookRespDto**](EbookRespDto.md)
 
 ### Authorization
 
@@ -1016,7 +1016,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **readerFavGet**
-> EbookListDto readerFavGet(search, pageSize, pageNum, category, author)
+> EbookRespDto readerFavGet(search, pageSize, pageNum, category, author)
 
 喜欢的书
 
@@ -1053,7 +1053,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**EbookListDto**](EbookListDto.md)
+[**EbookRespDto**](EbookRespDto.md)
 
 ### Authorization
 
@@ -1112,7 +1112,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **readerRecentGet**
-> EbookListDto readerRecentGet(search, pageSize, pageNum, category, author)
+> EbookRespDto readerRecentGet(search, pageSize, pageNum, category, author)
 
 最近阅读
 
@@ -1149,7 +1149,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**EbookListDto**](EbookListDto.md)
+[**EbookRespDto**](EbookRespDto.md)
 
 ### Authorization
 
@@ -1278,7 +1278,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -1288,7 +1288,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **syncFullPost**
-> JsonObject syncFullPost(fullSyncDto)
+> BuiltList<EbookDto> syncFullPost(fullSyncDto)
 
 全量同步
 
@@ -1317,11 +1317,11 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**JsonObject**](JsonObject.md)
+[**BuiltList&lt;EbookDto&gt;**](EbookDto.md)
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 

@@ -1234,6 +1234,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.5.4+3"
+  sse_stream:
+    dependency: "direct main"
+    description:
+      name: sse_stream
+      sha256: "923059703dcb90489f8deda77ed23209dfa2bb49f83ce362d3fe406741b5e2b6"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.2"
   stack_trace:
     dependency: transitive
     description:

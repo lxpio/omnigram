@@ -69,6 +69,8 @@ func (m *App) GracefulStop() {
 	}
 	service.Close()
 
+	store.Close()
+
 }
 
 func (m *App) initGinRoute(level zapcore.Level) *gin.Engine {

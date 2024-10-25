@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/schema"
+	"github.com/lxpio/omnigram/server/store"
 	"github.com/lxpio/omnigram/server/utils"
 )
 
@@ -27,7 +28,7 @@ func coverImageHandle(c *gin.Context) {
 
 	log.I(`获取图片内容`, coverPath)
 
-	obj, err := kv.GetObject(context.TODO(), schema.GetCoverBucket(coverPath), coverPath)
+	obj, err := store.GetKV().Get(context.TODO(), schema.GetCoverBucket(coverPath), coverPath)
 
 	if err != nil {
 		log.E(`获取图片内容失败`, err.Error())
@@ -35,7 +36,7 @@ func coverImageHandle(c *gin.Context) {
 		return
 	}
 
-	c.Data(200, "image/"+ext, obj.Data)
+	c.Data(200, "image/"+ext, obj)
 
 }
 
@@ -92,7 +93,7 @@ func bookUploadHandle(c *gin.Context) {
 		return
 	}
 
-	if err := book.Save(context.Background(), orm, kv); err != nil {
+	if err := book.Save(context.Background()); err != nil {
 		log.E(`录入文档失败`, err)
 		c.JSON(http.StatusOK, utils.ErrSaveFile)
 		return

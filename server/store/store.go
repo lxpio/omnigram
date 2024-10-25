@@ -34,6 +34,21 @@ func Initialize(ctx context.Context) {
 
 }
 
+func Close() {
+	if kv != nil {
+		log.I(`关闭KV库`)
+		kv.Close()
+	}
+
+	if omniDB != nil {
+		// omniDB
+	}
+
+	if fileDB != nil {
+		// fileDB.Close()
+	}
+}
+
 func InitStore(cf *conf.Config) {
 
 	var err error
@@ -67,13 +82,15 @@ func InitStore(cf *conf.Config) {
 }
 
 func InitKV(cf *conf.Config) {
-	var err error
-	kv, err = OpenLocalDir(conf.GetConfig().MetaPath())
+	// var err error
+	db, err := NewKV(cf.KVType, cf.MetaPath())
 
 	if err != nil {
 		// path/to/whatever does not exist
 		panic(err)
 	}
+
+	kv = db
 }
 
 func GetKV() KV {

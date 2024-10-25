@@ -28,3 +28,13 @@ type Opt struct {
 	SSLMode  string        `yaml:"sslmode" json:"sslmode"`     // disable, varify-full //SSL选项
 	Args     string        `yaml:"args" json:"args"`           // charset=utf8 //额外选项
 }
+
+type KVType int
+
+const (
+	//索引和值都存储在本地磁盘
+	KVTypeLocalDisk = iota
+
+	//BadgerDB
+	KVTypeBadgerDB
+)

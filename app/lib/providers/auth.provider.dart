@@ -21,10 +21,9 @@ class Auth extends _$Auth {
 
   @override
   AuthState build() {
-
     debugPrint("create Auth");
 
-   return  AuthState(
+    return AuthState(
       deviceId: "",
       userId: 0,
       userEmail: "",
@@ -36,14 +35,10 @@ class Auth extends _$Auth {
     );
   }
 
-  
-
   Future<bool> login(
     String account,
     String password,
   ) async {
-
-
     try {
       // final deviceID = await FlutterUdid.consistentUdid;
       final api = ref.watch(apiServiceProvider);
@@ -169,7 +164,6 @@ class Auth extends _$Auth {
     // If the user information is successfully retrieved, update the store
     // Due to the flow of the code, this will always happen on first login
     if (userResponse != null) {
-
       user = User.fromUserDto(userResponse); //userPreferences
       await IsarStore.put(StoreKey.deviceId, deviceId);
       await IsarStore.put(StoreKey.deviceIdHash, fastHash(deviceId));
@@ -186,9 +180,7 @@ class Auth extends _$Auth {
         deviceId: deviceId,
       );
 
-    
       return true;
-    
     } else {
       // If the user is null, the login was not successful
       // and we don't have a local copy of the user from a prior successful login
@@ -205,7 +197,6 @@ class Auth extends _$Auth {
       );
       return false;
     }
-    
   }
 }
 
@@ -239,8 +230,7 @@ class AuthState {
     bool? shouldChangePassword,
     String? profileImagePath,
   }) {
-
-    final ret =  AuthState(
+    final ret = AuthState(
       deviceId: deviceId ?? this.deviceId,
       userId: userId ?? this.userId,
       userEmail: userEmail ?? this.userEmail,

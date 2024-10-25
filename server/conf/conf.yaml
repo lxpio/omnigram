@@ -9,6 +9,9 @@ log_dir: 'stdout'
 
 metadata_path: '/metadata'
 
+# kv_type 0: local_dir, 1: badgerdb
+kv_type: 1
+
 db_options:
   # driver: 'postgres'
   # driver: 'postgres'

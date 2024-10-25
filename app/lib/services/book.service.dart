@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:omnigram/entities/book.entity.dart';
@@ -15,11 +18,17 @@ class BookService {
   );
 
   Future<BookNav> getNavBook(int limit) async {
-    final recents = _db.bookEntitys.where().sortByCtimeDesc().findAll(limit: limit);
+    final recents =
+        _db.bookEntitys.where().sortByCtimeDesc().findAll(limit: limit);
 
-    final readings = _db.bookEntitys.where().sortByUtimeDesc().findAll(limit: limit);
+    final readings =
+        _db.bookEntitys.where().sortByUtimeDesc().findAll(limit: limit);
 
-    final likes = _db.bookEntitys.where().favStatusEqualTo(true).sortByUtimeDesc().findAll(limit: limit);
+    final likes = _db.bookEntitys
+        .where()
+        .favStatusEqualTo(true)
+        .sortByUtimeDesc()
+        .findAll(limit: limit);
 
     // final randoms =
     //     await _db.books.where().sortByRandom().limit(limit).findAll();
@@ -33,9 +42,12 @@ class BookService {
     return nav;
   }
 
-  Future<(List<BookEntity>? toUpsert, List<String>? toDelete)> getChangedBooks(int since) async {
+  Future<(List<BookEntity>? toUpsert, List<String>? toDelete)> getChangedBooks(
+      int since) async {
     try {
-      final fullSyncDto = FullSyncDto((d) => d..utime = since);
+      final fullSyncDto = FullSyncDto((d) => d
+        ..utime = since
+        ..limit = 500);
       final resp = await _apiService.syncDeltaPost(fullSyncDto: fullSyncDto);
 
       if (resp.statusCode != 200) {
@@ -47,7 +59,10 @@ class BookService {
 
       return changes.needFullSync
           ? (null, null)
-          : (changes.upserted.map((e) => BookEntity.remote(e)).toList(), changes.deleted.toList());
+          : (
+              changes.upserted.map((e) => BookEntity.remote(e)).toList(),
+              changes.deleted.toList()
+            );
     } catch (e) {
       log.severe('getChangedBooks', e);
       return (null, null);
@@ -55,18 +70,22 @@ class BookService {
   }
 
   Future<List<BookEntity>?> loadBooks(int userID, int until) async {
-    const int chunkSize = 10000;
-
     try {
-      final fullSyncDto = FullSyncDto((d) => d..utime = until);
-      final resp = await _apiService.syncFullPost(fullSyncDto: fullSyncDto);
+      final fullSyncDto = FullSyncDto((d) => d
+        ..utime = until
+        ..limit = 100);
 
-      if (resp.statusCode != 200) {
-        log.severe('loadBooks', resp.statusCode);
-        return null;
+      final List<BookEntity> result = [];
+      final bookStream = _apiService.syncFullPost(fullSyncDto: fullSyncDto);
+
+      await for (var data in bookStream) {
+        //save to local file
+        final books = data.map((e) => BookEntity.remote(e)).toList();
+
+        result.addAll(books);
       }
 
-      return resp.data!.items.map((e) => BookEntity.remote(e)).toList();
+      return result;
     } catch (e) {
       log.severe('loadBooks', e);
       return null;

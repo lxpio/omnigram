@@ -24,7 +24,7 @@ import 'package:openapi/src/model/delta_sync_dto.dart';
 import 'package:openapi/src/model/delta_sync_resp_dto.dart';
 import 'package:openapi/src/model/ebook_dto.dart';
 import 'package:openapi/src/model/ebook_index_dto.dart';
-import 'package:openapi/src/model/ebook_list_dto.dart';
+import 'package:openapi/src/model/ebook_resp_dto.dart';
 import 'package:openapi/src/model/enable_scan_dto.dart';
 import 'package:openapi/src/model/full_sync_dto.dart';
 import 'package:openapi/src/model/login_credential_dto.dart';
@@ -54,7 +54,7 @@ part 'serializers.g.dart';
   DeltaSyncRespDto,
   EbookDto,
   EbookIndexDto,
-  EbookListDto,
+  EbookRespDto,
   EnableScanDto,
   FullSyncDto,
   LoginCredentialDto,
@@ -72,6 +72,10 @@ part 'serializers.g.dart';
   UserDto,
 ])
 Serializers serializers = (_$serializers.toBuilder()
+      ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(EbookDto)]),
+        () => ListBuilder<EbookDto>(),
+      )
       ..addBuilderFactory(
         const FullType(BuiltList, [FullType(ApikeyDto)]),
         () => ListBuilder<ApikeyDto>(),

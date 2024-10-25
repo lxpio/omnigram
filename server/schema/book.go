@@ -97,12 +97,14 @@ type Book struct {
 	SeriesIndex string `json:",omitempty" gorm:"type:varchar(200);comment:用户标签列表"`
 	PublishDate string `json:"pubdate" gorm:"type:varchar(50);comment:用户标签列表"`
 
-	Rating float32 `json:"rating" gorm:"comment:用户标签列表"`
+	Rating float32 `json:"rating" gorm:"comment:评分"`
+
+	Tags Tags `json:"tags" gorm:"column:tags;type:text;comment:用户标签列表"`
 
 	PublisherURL string `json:"publisher_url" gorm:"type:varchar(255);comment:用户标签列表"`
 
-	CountVisit    int64 `json:"count_visit" gorm:"default:0;comment:用户标签列表"`
-	CountDownload int64 `json:"count_download" gorm:"default:0;comment:用户标签列表"`
+	CountVisit    int64 `json:"count_visit" gorm:"default:0;comment:访问次数"`
+	CountDownload int64 `json:"count_download" gorm:"default:0;comment:下载次数"`
 
 	//解析图片时临时存储封面图片数据
 	coverData []byte `json:"-" gorm:"-"`
@@ -264,6 +266,7 @@ func SearchBooks(store *gorm.DB, query *Query) (BookResp, error) {
 		count := int64(0)
 
 		if err := tx.Count(&count).Error; err != nil {
+
 			return resp, err
 		}
 		resp.Total = int(count)
@@ -286,20 +289,28 @@ func SyncFullBooks(store *gorm.DB, limit, until int64, fileType FileType) (<-cha
 
 	bookChan := make(chan []Book)
 
-	defer close(bookChan)
-
 	var books []Book
+	log.D(`开始获取书籍数据`)
 
-	result := db.FindInBatches(&books, int(limit), func(tx *gorm.DB, batch int) error {
-		bookChan <- books
-		return nil
-	})
+	go func() {
 
-	if result.Error != nil {
-		log.E("Error When get data:", result.Error)
-	} else {
-		log.D(`Completed get books all batches`)
-	}
+		defer close(bookChan)
+
+		result := db.FindInBatches(&books, int(limit), func(tx *gorm.DB, batch int) error {
+			log.D(`batch:`, batch)
+			bookChan <- books
+			return nil
+		})
+
+		log.D(`结束获取书籍数据`)
+		if result.Error != nil {
+			log.E("Error When get data:", result.Error)
+		} else {
+			log.D(`Completed get books all batches`)
+		}
+	}()
+
+	return bookChan, nil
 }
 
 // SyncDeltaBooks 模糊搜索书籍
@@ -342,11 +353,33 @@ func SyncDeltaBooks(store *gorm.DB, utime int64, fileType FileType) (interface{}
 // Create 存储图书元数据到数据库
 func (book *Book) Create(store *gorm.DB) error {
 
+	err := store.Transaction(func(tx *gorm.DB) error {
+
+		if err := tx.Clauses(clause.OnConflict{
+			Columns:   []clause.Column{{Name: "identifier"}},
+			DoNothing: true,
+		}).Create(book).Error; err != nil {
+			return err
+		}
+
+		if len(book.Tags) > 0 {
+			tags := make([]BookTagShip, len(book.Tags))
+
+			for i := 0; i < len(book.Tags); i++ {
+				tags[i] = BookTagShip{
+					BookID: book.ID,
+					Tag:    book.Tags[i],
+				}
+			}
+
+			return tx.Create(&tags).Error
+
+		}
+		return nil
+	})
+
 	//存储图书到数据库，如果唯一键 identifier 存在则忽略
-	return store.Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "identifier"}},
-		DoNothing: true,
-	}).Create(book).Error
+	return err
 
 }
 
@@ -412,7 +445,7 @@ func (m *Book) parseOPF(opf *epub.PackageDocument) {
 	mdata := opf.Metadata
 
 	m.Language = elt2FirstStr(mdata.Language)
-	// m.Tags = elt2str(mdata.Subject)
+	m.Tags = elt2str(mdata.Subject)
 	m.Description = elt2FirstStr(mdata.Description)
 	m.Publisher = elt2FirstStr(mdata.Publisher)
 
@@ -463,14 +496,17 @@ func (m *Book) parseOPF(opf *epub.PackageDocument) {
 
 }
 
-func (m *Book) Save(ctx context.Context, db *gorm.DB, kv store.KV) error {
+func (m *Book) Save(ctx context.Context) error {
 
+	db := store.FileStore()
 	//存储图书到数据库
 	//TODO 处理重复问题
 	if err := m.Create(db); err != nil {
 		log.E(`存储图书失败：`, err)
 		return errors.New(`文件：` + m.Path + ` 存储失败：` + err.Error())
 	}
+
+	kv := store.GetKV()
 
 	//创建bucket目录
 	if err := kv.CreateBucket(ctx, GetCoverBucket(m.Identifier)); err != nil {
@@ -481,15 +517,8 @@ func (m *Book) Save(ctx context.Context, db *gorm.DB, kv store.KV) error {
 
 	}
 
-	obj := &store.Object{
-		Key:          m.CoverKey(),
-		Size:         m.Size,
-		LastModified: m.CTime,
-		Data:         m.GetCoverData(),
-	}
-
 	//存储封面图片数据
-	if err := kv.PutObject(ctx, GetCoverBucket(m.Identifier), obj); err != nil {
+	if err := kv.Put(ctx, GetCoverBucket(m.Identifier), m.CoverKey(), m.GetCoverData()); err != nil {
 		log.E(`存储封面失败,`, m.Path, `失败：`, err.Error())
 		// return err
 	}
@@ -497,7 +526,7 @@ func (m *Book) Save(ctx context.Context, db *gorm.DB, kv store.KV) error {
 }
 
 func GetCoverBucket(input string) string {
-	return input[0:1]
+	return input[0:2]
 }
 
 func (m *Book) CoverKey() string {

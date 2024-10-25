@@ -21,19 +21,19 @@ func TestGetObject(t *testing.T) {
 	//is conf dir
 	kv, _ := OpenLocalDir(dir + `/../../`)
 
-	data, err := kv.GetObject(context.TODO(), "conf", "conf.yaml")
+	data, err := kv.Get(context.TODO(), "conf", "conf.yaml")
 
 	if err != nil {
 		t.Error(err)
 	}
 	println(`read from file`)
 
-	println(string(data.Data))
+	println(string(data))
 
 	//bytes to io.reader
-	reader := bytes.NewReader(data.Data)
+	reader := bytes.NewReader(data)
 
-	err = kv.UploadObject(context.TODO(), "conf", "conf2.yaml", reader)
+	err = kv.Upload(context.TODO(), "conf", "conf2.yaml", reader)
 
 	if err != nil {
 		t.Error(err)

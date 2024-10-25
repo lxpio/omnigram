@@ -1,5 +1,7 @@
 package utils
 
+import "fmt"
+
 type Response struct {
 	Code    int         `json:"code"`
 	Message string      `json:"message"`
@@ -14,6 +16,10 @@ func (r *Response) WithMessage(err string) *Response {
 func (r *Response) WithData(data interface{}) *Response {
 	r.Data = data
 	return r
+}
+
+func (r Response) Error() string {
+	return fmt.Sprintf("%d: %s", r.Code, r.Message)
 }
 
 type Query struct {

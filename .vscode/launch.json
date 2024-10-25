@@ -30,6 +30,19 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
+        },
+        {
+            "name": "server debug",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "cwd": "server",
+            "program": "${fileDirname}",
+            "args": [
+                "-conf",
+                "./build/omnigram-server-v0.0.1/conf/conf.yaml"
+            ],
         }
+
     ]
 }

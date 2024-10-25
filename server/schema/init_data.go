@@ -7,7 +7,6 @@ import (
 	"github.com/lxpio/omnigram/server/conf"
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/store"
-	"github.com/lxpio/omnigram/server/utils"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -94,14 +93,14 @@ func initReaderData() error {
 
 	//初始化上传文件目录
 	os.MkdirAll(filepath.Join(cf.EpubOptions.DataPath, `upload`), 0755)
-	os.MkdirAll(filepath.Join(cf.MetaDataPath, utils.ConfigBucket), 0755)
+	os.MkdirAll(cf.MetaPath(), 0755)
 
 	db := store.FileStore()
 
 	return db.Transaction(func(tx *gorm.DB) error {
 
 		//auotoMigrate
-		if err := tx.AutoMigrate(&Book{}, &FavBook{}, &ReadProgress{}); err != nil {
+		if err := tx.AutoMigrate(&Book{}, &BookTagShip{}, &FavBook{}, &ReadProgress{}); err != nil {
 
 			return err
 		}
