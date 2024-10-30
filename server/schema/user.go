@@ -100,7 +100,7 @@ func (m *User) CreateSession(store *gorm.DB, UA, From, IP string) (*Session, err
 		UserAgent: UA,
 		FromUrl:   From,
 		RemoteIP:  IP,
-		Duration:  1800,
+		Duration:  30 * time.Minute / time.Millisecond,
 		UTime:     time.Now().UnixMilli(),
 	}
 

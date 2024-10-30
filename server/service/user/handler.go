@@ -53,7 +53,7 @@ func loginHandle(c *gin.Context) {
 		DeviceType:  c.GetHeader(`x-device-type`),
 		DistrictId:  0,
 		FromUrl:     "",
-		Duration:    time.Minute * 60,
+		Duration:    time.Minute * 30 / time.Millisecond,
 		UserInfo:    u,
 	}
 
@@ -187,7 +187,7 @@ func getAccessTokenHandle(c *gin.Context) {
 		DeviceType:  c.GetHeader(`x-device-type`),
 		DistrictId:  0,
 		FromUrl:     "",
-		Duration:    time.Minute * 60,
+		Duration:    time.Minute * 30 / time.Millisecond,
 		UserInfo:    u,
 	}
 
@@ -209,7 +209,15 @@ func getAccessTokenHandle(c *gin.Context) {
 
 func getAPIKeysHandle(c *gin.Context) {
 
-	userID := c.GetInt64(middleware.XUserIDTag)
+	id := c.Param(`user_id`)
+
+	userID, err := strconv.ParseInt(id, 10, 64)
+
+	if err != nil || userID == 0 {
+		log.E(`从请求路径中获取获取用户ID失败：`, c.FullPath())
+		c.JSON(500, utils.ErrParseUserID)
+		return
+	}
 
 	log.D(`userID`, userID)
 

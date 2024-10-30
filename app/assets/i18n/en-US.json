@@ -45,6 +45,7 @@
   "password_error": "Please enter the correct password.",
   "next": "Next",
   "logout": "Logout",
+  "login": "Login",
   "settings": "Settings",
   "need_help": "Need help?",
   "usage": "Usage",

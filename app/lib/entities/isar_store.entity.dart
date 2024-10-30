@@ -1,4 +1,3 @@
-
 import 'package:collection/collection.dart';
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
@@ -12,8 +11,7 @@ part 'isar_store.entity.g.dart';
 class IsarStore {
   static final Logger _log = Logger("Store");
   static late final Isar _db;
-  static final List<dynamic> _cache =
-      List.filled(StoreKey.values.map((e) => e.id).max + 1, null);
+  static final List<dynamic> _cache = List.filled(StoreKey.values.map((e) => e.id).max + 1, null);
 
   /// Initializes the store (call exactly once per app start)
   static void init(Isar db) {
@@ -41,8 +39,7 @@ class IsarStore {
   }
 
   /// Watches a specific key for changes
-  static Stream<T?> watch<T>(StoreKey<T> key) =>
-      _db.storeValues.watchObject(key.id).map((e) => e?._extract(key));
+  static Stream<T?> watch<T>(StoreKey<T> key) => _db.storeValues.watchObject(key.id).map((e) => e?._extract(key));
 
   /// Returns the stored value for the given key (possibly null)
   static T? tryGet<T>(StoreKey<T> key) => _cache[key.id];
@@ -51,7 +48,7 @@ class IsarStore {
   static Future<void> put<T>(StoreKey<T> key, T value) async {
     if (_cache[key.id] == value) return Future.value();
     _cache[key.id] = value;
-    final data = await StoreValue._of(_db,value, key);
+    final data = await StoreValue._of(_db, value, key);
     return _db.writeAsync((db) async {
       db.storeValues.put(data);
     });
@@ -104,9 +101,7 @@ class StoreValue {
       case const (bool):
         return intValue == null ? null : (intValue! == 1) as T;
       case const (DateTime):
-        return intValue == null
-            ? null
-            : DateTime.fromMicrosecondsSinceEpoch(intValue!) as T;
+        return intValue == null ? null : DateTime.fromMicrosecondsSinceEpoch(intValue!) as T;
       case const (String):
         return strValue as T?;
       default:
@@ -117,7 +112,7 @@ class StoreValue {
     throw TypeError();
   }
 
-  static Future<StoreValue> _of<T>(Isar db ,T? value, StoreKey<T> key) async {
+  static Future<StoreValue> _of<T>(Isar db, T? value, StoreKey<T> key) async {
     int? i;
     String? s;
     switch (key.type) {
@@ -144,7 +139,6 @@ class StoreValue {
   }
 }
 
-
 class StoreKeyNotFoundException implements Exception {
   final StoreKey key;
   StoreKeyNotFoundException(this.key);
@@ -152,16 +146,15 @@ class StoreKeyNotFoundException implements Exception {
   String toString() => "Key '${key.name}' not found in Store";
 }
 
-
 /// Key for each possible value in the `Store`.
 /// Defines the data type for each value
 enum StoreKey<T> {
   version<int>(0, type: int),
   assetETag<String>(1, type: String),
-  currentUser<User>(2, type: User, fromDb: _getUser,toDb: _toUser),
+  currentUser<User>(2, type: User, fromDb: _getUser, toDb: _toUser),
   deviceIdHash<int>(3, type: int),
   deviceId<String>(4, type: String),
-  serverUrl<String>(10, type: String),
+  // serverUrl<String>(10, type: String),
   accessToken<String>(11, type: String),
   serverEndpoint<String>(12, type: String),
   sslClientCertData<String>(15, type: String),

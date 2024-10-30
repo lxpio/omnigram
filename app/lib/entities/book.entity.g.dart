@@ -136,6 +136,10 @@ const BookEntitySchema = IsarGeneratedSchema(
         name: 'paraPosition',
         type: IsarType.long,
       ),
+      IsarPropertySchema(
+        name: 'atime',
+        type: IsarType.long,
+      ),
     ],
     indexes: [
       IsarIndexSchema(
@@ -314,6 +318,7 @@ int serializeBookEntity(IsarWriter writer, BookEntity object) {
   IsarCore.writeDouble(writer, 27, object.progress ?? double.nan);
   IsarCore.writeLong(writer, 28, object.progressIndex ?? -9223372036854775808);
   IsarCore.writeLong(writer, 29, object.paraPosition ?? -9223372036854775808);
+  IsarCore.writeLong(writer, 30, object.atime ?? -9223372036854775808);
   return object.id;
 }
 
@@ -442,6 +447,15 @@ BookEntity deserializeBookEntity(IsarReader reader) {
       _paraPosition = value;
     }
   }
+  final int? _atime;
+  {
+    final value = IsarCore.readLong(reader, 30);
+    if (value == -9223372036854775808) {
+      _atime = null;
+    } else {
+      _atime = value;
+    }
+  }
   final object = BookEntity(
     id: _id,
     remoteId: _remoteId,
@@ -473,6 +487,7 @@ BookEntity deserializeBookEntity(IsarReader reader) {
     progress: _progress,
     progressIndex: _progressIndex,
     paraPosition: _paraPosition,
+    atime: _atime,
   );
   return object;
 }
@@ -603,6 +618,15 @@ dynamic deserializeBookEntityProp(IsarReader reader, int property) {
           return value;
         }
       }
+    case 30:
+      {
+        final value = IsarCore.readLong(reader, 30);
+        if (value == -9223372036854775808) {
+          return null;
+        } else {
+          return value;
+        }
+      }
     default:
       throw ArgumentError('Unknown property: $property');
   }
@@ -640,6 +664,7 @@ sealed class _BookEntityUpdate {
     double? progress,
     int? progressIndex,
     int? paraPosition,
+    int? atime,
   });
 }
 
@@ -680,6 +705,7 @@ class _BookEntityUpdateImpl implements _BookEntityUpdate {
     Object? progress = ignore,
     Object? progressIndex = ignore,
     Object? paraPosition = ignore,
+    Object? atime = ignore,
   }) {
     return collection.updateProperties([
           id
@@ -713,6 +739,7 @@ class _BookEntityUpdateImpl implements _BookEntityUpdate {
           if (progress != ignore) 27: progress as double?,
           if (progressIndex != ignore) 28: progressIndex as int?,
           if (paraPosition != ignore) 29: paraPosition as int?,
+          if (atime != ignore) 30: atime as int?,
         }) >
         0;
   }
@@ -750,6 +777,7 @@ sealed class _BookEntityUpdateAll {
     double? progress,
     int? progressIndex,
     int? paraPosition,
+    int? atime,
   });
 }
 
@@ -790,6 +818,7 @@ class _BookEntityUpdateAllImpl implements _BookEntityUpdateAll {
     Object? progress = ignore,
     Object? progressIndex = ignore,
     Object? paraPosition = ignore,
+    Object? atime = ignore,
   }) {
     return collection.updateProperties(id, {
       if (remoteId != ignore) 1: remoteId as String?,
@@ -821,6 +850,7 @@ class _BookEntityUpdateAllImpl implements _BookEntityUpdateAll {
       if (progress != ignore) 27: progress as double?,
       if (progressIndex != ignore) 28: progressIndex as int?,
       if (paraPosition != ignore) 29: paraPosition as int?,
+      if (atime != ignore) 30: atime as int?,
     });
   }
 }
@@ -862,6 +892,7 @@ sealed class _BookEntityQueryUpdate {
     double? progress,
     int? progressIndex,
     int? paraPosition,
+    int? atime,
   });
 }
 
@@ -902,6 +933,7 @@ class _BookEntityQueryUpdateImpl implements _BookEntityQueryUpdate {
     Object? progress = ignore,
     Object? progressIndex = ignore,
     Object? paraPosition = ignore,
+    Object? atime = ignore,
   }) {
     return query.updateProperties(limit: limit, {
       if (remoteId != ignore) 1: remoteId as String?,
@@ -933,6 +965,7 @@ class _BookEntityQueryUpdateImpl implements _BookEntityQueryUpdate {
       if (progress != ignore) 27: progress as double?,
       if (progressIndex != ignore) 28: progressIndex as int?,
       if (paraPosition != ignore) 29: paraPosition as int?,
+      if (atime != ignore) 30: atime as int?,
     });
   }
 }
@@ -981,6 +1014,7 @@ class _BookEntityQueryBuilderUpdateImpl implements _BookEntityQueryUpdate {
     Object? progress = ignore,
     Object? progressIndex = ignore,
     Object? paraPosition = ignore,
+    Object? atime = ignore,
   }) {
     final q = query.build();
     try {
@@ -1014,6 +1048,7 @@ class _BookEntityQueryBuilderUpdateImpl implements _BookEntityQueryUpdate {
         if (progress != ignore) 27: progress as double?,
         if (progressIndex != ignore) 28: progressIndex as int?,
         if (paraPosition != ignore) 29: paraPosition as int?,
+        if (atime != ignore) 30: atime as int?,
       });
     } finally {
       q.close();
@@ -5614,6 +5649,100 @@ extension BookEntityQueryFilter
       );
     });
   }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> atimeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 30));
+    });
+  }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> atimeIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 30));
+    });
+  }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> atimeEqualTo(
+    int? value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 30,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> atimeGreaterThan(
+    int? value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 30,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition>
+      atimeGreaterThanOrEqualTo(
+    int? value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 30,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> atimeLessThan(
+    int? value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 30,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition>
+      atimeLessThanOrEqualTo(
+    int? value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 30,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> atimeBetween(
+    int? lower,
+    int? upper,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 30,
+          lower: lower,
+          upper: upper,
+        ),
+      );
+    });
+  }
 }
 
 extension BookEntityQueryObject
@@ -6151,6 +6280,18 @@ extension BookEntityQuerySortBy
       return query.addSortBy(29, sort: Sort.desc);
     });
   }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> sortByAtime() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(30);
+    });
+  }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> sortByAtimeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(30, sort: Sort.desc);
+    });
+  }
 }
 
 extension BookEntityQuerySortThenBy
@@ -6552,6 +6693,18 @@ extension BookEntityQuerySortThenBy
       return query.addSortBy(29, sort: Sort.desc);
     });
   }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> thenByAtime() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(30);
+    });
+  }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterSortBy> thenByAtimeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(30, sort: Sort.desc);
+    });
+  }
 }
 
 extension BookEntityQueryWhereDistinct
@@ -6751,6 +6904,12 @@ extension BookEntityQueryWhereDistinct
       return query.addDistinctBy(29);
     });
   }
+
+  QueryBuilder<BookEntity, BookEntity, QAfterDistinct> distinctByAtime() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(30);
+    });
+  }
 }
 
 extension BookEntityQueryProperty1
@@ -6932,6 +7091,12 @@ extension BookEntityQueryProperty1
   QueryBuilder<BookEntity, int?, QAfterProperty> paraPositionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(29);
+    });
+  }
+
+  QueryBuilder<BookEntity, int?, QAfterProperty> atimeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(30);
     });
   }
 }
@@ -7116,6 +7281,12 @@ extension BookEntityQueryProperty2<R>
   QueryBuilder<BookEntity, (R, int?), QAfterProperty> paraPositionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(29);
+    });
+  }
+
+  QueryBuilder<BookEntity, (R, int?), QAfterProperty> atimeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(30);
     });
   }
 }
@@ -7304,6 +7475,12 @@ extension BookEntityQueryProperty3<R1, R2>
   QueryBuilder<BookEntity, (R1, R2, int?), QOperations> paraPositionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(29);
+    });
+  }
+
+  QueryBuilder<BookEntity, (R1, R2, int?), QOperations> atimeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(30);
     });
   }
 }

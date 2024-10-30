@@ -73,6 +73,8 @@ class BookEntity {
 
   final int? paraPosition;
 
+  final int? atime; //最后阅读时间
+
   BookEntity({
     required this.id,
     this.remoteId,
@@ -104,6 +106,7 @@ class BookEntity {
     this.progress,
     this.progressIndex,
     this.paraPosition,
+    this.atime,
   });
 
   BookEntity copyWith({
@@ -137,6 +140,7 @@ class BookEntity {
     double? progress,
     int? progressIndex,
     int? paraPosition,
+    int? atime,
   }) {
     return BookEntity(
       id: id ?? this.id,
@@ -169,6 +173,7 @@ class BookEntity {
       progress: progress ?? this.progress,
       progressIndex: progressIndex ?? this.progressIndex,
       paraPosition: paraPosition ?? this.paraPosition,
+      atime: atime ?? this.atime,
     );
   }
 
@@ -204,6 +209,7 @@ class BookEntity {
       'progress': progress,
       'progressIndex': progressIndex,
       'paraPosition': paraPosition,
+      'atime': atime,
     };
   }
 
@@ -227,24 +233,32 @@ class BookEntity {
       category: map['category'] != null ? map['category'] as String : null,
       author: map['author'] != null ? map['author'] as String : null,
       authorUrl: map['authorUrl'] != null ? map['authorUrl'] as String : null,
-      authorSort: map['authorSort'] != null ? map['authorSort'] as String : null,
+      authorSort:
+          map['authorSort'] != null ? map['authorSort'] as String : null,
       publisher: map['publisher'] != null ? map['publisher'] as String : null,
-      description: map['description'] != null ? map['description'] as String : null,
+      description:
+          map['description'] != null ? map['description'] as String : null,
       pubdate: map['pubdate'] != null ? map['pubdate'] as String : null,
       rating: map['rating'] != null ? map['rating'] as double : null,
-      publisherUrl: map['publisherUrl'] != null ? map['publisherUrl'] as String : null,
+      publisherUrl:
+          map['publisherUrl'] != null ? map['publisherUrl'] as String : null,
       favStatus: map['favStatus'] as bool,
       countVisit: map['countVisit'] != null ? map['countVisit'] as int : null,
-      countDownload: map['countDownload'] != null ? map['countDownload'] as int : null,
+      countDownload:
+          map['countDownload'] != null ? map['countDownload'] as int : null,
       progress: map['progress'] != null ? map['progress'] as double : null,
-      progressIndex: map['progressIndex'] != null ? map['progressIndex'] as int : null,
-      paraPosition: map['paraPosition'] != null ? map['paraPosition'] as int : null,
+      progressIndex:
+          map['progressIndex'] != null ? map['progressIndex'] as int : null,
+      paraPosition:
+          map['paraPosition'] != null ? map['paraPosition'] as int : null,
+      atime: map['atime'] != null ? map['atime'] as int : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory BookEntity.fromJson(String source) => BookEntity.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory BookEntity.fromJson(String source) =>
+      BookEntity.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
@@ -313,7 +327,9 @@ class BookEntity {
   bool canUpdate(BookEntity a) {
     assert(identifier == a.identifier);
 
-    return (a.utime ?? 0) > (utime ?? 0) || a.isRemote && !isRemote || a.isLocal && !isLocal;
+    return (a.utime ?? 0) > (utime ?? 0) ||
+        a.isRemote && !isRemote ||
+        a.isLocal && !isLocal;
   }
 
   BookEntity.remote(EbookDto ebookDto)
@@ -346,13 +362,15 @@ class BookEntity {
         countDownload = ebookDto.countDownload,
         progress = ebookDto.progress?.toDouble(),
         progressIndex = ebookDto.progressIndex,
-        paraPosition = ebookDto.paraPosition;
+        paraPosition = ebookDto.paraPosition,
+        atime = ebookDto.atime;
 
   void put(Isar db) {
     db.bookEntitys.put(this);
   }
 
-  static int compareByChecksum(BookEntity a, BookEntity b) => a.identifier.compareTo(b.identifier);
+  static int compareByChecksum(BookEntity a, BookEntity b) =>
+      a.identifier.compareTo(b.identifier);
 }
 
 /// Describes where the information of this asset came from:

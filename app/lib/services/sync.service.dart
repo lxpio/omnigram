@@ -3,8 +3,13 @@ import 'package:logging/logging.dart';
 import 'package:omnigram/entities/book.entity.dart';
 import 'package:omnigram/entities/etag.entity.dart';
 import 'package:omnigram/entities/isar_store.entity.dart';
-import 'package:omnigram/providers/api.provider.dart';
+import 'package:omnigram/providers/db.provider.dart';
 import 'package:omnigram/utils/diff.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+final syncServiceProvider = Provider(
+  (ref) => SyncService(ref.watch(dbProvider)),
+);
 
 class SyncService {
   final log = Logger('SyncService');
@@ -12,6 +17,7 @@ class SyncService {
 
   SyncService(this._db);
 
+  // syncBooksToDB 同步远端的书籍到本地，这里通过传递函数参数来获取远端书籍的变化和加载远端书籍，因为考虑到远端可能是API Server ，或者云盘等
   Future<void> syncBooksToDB(
     Future<(List<BookEntity>? toUpsert, List<String>? toDelete)> Function(int since) getChangedAssets,
     Future<List<BookEntity>?> Function(int userID, int since) loadAssets,
@@ -20,15 +26,13 @@ class SyncService {
 
     final currentUser = IsarStore.get(StoreKey.currentUser);
 
-    final since = _db.eTags.get(currentUser.id)?.utime ?? 0;
-
-    await _syncRemoteAssetChanges(getChangedAssets) ??
-        await _syncRemoteAssetsForUser(currentUser.id, since, loadAssets);
+    // await _syncRemoteAssetChanges(getChangedAssets) ??
+    await _syncRemoteAssetsForUser(currentUser.id, loadAssets);
   }
 
   /// Deletes remote-only assets, updates merged assets to be local-only
   Future<void> handleRemoteAssetRemoval(List<String> idsToDelete) {
-    return _db.writeAsync((db) async {
+    _db.write((db) {
       //查找所有需要删除的本地文件ID列表（ID在idsToDelete中，同时有没有本地文件）
       final idsToRemove = db.bookEntitys.remote(idsToDelete).localPathIsNotNull().idProperty().findAll();
 
@@ -41,6 +45,7 @@ class SyncService {
         db.bookEntitys.putAll(onlyLocal);
       }
     });
+    return Future.value();
   }
 
   /// Inserts or updates the assets in the database with their ExifInfo (if any)
@@ -50,10 +55,9 @@ class SyncService {
     }
 
     try {
-      await _db.writeAsync((db) async {
-        final exifInfos = books.map((e) => e.id == 0 ? e.copyWith(id: db.bookEntitys.autoIncrement()) : e).toList();
-
-        _db.bookEntitys.putAll(exifInfos);
+      _db.write((isar) {
+        final exifInfos = books.map((e) => e.id == 0 ? e.copyWith(id: _db.bookEntitys.autoIncrement()) : e).toList();
+        isar.bookEntitys.putAll(exifInfos);
       });
       log.info("Upserted ${books.length} assets into the DB");
     } on IsarError catch (e) {
@@ -70,13 +74,13 @@ class SyncService {
     final currentUser = IsarStore.get(StoreKey.currentUser);
 
     final since = _db.eTags.get(currentUser.id)?.utime;
-
+    log.severe("Syncing remote assets via changes", since);
     if (since == null) return null;
 
     final (toUpsert, toDelete) = await getChangedAssets(since);
 
     if (toUpsert == null || toDelete == null) {
-      await _clearUserAssetsETag(currentUser.id);
+      await _clearUserBooksETag(currentUser.id);
       return null;
     }
     try {
@@ -120,12 +124,11 @@ class SyncService {
 
   Future<bool> _syncRemoteAssetsForUser(
     int userId,
-    int utime,
-    Future<List<BookEntity>?> Function(int userId, int since) loadAssets,
+    Future<List<BookEntity>?> Function(int userId, int until) loadAssets,
   ) async {
     final now = DateTime.now().millisecondsSinceEpoch;
 
-    final List<BookEntity>? remote = await loadAssets(userId, utime);
+    final List<BookEntity>? remote = await loadAssets(userId, now);
     if (remote == null) {
       return false;
     }
@@ -143,7 +146,7 @@ class SyncService {
     }
     final idsToDelete = toRemove.map((e) => e.id).toList();
     try {
-      await _db.writeAsync((db) => db.bookEntitys.deleteAll(idsToDelete));
+      _db.write((db) => db.bookEntitys.deleteAll(idsToDelete));
       await upsertBooks(toAdd + toUpdate);
     } on IsarError catch (e) {
       log.severe("Failed to sync remote assets to db", e);
@@ -152,12 +155,12 @@ class SyncService {
     return true;
   }
 
-  Future<void> _clearUserAssetsETag(int id) async {
-    return _db.writeAsync((db) => db.eTags.delete(id));
+  Future<void> _clearUserBooksETag(int id) async {
+    return _db.write((db) => db.eTags.delete(id));
   }
 
   Future<void> _updateUserBooksETag(int id, int utime) async {
-    return _db.writeAsync((db) {
+    return _db.write((db) {
       final etag = db.eTags.get(id) ?? ETag(id: id, utime: utime);
       db.eTags.put(etag.copyWith(utime: utime));
     });

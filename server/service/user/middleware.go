@@ -76,11 +76,14 @@ func handleSession(c *gin.Context, sess string) {
 		return
 	}
 	//校验session 合法性
+
 	//获取相对时间
-	diff := (time.Now().UnixMilli() - session.UTime)
+	diff := session.UTime + int64(session.Duration) - time.Now().UnixMilli()
 	// diff := time.Since(session.UTime) / 1000 / 1000 / 1000
 
-	if diff-int64(session.Duration) > 0 {
+	log.D(`session 有效时间: `, diff, ` duration `)
+
+	if diff < 0 {
 
 		log.E(`session has expired `, session.Session)
 		// 删除
@@ -91,7 +94,8 @@ func handleSession(c *gin.Context, sess string) {
 	}
 
 	//session 有效时间小于1分钟 刷新session
-	if diff > 60 {
+
+	if diff < 60*1000 { //60s
 
 		if err := store.Store().Table(`sessions`).Where(`session = ?`, session.Session).Update(`utime`, time.Now().UnixMilli()).Error; err != nil {
 			log.E("刷新session失败: ", err)

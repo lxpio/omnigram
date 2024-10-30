@@ -13,7 +13,7 @@ type APIToken struct {
 	Name   string `json:"name" form:"name" gorm:"type:varchar(255);comment:API 名称"`
 	APIKey string `json:"api_key" form:"api_key" gorm:"type:char(40);uniqueIndex;comment:API Key"`
 	UserID int64  `json:"user_id" form:"user_id" gorm:"column:user_id;type:int8;comment:用户ID"`
-	Ctime  int64  `json:"ctime" form:"ctime" gorm:"column:ctime;autoCreateTime;comment:创建时间"`
+	Ctime  int64  `json:"ctime" form:"ctime" gorm:"column:ctime;autoCreateTime:milli;comment:创建时间"`
 }
 
 // gen random string Key with length 32

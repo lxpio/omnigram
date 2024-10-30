@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/entities/book.entity.dart';
+import 'package:omnigram/entities/isar_store.entity.dart';
 import 'package:transparent_image/transparent_image.dart';
-
 
 class BookCard extends HookConsumerWidget {
   const BookCard({
@@ -20,7 +20,9 @@ class BookCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-  
+    if (kDebugMode) {
+      debugPrint('build book card ${book.title}');
+    }
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -44,24 +46,7 @@ class BookCard extends HookConsumerWidget {
                   ),
                   height: height * .7,
                   width: width * 1,
-                  child: book.coverUrl == null ? FadeInImage(
-                          placeholder: MemoryImage(kTransparentImage),
-                          image: const AssetImage('TODO image url'),
-                          // image: NetworkImage(
-                          //   appConfig.baseUrl + book.image,
-                          //   headers: {
-                          //     "Authorization": "Bearer ${appConfig.token}"
-                          //   },
-                          // ),
-                          fit: BoxFit.fill,
-                          imageErrorBuilder: (context, error, stackTrace) {
-                            if (kDebugMode) {
-                              print('get image failed: $error');
-                            }
-                            return const Icon(Icons.error);
-                          },
-                        )
-                      : Text(book.title),
+                  child: bookImage(book),
                 ),
                 Container(
                   decoration: BoxDecoration(
@@ -87,27 +72,23 @@ class BookCard extends HookConsumerWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            book.title,
-                            style: Theme.of(context).textTheme.titleSmall,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                          const SizedBox(height: 10),
-                          if (book.progress != null && book.progress! > 0)
-                            LinearProgressIndicator(
-                              value: book
-                                  .progress, // Change this value to represent the progress
-                              valueColor: const AlwaysStoppedAnimation<Color>(
-                                  Colors.grey), // Set to gray
-                              backgroundColor: Colors.grey[300],
-                              // color:,
-                              // style: TextStyle(color: Colors.white, fontSize: 14),
-                            )
-                        ]),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(
+                        book.title,
+                        style: Theme.of(context).textTheme.titleSmall,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      const SizedBox(height: 10),
+                      if (book.progress != null && book.progress! > 0)
+                        LinearProgressIndicator(
+                          value: book.progress, // Change this value to represent the progress
+                          valueColor: const AlwaysStoppedAnimation<Color>(Colors.grey), // Set to gray
+                          backgroundColor: Colors.grey[300],
+                          // color:,
+                          // style: TextStyle(color: Colors.white, fontSize: 14),
+                        )
+                    ]),
                   ),
                 ],
               ),
@@ -116,5 +97,29 @@ class BookCard extends HookConsumerWidget {
         ),
       ),
     );
+  }
+
+  Widget? bookImage(BookEntity book) {
+    if (book.coverUrl != null && book.coverUrl!.isNotEmpty) {
+      final endpoint = IsarStore.get(StoreKey.serverEndpoint);
+      final token = IsarStore.tryGet(StoreKey.accessToken);
+
+      return FadeInImage(
+        placeholder: MemoryImage(kTransparentImage),
+        image: NetworkImage(
+          '$endpoint/img/covers/${book.identifier}${book.coverUrl!}',
+          headers: {"Authorization": "Bearer $token"},
+        ),
+        fit: BoxFit.fill,
+        imageErrorBuilder: (context, error, stackTrace) {
+          if (kDebugMode) {
+            print('get image failed: $error');
+          }
+          return Center(child: Text(book.title));
+        },
+      );
+    }
+
+    return Text(book.title);
   }
 }
