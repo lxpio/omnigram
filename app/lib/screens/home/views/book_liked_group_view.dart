@@ -2,30 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/entities/book.entity.dart';
+import 'package:omnigram/providers/book.provider.dart';
 import 'package:omnigram/utils/constants.dart';
 
-import 'book_card_view.dart';
+import '../../reader/views/book_card_view.dart';
 
-class BookReadingGroup extends HookConsumerWidget {
-  const BookReadingGroup(this.title, this.viewmore, this.books, {super.key});
+class BookGroup extends HookConsumerWidget {
+  const BookGroup(this.title, this.viewmore, this.query, {super.key});
 
   final String title;
   final String viewmore;
-  final List<BookEntity>? books;
+  final BookQuery query;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // return Container();
+    final state = ref.watch(booksProvider(query));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         ListTile(
           title: Text(
             title,
-            style: TextStyle(
-                color: Colors.grey[700],
-                fontSize: 18,
-                fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.grey[700], fontSize: 18, fontWeight: FontWeight.bold),
           ),
           trailing: Text(
             viewmore,
@@ -42,10 +41,10 @@ class BookReadingGroup extends HookConsumerWidget {
           // child: ListView.builder(itemBuilder: itemBuilder, itemCount: books.length),
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: books?.length ?? 0,
+            itemCount: state.items.length,
             itemBuilder: (context, index) {
-              if (books != null && index < books!.length) {
-                final book = books![index];
+              if (index < state.items.length) {
+                final book = state.items[index];
 
                 return GestureDetector(
                     child: Container(

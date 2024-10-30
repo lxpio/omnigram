@@ -142,5 +142,10 @@ void main() {
       // TODO
     });
 
+    // int atime
+    test('to test the property `atime`', () async {
+      // TODO
+    });
+
   });
 }

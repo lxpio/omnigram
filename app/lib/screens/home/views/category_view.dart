@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,9 +12,20 @@ class CategoryData {
 }
 
 class CategoryGroup extends HookConsumerWidget {
-  const CategoryGroup(this.categorys, {super.key});
+  CategoryGroup({super.key});
 
-  final List<CategoryData>? categorys;
+  // final List<CategoryData>? categorys;
+
+  final List<CategoryData> categorys = [
+    CategoryData(Icon(Icons.book), 'category1 one '.tr()),
+    CategoryData(Icon(Icons.book), 'category1  '.tr()),
+    CategoryData(Icon(Icons.book), 'shot'.tr()),
+    CategoryData(Icon(Icons.book), 'loooooooooooooong'.tr()),
+    CategoryData(Icon(Icons.book), 'category1'.tr()),
+    CategoryData(Icon(Icons.book), 'category1'.tr()),
+    CategoryData(Icon(Icons.book), 'category1'.tr()),
+    CategoryData(Icon(Icons.book), 'category1'.tr())
+  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

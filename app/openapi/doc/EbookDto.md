@@ -35,6 +35,7 @@ Name | Type | Description | Notes
 **progress** | **num** |  | [optional] 
 **progressIndex** | **int** |  | [optional] 
 **paraPosition** | **int** |  | [optional] 
+**atime** | **int** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

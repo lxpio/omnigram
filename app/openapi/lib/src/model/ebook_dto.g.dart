@@ -61,6 +61,8 @@ class _$EbookDto extends EbookDto {
   final int? progressIndex;
   @override
   final int? paraPosition;
+  @override
+  final int? atime;
 
   factory _$EbookDto([void Function(EbookDtoBuilder)? updates]) =>
       (new EbookDtoBuilder()..update(updates))._build();
@@ -92,7 +94,8 @@ class _$EbookDto extends EbookDto {
       this.countDownload,
       this.progress,
       this.progressIndex,
-      this.paraPosition})
+      this.paraPosition,
+      this.atime})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(id, r'EbookDto', 'id');
     BuiltValueNullFieldError.checkNotNull(title, r'EbookDto', 'title');
@@ -137,7 +140,8 @@ class _$EbookDto extends EbookDto {
         countDownload == other.countDownload &&
         progress == other.progress &&
         progressIndex == other.progressIndex &&
-        paraPosition == other.paraPosition;
+        paraPosition == other.paraPosition &&
+        atime == other.atime;
   }
 
   @override
@@ -170,6 +174,7 @@ class _$EbookDto extends EbookDto {
     _$hash = $jc(_$hash, progress.hashCode);
     _$hash = $jc(_$hash, progressIndex.hashCode);
     _$hash = $jc(_$hash, paraPosition.hashCode);
+    _$hash = $jc(_$hash, atime.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -203,7 +208,8 @@ class _$EbookDto extends EbookDto {
           ..add('countDownload', countDownload)
           ..add('progress', progress)
           ..add('progressIndex', progressIndex)
-          ..add('paraPosition', paraPosition))
+          ..add('paraPosition', paraPosition)
+          ..add('atime', atime))
         .toString();
   }
 }
@@ -321,6 +327,10 @@ class EbookDtoBuilder implements Builder<EbookDto, EbookDtoBuilder> {
   int? get paraPosition => _$this._paraPosition;
   set paraPosition(int? paraPosition) => _$this._paraPosition = paraPosition;
 
+  int? _atime;
+  int? get atime => _$this._atime;
+  set atime(int? atime) => _$this._atime = atime;
+
   EbookDtoBuilder() {
     EbookDto._defaults(this);
   }
@@ -355,6 +365,7 @@ class EbookDtoBuilder implements Builder<EbookDto, EbookDtoBuilder> {
       _progress = $v.progress;
       _progressIndex = $v.progressIndex;
       _paraPosition = $v.paraPosition;
+      _atime = $v.atime;
       _$v = null;
     }
     return this;
@@ -405,7 +416,8 @@ class EbookDtoBuilder implements Builder<EbookDto, EbookDtoBuilder> {
             countDownload: countDownload,
             progress: progress,
             progressIndex: progressIndex,
-            paraPosition: paraPosition);
+            paraPosition: paraPosition,
+            atime: atime);
     replace(_$result);
     return _$result;
   }

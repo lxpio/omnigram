@@ -38,6 +38,7 @@ part 'ebook_dto.g.dart';
 /// * [progress] 
 /// * [progressIndex] 
 /// * [paraPosition] 
+/// * [atime] 
 @BuiltValue()
 abstract class EbookDto implements Built<EbookDto, EbookDtoBuilder> {
   @BuiltValueField(wireName: r'id')
@@ -120,6 +121,9 @@ abstract class EbookDto implements Built<EbookDto, EbookDtoBuilder> {
 
   @BuiltValueField(wireName: r'para_position')
   int? get paraPosition;
+
+  @BuiltValueField(wireName: r'atime')
+  int? get atime;
 
   EbookDto._();
 
@@ -324,6 +328,13 @@ class _$EbookDtoSerializer implements PrimitiveSerializer<EbookDto> {
       yield r'para_position';
       yield serializers.serialize(
         object.paraPosition,
+        specifiedType: const FullType(int),
+      );
+    }
+    if (object.atime != null) {
+      yield r'atime';
+      yield serializers.serialize(
+        object.atime,
         specifiedType: const FullType(int),
       );
     }
@@ -538,6 +549,13 @@ class _$EbookDtoSerializer implements PrimitiveSerializer<EbookDto> {
             specifiedType: const FullType(int),
           ) as int;
           result.paraPosition = valueDes;
+          break;
+        case r'atime':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(int),
+          ) as int;
+          result.atime = valueDes;
           break;
         default:
           unhandled.add(key);

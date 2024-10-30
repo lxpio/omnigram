@@ -2171,6 +2171,9 @@ components:
         para_position:
           type: integer
           title: 段落位置
+        atime:
+          type: integer
+          title: 访问时间
       required:
         - id
         - title
