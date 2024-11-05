@@ -36,8 +36,7 @@ class LoginScreen extends HookConsumerWidget {
               SizedBox(
                 height: 350,
                 width: 350,
-                child:
-                    Lottie.asset("assets/files/Animation-reading-woman.json"),
+                child: Lottie.asset("assets/files/Animation-reading-woman.json"),
               ),
               const SizedBox(height: 40),
               TextFormField(
@@ -46,12 +45,9 @@ class LoginScreen extends HookConsumerWidget {
                   if (text == null || text.isEmpty) {
                     return 'server_address_error'.tr();
                   }
-                  final urlPattern =
-                      RegExp(r'^(https?|ftp)://[^\s/$.?#].[^\s]*$');
+                  final urlPattern = RegExp(r'^(https?|ftp)://[^\s/$.?#].[^\s]*$');
 
-                  return urlPattern.hasMatch(text)
-                      ? null
-                      : 'server_address_error'.tr();
+                  return urlPattern.hasMatch(text) ? null : 'server_address_error'.tr();
                 },
                 onEditingComplete: () => {},
                 decoration: InputDecoration(
@@ -60,15 +56,11 @@ class LoginScreen extends HookConsumerWidget {
                   hintText: serverAddr ?? 'server_address_hint_text'.tr(),
                   prefixIcon: const Icon(Icons.dns_outlined),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .surfaceContainerHighest),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.surfaceContainerHighest),
                   ),
 
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                 ),
               ),
@@ -81,15 +73,11 @@ class LoginScreen extends HookConsumerWidget {
                   hintText: 'account_hint_text'.tr(),
                   prefixIcon: const Icon(Icons.person),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .surfaceContainerHighest),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.surfaceContainerHighest),
                     // borderRadius: BorderRadius.circular(16.0),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurfaceVariant),
                     // borderRadius: BorderRadius.circular(16.0),
                   ),
                 ),
@@ -104,15 +92,11 @@ class LoginScreen extends HookConsumerWidget {
                   hintText: 'password_hint_text'.tr(),
                   prefixIcon: const Icon(Icons.key),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .surfaceContainerHighest),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.surfaceContainerHighest),
                     // borderRadius: BorderRadius.circular(16.0),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurfaceVariant),
                     // borderRadius: BorderRadius.circular(16.0),
                   ),
                 ),
@@ -131,26 +115,23 @@ class LoginScreen extends HookConsumerWidget {
                 onPressed: () async {
                   //尝试获取用户登陆信息 如果失败则弹窗
 
-                  final serverStatus = await ref.read(apiServiceProvider.notifier).resolveAndSetEndpoint(serverController.text);
+                  final serverStatus =
+                      await ref.read(apiServiceProvider.notifier).resolveAndSetEndpoint(serverController.text);
 
                   if (!serverStatus && context.mounted) {
                     showSnackBar(context, 'network_error'.tr());
                     return;
                   }
 
-                  final loginStatus = await ref
-                      .read(authProvider.notifier)
-                      .login(accountController.text, passwordController.text);
+                  final loginStatus =
+                      await ref.read(authProvider.notifier).login(accountController.text, passwordController.text);
 
                   if (!loginStatus && context.mounted) {
                     showSnackBar(context, 'network_error'.tr());
                     return;
                   }
 
-
-                  final authState = await ref
-                      .read(authProvider.notifier)
-                      .setSuccessLoginInfo();
+                  final authState = await ref.read(authProvider.notifier).setSuccessLoginInfo();
 
                   if (context.mounted) {
                     if (authState) {
@@ -161,30 +142,28 @@ class LoginScreen extends HookConsumerWidget {
                   }
                 },
                 style: FilledButton.styleFrom(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.secondaryContainer,
+                    backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
                     minimumSize: const Size.fromHeight(45)),
                 child: Text(
                   'login'.tr(),
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                 ),
               ),
               const SizedBox(height: 30),
-              FilledButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/register');
-                },
-                style: FilledButton.styleFrom(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.secondaryContainer,
-                    minimumSize: const Size.fromHeight(45)),
-                child: Text(
-                  'next'.tr(),
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                ),
-              ),
+              // FilledButton(
+              //   onPressed: () {
+              //     Navigator.pushNamed(context, '/register');
+              //   },
+              //   style: FilledButton.styleFrom(
+              //       backgroundColor:
+              //           Theme.of(context).colorScheme.secondaryContainer,
+              //       minimumSize: const Size.fromHeight(45)),
+              //   child: Text(
+              //     'next'.tr(),
+              //     style:
+              //         TextStyle(color: Theme.of(context).colorScheme.onSurface),
+              //   ),
+              // ),
             ],
           ),
         ),

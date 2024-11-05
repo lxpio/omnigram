@@ -106,11 +106,20 @@ void main() {
       // TODO
     });
 
+    // 刷新accesstoken
+    //
+    // 
+    //
+    //Future<AccessTokenDto> authTokenRefreshPost({ RefreshTokenDto refreshTokenDto }) async
+    test('test authTokenRefreshPost', () async {
+      // TODO
+    });
+
     // 获取书籍封面图片
     //
     // 
     //
-    //Future<JsonObject> imgCoversCoverIdGet(String coverId) async
+    //Future<JsonObject> imgCoversCoverIdGet(String coverId, { String size }) async
     test('test imgCoversCoverIdGet', () async {
       // TODO
     });

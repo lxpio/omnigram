@@ -25,7 +25,7 @@ class BookService {
   Future<(List<BookEntity>? toUpsert, List<String>? toDelete)> getChangedBooks(int since) async {
     try {
       final fullSyncDto = FullSyncDto((d) => d
-        ..utime = since
+        ..until = since
         ..limit = 500);
       final resp = await _apiService.syncDeltaPost(fullSyncDto: fullSyncDto);
 
@@ -48,7 +48,7 @@ class BookService {
   Future<List<BookEntity>?> loadBooks(int userID, int until) async {
     try {
       final fullSyncDto = FullSyncDto((d) => d
-        ..utime = until
+        ..until = until
         ..limit = 100);
       log.severe('loadBooks', fullSyncDto.toString());
       final List<BookEntity> result = [];

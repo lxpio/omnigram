@@ -1,8 +1,10 @@
-
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
 
 import 'package:omnigram/entities/isar_store.entity.dart';
 
 enum AppSettingsEnum<T> {
+  loadPreview<bool>(StoreKey.loadPreview, "loadPreview", true),
   themeMode<String>(
     StoreKey.themeMode,
     "themeMode",

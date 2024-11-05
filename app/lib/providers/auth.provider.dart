@@ -43,15 +43,18 @@ class Auth extends _$Auth {
       // final deviceID = await FlutterUdid.consistentUdid;
       final api = ref.watch(apiServiceProvider);
 
-      LoginCredentialDto loginCredentialDto = LoginCredentialDto((b) => b
-            ..account = account
-            ..password = password
-          // ..deviceId = deviceID
-          );
-      // debugPrint('Login Credential Dto: $loginCredentialDto');
+      // Get the deviceid from the store if it exists, otherwise generate a new one
+      String deviceId = IsarStore.tryGet(StoreKey.deviceId) ?? await FlutterUdid.consistentUdid;
 
-      var loginResponse =
-          await api.authTokenPost(loginCredentialDto: loginCredentialDto);
+      await IsarStore.put(StoreKey.deviceId, deviceId);
+      await IsarStore.put(StoreKey.deviceIdHash, fastHash(deviceId));
+
+      LoginCredentialDto loginCredentialDto = LoginCredentialDto((b) => b
+        ..account = account
+        ..password = password
+        ..deviceId = deviceId);
+
+      var loginResponse = await api.authTokenPost(loginCredentialDto: loginCredentialDto);
 
       if (loginResponse.statusCode != 200) {
         debugPrint('Login Response is null');
@@ -61,8 +64,9 @@ class Auth extends _$Auth {
       debugPrint('set access token: ${loginResponse.data!.accessToken}');
 
       IsarStore.put(StoreKey.accessToken, loginResponse.data!.accessToken);
+      IsarStore.put(StoreKey.refreshToken, loginResponse.data!.refreshToken);
 
-      ref.watch(apiServiceProvider.notifier).setEndpoint();
+      // ref.watch(apiServiceProvider.notifier).setEndpoint();
 
       return true;
     } catch (e) {
@@ -72,7 +76,6 @@ class Auth extends _$Auth {
   }
 
   Future<void> logout() async {
-    var log = Logger('AuthenticationNotifier');
     try {
       String? userEmail = IsarStore.tryGet(StoreKey.currentUser)?.email;
 
@@ -81,14 +84,14 @@ class Auth extends _$Auth {
           .authLogoutPost()
           .then((_) => log.info("Logout was successful for $userEmail"))
           .onError(
-            (error, stackTrace) =>
-                log.severe("Logout failed for $userEmail", error, stackTrace),
+            (error, stackTrace) => log.severe("Logout failed for $userEmail", error, stackTrace),
           );
 
       await Future.wait([
         // clearAssetsAndAlbums(_db),
         IsarStore.delete(StoreKey.currentUser),
         IsarStore.delete(StoreKey.accessToken),
+        IsarStore.delete(StoreKey.refreshToken),
       ]);
       // _ref.invalidate(albumProvider);
       // _ref.invalidate(sharedAlbumProvider);
@@ -130,10 +133,6 @@ class Auth extends _$Auth {
   // }
 
   Future<bool> setSuccessLoginInfo() async {
-    // Get the deviceid from the store if it exists, otherwise generate a new one
-    String deviceId =
-        IsarStore.tryGet(StoreKey.deviceId) ?? await FlutterUdid.consistentUdid;
-
     bool shouldChangePassword = false;
     User? user = IsarStore.tryGet(StoreKey.currentUser);
 
@@ -150,9 +149,7 @@ class Auth extends _$Auth {
         return false;
       }
 
-      log.severe(
-          "Error getting user information from the server [API EXCEPTION]",
-          err);
+      log.severe("Error getting user information from the server [API EXCEPTION]", err);
     } catch (error, stackTrace) {
       log.severe(
         "Error getting user information from the server [CATCH ALL]",
@@ -165,8 +162,8 @@ class Auth extends _$Auth {
     // Due to the flow of the code, this will always happen on first login
     if (userResponse != null) {
       user = User.fromUserDto(userResponse); //userPreferences
-      await IsarStore.put(StoreKey.deviceId, deviceId);
-      await IsarStore.put(StoreKey.deviceIdHash, fastHash(deviceId));
+      final deviceId = IsarStore.get(StoreKey.deviceId);
+      // await IsarStore.put(StoreKey.deviceIdHash, fastHash(deviceId));
       await IsarStore.put(StoreKey.currentUser, user);
 
       state = state.copyWith(
@@ -195,6 +192,12 @@ class Auth extends _$Auth {
         shouldChangePassword: false,
         isAuthenticated: false,
       );
+
+      await Future.wait([
+        // clearAssetsAndAlbums(_db),
+        IsarStore.delete(StoreKey.currentUser),
+        IsarStore.delete(StoreKey.accessToken),
+      ]);
       return false;
     }
   }

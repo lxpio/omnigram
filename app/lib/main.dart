@@ -65,8 +65,7 @@ class OmnigramApp extends ConsumerStatefulWidget {
   ConsumerState<OmnigramApp> createState() => _OmnigramAppState();
 }
 
-class _OmnigramAppState extends ConsumerState<OmnigramApp>
-    with WidgetsBindingObserver {
+class _OmnigramAppState extends ConsumerState<OmnigramApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final router = ref.watch(appRouterProvider);
@@ -148,9 +147,7 @@ class _OmnigramAppState extends ConsumerState<OmnigramApp>
       // Android 8 does not support transparent app bars
       final info = await DeviceInfoPlugin().androidInfo;
       if (info.version.sdkInt <= 26) {
-        overlayStyle = context.isDarkTheme
-            ? SystemUiOverlayStyle.dark
-            : SystemUiOverlayStyle.light;
+        overlayStyle = context.isDarkTheme ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light;
       }
     }
     SystemChrome.setSystemUIOverlayStyle(overlayStyle);

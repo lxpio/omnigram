@@ -19,10 +19,11 @@ class SplashScreen extends HookConsumerWidget {
     final accessToken = IsarStore.tryGet(StoreKey.accessToken);
 
     void performLoggingIn() async {
+      log.info('Starting login process');
       bool isAuthSuccess = false;
 
       if (accessToken != null && endpoint != null) {
-        ref.read(apiServiceProvider.notifier).setEndpoint();
+        ref.read(apiServiceProvider.notifier).setEndpoint(endpoint);
         try {
           isAuthSuccess = await ref.read(authProvider.notifier).setSuccessLoginInfo();
         } catch (error, stackTrace) {
@@ -42,7 +43,7 @@ class SplashScreen extends HookConsumerWidget {
         log.severe(
           'Unable to login using offline or online methods - Logging out completely',
         );
-        ref.read(authProvider.notifier).logout();
+        // ref.read(authProvider.notifier).logout();
       }
 
       // final hasPermission =

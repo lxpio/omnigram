@@ -22,6 +22,7 @@ Name | Type | Description | Notes
 **identifier** | **String** |  | 
 **category** | **String** |  | [optional] 
 **author** | **String** |  | [optional] 
+**fileType** | **int** |  | 
 **authorUrl** | **String** |  | [optional] 
 **authorSort** | **String** |  | [optional] 
 **publisher** | **String** |  | [optional] 

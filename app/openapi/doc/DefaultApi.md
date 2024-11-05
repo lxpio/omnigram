@@ -20,6 +20,7 @@ Method | HTTP request | Description
 [**authLoginPost**](DefaultApi.md#authloginpost) | **POST** /auth/login | 用户登录
 [**authLogoutPost**](DefaultApi.md#authlogoutpost) | **POST** /auth/logout | 用户登出
 [**authTokenPost**](DefaultApi.md#authtokenpost) | **POST** /auth/token | 获取访问token
+[**authTokenRefreshPost**](DefaultApi.md#authtokenrefreshpost) | **POST** /auth/token/refresh | 刷新accesstoken
 [**imgCoversCoverIdGet**](DefaultApi.md#imgcoverscoveridget) | **GET** /img/covers/{cover_id} | 获取书籍封面图片
 [**m4tTtsSimplePost**](DefaultApi.md#m4tttssimplepost) | **POST** /m4t/tts/simple | 文字转语音
 [**m4tTtsSpeakersGet**](DefaultApi.md#m4tttsspeakersget) | **GET** /m4t/tts/speakers | 获取声音列表
@@ -532,8 +533,51 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **authTokenRefreshPost**
+> AccessTokenDto authTokenRefreshPost(refreshTokenDto)
+
+刷新accesstoken
+
+
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getDefaultApi();
+final RefreshTokenDto refreshTokenDto = ; // RefreshTokenDto | 
+
+try {
+    final response = api.authTokenRefreshPost(refreshTokenDto);
+    print(response);
+} catch on DioException (e) {
+    print('Exception when calling DefaultApi->authTokenRefreshPost: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **refreshTokenDto** | [**RefreshTokenDto**](RefreshTokenDto.md)|  | [optional] 
+
+### Return type
+
+[**AccessTokenDto**](AccessTokenDto.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **imgCoversCoverIdGet**
-> JsonObject imgCoversCoverIdGet(coverId)
+> JsonObject imgCoversCoverIdGet(coverId, size)
 
 获取书籍封面图片
 
@@ -545,9 +589,10 @@ import 'package:openapi/api.dart';
 
 final api = Openapi().getDefaultApi();
 final String coverId = 2e2397f81f9a24a30d3d6fe551df626fImage00000.jpg; // String | 
+final String size = size_example; // String | 
 
 try {
-    final response = api.imgCoversCoverIdGet(coverId);
+    final response = api.imgCoversCoverIdGet(coverId, size);
     print(response);
 } catch on DioException (e) {
     print('Exception when calling DefaultApi->imgCoversCoverIdGet: $e\n');
@@ -559,6 +604,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **coverId** | **String**|  | 
+ **size** | **String**|  | [optional] 
 
 ### Return type
 

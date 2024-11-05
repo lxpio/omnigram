@@ -153,7 +153,7 @@ func getAccessTokenHandle(c *gin.Context) {
 	req := struct {
 		UserName  string `json:"account" binding:"required"`
 		Password  string `json:"password" binding:"required"`
-		ClientID  string `json:"client_id"`
+		ClientID  string `json:"device_id"`
 		GrantType string `json:"grant_type"`
 	}{}
 
@@ -204,7 +204,84 @@ func getAccessTokenHandle(c *gin.Context) {
 		ExpiresIn    int    `json:"expired_in"`
 		RefreshToken string `json:"refresh_token"`
 		AccessToken  string `json:"access_token"`
-	}{"Bearer", int(session.Duration / time.Second), "", session.Session})
+	}{"Bearer", int(session.Duration / 1000), session.RefreshToken, session.Session})
+}
+
+// refreshAccessTokenHandle 刷新token
+func refreshAccessTokenHandle(c *gin.Context) {
+
+	req := struct {
+		UserName     string `json:"account" binding:"required"`
+		ClientID     string `json:"device_id"`
+		RefreshToken string `json:"refresh_token" binding:"required"`
+	}{}
+
+	if err := c.ShouldBind(&req); err != nil {
+		log.I(`用户登录参数异常`, err)
+		c.JSON(400, utils.ErrReqArgs.WithMessage(err.Error()))
+		return
+	}
+
+	u, err := schema.FirstUserByAccount(store.Store(), req.UserName)
+
+	if err != nil {
+		log.E(`用户未找到用户失败：`, err.Error())
+		c.JSON(404, utils.ErrGetTokens)
+		return
+	}
+
+	origin, err := schema.FirstSessionByRefreshToken(store.Store(), req.RefreshToken, u.ID)
+
+	if err != nil {
+		log.E(`用户未找到session失败：`, err.Error())
+		c.JSON(403, utils.ErrGetTokens)
+		return
+	}
+	if origin.DeviceID != req.ClientID {
+		log.E(`refresh token device id not match`)
+		c.JSON(403, utils.ErrGetTokens)
+		return
+	}
+
+	session := &schema.Session{
+		Session:      "",
+		RefreshToken: origin.RefreshToken,
+		UserID:       u.ID,
+		RemoteIP:     c.ClientIP(),
+		UserAgent:    c.GetHeader(`User-Agent`),
+		DeviceID:     req.ClientID,
+		DeviceModel:  c.GetHeader(`x-device-model`),
+		DeviceType:   c.GetHeader(`x-device-type`),
+		DistrictId:   0,
+		FromUrl:      "",
+		Duration:     time.Minute * 30 / time.Millisecond,
+		UserInfo:     u,
+	}
+
+	//DeleteSessionByID
+	store.Store().Transaction(func(tx *gorm.DB) error {
+
+		if err := schema.DeleteSessionByID(tx, origin.Session); err != nil {
+			return err
+		}
+		sessionCache.Remove(cacheKeySession + origin.Session)
+
+		if err := session.Save(store.Store()); err != nil {
+			log.E(`保存session失败：`, err.Error())
+			c.JSON(500, utils.ErrSaveToken)
+		}
+
+		sessionCache.Add(cacheKeySession+session.Session, session)
+		return nil
+	})
+
+	c.JSON(200, struct {
+		TokenType    string `json:"token_type"`
+		ExpiresIn    int    `json:"expired_in"`
+		RefreshToken string `json:"refresh_token"`
+		AccessToken  string `json:"access_token"`
+	}{"Bearer", int(session.Duration / 1000), session.RefreshToken, session.Session})
+
 }
 
 func getAPIKeysHandle(c *gin.Context) {

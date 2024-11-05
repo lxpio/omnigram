@@ -62,5 +62,11 @@
   "try_again": "Try again",
   "config_server": "Config Server?",
   "get_user_info_error": "Failed to get user info",
+  "follow_system_setting": "Follow System Setting",
+  "dark_mode": "Dark Mode",
+  "scan_book_total_units": "",
+  "scan_disk_usage": "",
+  "scan_time": "Update At - {time}",
+  "setting_language": "Language",
   "login_for_more_features": "Login to Unlock More features"
 }

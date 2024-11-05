@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/entities/book.entity.dart';
 import 'package:omnigram/entities/isar_store.entity.dart';
+import 'package:omnigram/providers/image/remote_image_provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class BookCard extends HookConsumerWidget {
@@ -50,7 +51,7 @@ class BookCard extends HookConsumerWidget {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    borderRadius: const BorderRadius.all(Radius.circular(16)),
                     gradient: LinearGradient(
                       begin: Alignment.bottomCenter,
                       stops: const [.1, .5],
@@ -101,14 +102,10 @@ class BookCard extends HookConsumerWidget {
 
   Widget? bookImage(BookEntity book) {
     if (book.coverUrl != null && book.coverUrl!.isNotEmpty) {
-      final endpoint = IsarStore.get(StoreKey.serverEndpoint);
-      final token = IsarStore.tryGet(StoreKey.accessToken);
-
       return FadeInImage(
         placeholder: MemoryImage(kTransparentImage),
-        image: NetworkImage(
-          '$endpoint/img/covers/${book.identifier}${book.coverUrl!}',
-          headers: {"Authorization": "Bearer $token"},
+        image: ImmichRemoteImageProvider(
+          coverId: book.identifier + book.coverUrl!,
         ),
         fit: BoxFit.fill,
         imageErrorBuilder: (context, error, stackTrace) {

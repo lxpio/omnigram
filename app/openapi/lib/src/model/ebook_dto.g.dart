@@ -36,6 +36,8 @@ class _$EbookDto extends EbookDto {
   @override
   final String? author;
   @override
+  final int fileType;
+  @override
   final String? authorUrl;
   @override
   final String? authorSort;
@@ -82,6 +84,7 @@ class _$EbookDto extends EbookDto {
       required this.identifier,
       this.category,
       this.author,
+      required this.fileType,
       this.authorUrl,
       this.authorSort,
       this.publisher,
@@ -101,6 +104,7 @@ class _$EbookDto extends EbookDto {
     BuiltValueNullFieldError.checkNotNull(title, r'EbookDto', 'title');
     BuiltValueNullFieldError.checkNotNull(
         identifier, r'EbookDto', 'identifier');
+    BuiltValueNullFieldError.checkNotNull(fileType, r'EbookDto', 'fileType');
   }
 
   @override
@@ -128,6 +132,7 @@ class _$EbookDto extends EbookDto {
         identifier == other.identifier &&
         category == other.category &&
         author == other.author &&
+        fileType == other.fileType &&
         authorUrl == other.authorUrl &&
         authorSort == other.authorSort &&
         publisher == other.publisher &&
@@ -161,6 +166,7 @@ class _$EbookDto extends EbookDto {
     _$hash = $jc(_$hash, identifier.hashCode);
     _$hash = $jc(_$hash, category.hashCode);
     _$hash = $jc(_$hash, author.hashCode);
+    _$hash = $jc(_$hash, fileType.hashCode);
     _$hash = $jc(_$hash, authorUrl.hashCode);
     _$hash = $jc(_$hash, authorSort.hashCode);
     _$hash = $jc(_$hash, publisher.hashCode);
@@ -196,6 +202,7 @@ class _$EbookDto extends EbookDto {
           ..add('identifier', identifier)
           ..add('category', category)
           ..add('author', author)
+          ..add('fileType', fileType)
           ..add('authorUrl', authorUrl)
           ..add('authorSort', authorSort)
           ..add('publisher', publisher)
@@ -272,6 +279,10 @@ class EbookDtoBuilder implements Builder<EbookDto, EbookDtoBuilder> {
   String? _author;
   String? get author => _$this._author;
   set author(String? author) => _$this._author = author;
+
+  int? _fileType;
+  int? get fileType => _$this._fileType;
+  set fileType(int? fileType) => _$this._fileType = fileType;
 
   String? _authorUrl;
   String? get authorUrl => _$this._authorUrl;
@@ -352,6 +363,7 @@ class EbookDtoBuilder implements Builder<EbookDto, EbookDtoBuilder> {
       _identifier = $v.identifier;
       _category = $v.category;
       _author = $v.author;
+      _fileType = $v.fileType;
       _authorUrl = $v.authorUrl;
       _authorSort = $v.authorSort;
       _publisher = $v.publisher;
@@ -404,6 +416,8 @@ class EbookDtoBuilder implements Builder<EbookDto, EbookDtoBuilder> {
                 identifier, r'EbookDto', 'identifier'),
             category: category,
             author: author,
+            fileType: BuiltValueNullFieldError.checkNotNull(
+                fileType, r'EbookDto', 'fileType'),
             authorUrl: authorUrl,
             authorSort: authorSort,
             publisher: publisher,

@@ -30,6 +30,7 @@ import 'package:openapi/src/model/read_progress_dto.dart';
 import 'package:openapi/src/model/reader_books_book_id_progress_put_request.dart';
 import 'package:openapi/src/model/reader_books_book_id_put_request.dart';
 import 'package:openapi/src/model/reader_stats_dto.dart';
+import 'package:openapi/src/model/refresh_token_dto.dart';
 import 'package:openapi/src/model/resp_dto.dart';
 import 'package:openapi/src/model/scan_stats_dto.dart';
 import 'package:openapi/src/model/speaker_dto.dart';
@@ -1081,11 +1082,107 @@ class DefaultApi {
     );
   }
 
+  /// 刷新accesstoken
+  ///
+  ///
+  /// Parameters:
+  /// * [refreshTokenDto]
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [AccessTokenDto] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<AccessTokenDto>> authTokenRefreshPost({
+    RefreshTokenDto? refreshTokenDto,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/auth/token/refresh';
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      const _type = FullType(RefreshTokenDto);
+      _bodyData = refreshTokenDto == null ? null : _serializers.serialize(refreshTokenDto, specifiedType: _type);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    AccessTokenDto? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(AccessTokenDto),
+            ) as AccessTokenDto;
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<AccessTokenDto>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
   /// 获取书籍封面图片
   ///
   ///
   /// Parameters:
   /// * [coverId] -
+  /// * [size] -
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1097,6 +1194,7 @@ class DefaultApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<JsonObject>> imgCoversCoverIdGet({
     required String coverId,
+    String? size,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -1124,9 +1222,14 @@ class DefaultApi {
       validateStatus: validateStatus,
     );
 
+    final _queryParameters = <String, dynamic>{
+      if (size != null) r'size': encodeQueryParameter(_serializers, size, const FullType(String)),
+    };
+
     final _response = await _dio.request<Object>(
       _path,
       options: _options,
+      queryParameters: _queryParameters,
       cancelToken: cancelToken,
       onSendProgress: onSendProgress,
       onReceiveProgress: onReceiveProgress,

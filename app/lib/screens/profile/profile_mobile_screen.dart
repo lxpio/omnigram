@@ -1,12 +1,15 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:omnigram/entities/isar_store.entity.dart';
+import 'package:omnigram/providers/app_settings.provider.dart';
 import 'package:omnigram/providers/auth.provider.dart';
 import 'package:omnigram/providers/server_info.provider.dart';
+import 'package:omnigram/providers/theme.provider.dart';
 import 'package:omnigram/screens/profile/views/unauthorized_view.dart';
-
-
+import 'package:omnigram/services/app_settings.service.dart';
 
 import 'views/scan_status_view.dart';
 
@@ -63,14 +66,8 @@ class ProfileSmallScreen extends HookConsumerWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Theme.of(context)
-                        .colorScheme
-                        .secondaryContainer
-                        .withOpacity(0.2),
-                    Theme.of(context)
-                        .colorScheme
-                        .surfaceContainerHighest
-                        .withOpacity(0.2),
+                    Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.2),
+                    Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.2),
                   ],
                 ),
               ),
@@ -162,109 +159,127 @@ class _SettingsWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-
     final info = ref.watch(serverInfoProvider);
 
+    final mode = ref.watch(appSettingsServiceProvider).getSetting(AppSettingsEnum.themeMode);
 
-    return info.when(data: (data) => Container(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text("Settings"),
-          const SizedBox(height: 8),
-          const Divider(),
-          const ListTile(
-            leading: Icon(Icons.color_lens_outlined),
-            title: Text("主题"),
-            subtitle: Text("选择深色或者浅色主题"),
-            trailing: Switch(value: true, onChanged: null),
-          ),
-          ListTile(
-            leading: const Icon(Icons.language
-                // size: 64,
-                ),
-            title: const Text("语言"),
-            // subtitle: Text("您首选语言"),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6),
-                      color:
-                          Theme.of(context).colorScheme.primary.withAlpha(20)),
-                  child: const Text(
-                    '中文',
-                    style: TextStyle(
-                      fontSize: 14,
-                      // color: Color(
-                      //     int.parse("0xff${job.experienceLevelColor}")),
+    return info.when(
+        data: (data) => Container(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("settings".tr()),
+                  const SizedBox(height: 8),
+                  const Divider(),
+                  ListTile(
+                    leading: const Icon(Icons.color_lens_outlined),
+                    title: Text("follow_system_setting".tr()),
+                    // subtitle: const Text("选择深色或者浅色主题"),
+                    trailing: Switch(
+                      value: mode == "dark",
+                      onChanged: (bool value) {
+                        if (value) {
+                          ref.read(appSettingsServiceProvider).setSetting(AppSettingsEnum.themeMode, "dark");
+                        } else {
+                          ref.read(appSettingsServiceProvider).setSetting(AppSettingsEnum.themeMode, "light");
+                        }
+                      },
                     ),
                   ),
-                ),
-                // Text("中文", style: TextStyle(fontSize: 16)),
-                const SizedBox(width: 8),
-                const Icon(Icons.arrow_forward_ios),
-              ],
+                  ListTile(
+                    leading: Icon(Icons.dark_mode_outlined),
+                    title: Text("dark_mode".tr()),
+                    // subtitle: Text("选择深色或者浅色主题"),
+                    trailing: Switch(
+                      value: mode == "system",
+                      onChanged: (bool value) {
+                        if (value) {
+                          ref.read(appSettingsServiceProvider).setSetting(AppSettingsEnum.themeMode, "system");
+                        }
+
+                        //  value =  IsarStore.tryGet(StoreKey.themeMode) == ThemeMode.dark
+                      },
+                    ),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.language
+                        // size: 64,
+                        ),
+                    title: Text("setting_language".tr()),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6),
+                              color: Theme.of(context).colorScheme.primary.withAlpha(20)),
+                          child: const Text(
+                            '中文',
+                            style: TextStyle(
+                              fontSize: 14,
+                              // color: Color(
+                              //     int.parse("0xff${job.experienceLevelColor}")),
+                            ),
+                          ),
+                        ),
+                        // Text("中文", style: TextStyle(fontSize: 16)),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.arrow_forward_ios),
+                      ],
+                    ),
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.headphones,
+                      // size: 64,
+                    ),
+                    title: const Text("听书"),
+                    subtitle: const Text("开启听书功能"),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Switch(
+                          value: data.m4tSupport,
+                          onChanged: (bool value) {},
+                        ),
+                        // Text("中文", style: TextStyle(fontSize: 16)),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.arrow_forward_ios),
+                      ],
+                    ),
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.logout,
+                      // size: 64,
+                    ),
+                    title: const Text("登出"),
+                    // subtitle: Text("开启听书功能"),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Switch(
+                        //   value: true,
+                        //   onChanged: (bool value) {},
+                        // ),
+                        // // Text("中文", style: TextStyle(fontSize: 16)),
+                        // const SizedBox(width: 8),
+                        IconButton(
+                            onPressed: () {
+                              ref.read(authProvider.notifier).logout();
+                            },
+                            icon: const Icon(Icons.arrow_forward_ios)),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-          ListTile(
-            leading: const Icon(
-              Icons.headphones,
-              // size: 64,
-            ),
-            title: const Text("听书"),
-            subtitle: const Text("开启听书功能"),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Switch(
-                  value: data.m4tSupport,
-                  onChanged: (bool value) {},
-                ),
-                // Text("中文", style: TextStyle(fontSize: 16)),
-                const SizedBox(width: 8),
-                const Icon(Icons.arrow_forward_ios),
-              ],
-            ),
-          ),
-          ListTile(
-            leading: const Icon(
-              Icons.logout,
-              // size: 64,
-            ),
-            title: const Text("登出"),
-            // subtitle: Text("开启听书功能"),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Switch(
-                //   value: true,
-                //   onChanged: (bool value) {},
-                // ),
-                // // Text("中文", style: TextStyle(fontSize: 16)),
-                // const SizedBox(width: 8),
-                IconButton(
-                    onPressed: () {
-                      ref.read(authProvider.notifier).logout();
-                    },
-                    icon: const Icon(Icons.arrow_forward_ios)),
-              ],
-            ),
-          )
-        ],
-      ),
-    ),
         loading: () => const CircularProgressIndicator(),
         error: (error, stackTrace) => Text(error.toString()));
-
-
-    
   }
 
   // void showChapterBottomSheet(BuildContext context) {
@@ -284,5 +299,3 @@ class _SettingsWidget extends ConsumerWidget {
   //   );
   // }
 }
-
-

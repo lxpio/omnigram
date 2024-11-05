@@ -24,6 +24,7 @@ func init() {
 
 	middleware.Register(middleware.OathMD, OauthMiddleware)
 	middleware.Register(middleware.AdminMD, AdminMiddleware)
+	//todo add service to clean session
 }
 
 // Setup reg router
@@ -34,7 +35,7 @@ func Setup(router *gin.Engine) {
 
 	router.POST("/auth/login", loginHandle)
 	router.POST("/auth/token", getAccessTokenHandle)
-
+	router.POST("/auth/token/refresh", refreshAccessTokenHandle)
 	router.POST("/auth/logout", oauthMD, logoutHandle)
 
 	router.DELETE("/auth/accounts/:user_id/apikeys/:key_id", oauthMD, deleteAPIKeyHandle)

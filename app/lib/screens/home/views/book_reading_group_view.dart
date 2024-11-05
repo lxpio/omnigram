@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/providers/book.provider.dart';
 import 'package:omnigram/utils/constants.dart';
 
-import '../../reader/views/book_card_view.dart';
+import 'book_card_view.dart';
 
 class BookReadingGroup extends HookConsumerWidget {
   const BookReadingGroup(this.title, this.viewmore, this.query, {super.key});
