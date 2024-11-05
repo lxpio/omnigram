@@ -154,7 +154,7 @@ enum StoreKey<T> {
   currentUser<User>(2, type: User, fromDb: _getUser, toDb: _toUser),
   deviceIdHash<int>(3, type: int),
   deviceId<String>(4, type: String),
-  // serverUrl<String>(10, type: String),
+  refreshToken<String>(10, type: String),
   accessToken<String>(11, type: String),
   serverEndpoint<String>(12, type: String),
   sslClientCertData<String>(15, type: String),

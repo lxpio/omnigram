@@ -76,6 +76,7 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**authLoginPost**](doc/DefaultApi.md#authloginpost) | **POST** /auth/login | 用户登录
 [*DefaultApi*](doc/DefaultApi.md) | [**authLogoutPost**](doc/DefaultApi.md#authlogoutpost) | **POST** /auth/logout | 用户登出
 [*DefaultApi*](doc/DefaultApi.md) | [**authTokenPost**](doc/DefaultApi.md#authtokenpost) | **POST** /auth/token | 获取访问token
+[*DefaultApi*](doc/DefaultApi.md) | [**authTokenRefreshPost**](doc/DefaultApi.md#authtokenrefreshpost) | **POST** /auth/token/refresh | 刷新accesstoken
 [*DefaultApi*](doc/DefaultApi.md) | [**imgCoversCoverIdGet**](doc/DefaultApi.md#imgcoverscoveridget) | **GET** /img/covers/{cover_id} | 获取书籍封面图片
 [*DefaultApi*](doc/DefaultApi.md) | [**m4tTtsSimplePost**](doc/DefaultApi.md#m4tttssimplepost) | **POST** /m4t/tts/simple | 文字转语音
 [*DefaultApi*](doc/DefaultApi.md) | [**m4tTtsSpeakersGet**](doc/DefaultApi.md#m4tttsspeakersget) | **GET** /m4t/tts/speakers | 获取声音列表
@@ -124,6 +125,7 @@ Class | Method | HTTP request | Description
  - [ReaderBooksBookIdProgressPutRequest](doc/ReaderBooksBookIdProgressPutRequest.md)
  - [ReaderBooksBookIdPutRequest](doc/ReaderBooksBookIdPutRequest.md)
  - [ReaderStatsDto](doc/ReaderStatsDto.md)
+ - [RefreshTokenDto](doc/RefreshTokenDto.md)
  - [RespDto](doc/RespDto.md)
  - [ScanStatsDto](doc/ScanStatsDto.md)
  - [SpeakerDto](doc/SpeakerDto.md)

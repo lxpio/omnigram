@@ -77,6 +77,11 @@ void main() {
       // TODO
     });
 
+    // int fileType
+    test('to test the property `fileType`', () async {
+      // TODO
+    });
+
     // String authorUrl
     test('to test the property `authorUrl`', () async {
       // TODO

@@ -5,7 +5,7 @@ import 'package:omnigram/entities/book.entity.dart';
 import 'package:omnigram/providers/book.provider.dart';
 import 'package:omnigram/utils/constants.dart';
 
-import '../../reader/views/book_card_view.dart';
+import 'book_card_view.dart';
 
 class BookGroup extends HookConsumerWidget {
   const BookGroup(this.title, this.viewmore, this.query, {super.key});

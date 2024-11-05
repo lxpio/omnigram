@@ -12,7 +12,7 @@ class _$FullSyncDto extends FullSyncDto {
   @override
   final int limit;
   @override
-  final int utime;
+  final int until;
   @override
   final int? fileType;
 
@@ -20,10 +20,10 @@ class _$FullSyncDto extends FullSyncDto {
       (new FullSyncDtoBuilder()..update(updates))._build();
 
   _$FullSyncDto._(
-      {this.userId, required this.limit, required this.utime, this.fileType})
+      {this.userId, required this.limit, required this.until, this.fileType})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(limit, r'FullSyncDto', 'limit');
-    BuiltValueNullFieldError.checkNotNull(utime, r'FullSyncDto', 'utime');
+    BuiltValueNullFieldError.checkNotNull(until, r'FullSyncDto', 'until');
   }
 
   @override
@@ -39,7 +39,7 @@ class _$FullSyncDto extends FullSyncDto {
     return other is FullSyncDto &&
         userId == other.userId &&
         limit == other.limit &&
-        utime == other.utime &&
+        until == other.until &&
         fileType == other.fileType;
   }
 
@@ -48,7 +48,7 @@ class _$FullSyncDto extends FullSyncDto {
     var _$hash = 0;
     _$hash = $jc(_$hash, userId.hashCode);
     _$hash = $jc(_$hash, limit.hashCode);
-    _$hash = $jc(_$hash, utime.hashCode);
+    _$hash = $jc(_$hash, until.hashCode);
     _$hash = $jc(_$hash, fileType.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
@@ -59,7 +59,7 @@ class _$FullSyncDto extends FullSyncDto {
     return (newBuiltValueToStringHelper(r'FullSyncDto')
           ..add('userId', userId)
           ..add('limit', limit)
-          ..add('utime', utime)
+          ..add('until', until)
           ..add('fileType', fileType))
         .toString();
   }
@@ -76,9 +76,9 @@ class FullSyncDtoBuilder implements Builder<FullSyncDto, FullSyncDtoBuilder> {
   int? get limit => _$this._limit;
   set limit(int? limit) => _$this._limit = limit;
 
-  int? _utime;
-  int? get utime => _$this._utime;
-  set utime(int? utime) => _$this._utime = utime;
+  int? _until;
+  int? get until => _$this._until;
+  set until(int? until) => _$this._until = until;
 
   int? _fileType;
   int? get fileType => _$this._fileType;
@@ -93,7 +93,7 @@ class FullSyncDtoBuilder implements Builder<FullSyncDto, FullSyncDtoBuilder> {
     if ($v != null) {
       _userId = $v.userId;
       _limit = $v.limit;
-      _utime = $v.utime;
+      _until = $v.until;
       _fileType = $v.fileType;
       _$v = null;
     }
@@ -120,8 +120,8 @@ class FullSyncDtoBuilder implements Builder<FullSyncDto, FullSyncDtoBuilder> {
             userId: userId,
             limit: BuiltValueNullFieldError.checkNotNull(
                 limit, r'FullSyncDto', 'limit'),
-            utime: BuiltValueNullFieldError.checkNotNull(
-                utime, r'FullSyncDto', 'utime'),
+            until: BuiltValueNullFieldError.checkNotNull(
+                until, r'FullSyncDto', 'until'),
             fileType: fileType);
     replace(_$result);
     return _$result;

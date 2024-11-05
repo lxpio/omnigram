@@ -22,6 +22,7 @@ doc/ReadProgressDto.md
 doc/ReaderBooksBookIdProgressPutRequest.md
 doc/ReaderBooksBookIdPutRequest.md
 doc/ReaderStatsDto.md
+doc/RefreshTokenDto.md
 doc/RespDto.md
 doc/ScanStatsDto.md
 doc/SpeakerDto.md
@@ -59,6 +60,7 @@ lib/src/model/read_progress_dto.dart
 lib/src/model/reader_books_book_id_progress_put_request.dart
 lib/src/model/reader_books_book_id_put_request.dart
 lib/src/model/reader_stats_dto.dart
+lib/src/model/refresh_token_dto.dart
 lib/src/model/resp_dto.dart
 lib/src/model/scan_stats_dto.dart
 lib/src/model/speaker_dto.dart
@@ -88,6 +90,7 @@ test/read_progress_dto_test.dart
 test/reader_books_book_id_progress_put_request_test.dart
 test/reader_books_book_id_put_request_test.dart
 test/reader_stats_dto_test.dart
+test/refresh_token_dto_test.dart
 test/resp_dto_test.dart
 test/scan_stats_dto_test.dart
 test/speaker_dto_test.dart

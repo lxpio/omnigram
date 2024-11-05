@@ -268,7 +268,7 @@ paths:
           description: 登陆成功，返回访问access token
           content:
             application/json:
-              schema:
+              schema: &ref_3
                 properties:
                   token_type:
                     type: string
@@ -284,6 +284,27 @@ paths:
                   - refresh_token
                   - access_token
                 $ref: '#/components/schemas/access_token_dto'
+          headers: {}
+      security: []
+  /auth/token/refresh:
+    post:
+      summary: 刷新accesstoken
+      deprecated: false
+      description: ''
+      tags:
+        - 登录认证
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/refresh_token_dto'
+      responses:
+        '200':
+          description: 登陆成功，返回访问access token
+          content:
+            application/json:
+              schema: *ref_3
           headers: {}
       security: []
   /admin/accounts:
@@ -339,7 +360,7 @@ paths:
                     type: integer
                   items:
                     type: array
-                    items: &ref_3
+                    items: &ref_4
                       $ref: '#/components/schemas/user_dto'
                   page_num:
                     type: integer
@@ -396,18 +417,12 @@ paths:
                 email:
                   type: string
                   title: 邮箱
-                  mock:
-                    mock: '@email'
                 mobile:
                   type: string
                   title: 手机
-                  mock:
-                    mock: '@phone'
                 name:
                   type: string
                   title: 用户名
-                  mock:
-                    mock: '@first'
                 password:
                   type: string
                   title: 验证密码
@@ -425,7 +440,7 @@ paths:
           description: 创建账号成功
           content:
             application/json:
-              schema: *ref_3
+              schema: *ref_4
               examples:
                 '1':
                   summary: 成功示例
@@ -500,7 +515,7 @@ paths:
           description: 响应用户数据
           content:
             application/json:
-              schema: *ref_3
+              schema: *ref_4
               examples:
                 '1':
                   summary: 成功示例
@@ -538,7 +553,7 @@ paths:
           description: 响应用户数据
           content:
             application/json:
-              schema: *ref_3
+              schema: *ref_4
               examples:
                 '1':
                   summary: 成功示例
@@ -818,7 +833,7 @@ paths:
           description: 获取书籍列表
           content:
             application/json:
-              schema: &ref_4
+              schema: &ref_5
                 $ref: '#/components/schemas/ebook_resp_dto'
               examples:
                 '1':
@@ -903,7 +918,7 @@ paths:
           description: 最近阅读列表
           content:
             application/json:
-              schema: *ref_4
+              schema: *ref_5
               examples:
                 '1':
                   summary: 成功示例
@@ -986,7 +1001,7 @@ paths:
           description: 书籍列表
           content:
             application/json:
-              schema: *ref_4
+              schema: *ref_5
               examples:
                 '1':
                   summary: 成功示例
@@ -1044,7 +1059,7 @@ paths:
           description: 数据详情
           content:
             application/json:
-              schema: &ref_5
+              schema: &ref_6
                 $ref: '#/components/schemas/ebook_dto'
               examples:
                 '1':
@@ -1187,7 +1202,7 @@ paths:
           description: 获取书面详情
           content:
             application/json:
-              schema: *ref_5
+              schema: *ref_6
               examples:
                 '1':
                   summary: 成功示例
@@ -1249,7 +1264,7 @@ paths:
           description: 上传书
           content:
             application/json:
-              schema: *ref_5
+              schema: *ref_6
               examples:
                 '1':
                   summary: 成功示例
@@ -1332,7 +1347,7 @@ paths:
           description: 阅读进度
           content:
             application/json:
-              schema: &ref_6
+              schema: &ref_7
                 $ref: '#/components/schemas/read_progress_dto'
               examples:
                 '1':
@@ -1391,7 +1406,7 @@ paths:
           description: 阅读进度
           content:
             application/json:
-              schema: *ref_6
+              schema: *ref_7
               examples:
                 '1':
                   summary: 成功示例
@@ -1424,6 +1439,15 @@ paths:
           example: 2e2397f81f9a24a30d3d6fe551df626fImage00000.jpg
           schema:
             type: string
+        - name: size
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+            enum:
+              - thumbnail
+              - origin
       responses:
         '200':
           description: 封面图片
@@ -1492,7 +1516,7 @@ paths:
           description: 系统信息详情
           content:
             application/json:
-              schema: &ref_7
+              schema: &ref_8
                 properties:
                   version:
                     type: string
@@ -1543,7 +1567,7 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: *ref_7
+            schema: *ref_8
             example:
               version: 0.0.1
               system: Linux
@@ -1556,7 +1580,7 @@ paths:
           description: 修改后的详情
           content:
             application/json:
-              schema: *ref_7
+              schema: *ref_8
               examples:
                 '1':
                   summary: 成功示例
@@ -1608,7 +1632,7 @@ paths:
           description: 当前扫描状态
           content:
             application/json:
-              schema: &ref_8
+              schema: &ref_9
                 $ref: '#/components/schemas/scan_stats_dto'
               examples:
                 '1':
@@ -1655,7 +1679,7 @@ paths:
           description: ''
           content:
             application/json:
-              schema: *ref_8
+              schema: *ref_9
               examples:
                 '1':
                   summary: 成功示例
@@ -1684,7 +1708,7 @@ paths:
           description: 当前状态
           content:
             application/json:
-              schema: *ref_8
+              schema: *ref_9
               examples:
                 '1':
                   summary: 成功示例
@@ -1711,7 +1735,7 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: &ref_9
+            schema: &ref_10
               $ref: '#/components/schemas/full_sync_dto'
       responses:
         '200':
@@ -1728,8 +1752,7 @@ paths:
                       type: string
                   upserted:
                     type: array
-                    items:
-                      $ref: '#/definitions/114858659'
+                    items: *ref_6
                 required:
                   - need_full_sync
                   - deleted
@@ -1840,7 +1863,7 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: *ref_9
+            schema: *ref_10
       responses:
         '200':
           description: 流式返回数据
@@ -1870,8 +1893,8 @@ paths:
                     type: integer
                   items:
                     type: array
-                    items:
-                      $ref: '#/definitions/115194146'
+                    items: &ref_11
+                      $ref: '#/components/schemas/speaker_dto'
                 required:
                   - total
                   - items
@@ -1918,8 +1941,7 @@ paths:
           description: 上传后id 记录
           content:
             application/json:
-              schema: &ref_10
-                $ref: '#/components/schemas/speaker_dto'
+              schema: *ref_11
               examples:
                 '1':
                   summary: 成功示例
@@ -2132,6 +2154,9 @@ components:
         author:
           type: string
           title: 作者
+        file_type:
+          type: integer
+          title: 文件类型
         author_url:
           type: string
           title: 作者URL
@@ -2178,6 +2203,7 @@ components:
         - id
         - title
         - identifier
+        - file_type
     scan_stats_dto:
       type: object
       properties:
@@ -2342,10 +2368,10 @@ components:
       properties:
         random:
           type: array
-          items: *ref_5
+          items: *ref_6
         recent:
           type: array
-          items: *ref_5
+          items: *ref_6
       required:
         - random
         - recent
@@ -2356,7 +2382,7 @@ components:
           type: integer
         items:
           type: array
-          items: *ref_5
+          items: *ref_6
       required:
         - total
         - items
@@ -2387,7 +2413,7 @@ components:
           type: integer
         items:
           type: array
-          items: *ref_10
+          items: *ref_11
       required:
         - total
         - items
@@ -2407,7 +2433,29 @@ components:
         - expired_in
         - refresh_token
         - access_token
-    full_sync_dto: &ref_11
+    full_sync_dto:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          title: 用户ID
+          description: 用户ID
+        limit:
+          type: integer
+          title: 限制大小
+          description: 数量限制
+        until:
+          type: integer
+          title: 更新截止时间
+          description: 更新截止时间
+        file_type:
+          type: integer
+          title: 文件类型
+          description: 文件类型
+      required:
+        - limit
+        - until
+    delta_sync_dto:
       type: object
       properties:
         user_id:
@@ -2429,7 +2477,6 @@ components:
       required:
         - limit
         - utime
-    delta_sync_dto: *ref_11
     read_progress_dto:
       type: object
       properties:
@@ -2480,7 +2527,24 @@ components:
         - upserted
     ebook_sync_list_dto:
       type: array
-      items: *ref_5
+      items: *ref_6
+    refresh_token_dto:
+      type: object
+      properties:
+        account:
+          type: string
+          title: 登陆名
+          description: 账号名/邮箱/手机号
+        device_id:
+          type: string
+          title: 登陆设备ID
+          description: 登陆设备ID
+        refresh_token:
+          type: string
+          title: 刷新token
+      required:
+        - account
+        - refresh_token
   securitySchemes:
     bearer:
       type: http

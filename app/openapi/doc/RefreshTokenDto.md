@@ -1,4 +1,4 @@
-# openapi.model.FullSyncDto
+# openapi.model.RefreshTokenDto
 
 ## Load the model package
 ```dart
@@ -8,10 +8,9 @@ import 'package:openapi/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**userId** | **int** | 用户ID | [optional] 
-**limit** | **int** | 数量限制 | 
-**until** | **int** | 更新截止时间 | 
-**fileType** | **int** | 文件类型 | [optional] 
+**account** | **String** | 账号名/邮箱/手机号 | 
+**deviceId** | **String** | 登陆设备ID | [optional] 
+**refreshToken** | **String** |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

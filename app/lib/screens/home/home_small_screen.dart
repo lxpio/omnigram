@@ -9,9 +9,6 @@ import 'package:omnigram/screens/home/views/book_liked_group_view.dart';
 import 'package:omnigram/screens/home/views/book_reading_group_view.dart';
 import 'package:omnigram/screens/home/views/category_view.dart';
 
-import 'package:omnigram/screens/no_connection.dart';
-import 'package:omnigram/services/sync.service.dart';
-
 import '../reader/providers/tts_service.dart';
 import '../views/stackbar.dart';
 
@@ -26,7 +23,7 @@ class HomeSmallScreen extends HookConsumerWidget {
 
     return Column(
       children: [
-        Expanded(child: HomeSmallView()),
+        const Expanded(child: HomeSmallView()),
         if (ttsState.showbar) const StackbarWidget(),
       ],
     );

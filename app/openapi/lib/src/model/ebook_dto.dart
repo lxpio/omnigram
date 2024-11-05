@@ -25,6 +25,7 @@ part 'ebook_dto.g.dart';
 /// * [identifier] 
 /// * [category] 
 /// * [author] 
+/// * [fileType] 
 /// * [authorUrl] 
 /// * [authorSort] 
 /// * [publisher] 
@@ -82,6 +83,9 @@ abstract class EbookDto implements Built<EbookDto, EbookDtoBuilder> {
 
   @BuiltValueField(wireName: r'author')
   String? get author;
+
+  @BuiltValueField(wireName: r'file_type')
+  int get fileType;
 
   @BuiltValueField(wireName: r'author_url')
   String? get authorUrl;
@@ -240,6 +244,11 @@ class _$EbookDtoSerializer implements PrimitiveSerializer<EbookDto> {
         specifiedType: const FullType(String),
       );
     }
+    yield r'file_type';
+    yield serializers.serialize(
+      object.fileType,
+      specifiedType: const FullType(int),
+    );
     if (object.authorUrl != null) {
       yield r'author_url';
       yield serializers.serialize(
@@ -458,6 +467,13 @@ class _$EbookDtoSerializer implements PrimitiveSerializer<EbookDto> {
             specifiedType: const FullType(String),
           ) as String;
           result.author = valueDes;
+          break;
+        case r'file_type':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(int),
+          ) as int;
+          result.fileType = valueDes;
           break;
         case r'author_url':
           final valueDes = serializers.deserialize(

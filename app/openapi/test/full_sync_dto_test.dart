@@ -19,9 +19,9 @@ void main() {
       // TODO
     });
 
-    // 文件更新的时间
-    // int utime
-    test('to test the property `utime`', () async {
+    // 更新截止时间
+    // int until
+    test('to test the property `until`', () async {
       // TODO
     });
 

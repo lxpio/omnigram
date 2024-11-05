@@ -33,6 +33,7 @@ import 'package:openapi/src/model/read_progress_dto.dart';
 import 'package:openapi/src/model/reader_books_book_id_progress_put_request.dart';
 import 'package:openapi/src/model/reader_books_book_id_put_request.dart';
 import 'package:openapi/src/model/reader_stats_dto.dart';
+import 'package:openapi/src/model/refresh_token_dto.dart';
 import 'package:openapi/src/model/resp_dto.dart';
 import 'package:openapi/src/model/scan_stats_dto.dart';
 import 'package:openapi/src/model/speaker_dto.dart';
@@ -63,6 +64,7 @@ part 'serializers.g.dart';
   ReaderBooksBookIdProgressPutRequest,
   ReaderBooksBookIdPutRequest,
   ReaderStatsDto,
+  RefreshTokenDto,
   RespDto,
   ScanStatsDto,
   SpeakerDto,

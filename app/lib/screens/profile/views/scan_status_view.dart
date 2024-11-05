@@ -4,9 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
 import 'package:omnigram/providers/scan_status.provider.dart';
 
-
-
-
 class ScanStatusView extends HookConsumerWidget {
   const ScanStatusView({Key? key}) : super(key: key);
 
@@ -17,16 +14,13 @@ class ScanStatusView extends HookConsumerWidget {
     return scan.when(
       data: (status) {
         return Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(8.0),
           child: Container(
             // padding: EdgeInsets.only(bottom: 16),
             // margin: const EdgeInsets.only(bottom: 32.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.0),
-              color: Theme.of(context)
-                  .colorScheme
-                  .primaryContainer
-                  .withOpacity(0.2),
+              color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.2),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -45,17 +39,23 @@ class ScanStatusView extends HookConsumerWidget {
                         )
                       : null,
                 ),
-                Container(
-                  height: 128,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      usageCard(context, Icons.auto_stories, '${status.total}',
-                          'Total'),
-                      usageCard(context, Icons.storage, '${status.diskUsage}',
-                          'disk'),
-                    ],
-                  ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: LayoutBuilder(builder: (context, constraints) {
+                    return ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: constraints.maxHeight - 16,
+                        maxHeight: 128,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          usageCard(context, Icons.auto_stories, '${status.total}', 'scan_book_total_units'.tr()),
+                          usageCard(context, Icons.storage, '${status.diskUsage}', 'scan_disk_usage'.tr()),
+                        ],
+                      ),
+                    );
+                  }),
                 ),
                 // const SizedBox(height: 16),
                 Padding(
@@ -63,28 +63,21 @@ class ScanStatusView extends HookConsumerWidget {
                   child: status.running
                       ? SizedBox(
                           height: 24,
-                          // width: do,
-                          child: Lottie.asset(
-                              "assets/files/Animation-progress.json"),
+                          child: Lottie.asset("assets/files/Animation-progress.json"),
                         )
                       : Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 6, horizontal: 16),
+                              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(16),
-                                  color:
-                                      Theme.of(context).colorScheme.onTertiary),
+                                  color: Theme.of(context).colorScheme.onTertiary),
                               child: Text(
-                                '更新时间 - 1小时前',
+                                'scan_time'.tr(namedArgs: {"time": DateTime.now().year.toString()}),
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .tertiary),
+                                    .copyWith(color: Theme.of(context).colorScheme.tertiary),
                               ),
                             ),
                             const Spacer(),
@@ -97,8 +90,7 @@ class ScanStatusView extends HookConsumerWidget {
                               },
                               icon: const Icon(Icons.refresh),
                               style: IconButton.styleFrom(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.onTertiary,
+                                backgroundColor: Theme.of(context).colorScheme.onTertiary,
                               ),
                             ),
                             IconButton.filledTonal(
@@ -106,8 +98,7 @@ class ScanStatusView extends HookConsumerWidget {
                               color: Theme.of(context).colorScheme.tertiary,
                               icon: const Icon(Icons.more_vert),
                               style: IconButton.styleFrom(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.onTertiary,
+                                backgroundColor: Theme.of(context).colorScheme.onTertiary,
                               ),
                             ),
                           ],
@@ -125,8 +116,7 @@ class ScanStatusView extends HookConsumerWidget {
     );
   }
 
-  Widget usageCard(
-      BuildContext context, IconData iconData, String title, String subTitle) {
+  Widget usageCard(BuildContext context, IconData iconData, String title, String subTitle) {
     return AspectRatio(
       aspectRatio: 4 / 3,
       child: Container(
@@ -134,7 +124,7 @@ class ScanStatusView extends HookConsumerWidget {
         margin: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface.withOpacity(0.8),
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -149,7 +139,7 @@ class ScanStatusView extends HookConsumerWidget {
               children: [
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 Text(
                   subTitle,

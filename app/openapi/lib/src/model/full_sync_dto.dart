@@ -13,7 +13,7 @@ part 'full_sync_dto.g.dart';
 /// Properties:
 /// * [userId] - 用户ID
 /// * [limit] - 数量限制
-/// * [utime] - 文件更新的时间
+/// * [until] - 更新截止时间
 /// * [fileType] - 文件类型
 @BuiltValue()
 abstract class FullSyncDto implements Built<FullSyncDto, FullSyncDtoBuilder> {
@@ -25,9 +25,9 @@ abstract class FullSyncDto implements Built<FullSyncDto, FullSyncDtoBuilder> {
   @BuiltValueField(wireName: r'limit')
   int get limit;
 
-  /// 文件更新的时间
-  @BuiltValueField(wireName: r'utime')
-  int get utime;
+  /// 更新截止时间
+  @BuiltValueField(wireName: r'until')
+  int get until;
 
   /// 文件类型
   @BuiltValueField(wireName: r'file_type')
@@ -68,9 +68,9 @@ class _$FullSyncDtoSerializer implements PrimitiveSerializer<FullSyncDto> {
       object.limit,
       specifiedType: const FullType(int),
     );
-    yield r'utime';
+    yield r'until';
     yield serializers.serialize(
-      object.utime,
+      object.until,
       specifiedType: const FullType(int),
     );
     if (object.fileType != null) {
@@ -117,12 +117,12 @@ class _$FullSyncDtoSerializer implements PrimitiveSerializer<FullSyncDto> {
           ) as int;
           result.limit = valueDes;
           break;
-        case r'utime':
+        case r'until':
           final valueDes = serializers.deserialize(
             value,
             specifiedType: const FullType(int),
           ) as int;
-          result.utime = valueDes;
+          result.until = valueDes;
           break;
         case r'file_type':
           final valueDes = serializers.deserialize(

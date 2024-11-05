@@ -31,6 +31,7 @@ export 'package:openapi/src/model/read_progress_dto.dart';
 export 'package:openapi/src/model/reader_books_book_id_progress_put_request.dart';
 export 'package:openapi/src/model/reader_books_book_id_put_request.dart';
 export 'package:openapi/src/model/reader_stats_dto.dart';
+export 'package:openapi/src/model/refresh_token_dto.dart';
 export 'package:openapi/src/model/resp_dto.dart';
 export 'package:openapi/src/model/scan_stats_dto.dart';
 export 'package:openapi/src/model/speaker_dto.dart';
