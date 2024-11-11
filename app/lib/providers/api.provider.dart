@@ -206,10 +206,12 @@ List<Interceptor> bearerAuthInterceptors() {
 Future<void> refreshToken(String account) async {
   final endpoint = IsarStore.tryGet(StoreKey.serverEndpoint);
   final refreshToken = IsarStore.tryGet(StoreKey.refreshToken);
+  final deviceId = IsarStore.tryGet(StoreKey.deviceId);
   final api = _createApi(endpoint);
 
   final request = RefreshTokenDto((b) => b
     ..account = account
+    ..deviceId = deviceId
     ..refreshToken = refreshToken);
 
   final result = await api.authTokenRefreshPost(refreshTokenDto: request);

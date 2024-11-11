@@ -2224,6 +2224,9 @@ components:
         disk_usage:
           type: integer
           title: 磁盘使用
+        finish_time:
+          type: integer
+          title: 扫描完成时间
       required:
         - total
         - running

@@ -32,5 +32,10 @@ void main() {
       // TODO
     });
 
+    // int finishTime
+    test('to test the property `finishTime`', () async {
+      // TODO
+    });
+
   });
 }

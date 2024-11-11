@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"sync"
+	"time"
 
 	"github.com/lxpio/omnigram/server/conf"
 	"github.com/lxpio/omnigram/server/log"
@@ -15,12 +16,12 @@ import (
 
 // ScanStatus 扫描状态
 type ScanStatus struct {
-	Total     int64    `json:"total"`
-	Running   bool     `json:"running"`
-	ScanCount int      `json:"scan_count"`
-	Errs      []string `json:"errs"`
-	DiskUsage int      `json:"disk_usage"`
-	// Version   string   `json:"version"`
+	Total      int64    `json:"total"`
+	Running    bool     `json:"running"`
+	ScanCount  int      `json:"scan_count"`
+	Errs       []string `json:"errs"`
+	DiskUsage  int      `json:"disk_usage"`
+	FinishTime *int64   `json:"finish_time,omitempty"`
 }
 
 type ScannerManager struct {
@@ -67,7 +68,9 @@ func (m *ScannerManager) Status() ScanStatus {
 	defer m.RUnlock()
 
 	m.stats.Total = total
-
+	if m.stats.Running {
+		m.stats.FinishTime = nil
+	}
 	return m.stats
 
 }
@@ -128,6 +131,8 @@ func (m *ScannerManager) updateStatus(stats ScanStatus) {
 
 func (m *ScannerManager) dumpStatus(cached store.KV) error {
 
+	now := time.Now().UnixMilli()
+	m.stats.FinishTime = &(now)
 	bytes, _ := json.Marshal(m.Status())
 
 	return cached.Put(m.ctx, `sys`, scanStatsKey, bytes)

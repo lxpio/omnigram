@@ -1,5 +1,5 @@
 diff --git a/app/openapi/lib/src/api/default_api.dart b/app/openapi/lib/src/api/default_api.dart
-index 4c4ac51..9023257 100644
+index 3dd9a6d..5d2e828 100644
 --- a/app/openapi/lib/src/api/default_api.dart
 +++ b/app/openapi/lib/src/api/default_api.dart
 @@ -1,9 +1,10 @@
@@ -15,7 +15,7 @@ index 4c4ac51..9023257 100644
  import 'package:built_value/json_object.dart';
  import 'package:built_value/serializer.dart';
  import 'package:dio/dio.dart';
-@@ -1465,7 +1466,7 @@ class DefaultApi {
+@@ -1568,7 +1569,7 @@ class DefaultApi {
    ///
    /// Returns a [Future] containing a [Response] with a [JsonObject] as data
    /// Throws [DioException] if API call or serialization fails
@@ -24,7 +24,7 @@ index 4c4ac51..9023257 100644
      M4tTtsStreamPostRequest? m4tTtsStreamPostRequest,
      CancelToken? cancelToken,
      Map<String, dynamic>? headers,
-@@ -1492,6 +1493,7 @@ class DefaultApi {
+@@ -1595,6 +1596,7 @@ class DefaultApi {
        },
        contentType: 'application/json',
        validateStatus: validateStatus,
@@ -32,7 +32,7 @@ index 4c4ac51..9023257 100644
      );
  
      dynamic _bodyData;
-@@ -1513,7 +1515,7 @@ class DefaultApi {
+@@ -1616,7 +1618,7 @@ class DefaultApi {
        );
      }
  
@@ -41,7 +41,7 @@ index 4c4ac51..9023257 100644
        _path,
        data: _bodyData,
        options: _options,
-@@ -1521,37 +1523,6 @@ class DefaultApi {
+@@ -1624,37 +1626,6 @@ class DefaultApi {
        onSendProgress: onSendProgress,
        onReceiveProgress: onReceiveProgress,
      );
@@ -79,7 +79,7 @@ index 4c4ac51..9023257 100644
    }
  
    /// 书籍详情
-@@ -2697,7 +2668,7 @@ class DefaultApi {
+@@ -2800,7 +2771,7 @@ class DefaultApi {
    ///
    /// Returns a [Future] containing a [Response] with a [BuiltList<EbookDto>] as data
    /// Throws [DioException] if API call or serialization fails
@@ -88,7 +88,7 @@ index 4c4ac51..9023257 100644
      FullSyncDto? fullSyncDto,
      CancelToken? cancelToken,
      Map<String, dynamic>? headers,
-@@ -2705,7 +2676,7 @@ class DefaultApi {
+@@ -2808,7 +2779,7 @@ class DefaultApi {
      ValidateStatus? validateStatus,
      ProgressCallback? onSendProgress,
      ProgressCallback? onReceiveProgress,
@@ -97,7 +97,7 @@ index 4c4ac51..9023257 100644
      final _path = r'/sync/full';
      final _options = Options(
        method: r'POST',
-@@ -2724,6 +2695,7 @@ class DefaultApi {
+@@ -2827,6 +2798,7 @@ class DefaultApi {
        },
        contentType: 'application/json',
        validateStatus: validateStatus,
@@ -105,7 +105,7 @@ index 4c4ac51..9023257 100644
      );
  
      dynamic _bodyData;
-@@ -2743,7 +2715,7 @@ class DefaultApi {
+@@ -2846,7 +2818,7 @@ class DefaultApi {
        );
      }
  
@@ -114,7 +114,7 @@ index 4c4ac51..9023257 100644
        _path,
        data: _bodyData,
        options: _options,
-@@ -2752,36 +2724,24 @@ class DefaultApi {
+@@ -2855,36 +2827,24 @@ class DefaultApi {
        onReceiveProgress: onReceiveProgress,
      );
  
