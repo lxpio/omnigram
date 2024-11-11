@@ -238,7 +238,7 @@ func refreshAccessTokenHandle(c *gin.Context) {
 		return
 	}
 	if origin.DeviceID != req.ClientID {
-		log.E(`refresh token device id not match`)
+		log.E(`refresh token device id not match：`, origin.DeviceID, req.ClientID)
 		c.JSON(403, utils.ErrGetTokens)
 		return
 	}
@@ -266,7 +266,7 @@ func refreshAccessTokenHandle(c *gin.Context) {
 		}
 		sessionCache.Remove(cacheKeySession + origin.Session)
 
-		if err := session.Save(store.Store()); err != nil {
+		if err := session.Save(tx); err != nil {
 			log.E(`保存session失败：`, err.Error())
 			c.JSON(500, utils.ErrSaveToken)
 		}

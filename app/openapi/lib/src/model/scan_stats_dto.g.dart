@@ -17,6 +17,8 @@ class _$ScanStatsDto extends ScanStatsDto {
   final BuiltList<String>? errs;
   @override
   final int diskUsage;
+  @override
+  final int? finishTime;
 
   factory _$ScanStatsDto([void Function(ScanStatsDtoBuilder)? updates]) =>
       (new ScanStatsDtoBuilder()..update(updates))._build();
@@ -26,7 +28,8 @@ class _$ScanStatsDto extends ScanStatsDto {
       required this.running,
       required this.scanCount,
       this.errs,
-      required this.diskUsage})
+      required this.diskUsage,
+      this.finishTime})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(total, r'ScanStatsDto', 'total');
     BuiltValueNullFieldError.checkNotNull(running, r'ScanStatsDto', 'running');
@@ -51,7 +54,8 @@ class _$ScanStatsDto extends ScanStatsDto {
         running == other.running &&
         scanCount == other.scanCount &&
         errs == other.errs &&
-        diskUsage == other.diskUsage;
+        diskUsage == other.diskUsage &&
+        finishTime == other.finishTime;
   }
 
   @override
@@ -62,6 +66,7 @@ class _$ScanStatsDto extends ScanStatsDto {
     _$hash = $jc(_$hash, scanCount.hashCode);
     _$hash = $jc(_$hash, errs.hashCode);
     _$hash = $jc(_$hash, diskUsage.hashCode);
+    _$hash = $jc(_$hash, finishTime.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -73,7 +78,8 @@ class _$ScanStatsDto extends ScanStatsDto {
           ..add('running', running)
           ..add('scanCount', scanCount)
           ..add('errs', errs)
-          ..add('diskUsage', diskUsage))
+          ..add('diskUsage', diskUsage)
+          ..add('finishTime', finishTime))
         .toString();
   }
 }
@@ -102,6 +108,10 @@ class ScanStatsDtoBuilder
   int? get diskUsage => _$this._diskUsage;
   set diskUsage(int? diskUsage) => _$this._diskUsage = diskUsage;
 
+  int? _finishTime;
+  int? get finishTime => _$this._finishTime;
+  set finishTime(int? finishTime) => _$this._finishTime = finishTime;
+
   ScanStatsDtoBuilder() {
     ScanStatsDto._defaults(this);
   }
@@ -114,6 +124,7 @@ class ScanStatsDtoBuilder
       _scanCount = $v.scanCount;
       _errs = $v.errs?.toBuilder();
       _diskUsage = $v.diskUsage;
+      _finishTime = $v.finishTime;
       _$v = null;
     }
     return this;
@@ -146,7 +157,8 @@ class ScanStatsDtoBuilder
                   scanCount, r'ScanStatsDto', 'scanCount'),
               errs: _errs?.build(),
               diskUsage: BuiltValueNullFieldError.checkNotNull(
-                  diskUsage, r'ScanStatsDto', 'diskUsage'));
+                  diskUsage, r'ScanStatsDto', 'diskUsage'),
+              finishTime: finishTime);
     } catch (_) {
       late String _$failedField;
       try {

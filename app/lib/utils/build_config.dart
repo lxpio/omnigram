@@ -16,6 +16,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:timezone/data/latest.dart';
 import 'package:logging/logging.dart';
 import 'package:universal_platform/universal_platform.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class BuildConfig {
   static final BuildConfig instance = BuildConfig._internal();
@@ -61,6 +62,8 @@ class BuildConfig {
         await Directory(globalCachePath).create(recursive: true);
       }
     }
+
+    timeago.setLocaleMessages('zh', timeago.ZhCnMessages());
 
     await migrateDatabaseIfNeeded(db);
 

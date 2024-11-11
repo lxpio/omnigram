@@ -8,10 +8,14 @@ import 'package:omnigram/providers/app_settings.provider.dart';
 import 'package:omnigram/providers/auth.provider.dart';
 import 'package:omnigram/providers/server_info.provider.dart';
 import 'package:omnigram/providers/theme.provider.dart';
-import 'package:omnigram/screens/profile/views/unauthorized_view.dart';
+
 import 'package:omnigram/services/app_settings.service.dart';
 
+import 'views/about_view.dart';
+import 'views/logout_listtile_view.dart';
 import 'views/scan_status_view.dart';
+import 'views/theme_select_dialog_view.dart';
+import 'views/unauthorized_view.dart';
 
 class ProfileSmallScreen extends HookConsumerWidget {
   const ProfileSmallScreen({super.key});
@@ -49,9 +53,25 @@ class ProfileSmallScreen extends HookConsumerWidget {
           pinned: true,
           floating: true,
           stretch: true,
+          leading: AnimatedOpacity(
+            opacity: isScrolled.value ? 1.0 : 0,
+            duration: const Duration(milliseconds: 150),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: CircleAvatar(
+                  radius: 24,
+                  backgroundColor: Colors.grey[400],
+                  // backgroundImage: NetworkImage('https://randomuser.me/api/portraits/men/81.jpg'),
+                ),
+              ),
+            ),
+          ),
           // backgroundColor: Colors.grey.shade50,
           flexibleSpace: FlexibleSpaceBar(
             collapseMode: CollapseMode.parallax,
+
             // titlePadding:
             //     const EdgeInsets.only(left: 20, right: 30, bottom: 100),
             stretchModes: const [
@@ -59,7 +79,7 @@ class ProfileSmallScreen extends HookConsumerWidget {
               // StretchMode.fadeTitle,
               StretchMode.blurBackground,
             ],
-            // title: isScrolled.value ? const Text("Profile") : null,
+            centerTitle: false,
             background: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -74,7 +94,7 @@ class ProfileSmallScreen extends HookConsumerWidget {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 48),
+                    padding: const EdgeInsets.only(top: 100),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(100),
                       child: CircleAvatar(
@@ -98,47 +118,6 @@ class ProfileSmallScreen extends HookConsumerWidget {
               ),
             ),
           ),
-          actions: isScrolled.value
-              ? [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8, right: 12),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8, right: 8),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                authState.name,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                authState.userEmail,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(64),
-                          child: CircleAvatar(
-                            radius: 48,
-                            backgroundColor: Colors.grey[200],
-                            // backgroundImage: NetworkImage(
-                            //     'https://randomuser.me/api/portraits/men/81.jpg'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ]
-              : null,
         ),
         SliverList(
           delegate: SliverChildListDelegate([
@@ -146,6 +125,10 @@ class ProfileSmallScreen extends HookConsumerWidget {
             const ScanStatusView(),
             const SizedBox(height: 32),
             const _SettingsWidget(),
+            const SizedBox(height: 16),
+            const AboutView(),
+            const SizedBox(height: 32),
+            const LogoutListTileView(),
           ]),
         ),
       ],
@@ -161,141 +144,111 @@ class _SettingsWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final info = ref.watch(serverInfoProvider);
 
-    final mode = ref.watch(appSettingsServiceProvider).getSetting(AppSettingsEnum.themeMode);
-
     return info.when(
-        data: (data) => Container(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("settings".tr()),
-                  const SizedBox(height: 8),
-                  const Divider(),
-                  ListTile(
-                    leading: const Icon(Icons.color_lens_outlined),
-                    title: Text("follow_system_setting".tr()),
-                    // subtitle: const Text("选择深色或者浅色主题"),
-                    trailing: Switch(
-                      value: mode == "dark",
-                      onChanged: (bool value) {
-                        if (value) {
-                          ref.read(appSettingsServiceProvider).setSetting(AppSettingsEnum.themeMode, "dark");
-                        } else {
-                          ref.read(appSettingsServiceProvider).setSetting(AppSettingsEnum.themeMode, "light");
-                        }
-                      },
-                    ),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.dark_mode_outlined),
-                    title: Text("dark_mode".tr()),
-                    // subtitle: Text("选择深色或者浅色主题"),
-                    trailing: Switch(
-                      value: mode == "system",
-                      onChanged: (bool value) {
-                        if (value) {
-                          ref.read(appSettingsServiceProvider).setSetting(AppSettingsEnum.themeMode, "system");
-                        }
-
-                        //  value =  IsarStore.tryGet(StoreKey.themeMode) == ThemeMode.dark
-                      },
-                    ),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.language
-                        // size: 64,
-                        ),
-                    title: Text("setting_language".tr()),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              color: Theme.of(context).colorScheme.primary.withAlpha(20)),
-                          child: const Text(
-                            '中文',
-                            style: TextStyle(
-                              fontSize: 14,
-                              // color: Color(
-                              //     int.parse("0xff${job.experienceLevelColor}")),
-                            ),
+        data: (data) {
+          final mode = ref.watch(themeStateProvider);
+          return Container(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("settings".tr()),
+                const SizedBox(height: 8),
+                const Divider(),
+                ListTile(
+                  leading: const Icon(Icons.color_lens_outlined),
+                  title: Text("settings_theme_mode".tr()),
+                  // subtitle: Text("选择深色或者浅色主题"),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            color: Theme.of(context).colorScheme.primary.withAlpha(20)),
+                        child: Text(
+                          getThemeModeLangTag(mode).tr(),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            // color: Color(
+                            //     int.parse("0xff${job.experienceLevelColor}")),
                           ),
                         ),
-                        // Text("中文", style: TextStyle(fontSize: 16)),
-                        const SizedBox(width: 8),
-                        const Icon(Icons.arrow_forward_ios),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Icon(Icons.arrow_forward_ios),
+                    ],
                   ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.headphones,
+                  onTap: () async {
+                    final result = await showDialog(
+                        builder: (context) {
+                          return ThemeSelectDialogView(mode);
+                        },
+                        context: context);
+
+                    final themeMode = result as ThemeMode?;
+
+                    if (themeMode != null && themeMode != mode) {
+                      debugPrint("themeMode: $themeMode");
+                      ref.read(themeStateProvider.notifier).setTheme(themeMode);
+                    }
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.language
                       // size: 64,
-                    ),
-                    title: const Text("听书"),
-                    subtitle: const Text("开启听书功能"),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Switch(
-                          value: data.m4tSupport,
-                          onChanged: (bool value) {},
+                      ),
+                  title: Text("setting_language".tr()),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            color: Theme.of(context).colorScheme.primary.withAlpha(20)),
+                        child: const Text(
+                          '中文',
+                          style: TextStyle(
+                            fontSize: 14,
+                            // color: Color(
+                            //     int.parse("0xff${job.experienceLevelColor}")),
+                          ),
                         ),
-                        // Text("中文", style: TextStyle(fontSize: 16)),
-                        const SizedBox(width: 8),
-                        const Icon(Icons.arrow_forward_ios),
-                      ],
-                    ),
+                      ),
+                      // Text("中文", style: TextStyle(fontSize: 16)),
+                      const SizedBox(width: 8),
+                      const Icon(Icons.arrow_forward_ios),
+                    ],
                   ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.logout,
-                      // size: 64,
-                    ),
-                    title: const Text("登出"),
-                    // subtitle: Text("开启听书功能"),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Switch(
-                        //   value: true,
-                        //   onChanged: (bool value) {},
-                        // ),
-                        // // Text("中文", style: TextStyle(fontSize: 16)),
-                        // const SizedBox(width: 8),
-                        IconButton(
-                            onPressed: () {
-                              ref.read(authProvider.notifier).logout();
-                            },
-                            icon: const Icon(Icons.arrow_forward_ios)),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                ),
+                ListTile(
+                  leading: const Icon(
+                    Icons.headphones,
+                    // size: 64,
+                  ),
+                  title: const Text("听书"),
+                  subtitle: const Text("开启听书功能"),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Switch(
+                        value: data.m4tSupport,
+                        onChanged: (bool value) {},
+                      ),
+                      // Text("中文", style: TextStyle(fontSize: 16)),
+                      const SizedBox(width: 8),
+                      const Icon(Icons.arrow_forward_ios),
+                    ],
+                  ),
+                ),
+              ],
             ),
+          );
+        },
         loading: () => const CircularProgressIndicator(),
         error: (error, stackTrace) => Text(error.toString()));
   }
-
-  // void showChapterBottomSheet(BuildContext context) {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     showDragHandle: true,
-  //     isScrollControlled: true,
-  //     shape: const RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.only(
-  //           topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
-  //     ),
-  //     constraints: BoxConstraints.tight(Size(MediaQuery.of(context).size.width,
-  //         MediaQuery.of(context).size.height * .4)),
-  //     builder: (BuildContext context) {
-  //       return ChapterSheetView(controller: controller);
-  //     },
-  //   );
-  // }
 }

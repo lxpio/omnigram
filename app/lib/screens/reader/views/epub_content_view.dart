@@ -84,9 +84,7 @@ class EpubContentView extends HookConsumerWidget {
             child: ScrollablePositionedList.builder(
               shrinkWrap: false,
               // reverse: true,
-              initialScrollIndex: document
-                      .absParagraphIndex(ref.read(selectBookProvider).index) ??
-                  0,
+              initialScrollIndex: document.absParagraphIndex(ref.read(selectBookProvider).index) ?? 0,
               itemCount: controller.paraLength,
               itemScrollController: controller.itemScrollController,
               itemPositionsListener: controller.itemPositionListener,

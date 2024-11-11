@@ -17,6 +17,7 @@ part 'scan_stats_dto.g.dart';
 /// * [scanCount] 
 /// * [errs] 
 /// * [diskUsage] 
+/// * [finishTime] 
 @BuiltValue()
 abstract class ScanStatsDto implements Built<ScanStatsDto, ScanStatsDtoBuilder> {
   @BuiltValueField(wireName: r'total')
@@ -33,6 +34,9 @@ abstract class ScanStatsDto implements Built<ScanStatsDto, ScanStatsDtoBuilder> 
 
   @BuiltValueField(wireName: r'disk_usage')
   int get diskUsage;
+
+  @BuiltValueField(wireName: r'finish_time')
+  int? get finishTime;
 
   ScanStatsDto._();
 
@@ -84,6 +88,13 @@ class _$ScanStatsDtoSerializer implements PrimitiveSerializer<ScanStatsDto> {
       object.diskUsage,
       specifiedType: const FullType(int),
     );
+    if (object.finishTime != null) {
+      yield r'finish_time';
+      yield serializers.serialize(
+        object.finishTime,
+        specifiedType: const FullType(int),
+      );
+    }
   }
 
   @override
@@ -141,6 +152,13 @@ class _$ScanStatsDtoSerializer implements PrimitiveSerializer<ScanStatsDto> {
             specifiedType: const FullType(int),
           ) as int;
           result.diskUsage = valueDes;
+          break;
+        case r'finish_time':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(int),
+          ) as int;
+          result.finishTime = valueDes;
           break;
         default:
           unhandled.add(key);

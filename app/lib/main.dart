@@ -79,7 +79,7 @@ class _OmnigramAppState extends ConsumerState<OmnigramApp> with WidgetsBindingOb
         title: 'Omnigram',
         debugShowCheckedModeBanner: false,
 
-        themeMode: ref.watch(themeModeProvider),
+        themeMode: ref.watch(themeStateProvider),
         darkTheme: omnigramDarkTheme,
         theme: omnigramLightTheme,
         routerConfig: router,

@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
 import 'package:omnigram/providers/scan_status.provider.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class ScanStatusView extends HookConsumerWidget {
-  const ScanStatusView({Key? key}) : super(key: key);
+  const ScanStatusView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -13,6 +14,12 @@ class ScanStatusView extends HookConsumerWidget {
 
     return scan.when(
       data: (status) {
+        final finished = (status.finishTime == null || status.finishTime! == 0)
+            ? DateTime.now()
+            : DateTime.fromMillisecondsSinceEpoch(status.finishTime!, isUtc: true);
+
+        debugPrint('status: ${context.locale.languageCode}');
+
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
@@ -73,7 +80,8 @@ class ScanStatusView extends HookConsumerWidget {
                                   borderRadius: BorderRadius.circular(16),
                                   color: Theme.of(context).colorScheme.onTertiary),
                               child: Text(
-                                'scan_time'.tr(namedArgs: {"time": DateTime.now().year.toString()}),
+                                'scan_time'.tr(
+                                    namedArgs: {"time": timeago.format(finished, locale: context.locale.languageCode)}),
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!

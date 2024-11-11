@@ -21,7 +21,7 @@ l10n:
 build_runner:
 	@echo "build_runner build"
 	@flutter clean
-	@dart run build_runner build
+	@dart run --enable-experiment=macros  build_runner build
 
 launcher_icons: build_runner
 	@dart run flutter_launcher_icons:main
