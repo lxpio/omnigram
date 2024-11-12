@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/entities/color_schemes.g.dart';
 import 'package:omnigram/providers/app_settings.provider.dart';
 import 'package:omnigram/services/app_settings.service.dart';

@@ -25,7 +25,7 @@ class BottomPlayerWidget extends HookConsumerWidget {
             //     width: 0.5,
             //   ),
             // ),
-            color: Theme.of(context).colorScheme.surfaceVariant,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
           ),
           padding: const EdgeInsets.only(
             left: 8,
@@ -95,11 +95,10 @@ class BottomPlayerWidget extends HookConsumerWidget {
       showDragHandle: true,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
       ),
-      constraints: BoxConstraints.tight(Size(MediaQuery.of(context).size.width,
-          MediaQuery.of(context).size.height * .4)),
+      constraints:
+          BoxConstraints.tight(Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height * .4)),
       builder: (BuildContext context) {
         return ChapterSheetView(controller: controller);
       },
@@ -142,7 +141,7 @@ class PlayButtonWidget extends HookConsumerWidget {
 }
 
 class _ReadProgressIndicator extends ConsumerWidget {
-  const _ReadProgressIndicator({required this.controller, super.key});
+  const _ReadProgressIndicator({required this.controller});
 
   final BookController controller;
 
@@ -173,8 +172,7 @@ class _ReadProgressIndicator extends ConsumerWidget {
     }
     return LinearProgressIndicator(
       value: selected.progress, // Change this value to represent the progress
-      valueColor: AlwaysStoppedAnimation<Color>(
-          Theme.of(context).colorScheme.tertiaryContainer), // Set to gray
+      valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.tertiaryContainer), // Set to gray
       backgroundColor: Colors.grey[300],
       // color:,
       // style: TextStyle(color: Colors.white, fontSize: 14),

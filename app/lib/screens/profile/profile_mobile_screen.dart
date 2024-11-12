@@ -3,13 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/entities/isar_store.entity.dart';
-import 'package:omnigram/providers/app_settings.provider.dart';
 import 'package:omnigram/providers/auth.provider.dart';
 import 'package:omnigram/providers/server_info.provider.dart';
 import 'package:omnigram/providers/theme.provider.dart';
-
-import 'package:omnigram/services/app_settings.service.dart';
 
 import 'views/about_view.dart';
 import 'views/logout_listtile_view.dart';
@@ -121,8 +117,8 @@ class ProfileSmallScreen extends HookConsumerWidget {
         ),
         SliverList(
           delegate: SliverChildListDelegate([
-            const SizedBox(height: 16),
-            const ScanStatusView(),
+            if (authState.isAdmin) const SizedBox(height: 16),
+            if (authState.isAdmin) const ScanStatusView(),
             const SizedBox(height: 32),
             const _SettingsWidget(),
             const SizedBox(height: 16),
@@ -142,113 +138,107 @@ class _SettingsWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final info = ref.watch(serverInfoProvider);
+    final mode = ref.watch(themeStateProvider);
 
-    return info.when(
-        data: (data) {
-          final mode = ref.watch(themeStateProvider);
-          return Container(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("settings".tr()),
+          const SizedBox(height: 8),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.color_lens_outlined),
+            title: Text("settings_theme_mode".tr()),
+            // subtitle: Text("选择深色或者浅色主题"),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text("settings".tr()),
-                const SizedBox(height: 8),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.color_lens_outlined),
-                  title: Text("settings_theme_mode".tr()),
-                  // subtitle: Text("选择深色或者浅色主题"),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6),
-                            color: Theme.of(context).colorScheme.primary.withAlpha(20)),
-                        child: Text(
-                          getThemeModeLangTag(mode).tr(),
-                          style: const TextStyle(
-                            fontSize: 14,
-                            // color: Color(
-                            //     int.parse("0xff${job.experienceLevelColor}")),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      const Icon(Icons.arrow_forward_ios),
-                    ],
-                  ),
-                  onTap: () async {
-                    final result = await showDialog(
-                        builder: (context) {
-                          return ThemeSelectDialogView(mode);
-                        },
-                        context: context);
-
-                    final themeMode = result as ThemeMode?;
-
-                    if (themeMode != null && themeMode != mode) {
-                      debugPrint("themeMode: $themeMode");
-                      ref.read(themeStateProvider.notifier).setTheme(themeMode);
-                    }
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.language
-                      // size: 64,
-                      ),
-                  title: Text("setting_language".tr()),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6),
-                            color: Theme.of(context).colorScheme.primary.withAlpha(20)),
-                        child: const Text(
-                          '中文',
-                          style: TextStyle(
-                            fontSize: 14,
-                            // color: Color(
-                            //     int.parse("0xff${job.experienceLevelColor}")),
-                          ),
-                        ),
-                      ),
-                      // Text("中文", style: TextStyle(fontSize: 16)),
-                      const SizedBox(width: 8),
-                      const Icon(Icons.arrow_forward_ios),
-                    ],
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      color: Theme.of(context).colorScheme.primary.withAlpha(20)),
+                  child: Text(
+                    getThemeModeLangTag(mode).tr(),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      // color: Color(
+                      //     int.parse("0xff${job.experienceLevelColor}")),
+                    ),
                   ),
                 ),
-                ListTile(
-                  leading: const Icon(
-                    Icons.headphones,
-                    // size: 64,
-                  ),
-                  title: const Text("听书"),
-                  subtitle: const Text("开启听书功能"),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Switch(
-                        value: data.m4tSupport,
-                        onChanged: (bool value) {},
-                      ),
-                      // Text("中文", style: TextStyle(fontSize: 16)),
-                      const SizedBox(width: 8),
-                      const Icon(Icons.arrow_forward_ios),
-                    ],
-                  ),
-                ),
+                const SizedBox(width: 8),
+                const Icon(Icons.arrow_forward_ios),
               ],
             ),
-          );
-        },
-        loading: () => const CircularProgressIndicator(),
-        error: (error, stackTrace) => Text(error.toString()));
+            onTap: () async {
+              final result = await showDialog(
+                  builder: (context) {
+                    return ThemeSelectDialogView(mode);
+                  },
+                  context: context);
+
+              final themeMode = result as ThemeMode?;
+
+              if (themeMode != null && themeMode != mode) {
+                debugPrint("themeMode: $themeMode");
+                ref.read(themeStateProvider.notifier).setTheme(themeMode);
+              }
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.language
+                // size: 64,
+                ),
+            title: Text("setting_language".tr()),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      color: Theme.of(context).colorScheme.primary.withAlpha(20)),
+                  child: const Text(
+                    '中文',
+                    style: TextStyle(
+                      fontSize: 14,
+                      // color: Color(
+                      //     int.parse("0xff${job.experienceLevelColor}")),
+                    ),
+                  ),
+                ),
+                // Text("中文", style: TextStyle(fontSize: 16)),
+                const SizedBox(width: 8),
+                const Icon(Icons.arrow_forward_ios),
+              ],
+            ),
+          ),
+          // ListTile(
+          //   leading: const Icon(
+          //     Icons.headphones,
+          //     // size: 64,
+          //   ),
+          //   title: const Text("听书"),
+          //   subtitle: const Text("开启听书功能"),
+          //   trailing: Row(
+          //     mainAxisSize: MainAxisSize.min,
+          //     children: [
+          //       Switch(
+          //         value: data.m4tSupport,
+          //         onChanged: (bool value) {},
+          //       ),
+          //       // Text("中文", style: TextStyle(fontSize: 16)),
+          //       const SizedBox(width: 8),
+          //       const Icon(Icons.arrow_forward_ios),
+          //     ],
+          //   ),
+          // ),
+        ],
+      ),
+    );
   }
 }

@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/providers/auth.provider.dart';
-import 'package:omnigram/providers/theme.provider.dart';
 
 class LogoutListTileView extends ConsumerWidget {
   const LogoutListTileView({super.key});

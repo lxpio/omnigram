@@ -109,7 +109,7 @@ void main() {
       cancelOnError: true,
     );
 
-    await Future.delayed(Duration(seconds: 10), () => subscription.cancel());
+    await Future.delayed(const Duration(seconds: 10), () => subscription.cancel());
 
     log("exit....");
   });

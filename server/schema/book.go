@@ -89,7 +89,7 @@ type Book struct {
 	// Publisher identifies the publication's publisher.
 	Publisher   string   `json:"publisher" gorm:"type:varchar(200);comment:用户标签列表"`
 	Description string   `json:"description,omitempty" gorm:"type:text;comment:描述信息"`
-	BookType    FileType `json:"book_type" gorm:"comment:图书类型"`
+	FileType    FileType `json:"file_type"  gorm:"column:file_type;comment:图书类型"`
 
 	// Series is the series to which this book belongs to.
 	Series string `json:",omitempty" gorm:"type:varchar(200);comment:系列"`

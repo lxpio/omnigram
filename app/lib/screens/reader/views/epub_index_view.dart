@@ -1,9 +1,7 @@
-import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/providers/book.provider.dart';
-import 'package:omnigram/screens/no_connection.dart';
 
 import 'package:omnigram/screens/home/views/book_liked_group_view.dart';
 

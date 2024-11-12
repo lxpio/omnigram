@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:omnigram/entities/isar_store.entity.dart';
 import 'package:omnigram/providers/api.provider.dart';
 
 /// Loads the codec from the URI and sends the events to the [chunkEvents] stream
@@ -17,7 +18,10 @@ class ImageLoader {
     StreamController<ImageChunkEvent>? chunkEvents,
   }) async {
     final headers = ApiService.getDeviceHeaders();
-
+    final accessToken = IsarStore.tryGet(StoreKey.accessToken);
+    if (accessToken != null) {
+      headers['Authorization'] = 'Bearer $accessToken';
+    }
     final stream = cache.getFileStream(
       uri,
       withProgress: chunkEvents != null,

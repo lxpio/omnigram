@@ -101,6 +101,7 @@ QueryBuilder<BookEntity, BookEntity, QAfterSortBy> recentsFilter(IsarCollection<
 }
 
 QueryBuilder<BookEntity, BookEntity, QAfterSortBy> likesFilter(IsarCollection<int, BookEntity> bookEntitys) {
+  // debugPrint('build books with favStatusEqualTo true query');
   return bookEntitys.where().favStatusEqualTo(true).sortByUtime();
 }
 
@@ -112,6 +113,7 @@ QueryBuilder<BookEntity, BookEntity, QAfterSortBy> readingsFilter(IsarCollection
 class Books extends _$Books {
   @override
   BookState build(BookQuery query) {
+    // debugPrint('build books with query: ${query.label}');
     final items = _getRecentBook(0);
     return BookState(page: 0, items: items, loading: false, noMore: false);
   }

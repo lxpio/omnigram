@@ -3,18 +3,21 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/entities/book.entity.dart';
 
 import 'package:omnigram/providers/api.provider.dart';
+import 'package:omnigram/providers/book.provider.dart';
+import 'package:omnigram/providers/db.provider.dart';
+import 'package:omnigram/providers/image/remote_image_provider.dart';
 
 import 'package:omnigram/screens/reader/providers/select_book.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/show_snackbar.dart';
-
-
+import 'package:transparent_image/transparent_image.dart';
 
 class ReaderMobileScreen extends HookConsumerWidget {
   const ReaderMobileScreen({super.key, required this.book}) : super();
@@ -23,10 +26,8 @@ class ReaderMobileScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
- 
+    final liked = useState(book.favStatus);
 
-
-    print('build ReaderMobileScreen cfi: ${book.id}');
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -51,20 +52,26 @@ class ReaderMobileScreen extends HookConsumerWidget {
             ),
             IconButton(
               // onPressed: ,
-              icon: const Icon(
+              icon: Icon(
                 Icons.star,
                 size: 24,
+                color: liked.value ? Colors.amber : Colors.grey,
               ),
               onPressed: () {
-                print("press person");
+                liked.value = !liked.value;
+                final isar = ref.read(dbProvider);
+                isar.write((db) => db.bookEntitys.put(book.copyWith(favStatus: liked.value)));
+
+                ref.invalidate(booksProvider(BookQuery.likes));
+                ref.invalidate(booksProvider(BookQuery.recents));
+                ref.invalidate(booksProvider(BookQuery.readings));
               },
             ),
             // const SizedBox(width: 16),
           ],
         ),
         body: Center(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             const SizedBox(height: 32),
             Container(
               // color: Theme.of(context).colorScheme.surface,
@@ -72,12 +79,15 @@ class ReaderMobileScreen extends HookConsumerWidget {
               width: MediaQuery.of(context).size.width * .7,
 
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: Theme.of(context).colorScheme.surface,
-                  image: DecorationImage(
-                    image: FileImage(File(book.coverUrl!),),
-                    ),
-                    ),
+                borderRadius: BorderRadius.circular(16),
+                color: Theme.of(context).colorScheme.surface,
+                image: DecorationImage(
+                  image: FileImage(
+                    File(book.coverUrl!),
+                  ),
+                ),
+              ),
+              child: bookImage(book),
             ),
             const SizedBox(height: 32),
             Text(book.title, style: Theme.of(context).textTheme.titleLarge),
@@ -97,8 +107,7 @@ class ReaderMobileScreen extends HookConsumerWidget {
                         const SizedBox(width: 5),
                         Text(
                           '4.5',
-                          style: TextStyle(
-                              fontSize: 14.0, color: Colors.grey.shade600),
+                          style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600),
                         )
                       ],
                     ),
@@ -106,13 +115,11 @@ class ReaderMobileScreen extends HookConsumerWidget {
                   Container(
                     child: Row(
                       children: [
-                        Icon(Icons.access_time,
-                            color: Colors.grey.shade600, size: 20),
+                        Icon(Icons.access_time, color: Colors.grey.shade600, size: 20),
                         const SizedBox(width: 5),
                         Text(
                           '2h',
-                          style: TextStyle(
-                              fontSize: 14.0, color: Colors.grey.shade600),
+                          style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600),
                         )
                       ],
                     ),
@@ -121,13 +128,11 @@ class ReaderMobileScreen extends HookConsumerWidget {
                     width: MediaQuery.of(context).size.width * 0.2,
                     child: Row(
                       children: [
-                        Icon(Icons.play_circle_filled,
-                            color: Colors.grey.shade600, size: 20),
+                        Icon(Icons.play_circle_filled, color: Colors.grey.shade600, size: 20),
                         const SizedBox(width: 5),
                         Text(
                           'Watch',
-                          style: TextStyle(
-                              fontSize: 14.0, color: Colors.grey.shade600),
+                          style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600),
                         )
                       ],
                     ),
@@ -138,8 +143,7 @@ class ReaderMobileScreen extends HookConsumerWidget {
             SizedBox(
               // alignment: Alignment.centerLeft,
               width: MediaQuery.of(context).size.width * 0.7,
-              child: Text('book.description',
-                  style: Theme.of(context).textTheme.bodyMedium),
+              child: Text('book.description', style: Theme.of(context).textTheme.bodyMedium),
             ),
             const SizedBox(height: 32),
             Container(
@@ -150,17 +154,14 @@ class ReaderMobileScreen extends HookConsumerWidget {
                 children: [
                   FilledButton.tonal(
                     onPressed: () async {
-                      final filePath =
-                          await getOrDownloadBook(ref, book);
+                      final filePath = await getOrDownloadBook(ref, book);
                       if (!context.mounted) return;
                       if (filePath.isEmpty) {
                         showSnackBar(context, "book file not exist!");
                       }
                       //这里需要更新book path,当前selectBookProvider设计是如果path不为空才
                       //加载文件；
-                      await ref
-                          .read(selectBookProvider.notifier)
-                          .refresh(book: book.copyWith(localPath: filePath));
+                      await ref.read(selectBookProvider.notifier).refresh(book: book.copyWith(localPath: filePath));
 
                       if (!context.mounted) return;
                       context.pushNamed(kReaderDetailPage);
@@ -178,8 +179,7 @@ class ReaderMobileScreen extends HookConsumerWidget {
                       //     TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
                     ),
                     onPressed: () async {
-                      final filePath =
-                          await getOrDownloadBook(ref, book);
+                      final filePath = await getOrDownloadBook(ref, book);
                       if (!context.mounted) return;
                       if (filePath.isEmpty) {
                         showSnackBar(context, "book file not exist!");
@@ -190,9 +190,7 @@ class ReaderMobileScreen extends HookConsumerWidget {
                       }
                       //这里需要更新book path,当前selectBookProvider设计是如果path不为空才
                       //加载文件；
-                      await ref
-                          .read(selectBookProvider.notifier)
-                          .refresh(book: book.copyWith(localPath: filePath));
+                      await ref.read(selectBookProvider.notifier).refresh(book: book.copyWith(localPath: filePath));
                       // ref.read(selectBookProvider.notifier).play();
                       if (!context.mounted) return;
                       context.pushNamed(kReaderDetailPage, extra: true);
@@ -209,8 +207,7 @@ class ReaderMobileScreen extends HookConsumerWidget {
         ));
   }
 
-  Future<String> getOrDownloadBook(
-      WidgetRef ref, localBook) async {
+  Future<String> getOrDownloadBook(WidgetRef ref, localBook) async {
     // Check if the book file already exists and is valid
     final localFilePath = localBook?.localPath;
     if (localFilePath != null && await File(localFilePath).exists()) {
@@ -221,7 +218,7 @@ class ReaderMobileScreen extends HookConsumerWidget {
     try {
       final api = ref.read(apiServiceProvider);
 
-      final bookPath = await api.readerDownloadBooksBookIdGet(bookId:localBook.remoteId!);
+      final bookPath = await api.readerDownloadBooksBookIdGet(bookId: localBook.remoteId!);
 
       // BookLocalBox.instance.create(id, bookPath);
 
@@ -236,3 +233,22 @@ class ReaderMobileScreen extends HookConsumerWidget {
 
 //int to string
 //
+Widget? bookImage(BookEntity book) {
+  if (book.coverUrl != null && book.coverUrl!.isNotEmpty) {
+    return FadeInImage(
+      placeholder: MemoryImage(kTransparentImage),
+      image: ImmichRemoteImageProvider(
+        coverId: book.identifier + book.coverUrl!,
+      ),
+      fit: BoxFit.fill,
+      imageErrorBuilder: (context, error, stackTrace) {
+        if (kDebugMode) {
+          print('get image failed: $error');
+        }
+        return Center(child: Text(book.title));
+      },
+    );
+  }
+
+  return Text(book.title);
+}
