@@ -1,20 +1,15 @@
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
-import 'package:omnigram/screens/no_connection.dart';
 import 'package:omnigram/utils/constants.dart';
 
 class UnauthorizedView extends HookConsumerWidget {
-  
   const UnauthorizedView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    
-
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -26,8 +21,7 @@ class UnauthorizedView extends HookConsumerWidget {
               SizedBox(
                 height: 350,
                 width: 350,
-                child:
-                    Lottie.asset("assets/files/animation-need-login.json"),
+                child: Lottie.asset("assets/files/animation-need-login.json"),
               ),
               Text(
                 'login_for_more_features'.tr(),
@@ -41,13 +35,11 @@ class UnauthorizedView extends HookConsumerWidget {
                   context.goNamed(kLoginPage);
                 },
                 style: FilledButton.styleFrom(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.secondaryContainer,
+                    backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
                     minimumSize: const Size.fromHeight(45)),
                 child: Text(
                   'config_server'.tr(),
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                 ),
               ),
               Row(
@@ -60,13 +52,10 @@ class UnauthorizedView extends HookConsumerWidget {
                 ],
               ),
               const SizedBox(height: 30),
-              
             ],
           ),
         ),
       ),
     );
   }
-
-
 }

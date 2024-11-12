@@ -24,8 +24,7 @@ class EpubDocument {
     doc.book = await EpubReader.readBook(bytes);
 
     doc.chapters = parseChapters(doc.book);
-    final parseParagraphsResult =
-        parseParagraphs(doc.chapters, doc.book.Content);
+    final parseParagraphsResult = parseParagraphs(doc.chapters, doc.book.Content);
     doc.paragraphs = parseParagraphsResult.flatParagraphs;
     doc.chapterIndexes = (parseParagraphsResult.chapterIndexes);
 
@@ -75,11 +74,10 @@ class EpubDocument {
       return null;
     }
 
-    final chapterIndex =
-        index.chapterIndex > chapters.length - 1 ? 0 : index.chapterIndex;
+    final chapterIndex = index.chapterIndex > chapters.length - 1 ? 0 : index.chapterIndex;
     final chapter = chapters[chapterIndex];
     final paragraphIndex = index.paragraphIndex;
-    if (chapter == null || paragraphIndex == null) {
+    if (paragraphIndex == null) {
       return null;
     }
 
@@ -124,9 +122,8 @@ class EpubDocument {
     // 处理带锚点的情况
     final anchor = (cparts.length == 2) ? cparts[1] : null;
 
-    final chapterIndex = chapters.indexWhere((chapter) =>
-        chapter.ContentFileName == cparts[0].substring(1) &&
-        chapter.Anchor == anchor);
+    final chapterIndex =
+        chapters.indexWhere((chapter) => chapter.ContentFileName == cparts[0].substring(1) && chapter.Anchor == anchor);
 
     return chapterIndex == -1
         ? ChapterIndex(
@@ -142,9 +139,7 @@ class EpubDocument {
   }
 
   int? absParagraphIndex(ChapterIndex? current) {
-    return current != null
-        ? chapterIndexes[current.chapterIndex] + current.paragraphIndex
-        : null;
+    return current != null ? chapterIndexes[current.chapterIndex] + current.paragraphIndex : null;
   }
 
   double progress(ChapterIndex? current) {

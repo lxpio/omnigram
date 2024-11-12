@@ -14,15 +14,14 @@ void main() {
 //       LLMService.fromJson(json.decode(str));
     final book = BookEntity.fromJson(json.decode(data));
 
-    expect(book!.id, 1);
+    expect(book.id, 1);
     // expect(book.chapterPos, "/text00002.html?12");
   });
 
   test('open epub doc', () async {
 // factory LLMService.fromRawJson(String str) =>
 //       LLMService.fromJson(json.decode(str));
-    final doc = await EpubDocument.initialize(
-        1, '/Users/liuyou/Workspace/myfirst/elib.epub');
+    final doc = await EpubDocument.initialize(1, '/Users/liuyou/Workspace/myfirst/elib.epub');
 
     expect(doc.chapters.length, 1);
     // expect(book.chapterPos, "/text00002.html?12");

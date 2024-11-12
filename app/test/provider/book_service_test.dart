@@ -71,7 +71,7 @@ void main() {
     final books = await bookService.loadBooks(1, DateTime.now().millisecondsSinceEpoch);
 
     if (books != null) {
-      File outputFile = new File('/tmp/hello.out');
+      File outputFile = File('/tmp/hello.out');
 
       if (books.length > 10) {
         for (var book in books.sublist(0, 10)) {
@@ -113,7 +113,7 @@ void main() {
 
     await syncService.syncBooksToDB(bookService.getChangedBooks, bookService.loadBooks);
 
-    File outputFile = new File('/tmp/hello.out');
+    File outputFile = File('/tmp/hello.out');
 
     final books = db.bookEntitys.where().findAll();
 

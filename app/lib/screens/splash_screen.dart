@@ -15,17 +15,17 @@ class SplashScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final log = Logger("SplashScreenPage");
 
-    final endpoint = IsarStore.tryGet(StoreKey.serverEndpoint);
-    final accessToken = IsarStore.tryGet(StoreKey.accessToken);
-
     void performLoggingIn() async {
       log.info('Starting login process');
-      bool isAuthSuccess = false;
+
+      final endpoint = IsarStore.tryGet(StoreKey.serverEndpoint);
+      final accessToken = IsarStore.tryGet(StoreKey.accessToken);
 
       if (accessToken != null && endpoint != null) {
-        ref.read(apiServiceProvider.notifier).setEndpoint(endpoint);
         try {
-          isAuthSuccess = await ref.read(authProvider.notifier).setSuccessLoginInfo();
+          ref.read(apiServiceProvider.notifier).setEndpoint(endpoint);
+
+          await ref.read(authProvider.notifier).setSuccessLoginInfo();
         } catch (error, stackTrace) {
           log.severe(
             'Cannot set success login info',
@@ -39,12 +39,12 @@ class SplashScreen extends HookConsumerWidget {
         );
       }
 
-      if (!isAuthSuccess) {
-        log.severe(
-          'Unable to login using offline or online methods - Logging out completely',
-        );
-        // ref.read(authProvider.notifier).logout();
-      }
+      // if (!isAuthSuccess) {
+      //   log.severe(
+      //     'Unable to login using offline or online methods - Logging out completely',
+      //   );
+      //   // ref.read(authProvider.notifier).logout();
+      // }
 
       // final hasPermission =
       //     await ref.read(galleryPermissionNotifier.notifier).hasPermission;

@@ -1,5 +1,3 @@
-import '_chapter_index.dart';
-
 export 'package:epubx/epubx.dart' hide Image;
 
 class ChapterIndex {

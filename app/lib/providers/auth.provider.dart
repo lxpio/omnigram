@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +6,6 @@ import 'package:omnigram/entities/user.entity.dart';
 import 'package:omnigram/providers/api.provider.dart';
 import 'package:logging/logging.dart';
 import 'package:omnigram/utils/hash.dart';
-import 'package:omnigram/utils/url_helper.dart';
 import 'package:openapi/openapi.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -76,39 +72,17 @@ class Auth extends _$Auth {
   }
 
   Future<void> logout() async {
-    try {
-      String? userEmail = IsarStore.tryGet(StoreKey.currentUser)?.email;
-
-      await ref
-          .watch(apiServiceProvider)
-          .authLogoutPost()
-          .then((_) => log.info("Logout was successful for $userEmail"))
-          .onError(
-            (error, stackTrace) => log.severe("Logout failed for $userEmail", error, stackTrace),
-          );
-
-      await Future.wait([
-        // clearAssetsAndAlbums(_db),
-        IsarStore.delete(StoreKey.currentUser),
-        IsarStore.delete(StoreKey.accessToken),
-        IsarStore.delete(StoreKey.refreshToken),
-      ]);
-      // _ref.invalidate(albumProvider);
-      // _ref.invalidate(sharedAlbumProvider);
-
-      state = state.copyWith(
-        deviceId: "",
-        userId: 0,
-        userEmail: "",
-        name: '',
-        profileImagePath: '',
-        isAdmin: false,
-        shouldChangePassword: false,
-        isAuthenticated: false,
-      );
-    } catch (e, stack) {
-      log.severe('Logout failed', e, stack);
-    }
+    log.severe("Logging out");
+    state = state.copyWith(
+      deviceId: "",
+      userId: 0,
+      userEmail: "",
+      name: '',
+      profileImagePath: '',
+      isAdmin: false,
+      shouldChangePassword: false,
+      isAuthenticated: false,
+    );
   }
 
   updateUserProfileImagePath(String path) {

@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/entities/book.entity.dart';
-import 'package:omnigram/entities/isar_store.entity.dart';
 import 'package:omnigram/providers/image/remote_image_provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -99,24 +98,82 @@ class BookCard extends HookConsumerWidget {
       ),
     );
   }
+}
 
-  Widget? bookImage(BookEntity book) {
-    if (book.coverUrl != null && book.coverUrl!.isNotEmpty) {
-      return FadeInImage(
-        placeholder: MemoryImage(kTransparentImage),
-        image: ImmichRemoteImageProvider(
-          coverId: book.identifier + book.coverUrl!,
-        ),
-        fit: BoxFit.fill,
-        imageErrorBuilder: (context, error, stackTrace) {
-          if (kDebugMode) {
-            print('get image failed: $error');
-          }
-          return Center(child: Text(book.title));
-        },
-      );
+class BookCardV2 extends HookConsumerWidget {
+  const BookCardV2({
+    super.key,
+    required this.book,
+  });
+
+  final BookEntity book;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final height = MediaQuery.of(context).size.height;
+    if (kDebugMode) {
+      debugPrint('build book card ${book.title} 4height: $height');
     }
 
-    return Text(book.title);
+    return Container(
+      // padding: const EdgeInsets.fromLTRB(0, 16, 8, 16),
+      // margin: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface.withOpacity(0.8),
+        // borderRadius: BorderRadius.circular(16),
+      ),
+      child: Builder(builder: (context) {
+        return ClipRRect(
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
+          child: Stack(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(16)),
+                ),
+                // height: 230,
+                // width: double.infinity,
+                child: bookImage(book),
+              ),
+              // Container(
+              //   decoration: BoxDecoration(
+              //     // borderRadius: const BorderRadius.all(Radius.circular(16)),
+              //     gradient: LinearGradient(
+              //       begin: Alignment.bottomCenter,
+              //       stops: const [.1, .5],
+              //       colors: [
+              //         Colors.black.withOpacity(.1),
+              //         Colors.black.withOpacity(.05),
+              //       ],
+              //     ),
+              //   ),
+              // height: height * .7,
+              // width: width * 1,
+              // ),
+            ],
+          ),
+        );
+      }),
+    );
   }
+}
+
+Widget? bookImage(BookEntity book) {
+  if (book.coverUrl != null && book.coverUrl!.isNotEmpty) {
+    return FadeInImage(
+      placeholder: MemoryImage(kTransparentImage),
+      image: ImmichRemoteImageProvider(
+        coverId: book.identifier + book.coverUrl!,
+      ),
+      fit: BoxFit.fill,
+      imageErrorBuilder: (context, error, stackTrace) {
+        if (kDebugMode) {
+          print('get image failed: $error');
+        }
+        return Center(child: Text(book.title));
+      },
+    );
+  }
+
+  return Text(book.title);
 }

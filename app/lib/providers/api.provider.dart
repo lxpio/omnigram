@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:omnigram/entities/isar_store.entity.dart';
+import 'package:omnigram/providers/auth.provider.dart';
 import 'package:omnigram/utils/url_helper.dart';
 import 'package:openapi/openapi.dart';
 
@@ -45,6 +45,28 @@ class ApiService extends _$ApiService {
     return status;
   }
 
+  Future<void> logout(DefaultApi api) async {
+    String? userEmail = IsarStore.tryGet(StoreKey.currentUser)?.email;
+
+    final accessToken = IsarStore.tryGet(StoreKey.accessToken);
+
+    await api
+        .authLogoutPost(headers: {'Authorization': 'Bearer $accessToken'})
+        .then((_) => log.info("Logout was successful for $userEmail"))
+        .onError(
+          (error, stackTrace) => log.severe("Logout failed for $userEmail", error, stackTrace),
+        );
+
+    await Future.wait([
+      // clearAssetsAndAlbums(_db),
+      IsarStore.delete(StoreKey.currentUser),
+      IsarStore.delete(StoreKey.accessToken),
+      IsarStore.delete(StoreKey.refreshToken),
+    ]);
+
+    ref.read(authProvider.notifier).logout();
+  }
+
   Future<bool> _isEndpointAvailable(String endpoint) async {
     try {
       final dio = _createDio(endpoint);
@@ -72,9 +94,85 @@ class ApiService extends _$ApiService {
     return true;
   }
 
-  static DeviceHeaderInterceptor setDeviceHeadersInterceptor() {
+  List<Interceptor> bearerAuthInterceptors() {
+    return [
+      QueuedInterceptorsWrapper(onRequest: (options, handler) {
+        final accessToken = IsarStore.tryGet(StoreKey.accessToken);
+        if (accessToken != null) {
+          options.headers['Authorization'] = 'Bearer $accessToken';
+        }
+        handler.next(options);
+      }, onError: (error, handler) async {
+        if (error.response == null) {
+          return handler.next(error);
+        }
+
+        if (error.response?.statusCode == 401) {
+          try {
+            final user = IsarStore.tryGet(StoreKey.currentUser);
+            if (user == null) {
+              return handler.next(error);
+            }
+
+            await refreshToken(user.name);
+
+            return handler.next(error);
+          } on DioException catch (e) {
+            return handler.reject(e);
+          }
+
+          // await AuthProvider().logout();
+        }
+        return handler.next(error);
+      }),
+
+      /// Retry the request when 401 occurred
+      QueuedInterceptorsWrapper(
+        onError: (error, handler) async {
+          if (error.response != null && error.response!.statusCode == 401) {
+            final retryDio = Dio(
+              BaseOptions(baseUrl: error.requestOptions.baseUrl),
+            );
+
+            if (error.requestOptions.headers.containsKey('Authorization')) {
+              error.requestOptions.headers['Authorization'] = IsarStore.tryGet(StoreKey.accessToken) ?? '';
+            }
+
+            final result = await retryDio.fetch(error.requestOptions);
+
+            return handler.resolve(result);
+          }
+        },
+      ),
+    ];
+  }
+
+  Future<void> refreshToken(String account) async {
+    final endpoint = IsarStore.tryGet(StoreKey.serverEndpoint);
+    final refreshToken = IsarStore.tryGet(StoreKey.refreshToken);
+    final deviceId = IsarStore.tryGet(StoreKey.deviceId);
+    final api = _createApi(endpoint);
+
+    final request = RefreshTokenDto((b) => b
+      ..account = account
+      ..deviceId = deviceId
+      ..refreshToken = refreshToken);
+
+    final result = await api.authTokenRefreshPost(refreshTokenDto: request);
+
+    if (result.statusCode == null || result.statusCode! ~/ 100 != 2 || result.data == null) {
+      log.severe("Failed to refresh token");
+      await logout(api);
+
+      throw DioException(requestOptions: result.requestOptions);
+    }
+
+    IsarStore.put(StoreKey.accessToken, result.data!.accessToken);
+  }
+
+  static AddHeaderInterceptor setDeviceHeadersInterceptor() {
     final Map<String, String> headers = getDeviceHeaders();
-    return DeviceHeaderInterceptor(headers: headers);
+    return AddHeaderInterceptor(headers: headers);
   }
 
   static Map<String, String> getDeviceHeaders() {
@@ -96,21 +194,12 @@ class ApiService extends _$ApiService {
       // log.warning("Failed to set device headers: $e");
     }
 
-    // final accessToken = IsarStore.tryGet(StoreKey.accessToken);
-
-    // if (accessToken != null) {
-    //   headers['Authorization'] = 'Bearer $accessToken';
-    // }
-
     return headers;
   }
 }
 
 DefaultApi _createApi(String? endpoint, {List<Interceptor>? interceptors}) {
   final dio = _createDio(endpoint);
-
-  // final Map<String, String> headers = ApiService.getDeviceHeaders();
-  // return DeviceHeaderInterceptor(headers: headers);
 
   List<Interceptor> myInterceptors = [ApiService.setDeviceHeadersInterceptor()];
 
@@ -127,10 +216,10 @@ DefaultApi _createApi(String? endpoint, {List<Interceptor>? interceptors}) {
   return api.getDefaultApi();
 }
 
-class DeviceHeaderInterceptor extends Interceptor {
+class AddHeaderInterceptor extends Interceptor {
   final Map<String, String> headers;
 
-  DeviceHeaderInterceptor({Map<String, String>? headers}) : headers = headers ?? {};
+  AddHeaderInterceptor({Map<String, String>? headers}) : headers = headers ?? {};
 
   @override
   void onRequest(
@@ -140,87 +229,6 @@ class DeviceHeaderInterceptor extends Interceptor {
     options.headers.addAll(headers);
     super.onRequest(options, handler);
   }
-}
-
-List<Interceptor> bearerAuthInterceptors() {
-  return [
-    QueuedInterceptorsWrapper(onRequest: (options, handler) {
-      final accessToken = IsarStore.tryGet(StoreKey.accessToken);
-      if (accessToken != null) {
-        options.headers['Authorization'] = 'Bearer $accessToken';
-      }
-      handler.next(options);
-    },
-        // onResponse: (response, handler) {},
-        onError: (error, handler) async {
-      if (error.response == null) {
-        return handler.next(error);
-      }
-
-      if (error.response?.statusCode == 401) {
-        try {
-          final user = IsarStore.tryGet(StoreKey.currentUser);
-          if (user == null) {
-            return handler.next(error);
-          }
-
-          await refreshToken(user.name);
-
-          return handler.next(error);
-        } on DioException catch (e) {
-          return handler.reject(e);
-        }
-
-        // await AuthProvider().logout();
-      }
-      return handler.next(error);
-    }),
-
-    /// Retry the request when 401 occurred
-    QueuedInterceptorsWrapper(
-      onError: (error, handler) async {
-        if (error.response != null && error.response!.statusCode == 401) {
-          final retryDio = Dio(
-            BaseOptions(baseUrl: error.requestOptions.baseUrl),
-          );
-
-          if (error.requestOptions.headers.containsKey('Authorization')) {
-            error.requestOptions.headers['Authorization'] = IsarStore.tryGet(StoreKey.accessToken) ?? '';
-          }
-
-          /// In real-world scenario,
-          /// the request should be requested with [error.requestOptions]
-          /// using [fetch] method.
-          /// ``` dart
-          /// final result = await retryDio.fetch(error.requestOptions);
-          /// ```
-          final result = await retryDio.fetch(error.requestOptions);
-
-          return handler.resolve(result);
-        }
-      },
-    ),
-  ];
-}
-
-Future<void> refreshToken(String account) async {
-  final endpoint = IsarStore.tryGet(StoreKey.serverEndpoint);
-  final refreshToken = IsarStore.tryGet(StoreKey.refreshToken);
-  final deviceId = IsarStore.tryGet(StoreKey.deviceId);
-  final api = _createApi(endpoint);
-
-  final request = RefreshTokenDto((b) => b
-    ..account = account
-    ..deviceId = deviceId
-    ..refreshToken = refreshToken);
-
-  final result = await api.authTokenRefreshPost(refreshTokenDto: request);
-
-  if (result.statusCode == null || result.statusCode! ~/ 100 != 2 || result.data == null) {
-    throw DioException(requestOptions: result.requestOptions);
-  }
-
-  IsarStore.put(StoreKey.accessToken, result.data!.accessToken);
 }
 
 Dio _createDio(String? baseUrl, {Map<String, dynamic>? headers}) {

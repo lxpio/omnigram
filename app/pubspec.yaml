@@ -59,6 +59,7 @@ dependencies:
   flutter_udid: ^3.0.0
   logging: ^1.2.0
   timeago: ^3.7.0
+  carousel_slider: ^5.0.0
   # macros: ^0.1.3-main.0
 
 #dependency_overrides:

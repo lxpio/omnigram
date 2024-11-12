@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/entities/book.entity.dart';
 import 'package:omnigram/providers/book.provider.dart';
 import 'package:omnigram/utils/constants.dart';
 
@@ -49,10 +48,10 @@ class BookGroup extends HookConsumerWidget {
                 return GestureDetector(
                     child: Container(
                       padding: const EdgeInsets.all(8),
-                      width: 180,
+                      width: 160,
                       child: BookCard(
                         book: book,
-                        width: 180,
+                        width: 160,
                         height: 230,
                       ),
                     ),

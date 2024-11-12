@@ -78,13 +78,10 @@ class _OmnigramAppState extends ConsumerState<OmnigramApp> with WidgetsBindingOb
       home: MaterialApp.router(
         title: 'Omnigram',
         debugShowCheckedModeBanner: false,
-
         themeMode: ref.watch(themeStateProvider),
         darkTheme: omnigramDarkTheme,
         theme: omnigramLightTheme,
         routerConfig: router,
-        // routeInformationParser: router.routeInformationParser,
-        // routerDelegate: router.routerDelegate,
       ),
     );
   }

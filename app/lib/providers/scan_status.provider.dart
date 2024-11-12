@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:omnigram/providers/api.provider.dart';
 import 'package:openapi/openapi.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -9,6 +10,7 @@ part 'scan_status.provider.g.dart';
 
 @riverpod
 class ScanService extends _$ScanService {
+  final log = Logger('ScanService');
   @override
   bool build() {
     return false;
@@ -84,6 +86,7 @@ class ScanService extends _$ScanService {
       running = stats.running;
       // state = running;
       yield stats;
+      log.info('refresh scan status: $running');
       await Future<void>.delayed(const Duration(seconds: 1));
     }
   }
@@ -93,10 +96,9 @@ class ScanService extends _$ScanService {
 Stream<ScanStatsDto> scanStatus(ScanStatusRef ref) async* {
   // Connect to an API using sockets, and decode the output
   final api = ref.watch(apiServiceProvider);
+  var running = ref.watch(scanServiceProvider);
 
-  var running = true;
-
-  while (running) {
+  do {
     ScanStatsDto stats;
 
     try {
@@ -112,10 +114,9 @@ Stream<ScanStatsDto> scanStatus(ScanStatusRef ref) async* {
         (b) => b..running = false,
       );
     }
-
     running = stats.running;
     // state = running;
     yield stats;
     await Future<void>.delayed(const Duration(seconds: 1));
-  }
+  } while (running);
 }

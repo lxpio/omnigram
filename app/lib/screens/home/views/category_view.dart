@@ -17,14 +17,14 @@ class CategoryGroup extends HookConsumerWidget {
   // final List<CategoryData>? categorys;
 
   final List<CategoryData> categorys = [
-    CategoryData(Icon(Icons.book), 'category1 one '.tr()),
-    CategoryData(Icon(Icons.book), 'category1  '.tr()),
-    CategoryData(Icon(Icons.book), 'shot'.tr()),
-    CategoryData(Icon(Icons.book), 'loooooooooooooong'.tr()),
-    CategoryData(Icon(Icons.book), 'category1'.tr()),
-    CategoryData(Icon(Icons.book), 'category1'.tr()),
-    CategoryData(Icon(Icons.book), 'category1'.tr()),
-    CategoryData(Icon(Icons.book), 'category1'.tr())
+    CategoryData(const Icon(Icons.book), 'category1 one '.tr()),
+    CategoryData(const Icon(Icons.book), 'category1  '.tr()),
+    CategoryData(const Icon(Icons.book), 'shot'.tr()),
+    CategoryData(const Icon(Icons.book), 'loooooooooooooong'.tr()),
+    CategoryData(const Icon(Icons.book), 'category1'.tr()),
+    CategoryData(const Icon(Icons.book), 'category1'.tr()),
+    CategoryData(const Icon(Icons.book), 'category1'.tr()),
+    CategoryData(const Icon(Icons.book), 'category1'.tr())
   ];
 
   @override
@@ -40,10 +40,10 @@ class CategoryGroup extends HookConsumerWidget {
           // child: ListView.builder(itemBuilder: itemBuilder, itemCount: books.length),
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: categorys?.length ?? 0,
+            itemCount: categorys.length ?? 0,
             itemBuilder: (context, index) {
-              if (categorys != null && index < categorys!.length) {
-                final book = categorys![index];
+              if (index < categorys.length) {
+                final book = categorys[index];
 
                 return GestureDetector(
                     child: Container(

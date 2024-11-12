@@ -2835,14 +2835,15 @@ class DefaultApi {
         in _response.data!.stream.cast<List<int>>().transform(Utf8Decoder()).transform(const SseEventTransformer())) {
       try {
         if (event.data != null) {
+          final json = jsonDecode(event.data!);
           final current = _serializers.deserialize(
-            jsonDecode(event.data!),
+            json,
             specifiedType: const FullType(BuiltList, [FullType(EbookDto)]),
           ) as BuiltList<EbookDto>;
           yield current;
         }
       } catch (e) {
-        throw Exception('Failed to parse event stream:  ${event.data} ${e.toString()}');
+        throw Exception('Failed to parse event stream:  ${e.toString()}');
       }
     }
   }

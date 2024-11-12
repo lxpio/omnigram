@@ -209,7 +209,7 @@ func newWalkDirFunc(ctx context.Context, bookChan chan<- *schema.Book, maxDepth 
 
 			book := &schema.Book{
 				ID:            schema.GenBookID(now),
-				BookType:      fileType,
+				FileType:      fileType,
 				Size:          info.Size(),
 				Path:          path,
 				CTime:         info.ModTime().UnixMilli(),

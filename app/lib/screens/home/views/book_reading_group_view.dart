@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/providers/book.provider.dart';
 import 'package:omnigram/utils/constants.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 import 'book_card_view.dart';
 
@@ -16,7 +17,6 @@ class BookReadingGroup extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(booksProvider(query));
-    // return Container();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -33,70 +33,37 @@ class BookReadingGroup extends HookConsumerWidget {
                 fontWeight: FontWeight.bold),
           ),
         ),
-        Container(
-          // padding: EdgeInsets.all(20),
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          height: 230,
-          // child: ListView.builder(itemBuilder: itemBuilder, itemCount: books.length),
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: state.items.length,
-            itemBuilder: (context, index) {
-              if (index < state.items.length) {
-                final book = state.items[index];
-
-                return GestureDetector(
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      width: 180,
-                      child: BookCard(
-                        book: book,
-                        width: 180,
-                        height: 230,
-                      ),
-                    ),
-                    onTap: () async {
-                      // BookModel? b;
-                      // //if progress or chapterPos is null , try request backend to get
-                      // if (book.progress == null || book.progressIndex == null) {
-                      //   final api = ref.read(bookAPIProvider);
-
-                      //   final data = await api.getReadProcess(book.id);
-
-                      //   if (data != null) {
-                      //     // await ref.read(selectBookProvider.notifier).refresh(book);
-                      //     b = book.copyWith(
-                      //         progress: (data["progress"] + 0.0),
-                      //         progressIndex: data["progress_index"]);
-                      //   }
-                      // }
-                      if (!context.mounted) return;
-                      context.pushNamed(kSummaryPage, extra: book);
-                    }
-                    //'/reader/books/${book.id}'
-                    );
-
-                // return AspectRatio(
-                //   aspectRatio: 2.1 / 3,
-                //   child: GestureDetector(
-                //     child: Container(
-                //       padding: const EdgeInsets.all(8),
-                //       child: BookCard(
-                //         book: book!,
-                //       ),
-                //     ),
-                //     onTap: () => context.push(kReaderPath, extra: book),
-                //     //'/reader/books/${book.id}'
-                //   ),
-                // );
-              } else {
-                return const Text("No data available");
-              }
-            },
-            // itemBuilder: (context, index) => makeItem(
-            //     image: foods[index]["image"],
-            //     isFavorite: foods[index]["isFavorite"],
-          ), //     index: index)),
+        CarouselSlider(
+          options: CarouselOptions(
+            // scrollDirection: Axis.horizontal,
+            // autoPlay: true,
+            enlargeCenterPage: true,
+            viewportFraction: 0.8,
+            // scrollPhysics: ScrollPhysics(),
+            height: 360.0,
+            aspectRatio: 16 / 9,
+          ),
+          items: state.items.map((book) {
+            return Builder(
+              builder: (BuildContext context) {
+                final h = MediaQuery.of(context).size.height;
+                debugPrint('build items  4height: $h');
+                return Container(
+                  // width: MediaQuery.of(context).size.width,
+                  // height: 200,
+                  margin: EdgeInsets.symmetric(horizontal: 8),
+                  // child: MouseRegion(
+                  //   cursor: SystemMouseCursors.click,
+                  //   child: BookCardV2(book: book),
+                  // ),
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: BookCardV2(book: book),
+                  ),
+                );
+              },
+            );
+          }).toList(),
         ),
         const SizedBox(
           height: 30,

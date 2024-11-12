@@ -6,11 +6,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../models/epub/epub.dart';
 import '../models/epub_document.dart';
 
-
 part 'select_book.g.dart';
 
-final selectBookProvider =
-    NotifierProvider<SelectBookProvider, SelectBook>(SelectBookProvider.new);
+final selectBookProvider = NotifierProvider<SelectBookProvider, SelectBook>(SelectBookProvider.new);
 
 class SelectBook {
   SelectBook({
@@ -35,8 +33,7 @@ class SelectBookProvider extends Notifier<SelectBook> {
 
   Future<void> refresh({required BookEntity book}) async {
     if (kDebugMode) {
-      debugPrint(
-          'refresh select book: ${book.hashCode} and ${state.book?.hashCode}');
+      debugPrint('refresh select book: ${book.hashCode} and ${state.book?.hashCode}');
     }
 
     if (book.hashCode == state.book?.hashCode) {
@@ -55,10 +52,8 @@ class SelectBookProvider extends Notifier<SelectBook> {
   }
 
   void updateProgress(ChapterIndex index, double progress) {
-
     if (kDebugMode) {
-      debugPrint(
-          'updateProgress book: ${index.chapterIndex} - ${index.paragraphIndex} ');
+      debugPrint('updateProgress book: ${index.chapterIndex} - ${index.paragraphIndex} ');
     }
     state.progress = progress;
     state.index = index;
@@ -86,16 +81,11 @@ class SelectBookProvider extends Notifier<SelectBook> {
 
     debugPrint('saveProcess todo handle  ${state.book!.id}');
 
-
-    final bk = state.book!.copyWith(progress: state.progress, progressIndex: state.index?.chapterIndex, paraPosition: position);;
-
-
-
+    final bk = state.book!
+        .copyWith(progress: state.progress, progressIndex: state.index?.chapterIndex, paraPosition: position);
 
     final db = ref.read(dbProvider);
     db.bookEntitys.put(bk);
-
-    
   }
 }
 
