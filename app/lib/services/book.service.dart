@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:omnigram/entities/book.entity.dart';
 import 'package:omnigram/providers/api.provider.dart';
+import 'package:omnigram/utils/constants.dart';
 import 'package:openapi/openapi.dart';
 //BookService 提供获取书籍信息的服务，这里以本地文件优先，但是也要考虑网络请求
 
@@ -64,9 +67,31 @@ class BookService {
     }
   }
 
-  // Future<Book?> getBookById(int id) async {
-  //   return await _db.books.get(id);
-  // }
+  Future<String?> downloadBook(
+    BookEntity book, {
+    void Function(int, int)? onReceiveProgress,
+  }) async {
+    if (book.remoteId == null) {
+      log.severe('downloadBook', 'bookId is null');
+      return null;
+    }
+
+    try {
+      final savePath = '$globalEpubPath/book-${book.remoteId}.epub';
+
+      final done = await _apiService.readerDownloadBooksBookIdGet(
+          bookId: book.remoteId!, filePath: savePath, onReceiveProgress: onReceiveProgress);
+
+      if (done) {
+        return savePath;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      log.severe('downloadBook', e);
+      return null;
+    }
+  }
 
   // Future<Book?> getBookByIsbn(String isbn) async {
   //   return await _db.books.where().filter().isbnEqualTo(isbn).findFirst();

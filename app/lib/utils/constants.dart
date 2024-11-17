@@ -1,6 +1,6 @@
 String globalEpubPath = '';
 String globalCachePath = '';
-
+String globalDBPath = '';
 const kOpenAI = 'OpenAI';
 
 /// Base ChatGPT Url
@@ -109,12 +109,9 @@ Map<String, String> kHeader(
 const kTokenKey = 'token';
 const kOrgIdKey = 'orgId';
 
-String translateEngToThai({required String word}) =>
-    "Translate this into thai : $word";
-String translateThaiToEng({required String word}) =>
-    "Translate this into English : $word";
-String translateToJapanese({required String word}) =>
-    "Translate this into Japanese : $word";
+String translateEngToThai({required String word}) => "Translate this into thai : $word";
+String translateThaiToEng({required String word}) => "Translate this into English : $word";
+String translateToJapanese({required String word}) => "Translate this into Japanese : $word";
 
 //router
 

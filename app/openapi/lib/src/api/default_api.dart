@@ -2119,8 +2119,9 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [JsonObject] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<JsonObject>> readerDownloadBooksBookIdGet({
+  Future<bool> readerDownloadBooksBookIdGet({
     required String bookId,
+    required String filePath,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -2146,9 +2147,10 @@ class DefaultApi {
         ...?extra,
       },
       validateStatus: validateStatus,
+      responseType: ResponseType.bytes,
     );
 
-    final _response = await _dio.request<Object>(
+    final _response = await _dio.request(
       _path,
       options: _options,
       cancelToken: cancelToken,
@@ -2156,16 +2158,17 @@ class DefaultApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    JsonObject? _responseData;
-
     try {
-      final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(JsonObject),
-            ) as JsonObject;
+      if (_response.statusCode == 200) {
+        final file = File(filePath);
+        var raf = file.openSync(mode: FileMode.write);
+
+        raf.writeFromSync(_response.data);
+        await raf.close();
+        return true;
+      }
+
+      return false;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -2175,17 +2178,6 @@ class DefaultApi {
         stackTrace: stackTrace,
       );
     }
-
-    return Response<JsonObject>(
-      data: _responseData,
-      headers: _response.headers,
-      isRedirect: _response.isRedirect,
-      requestOptions: _response.requestOptions,
-      redirects: _response.redirects,
-      statusCode: _response.statusCode,
-      statusMessage: _response.statusMessage,
-      extra: _response.extra,
-    );
   }
 
   /// 喜欢的书

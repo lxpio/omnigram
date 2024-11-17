@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:isar/isar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +15,7 @@ import 'package:omnigram/providers/db.provider.dart';
 import 'package:omnigram/providers/image/remote_image_provider.dart';
 
 import 'package:omnigram/screens/reader/providers/select_book.dart';
+import 'package:omnigram/services/book.service.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/show_snackbar.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -100,35 +101,31 @@ class ReaderMobileScreen extends HookConsumerWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    child: Row(
-                      children: [
-                        const Icon(Icons.star, color: Colors.yellow, size: 20),
-                        const SizedBox(width: 5),
-                        Text(
-                          '4.5',
-                          style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600),
-                        )
-                      ],
-                    ),
+                  Row(
+                    children: [
+                      const Icon(Icons.star, color: Colors.yellow, size: 20),
+                      const SizedBox(width: 5),
+                      Text(
+                        '4.5',
+                        style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600),
+                      )
+                    ],
                   ),
-                  Container(
-                    child: Row(
-                      children: [
-                        Icon(Icons.access_time, color: Colors.grey.shade600, size: 20),
-                        const SizedBox(width: 5),
-                        Text(
-                          '2h',
-                          style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600),
-                        )
-                      ],
-                    ),
+                  Row(
+                    children: [
+                      Icon(Icons.access_time, color: Colors.grey.shade600, size: 20),
+                      const SizedBox(width: 5),
+                      Text(
+                        '2h',
+                        style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600),
+                      )
+                    ],
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.2,
                     child: Row(
                       children: [
-                        Icon(Icons.play_circle_filled, color: Colors.grey.shade600, size: 20),
+                        Icon(Icons.cloud_download, color: Colors.grey.shade600, size: 20),
                         const SizedBox(width: 5),
                         Text(
                           'Watch',
@@ -143,7 +140,7 @@ class ReaderMobileScreen extends HookConsumerWidget {
             SizedBox(
               // alignment: Alignment.centerLeft,
               width: MediaQuery.of(context).size.width * 0.7,
-              child: Text('book.description', style: Theme.of(context).textTheme.bodyMedium),
+              child: Text('${book.description}', style: Theme.of(context).textTheme.bodyMedium),
             ),
             const SizedBox(height: 32),
             Container(
@@ -207,22 +204,27 @@ class ReaderMobileScreen extends HookConsumerWidget {
         ));
   }
 
-  Future<String> getOrDownloadBook(WidgetRef ref, localBook) async {
+  Future<String> getOrDownloadBook(WidgetRef ref, BookEntity book) async {
     // Check if the book file already exists and is valid
-    final localFilePath = localBook?.localPath;
+    final localFilePath = book.localPath;
     if (localFilePath != null && await File(localFilePath).exists()) {
       return localFilePath;
     }
 
     // If the file doesn't exist, attempt to download it
     try {
-      final api = ref.read(apiServiceProvider);
+      final service = ref.watch(bookServiceProvider);
 
-      final bookPath = await api.readerDownloadBooksBookIdGet(bookId: localBook.remoteId!);
+      final bookPath = await service.downloadBook(book);
 
-      // BookLocalBox.instance.create(id, bookPath);
+      // Check if the download was successful
+      if (bookPath != null) {
+        final isar = ref.read(dbProvider);
+        isar.write((db) => db.bookEntitys.put(book.copyWith(localPath: bookPath)));
+        return bookPath;
+      }
 
-      return '$bookPath';
+      return '';
     } catch (e) {
       // Handle any errors that occur during the download
       print('Error downloading book: $e');

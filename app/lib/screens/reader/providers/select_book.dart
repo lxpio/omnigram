@@ -84,8 +84,10 @@ class SelectBookProvider extends Notifier<SelectBook> {
     final bk = state.book!
         .copyWith(progress: state.progress, progressIndex: state.index?.chapterIndex, paraPosition: position);
 
-    final db = ref.read(dbProvider);
-    db.bookEntitys.put(bk);
+    final isar = ref.read(dbProvider);
+    isar.write((db) {
+      db.bookEntitys.put(bk);
+    });
   }
 }
 

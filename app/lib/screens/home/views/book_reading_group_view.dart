@@ -56,9 +56,12 @@ class BookReadingGroup extends HookConsumerWidget {
                   //   cursor: SystemMouseCursors.click,
                   //   child: BookCardV2(book: book),
                   // ),
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
                     child: BookCardV2(book: book),
+                    onTap: () {
+                      if (!context.mounted) return;
+                      context.pushNamed(kSummaryPage, extra: book);
+                    },
                   ),
                 );
               },
