@@ -112,7 +112,7 @@ class HomeSmallView extends HookConsumerWidget {
           delegate: SliverChildListDelegate([
             BookReadingGroup('keepreading'.tr(), 'viewmore'.tr(), BookQuery.readings),
             BookGroup('likedbooks'.tr(), 'viewmore'.tr(), BookQuery.likes),
-            CategoryGroup(),
+            // CategoryGroup(),
           ]),
         ),
       ],
