@@ -26,7 +26,14 @@ class BuildConfig {
   static Future<Isar> initialize() async {
     //初始化数据库
     final dir = await getApplicationDocumentsDirectory();
-    final db = await loadDb(dir.path);
+    globalDBPath = '${dir.path}/local_cache';
+    globalEpubPath = '${dir.path}/local_epubs';
+    globalCachePath = '${dir.path}/local_cache';
+
+    if (!await Directory(globalDBPath).exists()) {
+      await Directory(globalDBPath).create(recursive: true);
+    }
+    final db = await loadDb(globalDBPath);
 
     var log = Logger("OmnigramErrorLogger");
 
@@ -50,14 +57,11 @@ class BuildConfig {
     if (UniversalPlatform.isWeb) {
       //TODO 使用远程API接口调用返回
     } else {
-      final docsDir = await getApplicationDocumentsDirectory();
       //创建文档存储目录
-      globalEpubPath = '${docsDir.path}/local_epubs';
-
       if (!await Directory(globalEpubPath).exists()) {
         await Directory(globalEpubPath).create(recursive: true);
       }
-      globalCachePath = '${docsDir.path}/local_cache';
+
       if (!await Directory(globalCachePath).exists()) {
         await Directory(globalCachePath).create(recursive: true);
       }
