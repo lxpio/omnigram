@@ -139,6 +139,7 @@ class EpubDocument {
   }
 
   int? absParagraphIndex(ChapterIndex? current) {
+    //返回章节索引+ 段落索引
     return current != null ? chapterIndexes[current.chapterIndex] + current.paragraphIndex : null;
   }
 

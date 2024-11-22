@@ -36,9 +36,9 @@ class BookController {
     itemPositionListener.itemPositions.removeListener(_listener);
   }
 
+//_listener 监听界面滚动，获取当前阅读的章节和段落
   void _listener() {
-    if (document.paragraphs.isEmpty ||
-        itemPositionListener.itemPositions.value.isEmpty) {
+    if (document.paragraphs.isEmpty || itemPositionListener.itemPositions.value.isEmpty) {
       return;
     }
     final position = itemPositionListener.itemPositions.value.first;

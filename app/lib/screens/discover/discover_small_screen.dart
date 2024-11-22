@@ -7,10 +7,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/providers/auth.provider.dart';
 import 'package:omnigram/utils/constants.dart';
 
-
 import 'views/epub_index_view.dart';
 
-import '../reader/providers/select_book.dart';
+import '../../providers/select_book.dart';
 
 import '../views/stackbar.dart';
 
@@ -19,10 +18,8 @@ class DiscoverSmallScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final authState = ref.watch(authProvider);
 
-  
     final selected = ref.watch(selectBookProvider);
 
     final buttonFocusNode = useFocusNode(debugLabel: 'More Button');
@@ -57,8 +54,7 @@ class DiscoverSmallScreen extends HookConsumerWidget {
           // backgroundColor: Colors.grey.shade50,
           flexibleSpace: FlexibleSpaceBar(
             collapseMode: CollapseMode.parallax,
-            titlePadding:
-                const EdgeInsets.only(left: 20, right: 30, bottom: 100),
+            titlePadding: const EdgeInsets.only(left: 20, right: 30, bottom: 100),
             stretchModes: const [
               StretchMode.zoomBackground,
               StretchMode.fadeTitle,
@@ -73,14 +69,8 @@ class DiscoverSmallScreen extends HookConsumerWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Theme.of(context)
-                        .colorScheme
-                        .secondaryContainer
-                        .withOpacity(0.2),
-                    Theme.of(context)
-                        .colorScheme
-                        .surfaceContainerHighest
-                        .withOpacity(0.2),
+                    Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.2),
+                    Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.2),
                   ],
                 ),
               ),

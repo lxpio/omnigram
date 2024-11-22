@@ -9,7 +9,7 @@ import 'package:omnigram/screens/reader/providers/tts_service.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../models/epub/epub.dart';
-import '../providers/select_book.dart';
+import '../../../providers/select_book.dart';
 import 'bottom_player_widget.dart';
 import 'epub_para_view.dart';
 
@@ -27,7 +27,7 @@ class EpubContentView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (kDebugMode) {
-      print('build EpubContentView bookFile');
+      debugPrint('build EpubContentView bookFile');
     }
 
     final controller = useBookController(ref, document);

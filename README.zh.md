@@ -57,15 +57,26 @@ Omnigram 是 Flutter 编写的支持多平台（iOS、Android、Web、Windows、
 本项目创建过程使用三分库包括：
 
 - [riverpod](https://docs-v2.riverpod.dev/docs)
-- [objectbox](https://docs.objectbox.io/getting-started)
+- [isar](https://isar.dev)
 
 ### 编译
+
+#### App 编译
 
 ```bash
 
 git clone github.com/lxpio/omnigram.git
-cd omnigram
-flutter clean && dart run build_runner build
-
+cd omnigram/app
 make
+```
+
+#### Omnigram Server 编译
+
+```bash
+
+git clone github.com/lxpio/omnigram.git
+cd omnigram/server
+make 
+
+# make docker 
 ```

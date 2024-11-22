@@ -15,7 +15,7 @@ import 'package:omnigram/providers/book.provider.dart';
 import 'package:omnigram/providers/db.provider.dart';
 import 'package:omnigram/providers/image/remote_image_provider.dart';
 
-import 'package:omnigram/screens/reader/providers/select_book.dart';
+import 'package:omnigram/providers/select_book.dart';
 import 'package:omnigram/services/book.service.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/show_snackbar.dart';
@@ -34,26 +34,15 @@ class ReaderMobileScreen extends HookConsumerWidget {
         appBar: AppBar(
           elevation: 0,
           leading: IconButton(
-            onPressed: () {
-              //back to from
-              context.pop();
-            },
+            onPressed: () => context.pop(),
             icon: const Icon(Icons.arrow_back),
           ),
-          // titleSpacing: 0,
           actions: [
             IconButton(
-              // onPressed: ,
-              icon: const Icon(
-                Icons.bookmark,
-                size: 24,
-              ),
-              onPressed: () {
-                print("press search");
-              },
+              icon: const Icon(Icons.bookmark, size: 24),
+              onPressed: () {},
             ),
             IconButton(
-              // onPressed: ,
               icon: Icon(
                 Icons.star,
                 size: 24,
@@ -69,7 +58,6 @@ class ReaderMobileScreen extends HookConsumerWidget {
                 ref.invalidate(booksProvider(BookQuery.readings));
               },
             ),
-            // const SizedBox(width: 16),
           ],
         ),
         body: Center(
@@ -83,11 +71,6 @@ class ReaderMobileScreen extends HookConsumerWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 color: Theme.of(context).colorScheme.surface,
-                image: DecorationImage(
-                  image: FileImage(
-                    File(book.coverUrl!),
-                  ),
-                ),
               ),
               child: bookImage(book),
             ),

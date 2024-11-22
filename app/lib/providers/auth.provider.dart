@@ -17,7 +17,7 @@ class Auth extends _$Auth {
 
   @override
   AuthState build() {
-    debugPrint("create Auth");
+    log.severe("create Auth");
 
     return AuthState(
       deviceId: "",

@@ -32,8 +32,6 @@ class HomeSmallScreen extends HookConsumerWidget {
 class HomeSmallView extends HookConsumerWidget {
   const HomeSmallView({super.key});
 
-  // final BookNav nav;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     debugPrint('build HomeSmallView');

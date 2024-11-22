@@ -21,7 +21,8 @@ jobs:
     # Skip when PR from a fork
     if: ${{ !github.event.pull_request.head.repo.fork && github.actor != 'dependabot[bot]' }}
     runs-on: macos-14
-
+    env:
+      RUNNER_OS: macos
     steps:
       - name: Determine ref
         id: get-ref
