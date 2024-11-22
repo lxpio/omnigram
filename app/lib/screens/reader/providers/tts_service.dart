@@ -12,12 +12,11 @@ import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/wav.dart';
 
 import '../models/epub/epub.dart';
-import 'select_book.dart';
+import '../../../providers/select_book.dart';
 
 part 'tts_service.g.dart';
 
 class TTSState {
-
   TTSState({
     required this.showbar,
     required this.playing,
@@ -46,19 +45,13 @@ class TTSState {
   @override
   bool operator ==(covariant TTSState other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.showbar == showbar &&
-      other.playing == playing &&
-      other.position == position;
 
-      
+    return other.showbar == showbar && other.playing == playing && other.position == position;
   }
 
   @override
   int get hashCode => showbar.hashCode ^ playing.hashCode ^ position.hashCode;
 }
-
 
 @Riverpod(keepAlive: true)
 class TtsService extends _$TtsService {
@@ -67,7 +60,7 @@ class TtsService extends _$TtsService {
   @override
   TTSState build() {
     player = AudioPlayer();
-    return  TTSState(showbar: false, playing: false);
+    return TTSState(showbar: false, playing: false);
   }
 
   void toggle() {
@@ -110,7 +103,7 @@ class TtsService extends _$TtsService {
       //要先关闭现有的
       await ref.read(selectBookProvider.notifier).saveProcess(position);
     }
-    state =  TTSState(showbar: false, playing: false);
+    state = TTSState(showbar: false, playing: false);
 
     // ref.notifyListeners();
   }
@@ -119,7 +112,7 @@ class TtsService extends _$TtsService {
     if (state.playing) {
       return;
     }
-    state =  TTSState(showbar: true, playing: true);
+    state = TTSState(showbar: true, playing: true);
 
     //获取当前index
     final index = ref.read(selectBookProvider.select((value) => value.index)) ??
@@ -161,13 +154,10 @@ class TtsService extends _$TtsService {
 
       if (next != null) {
         current = next;
-        ref
-            .read(selectBookProvider.notifier)
-            .updateProgress(current, document.progress(current));
+        ref.read(selectBookProvider.notifier).updateProgress(current, document.progress(current));
       } else {
-        
-        state = state.copyWith(playing: false); 
- 
+        state = state.copyWith(playing: false);
+
         break;
       }
     }
@@ -175,12 +165,10 @@ class TtsService extends _$TtsService {
   }
 
   Future<String> _fetchWavStream(EpubDocument document, int pos) async {
-
-    
     final bookApi = ref.read(apiServiceProvider);
 
     final content = document.getContent(pos);
-    
+
     final fileName = '$globalCachePath/${document.id}_$pos.wav';
 
     final exists = await File(fileName).exists();
@@ -190,17 +178,13 @@ class TtsService extends _$TtsService {
     }
 
     try {
-
-
       final response = await bookApi.m4tTtsStreamPost(
         m4tTtsStreamPostRequest: M4tTtsStreamPostRequest((b) => b
           ..text = content
           ..audioId = '1'
-          ..lang = 'zh-cn'
-          ),
-          // headers: responseType: ResponseType.stream);
+          ..lang = 'zh-cn'),
+        // headers: responseType: ResponseType.stream);
       );
-
 
       // final response = await bookApi.ttsStream<ResponseBody>(
       //   "/m4t/pcm/stream",

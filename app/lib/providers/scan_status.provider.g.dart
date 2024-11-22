@@ -6,7 +6,7 @@ part of 'scan_status.provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$scanStatusHash() => r'fd67e70a7b009025261422153012b3f59c083b31';
+String _$scanStatusHash() => r'4c8548266ca03f5000c073f9e8ba6e0b497b0cc5';
 
 /// See also [scanStatus].
 @ProviderFor(scanStatus)
@@ -20,7 +20,7 @@ final scanStatusProvider = AutoDisposeStreamProvider<ScanStatsDto>.internal(
 );
 
 typedef ScanStatusRef = AutoDisposeStreamProviderRef<ScanStatsDto>;
-String _$scanServiceHash() => r'5c070ef1b1c481463b5197b02d8cb6a2409f8f10';
+String _$scanServiceHash() => r'5a9c1772a87f2869199be7bc4e57181ebfd44950';
 
 /// See also [ScanService].
 @ProviderFor(ScanService)

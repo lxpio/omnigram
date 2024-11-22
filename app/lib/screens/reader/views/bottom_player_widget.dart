@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/screens/reader/providers/book_controller.dart';
-import 'package:omnigram/screens/reader/providers/select_book.dart';
+import 'package:omnigram/providers/select_book.dart';
 import 'package:omnigram/screens/reader/providers/tts_service.dart';
 import 'package:omnigram/screens/reader/views/chapter_sheet_view.dart';
 
@@ -173,7 +173,7 @@ class _ReadProgressIndicator extends ConsumerWidget {
     return LinearProgressIndicator(
       value: selected.progress, // Change this value to represent the progress
       valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.tertiaryContainer), // Set to gray
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.grey[500],
       // color:,
       // style: TextStyle(color: Colors.white, fontSize: 14),
     );

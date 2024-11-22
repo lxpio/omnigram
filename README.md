@@ -57,15 +57,30 @@ password: 123456
 This project uses a three-way repository including:
 
 - [riverpod](https://docs-v2.riverpod.dev/docs)
-- [objectbox](https://docs.objectbox.io/getting-started)
+- [isar](https://isar.dev)
 
-### build
+### Build
+
+#### For Omnigram APP 
 
 ```bash
 
 git clone github.com/lxpio/omnigram.git
-cd omnigram
-flutter clean && dart run build_runner build
-
+cd omnigram/app
 make
 ```
+
+#### For Omnigram Server
+
+```bash
+
+git clone github.com/lxpio/omnigram.git
+cd omnigram/server
+make 
+
+# make docker 
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details

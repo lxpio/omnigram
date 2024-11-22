@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
 import 'package:omnigram/entities/book.entity.dart';
 import 'package:omnigram/providers/db.provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../models/epub/epub.dart';
-import '../models/epub_document.dart';
+import '../screens/reader/models/epub/epub.dart';
+import '../screens/reader/models/epub_document.dart';
 
 part 'select_book.g.dart';
 
@@ -22,19 +23,16 @@ class SelectBook {
 }
 
 class SelectBookProvider extends Notifier<SelectBook> {
+  final log = Logger("SelectBookProvider");
   @override
   SelectBook build() {
-    if (kDebugMode) {
-      debugPrint('SelectBook init build');
-    }
+    log.finest('SelectBook init build');
 
     return SelectBook(book: null);
   }
 
   Future<void> refresh({required BookEntity book}) async {
-    if (kDebugMode) {
-      debugPrint('refresh select book: ${book.hashCode} and ${state.book?.hashCode}');
-    }
+    log.fine('refresh select book: ${book.title} and ${book.id}');
 
     if (book.hashCode == state.book?.hashCode) {
       return;
@@ -45,16 +43,12 @@ class SelectBookProvider extends Notifier<SelectBook> {
 
     state = updater;
 
-    if (kDebugMode) {
-      debugPrint('refresh select book: ${book.id}');
-    }
+    log.finest('refresh select book: ${book.id}');
     // ref.notifyListeners();
   }
 
   void updateProgress(ChapterIndex index, double progress) {
-    if (kDebugMode) {
-      debugPrint('updateProgress book: ${index.chapterIndex} - ${index.paragraphIndex} ');
-    }
+    log.finest('updateProgress book: ${index.chapterIndex} - ${index.paragraphIndex} ');
     state.progress = progress;
     state.index = index;
     ref.notifyListeners();
@@ -68,7 +62,7 @@ class SelectBookProvider extends Notifier<SelectBook> {
     if (state.index == null ||
         current.chapterIndex != state.index!.chapterIndex ||
         (current.paragraphIndex - state.index!.paragraphIndex).abs() > 5) {
-      debugPrint('updateProcess ${state.book?.id}');
+      log.finest('updateProcess ${state.book?.id}');
       state.index = current;
       ref.notifyListeners();
     }
@@ -79,10 +73,12 @@ class SelectBookProvider extends Notifier<SelectBook> {
       return;
     }
 
-    debugPrint('saveProcess todo handle  ${state.book!.id}');
+    log.finest('saveProcess todo handle  ${state.book!.id}');
 
-    final bk = state.book!
-        .copyWith(progress: state.progress, progressIndex: state.index?.chapterIndex, paraPosition: position);
+    final bk = state.book!.copyWith(
+        progress: state.progress,
+        progressIndex: state.index?.chapterIndex,
+        paraPosition: position ?? state.index?.paragraphIndex);
 
     final isar = ref.read(dbProvider);
     isar.write((db) {

@@ -9,13 +9,7 @@ BUILD_HASH=$(shell git rev-parse HEAD)
 .PHONY: all
 
 
-all : omnigram
-
-l10n:
-	@echo "l10n build"
-	@flutter gen-l10n
-
-
+all : apk
 
 
 build_runner:
@@ -27,10 +21,10 @@ launcher_icons: build_runner
 	@dart run flutter_launcher_icons:main
 
 
-release: l10n
+release: build_runner
 	@echo "release build"
 	@flutter build appbundle 
 
 
-apk: l10n
+apk:
 	@flutter build apk --split-per-abi

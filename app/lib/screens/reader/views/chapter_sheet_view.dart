@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/screens/reader/providers/select_book.dart';
+import 'package:omnigram/providers/select_book.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../providers/book_controller.dart';
@@ -12,8 +12,7 @@ class ChapterSheetView extends HookConsumerWidget {
   final BookController controller;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final current =
-        ref.watch(selectBookProvider.select((value) => value.index));
+    final current = ref.watch(selectBookProvider.select((value) => value.index));
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),

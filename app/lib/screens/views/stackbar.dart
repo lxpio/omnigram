@@ -6,7 +6,7 @@ import 'package:omnigram/screens/reader/providers/tts_service.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import '../reader/providers/select_book.dart';
+import '../../providers/select_book.dart';
 
 class Stackbar extends HookConsumerWidget {
   const Stackbar({
@@ -116,8 +116,6 @@ class _AlbumArt extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-  
-
     return Padding(
       padding: const EdgeInsets.all(8),
       child: SizedBox(
@@ -158,8 +156,7 @@ class _ProgressbarWidget extends ConsumerWidget {
       print('stack playbar  LinearProgressIndicator build');
     }
 
-    final progress =
-        ref.watch(selectBookProvider.select((value) => value.progress));
+    final progress = ref.watch(selectBookProvider.select((value) => value.progress));
 
     return Positioned(
       left: 0,
