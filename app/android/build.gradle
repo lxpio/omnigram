@@ -1,13 +1,9 @@
 buildscript {
-    ext.kotlin_version = '1.9.22'
+   ext.kotlin_version = '2.0.20' 
+
     repositories {
         google()
         mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -20,6 +16,18 @@ allprojects {
 
 rootProject.buildDir = "../build"
 subprojects {
+
+//  fix for verifyReleaseResources
+  // ============
+  afterEvaluate { project ->
+        if (project.plugins.hasPlugin("com.android.application") ||
+                project.plugins.hasPlugin("com.android.library")) {
+            project.android {
+                compileSdkVersion 34
+                buildToolsVersion "34.0.0"
+            }
+        }
+    }
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
 subprojects {
@@ -28,4 +36,9 @@ subprojects {
 
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
+}
+
+
+tasks.named('wrapper') {
+    distributionType = Wrapper.DistributionType.ALL
 }
