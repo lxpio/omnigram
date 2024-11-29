@@ -43,7 +43,7 @@ You can find the official documentation (including installation manuals) at <htt
 
 ## Examples
 
-For the mobile app, you can use https://demo.lxpio.com:9443 for the Server Endpoint URL
+For the mobile app, you can use https://omnigram-demo.lxpio.com:9443 for the Server Endpoint URL
 
 ```
 The credential

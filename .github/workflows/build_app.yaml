@@ -66,8 +66,7 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
           ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
         run: |
-          dart run build_runner build
-          flutter build apk --release
+          dart run --enable-experiment=macros build_runner build --delete-conflicting-outputs  
           flutter build apk --release --split-per-abi --target-platform android-arm,android-arm64,android-x64
 
       - name: Publish Android Artifact

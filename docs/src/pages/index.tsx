@@ -8,7 +8,7 @@ import Translate from '@docusaurus/Translate';
 import styles from './index.module.css';
 import "animate.css/animate.min.css";
 import UAParser from 'ua-parser-js';
-import { useDocsVersionCandidates } from '@docusaurus/theme-common/internal';
+// import { useDocsVersionCandidates } from '@docusaurus/theme-common/internal';
 import { AnimationOnScroll } from 'react-animation-on-scroll';
 import HomepageDescription from '../components/HomepageDescription';
 import { DownloadAppButton } from '../components/DownloadButton';
@@ -17,7 +17,7 @@ import { DownloadAppButton } from '../components/DownloadButton';
 function HomepageHeader({
   docsPluginId }) {
   const { siteConfig } = useDocusaurusContext();
-  const version = useDocsVersionCandidates(docsPluginId)[0];
+  // const version = useDocsVersionCandidates(docsPluginId)[0];
   return (
     <header className={clsx('hero shadow--lw', styles.heroBanner)}>
       <div className="container">
@@ -37,7 +37,7 @@ function HomepageHeader({
               </AnimationOnScroll>
               <AnimationOnScroll animateIn="animate__fadeInUp">
                 <Link className={clsx("button button--outline button--lg button--secondary", styles.button)}
-                  to={`${version.path}/intro`}>
+                  to={`docs/intro`}>
                   <Translate description="homepage getting started button">
                     Getting started
                   </Translate>
