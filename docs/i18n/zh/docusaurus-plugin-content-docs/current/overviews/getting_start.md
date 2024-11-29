@@ -19,7 +19,7 @@ sidebar_position: 10
 
 ```bash
 # 替换如下名字中 my_local_docs_path 未自己实际的文档目录
-docker run -v <my_local_docs_path>:/docs -p 8080:80 lxpio/omnigram-server:v0.1.2-alpine
+docker run -v <my_local_docs_path>:/docs -p 8080:80 lxpio/omnigram-server:latest
 ```
 
 ## 尝试手机端访问

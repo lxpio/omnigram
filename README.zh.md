@@ -41,7 +41,7 @@ Omnigram 是 Flutter 编写的支持多平台（iOS、Android、Web、Windows、
 
 ## 示例
 
-对于APP 后端，你可以使用实例地址： https://demo.lxpio.com:9443 。由于
+对于APP 后端，你可以使用实例地址： https://omnigram-demo.lxpio.com:9443 。由于
 
 ```
 凭证信息：
