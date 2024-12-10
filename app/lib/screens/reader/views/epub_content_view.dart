@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/screens/reader/models/epub_document.dart';
+import 'package:omnigram/models/epub/epub.dart';
+import 'package:omnigram/models/epub_document.dart';
+import 'package:omnigram/providers/tts.player.provider.dart';
+
 import 'package:omnigram/screens/reader/providers/book_controller.dart';
-import 'package:omnigram/screens/reader/providers/tts_service.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import '../models/epub/epub.dart';
 import '../../../providers/select_book.dart';
 import 'bottom_player_widget.dart';
 import 'epub_para_view.dart';
@@ -37,7 +38,7 @@ class EpubContentView extends HookConsumerWidget {
         if (kDebugMode) {
           print('in EpubContentView call play');
         }
-        await ref.read(ttsServiceProvider.notifier).play(controller.document);
+        await ref.read(ttsPlayerProvider.notifier).play(controller.document);
       }
     });
 
@@ -108,7 +109,7 @@ class EpubContentView extends HookConsumerWidget {
     final controller = useState(BookController(document: document)).value;
 
     updater(ChapterIndex? current) {
-      ref.read(ttsServiceProvider.notifier).updateIndex(current);
+      ref.read(ttsPlayerProvider.notifier).updateIndex(current);
     }
 
     useEffect(() {

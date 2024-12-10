@@ -40,6 +40,7 @@ import 'package:openapi/src/model/speaker_dto.dart';
 import 'package:openapi/src/model/speaker_list_dto.dart';
 import 'package:openapi/src/model/sys_info_dto.dart';
 import 'package:openapi/src/model/sys_ping_get200_response.dart';
+import 'package:openapi/src/model/tts_req_dto.dart';
 import 'package:openapi/src/model/user_dto.dart';
 
 part 'serializers.g.dart';
@@ -71,6 +72,7 @@ part 'serializers.g.dart';
   SpeakerListDto,
   SysInfoDto,
   SysPingGet200Response,
+  TtsReqDto,
   UserDto,
 ])
 Serializers serializers = (_$serializers.toBuilder()

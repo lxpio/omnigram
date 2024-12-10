@@ -1,11 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:omnigram/entities/book.entity.dart';
+import 'package:omnigram/models/epub/_chapter_index.dart';
+import 'package:omnigram/models/epub_document.dart';
 import 'package:omnigram/providers/db.provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../screens/reader/models/epub/epub.dart';
-import '../screens/reader/models/epub_document.dart';
 
 part 'select_book.g.dart';
 

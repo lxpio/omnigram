@@ -38,5 +38,6 @@ export 'package:openapi/src/model/speaker_dto.dart';
 export 'package:openapi/src/model/speaker_list_dto.dart';
 export 'package:openapi/src/model/sys_info_dto.dart';
 export 'package:openapi/src/model/sys_ping_get200_response.dart';
+export 'package:openapi/src/model/tts_req_dto.dart';
 export 'package:openapi/src/model/user_dto.dart';
 

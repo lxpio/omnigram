@@ -2002,11 +2002,11 @@ paths:
           headers: {}
       security:
         - bearer: []
-  /m4t/tts/simple:
+  /v1/tts:
     post:
       summary: 文字转语音
       deprecated: false
-      description: ''
+      description: fish-speech api server
       tags:
         - 语音服务
       parameters: []
@@ -2014,24 +2014,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                text:
-                  type: string
-                lang:
-                  type: string
-                audio_id:
-                  type: string
-                format:
-                  type: string
-                stream:
-                  type: boolean
-              required:
-                - text
-                - lang
-                - audio_id
-                - format
-                - stream
+              $ref: '#/components/schemas/tts_req_dto'
             example:
               text: hello world
               lang: en
@@ -2042,7 +2025,7 @@ paths:
         '200':
           description: 数据wav格式
           content:
-            audio/basic:
+            application/octet-stream:
               schema:
                 type: object
                 properties: {}
@@ -2548,6 +2531,51 @@ components:
       required:
         - account
         - refresh_token
+    tts_req_dto:
+      type: object
+      properties:
+        text:
+          type: string
+        chunk_length:
+          type: integer
+        format:
+          type: string
+        mp3_bitrate:
+          type: integer
+        references:
+          type: array
+          items:
+            type: string
+        reference_id:
+          type: string
+        use_memory_cache:
+          type: string
+        normalize:
+          type: boolean
+        opus_bitrate:
+          type: integer
+        latency:
+          type: string
+        streaming:
+          type: boolean
+        max_new_tokens:
+          type: integer
+        top_p:
+          type: number
+        repetition_penalty:
+          type: number
+        temperature:
+          type: number
+      required:
+        - text
+        - chunk_length
+        - mp3_bitrate
+        - references
+        - normalize
+        - opus_bitrate
+        - streaming
+        - max_new_tokens
+        - format
   securitySchemes:
     bearer:
       type: http

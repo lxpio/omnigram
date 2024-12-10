@@ -17,7 +17,9 @@
 </div>
 </br>
 
-![docs action](https://github.com/lxpio/omnigram/actions/workflows/docs.yaml/badge.svg)
+![docs action](https://github.com/lxpio/omnigram/actions/workflows/docs.yaml/badge.svg) 
+![docs action](https://github.com/lxpio/omnigram/actions/workflows/docker.yaml/badge.svg) 
+![docs action](https://github.com/lxpio/omnigram/actions/workflows/build_app.yaml/badge.svg)
 
 ## About Omnigram
 

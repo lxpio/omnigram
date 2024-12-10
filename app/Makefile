@@ -23,7 +23,7 @@ launcher_icons: build_runner
 
 release: build_runner
 	@echo "release build"
-	@flutter build appbundle 
+	@flutter build appbundle --no-tree-shake-icons
 
 
 apk:

@@ -17,6 +17,10 @@
 </div>
 </br>
 
+![docs action](https://github.com/lxpio/omnigram/actions/workflows/docs.yaml/badge.svg) 
+![docs action](https://github.com/lxpio/omnigram/actions/workflows/docker.yaml/badge.svg) 
+![docs action](https://github.com/lxpio/omnigram/actions/workflows/build_app.yaml/badge.svg)
+
 ## 关于
 
 Omnigram 是 Flutter 编写的支持多平台（iOS、Android、Web、Windows、Linux、Mac）文件阅读和听书客户端，它支持多种格式，包括 EPUB 和 PDF。它通过 TTS 模型提供听书功能，支持其他 AI 模型进行辅助阅读。此外，它还具备本地书籍管理功能，允许用户轻松管理书籍在 NAS 上的存储。其后端服务部署参阅 [omnigam-server](server/README.zh.md)。或者参考[项目官方文档](https://omnigram.lxpio.com)

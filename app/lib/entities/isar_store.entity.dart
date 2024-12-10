@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
+import 'package:omnigram/entities/setting.entity.dart';
 import 'package:omnigram/entities/user.entity.dart';
 
 part 'isar_store.entity.g.dart';
@@ -104,6 +105,9 @@ class StoreValue {
         return intValue == null ? null : DateTime.fromMicrosecondsSinceEpoch(intValue!) as T;
       case const (String):
         return strValue as T?;
+      case const (TTSConfig):
+        if (strValue == null) return null;
+        return TTSConfig.fromJson(strValue!) as T;
       default:
         if (key.fromDb != null) {
           return key.fromDb!.call(IsarStore._db, intValue!);
@@ -127,6 +131,9 @@ class StoreValue {
         break;
       case const (String):
         s = value as String?;
+        break;
+      case const (TTSConfig):
+        s = value == null ? null : (value as TTSConfig).toJson();
         break;
       default:
         if (key.toDb != null) {
@@ -159,7 +166,9 @@ enum StoreKey<T> {
   serverEndpoint<String>(12, type: String),
   sslClientCertData<String>(15, type: String),
   sslClientPasswd<String>(16, type: String),
-  // user settings from [AppSettingsEnum] below:
+
+  ttsConfig<TTSConfig>(20, type: TTSConfig),
+
   loadPreview<bool>(100, type: bool),
   loadOriginal<bool>(101, type: bool),
   themeMode<String>(102, type: String),

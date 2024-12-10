@@ -22,7 +22,6 @@ Method | HTTP request | Description
 [**authTokenPost**](DefaultApi.md#authtokenpost) | **POST** /auth/token | 获取访问token
 [**authTokenRefreshPost**](DefaultApi.md#authtokenrefreshpost) | **POST** /auth/token/refresh | 刷新accesstoken
 [**imgCoversCoverIdGet**](DefaultApi.md#imgcoverscoveridget) | **GET** /img/covers/{cover_id} | 获取书籍封面图片
-[**m4tTtsSimplePost**](DefaultApi.md#m4tttssimplepost) | **POST** /m4t/tts/simple | 文字转语音
 [**m4tTtsSpeakersGet**](DefaultApi.md#m4tttsspeakersget) | **GET** /m4t/tts/speakers | 获取声音列表
 [**m4tTtsSpeakersPost**](DefaultApi.md#m4tttsspeakerspost) | **POST** /m4t/tts/speakers | 上传声音
 [**m4tTtsStreamPost**](DefaultApi.md#m4tttsstreampost) | **POST** /m4t/tts/stream | 文字转语音接口
@@ -46,6 +45,7 @@ Method | HTTP request | Description
 [**sysScanStatusGet**](DefaultApi.md#sysscanstatusget) | **GET** /sys/scan/status | 获取当前扫描状态
 [**sysScanStopPost**](DefaultApi.md#sysscanstoppost) | **POST** /sys/scan/stop | 停止扫描
 [**userUserinfoGet**](DefaultApi.md#useruserinfoget) | **GET** /user/userinfo | 当前用户信息
+[**v1TtsPost**](DefaultApi.md#v1ttspost) | **POST** /v1/tts | 文字转语音
 
 
 # **adminAccountsAccountIdDelete**
@@ -618,49 +618,6 @@ Name | Type | Description  | Notes
 
  - **Content-Type**: Not defined
  - **Accept**: */*
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **m4tTtsSimplePost**
-> JsonObject m4tTtsSimplePost(m4tTtsStreamPostRequest)
-
-文字转语音
-
-
-
-### Example
-```dart
-import 'package:openapi/api.dart';
-
-final api = Openapi().getDefaultApi();
-final M4tTtsStreamPostRequest m4tTtsStreamPostRequest = {"text":"hello world","lang":"en","audio_id":"female_0001","format":"wav","stream":true}; // M4tTtsStreamPostRequest | 
-
-try {
-    final response = api.m4tTtsSimplePost(m4tTtsStreamPostRequest);
-    print(response);
-} catch on DioException (e) {
-    print('Exception when calling DefaultApi->m4tTtsSimplePost: $e\n');
-}
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **m4tTtsStreamPostRequest** | [**M4tTtsStreamPostRequest**](M4tTtsStreamPostRequest.md)|  | [optional] 
-
-### Return type
-
-[**JsonObject**](JsonObject.md)
-
-### Authorization
-
-[bearer](../README.md#bearer)
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: audio/basic
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -1658,6 +1615,49 @@ Name | Type | Description  | Notes
 
  - **Content-Type**: application/json
  - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **v1TtsPost**
+> JsonObject v1TtsPost(ttsReqDto)
+
+文字转语音
+
+fish-speech api server
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getDefaultApi();
+final TtsReqDto ttsReqDto = {"text":"hello world","lang":"en","audio_id":"female_0001","format":"wav","stream":true}; // TtsReqDto | 
+
+try {
+    final response = api.v1TtsPost(ttsReqDto);
+    print(response);
+} catch on DioException (e) {
+    print('Exception when calling DefaultApi->v1TtsPost: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **ttsReqDto** | [**TtsReqDto**](TtsReqDto.md)|  | [optional] 
+
+### Return type
+
+[**JsonObject**](JsonObject.md)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/octet-stream
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
