@@ -1,24 +1,24 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'tts_service.dart';
+part of 'tts.player.provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$ttsServiceHash() => r'fd086eca75edce3e9581dc898fde962c92f739df';
+String _$ttsPlayerHash() => r'2bdaa95d6a553a634cbcb094f850be4692bb6155';
 
-/// See also [TtsService].
-@ProviderFor(TtsService)
-final ttsServiceProvider = NotifierProvider<TtsService, TTSState>.internal(
-  TtsService.new,
-  name: r'ttsServiceProvider',
+/// See also [TtsPlayer].
+@ProviderFor(TtsPlayer)
+final ttsPlayerProvider = NotifierProvider<TtsPlayer, TTSState>.internal(
+  TtsPlayer.new,
+  name: r'ttsPlayerProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$ttsServiceHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$ttsPlayerHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$TtsService = Notifier<TTSState>;
+typedef _$TtsPlayer = Notifier<TTSState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

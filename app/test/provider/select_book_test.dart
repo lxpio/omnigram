@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:omnigram/entities/book.entity.dart';
-import 'package:omnigram/screens/reader/models/epub_document.dart';
+import 'package:omnigram/models/epub_document.dart';
 
 import 'package:test/test.dart';
 

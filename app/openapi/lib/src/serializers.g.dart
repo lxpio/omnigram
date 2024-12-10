@@ -33,6 +33,7 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(SpeakerListDto.serializer)
       ..add(SysInfoDto.serializer)
       ..add(SysPingGet200Response.serializer)
+      ..add(TtsReqDto.serializer)
       ..add(UserDto.serializer)
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(EbookDto)]),
@@ -46,6 +47,9 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(SpeakerDto)]),
           () => new ListBuilder<SpeakerDto>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => new ListBuilder<String>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(String)]),
           () => new ListBuilder<String>())

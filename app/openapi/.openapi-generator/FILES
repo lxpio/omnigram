@@ -29,6 +29,7 @@ doc/SpeakerDto.md
 doc/SpeakerListDto.md
 doc/SysInfoDto.md
 doc/SysPingGet200Response.md
+doc/TtsReqDto.md
 doc/UserDto.md
 lib/openapi.dart
 lib/src/api.dart
@@ -67,6 +68,7 @@ lib/src/model/speaker_dto.dart
 lib/src/model/speaker_list_dto.dart
 lib/src/model/sys_info_dto.dart
 lib/src/model/sys_ping_get200_response.dart
+lib/src/model/tts_req_dto.dart
 lib/src/model/user_dto.dart
 lib/src/serializers.dart
 pubspec.yaml
@@ -97,4 +99,5 @@ test/speaker_dto_test.dart
 test/speaker_list_dto_test.dart
 test/sys_info_dto_test.dart
 test/sys_ping_get200_response_test.dart
+test/tts_req_dto_test.dart
 test/user_dto_test.dart

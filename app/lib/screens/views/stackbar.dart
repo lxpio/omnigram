@@ -2,7 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:omnigram/screens/reader/providers/tts_service.dart';
+import 'package:omnigram/providers/tts.player.provider.dart';
+
 import 'package:omnigram/utils/constants.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -16,7 +17,7 @@ class Stackbar extends HookConsumerWidget {
   final Widget child;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ttsState = ref.watch(ttsServiceProvider);
+    final ttsState = ref.watch(ttsPlayerProvider);
 
     return Column(
       children: [
@@ -91,7 +92,7 @@ class StackbarWidget extends ConsumerWidget {
                     IconButton(
                       // padding: EdgeInsets.zero,
                       onPressed: () {
-                        ref.read(ttsServiceProvider.notifier).close();
+                        ref.read(ttsPlayerProvider.notifier).close();
                       },
                       // color: Theme.of(context).colorScheme.primary,
                       icon: const Icon(Icons.close),
@@ -180,20 +181,20 @@ class _ButtonBarwidget extends ConsumerWidget {
       print('stack playbar build');
     }
 
-    final tts = ref.watch(ttsServiceProvider);
+    final tts = ref.watch(ttsPlayerProvider);
 
     return IconButton(
       // padding: EdgeInsets.zero,
       onPressed: () async {
         if (tts.playing) {
-          ref.read(ttsServiceProvider.notifier).pause();
+          ref.read(ttsPlayerProvider.notifier).pause();
           return;
         }
         final snapshot = ref.watch(epubDocumentProvider);
 
         snapshot.whenData((document) async {
           if (document != null) {
-            ref.read(ttsServiceProvider.notifier).play(document);
+            ref.read(ttsPlayerProvider.notifier).play(document);
           }
         });
       },

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:omnigram/screens/reader/models/epub_document.dart';
+import 'package:omnigram/models/epub/epub.dart';
+import 'package:omnigram/models/epub_document.dart';
 
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-
-import '../models/epub/_chapter_index.dart';
 
 const _minTrailingEdge = 0.55;
 const _minLeadingEdge = -0.05;

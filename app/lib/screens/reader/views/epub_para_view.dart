@@ -2,14 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:omnigram/models/epub/epub.dart';
 
-import '../models/epub/epub.dart';
 import '../providers/book_controller.dart';
 
 class ChapterParaView extends ConsumerWidget {
-  const ChapterParaView(
-      {super.key, required this.controller, required this.index})
-      : super();
+  const ChapterParaView({super.key, required this.controller, required this.index}) : super();
   final int index;
   final BookController controller;
 
@@ -42,10 +40,8 @@ class ChapterParaView extends ConsumerWidget {
               TagExtension(
                 tagsToExtend: {"img"},
                 builder: (imageContext) {
-                  final url =
-                      imageContext.attributes['src']!.replaceAll('../', '');
-                  final content = Uint8List.fromList(
-                      controller.content!.Images![url]!.Content!);
+                  final url = imageContext.attributes['src']!.replaceAll('../', '');
+                  final content = Uint8List.fromList(controller.content!.Images![url]!.Content!);
                   return Image(
                     image: MemoryImage(content),
                   );

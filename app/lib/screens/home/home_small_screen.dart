@@ -4,11 +4,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/providers/auth.provider.dart';
 import 'package:omnigram/providers/book.provider.dart';
+import 'package:omnigram/providers/tts.player.provider.dart';
 import 'package:omnigram/screens/home/views/book_liked_group_view.dart';
 import 'package:omnigram/screens/home/views/book_reading_group_view.dart';
-import 'package:omnigram/screens/home/views/category_view.dart';
 
-import '../reader/providers/tts_service.dart';
 import '../views/stackbar.dart';
 
 class HomeSmallScreen extends HookConsumerWidget {
@@ -18,7 +17,7 @@ class HomeSmallScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // final booknav = ref.watch(bookProvider);
 
-    final ttsState = ref.watch(ttsServiceProvider);
+    final ttsState = ref.watch(ttsPlayerProvider);
 
     return Column(
       children: [

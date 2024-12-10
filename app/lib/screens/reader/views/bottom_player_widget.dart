@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:omnigram/providers/tts.player.provider.dart';
 import 'package:omnigram/screens/reader/providers/book_controller.dart';
 import 'package:omnigram/providers/select_book.dart';
-import 'package:omnigram/screens/reader/providers/tts_service.dart';
 import 'package:omnigram/screens/reader/views/chapter_sheet_view.dart';
 
 class BottomPlayerWidget extends HookConsumerWidget {
@@ -55,7 +55,7 @@ class BottomPlayerWidget extends HookConsumerWidget {
                 ),
               ),
               PlayButtonWidget(onPressedCallback: () {
-                ref.read(ttsServiceProvider.notifier).play(controller.document);
+                ref.read(ttsPlayerProvider.notifier).play(controller.document);
               }),
               const SizedBox(
                 height: 4,
@@ -113,7 +113,7 @@ class PlayButtonWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tts = ref.watch(ttsServiceProvider);
+    final tts = ref.watch(ttsPlayerProvider);
     if (kDebugMode) {
       print('on PlayButtonWidget build and status is ${tts.playing}');
     }
@@ -124,7 +124,7 @@ class PlayButtonWidget extends HookConsumerWidget {
         // padding: EdgeInsets.zero,
         onPressed: () async {
           if (tts.playing) {
-            ref.read(ttsServiceProvider.notifier).pause();
+            ref.read(ttsPlayerProvider.notifier).pause();
 
             return;
           }
@@ -148,7 +148,7 @@ class _ReadProgressIndicator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selected = ref.watch(selectBookProvider);
-    final tts = ref.watch(ttsServiceProvider);
+    final tts = ref.watch(ttsPlayerProvider);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (tts.playing) {
         final abs = controller.document.absParagraphIndex(selected.index) ?? 0;

@@ -124,15 +124,6 @@ void main() {
       // TODO
     });
 
-    // 文字转语音
-    //
-    // 
-    //
-    //Future<JsonObject> m4tTtsSimplePost({ M4tTtsStreamPostRequest m4tTtsStreamPostRequest }) async
-    test('test m4tTtsSimplePost', () async {
-      // TODO
-    });
-
     // 获取声音列表
     //
     // 
@@ -337,6 +328,15 @@ void main() {
     //
     //Future<UserDto> userUserinfoGet({ JsonObject body }) async
     test('test userUserinfoGet', () async {
+      // TODO
+    });
+
+    // 文字转语音
+    //
+    // fish-speech api server
+    //
+    //Future<JsonObject> v1TtsPost({ TtsReqDto ttsReqDto }) async
+    test('test v1TtsPost', () async {
       // TODO
     });
 

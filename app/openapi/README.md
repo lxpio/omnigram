@@ -78,7 +78,6 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**authTokenPost**](doc/DefaultApi.md#authtokenpost) | **POST** /auth/token | 获取访问token
 [*DefaultApi*](doc/DefaultApi.md) | [**authTokenRefreshPost**](doc/DefaultApi.md#authtokenrefreshpost) | **POST** /auth/token/refresh | 刷新accesstoken
 [*DefaultApi*](doc/DefaultApi.md) | [**imgCoversCoverIdGet**](doc/DefaultApi.md#imgcoverscoveridget) | **GET** /img/covers/{cover_id} | 获取书籍封面图片
-[*DefaultApi*](doc/DefaultApi.md) | [**m4tTtsSimplePost**](doc/DefaultApi.md#m4tttssimplepost) | **POST** /m4t/tts/simple | 文字转语音
 [*DefaultApi*](doc/DefaultApi.md) | [**m4tTtsSpeakersGet**](doc/DefaultApi.md#m4tttsspeakersget) | **GET** /m4t/tts/speakers | 获取声音列表
 [*DefaultApi*](doc/DefaultApi.md) | [**m4tTtsSpeakersPost**](doc/DefaultApi.md#m4tttsspeakerspost) | **POST** /m4t/tts/speakers | 上传声音
 [*DefaultApi*](doc/DefaultApi.md) | [**m4tTtsStreamPost**](doc/DefaultApi.md#m4tttsstreampost) | **POST** /m4t/tts/stream | 文字转语音接口
@@ -102,6 +101,7 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**sysScanStatusGet**](doc/DefaultApi.md#sysscanstatusget) | **GET** /sys/scan/status | 获取当前扫描状态
 [*DefaultApi*](doc/DefaultApi.md) | [**sysScanStopPost**](doc/DefaultApi.md#sysscanstoppost) | **POST** /sys/scan/stop | 停止扫描
 [*DefaultApi*](doc/DefaultApi.md) | [**userUserinfoGet**](doc/DefaultApi.md#useruserinfoget) | **GET** /user/userinfo | 当前用户信息
+[*DefaultApi*](doc/DefaultApi.md) | [**v1TtsPost**](doc/DefaultApi.md#v1ttspost) | **POST** /v1/tts | 文字转语音
 
 
 ## Documentation For Models
@@ -132,6 +132,7 @@ Class | Method | HTTP request | Description
  - [SpeakerListDto](doc/SpeakerListDto.md)
  - [SysInfoDto](doc/SysInfoDto.md)
  - [SysPingGet200Response](doc/SysPingGet200Response.md)
+ - [TtsReqDto](doc/TtsReqDto.md)
  - [UserDto](doc/UserDto.md)
 
 

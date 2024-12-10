@@ -1,20 +1,17 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:openapi/openapi.dart';
+import 'package:omnigram/providers/select_book.dart';
+import 'package:omnigram/providers/tts/tts.service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import 'package:omnigram/providers/api.provider.dart';
-import 'package:omnigram/screens/reader/models/epub_document.dart';
-import 'package:omnigram/utils/constants.dart';
-import 'package:omnigram/utils/wav.dart';
-
 import '../models/epub/epub.dart';
-import '../../../providers/select_book.dart';
+import '../models/epub_document.dart';
 
-part 'tts_service.g.dart';
+part 'tts.player.provider.g.dart';
 
 class TTSState {
   TTSState({
@@ -54,7 +51,7 @@ class TTSState {
 }
 
 @Riverpod(keepAlive: true)
-class TtsService extends _$TtsService {
+class TtsPlayer extends _$TtsPlayer {
   late AudioPlayer player;
 
   @override
@@ -165,57 +162,28 @@ class TtsService extends _$TtsService {
   }
 
   Future<String> _fetchWavStream(EpubDocument document, int pos) async {
-    final bookApi = ref.read(apiServiceProvider);
-
     final content = document.getContent(pos);
 
-    final fileName = '$globalCachePath/${document.id}_$pos.wav';
+    // final urlkey = '/tts/${document.id}_$pos';
 
-    final exists = await File(fileName).exists();
+    final stream = await ref.watch(ttsServiceProvider).gen(content);
 
-    if (exists) {
-      return fileName;
+    final filePath = await TTS.getCacheFile('/tts/${document.id}_$pos', 'mp3');
+
+    if (filePath.existsSync()) {
+      return filePath.path;
     }
 
-    try {
-      final response = await bookApi.m4tTtsStreamPost(
-        m4tTtsStreamPostRequest: M4tTtsStreamPostRequest((b) => b
-          ..text = content
-          ..audioId = '1'
-          ..lang = 'zh-cn'),
-        // headers: responseType: ResponseType.stream);
-      );
+    final IOSink sink = filePath.openWrite();
 
-      // final response = await bookApi.ttsStream<ResponseBody>(
-      //   "/m4t/pcm/stream",
-      //   body: {
-      //     "text": content,
-      //     "audio_id": "1",
-      //     "lang": 'zh-cn',
-      //   },
-      //   header: {"responseType": "application/json"},
-      // );
+    await stream.pipe(sink);
 
-      if (response.statusCode == HttpStatus.ok) {
-        // Pipe the stream to the StreamController
-        final raw = Int16Wav(numChannels: 1, sampleRate: 24000);
+    await sink.close();
+    await stream.forEach((element) {
+      sink.add(element);
+    });
 
-        // final raw = Int16Wav(numChannels: 1, sampleRate: 24000);
-
-        await response.data!.stream.forEach((element) {
-          raw.append(element);
-        });
-        // return MyCustomSource(raw.wavBytes);
-
-        await raw.writeFile(fileName);
-        return fileName;
-        // return raw.wavBytes;
-      } else {
-        throw Exception("fetch stream bytes failed");
-      }
-    } catch (e) {
-      throw Exception(e);
-    }
+    return filePath.path;
   }
 }
 
@@ -233,7 +201,7 @@ class MyCustomSource extends StreamAudioSource {
       contentLength: end - start,
       offset: start,
       stream: Stream.value(bytes.sublist(start, end)),
-      contentType: 'audio/mpeg',
+      contentType: 'audio/mp3',
     );
   }
 }
