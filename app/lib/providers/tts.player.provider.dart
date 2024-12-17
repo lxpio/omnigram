@@ -1,8 +1,6 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:omnigram/providers/select_book.dart';
 import 'package:omnigram/providers/tts/tts.service.dart';
@@ -132,7 +130,7 @@ class TtsPlayer extends _$TtsPlayer {
     var current = index;
     var pos = document.absParagraphIndex(index) ?? 0;
 
-    Future<String> streamData = _fetchWavStream(document, pos);
+    Future<String?> streamData = _fetch(document, pos);
 
     while (state.playing) {
       final wavSource = await streamData;
@@ -142,7 +140,13 @@ class TtsPlayer extends _$TtsPlayer {
 
       if (next != null) {
         //还有段落，缓存下一个
-        streamData = _fetchWavStream(document, pos);
+        streamData = _fetch(document, pos);
+      }
+
+      if (wavSource == null) {
+        //没有数据了
+        state = state.copyWith(playing: false);
+        break;
       }
 
       await player.setFilePath(wavSource);
@@ -161,47 +165,14 @@ class TtsPlayer extends _$TtsPlayer {
     debugPrint('exit runtask');
   }
 
-  Future<String> _fetchWavStream(EpubDocument document, int pos) async {
-    final content = document.getContent(pos);
-
-    // final urlkey = '/tts/${document.id}_$pos';
-
-    final stream = await ref.watch(ttsServiceProvider).gen(content);
-
-    final filePath = await TTS.getCacheFile('/tts/${document.id}_$pos', 'mp3');
-
-    if (filePath.existsSync()) {
-      return filePath.path;
+  Future<String?> _fetch(EpubDocument document, int pos) async {
+    try {
+      final content = document.getContent(pos);
+      final filePath = await ref.watch(ttsServiceProvider).saveToFile('${document.id}_$pos', 'mp3', content);
+      return filePath;
+    } catch (e) {
+      debugPrint('error $e');
+      return null;
     }
-
-    final IOSink sink = filePath.openWrite();
-
-    await stream.pipe(sink);
-
-    await sink.close();
-    await stream.forEach((element) {
-      sink.add(element);
-    });
-
-    return filePath.path;
-  }
-}
-
-// Feed your own stream of bytes into the player
-class MyCustomSource extends StreamAudioSource {
-  final List<int> bytes;
-  MyCustomSource(this.bytes);
-
-  @override
-  Future<StreamAudioResponse> request([int? start, int? end]) async {
-    start ??= 0;
-    end ??= bytes.length;
-    return StreamAudioResponse(
-      sourceLength: bytes.length,
-      contentLength: end - start,
-      offset: start,
-      stream: Stream.value(bytes.sublist(start, end)),
-      contentType: 'audio/mp3',
-    );
   }
 }

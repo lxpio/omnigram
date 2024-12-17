@@ -144,6 +144,7 @@ const kManagerPath = '/manager';
 
 const kSummaryPage = 'reader';
 const kReaderDetailPage = 'reader_detail';
+const kTTSSettingPage = 'tts_settings';
 
 const kNoConnectionPage = 'no_connection';
 const kNoConnectionPath = '/no-connection';

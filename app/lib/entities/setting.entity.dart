@@ -118,5 +118,9 @@ enum TTSServiceEnum {
   // do not change this order or reuse indices for other purposes, adding is OK
   fishtts,
   device,
-  xttsv2,
+  xttsv2;
+
+  String get i18nName {
+    return 'tts_service_$name';
+  }
 }

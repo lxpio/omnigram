@@ -8,34 +8,16 @@ import 'package:omnigram/providers/api.provider.dart';
 
 import 'tts.service.dart';
 
-class FishTTSService implements TTS {
+class FishTTSService extends TTS {
   final log = Logger('FishTTSService');
 
   final TTSConfig config;
   final http.Client _httpClient;
-  bool _downloading;
 
-  FishTTSService(this.config, {http.Client? httpClient})
-      : _httpClient = httpClient ?? http.Client(),
-        _downloading = false;
-
-  Future<void> clearCache() async {
-    if (_downloading) {
-      throw Exception("Cannot clear cache while download is in progress");
-    }
-    // _response = null;
-    // final cacheFile = await this.cacheFile;
-    // if (await cacheFile.exists()) {
-    //   await cacheFile.delete();
-    // }
-    // final mimeFile = await _mimeFile;
-    // if (await mimeFile.exists()) {
-    //   await mimeFile.delete();
-  }
+  FishTTSService(this.config, {http.Client? httpClient}) : _httpClient = httpClient ?? http.Client();
 
   @override
   Future<Stream> gen(String content) async {
-    _downloading = true;
     log.finest('Generating TTS for content: $content');
 
     final req = http.Request('POST', Uri.parse('${config.endpoint}/api/v1/tts'));
@@ -50,7 +32,7 @@ class FishTTSService implements TTS {
     req.body = json.encode(_reqBody(content));
 
     final httpResponse = await _httpClient.send(req);
-    _downloading = false;
+
     return httpResponse.stream;
   }
 
