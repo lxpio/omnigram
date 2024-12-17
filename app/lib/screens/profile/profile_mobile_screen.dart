@@ -1,11 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/providers/auth.provider.dart';
 import 'package:omnigram/providers/server_info.provider.dart';
 import 'package:omnigram/providers/theme.provider.dart';
+import 'package:omnigram/utils/constants.dart';
 
 import 'views/about_view.dart';
 import 'views/logout_listtile_view.dart';
@@ -152,7 +154,6 @@ class _SettingsWidget extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.color_lens_outlined),
             title: Text("settings_theme_mode".tr()),
-            // subtitle: Text("选择深色或者浅色主题"),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -217,26 +218,24 @@ class _SettingsWidget extends ConsumerWidget {
               ],
             ),
           ),
-          // ListTile(
-          //   leading: const Icon(
-          //     Icons.headphones,
-          //     // size: 64,
-          //   ),
-          //   title: const Text("听书"),
-          //   subtitle: const Text("开启听书功能"),
-          //   trailing: Row(
-          //     mainAxisSize: MainAxisSize.min,
-          //     children: [
-          //       Switch(
-          //         value: data.m4tSupport,
-          //         onChanged: (bool value) {},
-          //       ),
-          //       // Text("中文", style: TextStyle(fontSize: 16)),
-          //       const SizedBox(width: 8),
-          //       const Icon(Icons.arrow_forward_ios),
-          //     ],
-          //   ),
-          // ),
+          ListTile(
+            leading: const Icon(
+              Icons.headphones,
+              // size: 64,
+            ),
+            title: Text("settings_tts".tr()),
+            subtitle: Text("settings_tts_subtitle".tr()),
+            trailing: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(width: 8),
+                Icon(Icons.arrow_forward_ios),
+              ],
+            ),
+            onTap: () {
+              context.pushNamed(kTTSSettingPage);
+            },
+          ),
         ],
       ),
     );

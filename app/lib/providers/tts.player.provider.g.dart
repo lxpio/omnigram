@@ -6,7 +6,7 @@ part of 'tts.player.provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$ttsPlayerHash() => r'2bdaa95d6a553a634cbcb094f850be4692bb6155';
+String _$ttsPlayerHash() => r'6863bb3310fc4205722eccc8a9f0c63de5f8700e';
 
 /// See also [TtsPlayer].
 @ProviderFor(TtsPlayer)

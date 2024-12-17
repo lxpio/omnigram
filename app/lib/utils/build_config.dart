@@ -9,6 +9,7 @@ import 'package:omnigram/entities/etag.entity.dart';
 import 'package:omnigram/entities/logger_message.entity.dart';
 import 'package:omnigram/entities/isar_store.entity.dart';
 import 'package:omnigram/entities/user.entity.dart';
+import 'package:omnigram/providers/tts/tts.service.dart';
 import 'package:omnigram/services/logger.service.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/migration.dart';
@@ -64,6 +65,13 @@ class BuildConfig {
 
       if (!await Directory(globalCachePath).exists()) {
         await Directory(globalCachePath).create(recursive: true);
+      }
+
+      //创建TTS缓存目录
+      final ttsCacheDir = await TTS.getCacheDir();
+
+      if (!await ttsCacheDir.exists()) {
+        await ttsCacheDir.create(recursive: true);
       }
     }
 
