@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 import 'package:flutter/widgets.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:omnigram/entities/book.entity.dart';
@@ -15,8 +14,6 @@ import 'package:omnigram/services/sync.service.dart';
 import 'package:omnigram/utils/build_config.dart';
 import 'package:openapi/openapi.dart';
 import 'package:test/test.dart';
-
-import 'select_book_test.dart';
 
 //@see 如果需要单元测试，则需要 下载 动态包 https://github.com/isar/isar/releases
 

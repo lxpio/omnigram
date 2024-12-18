@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/components/book_image.dart';
 import 'package:omnigram/entities/book.entity.dart';
-import 'package:omnigram/providers/image/remote_image_provider.dart';
-import 'package:omnigram/screens/reader/reader_mobile_screen.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class BookCard extends HookConsumerWidget {
   const BookCard({

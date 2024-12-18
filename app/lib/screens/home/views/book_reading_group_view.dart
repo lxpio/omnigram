@@ -51,7 +51,7 @@ class BookReadingGroup extends HookConsumerWidget {
                 return Container(
                   // width: MediaQuery.of(context).size.width,
                   // height: 200,
-                  margin: EdgeInsets.symmetric(horizontal: 8),
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
                   // child: MouseRegion(
                   //   cursor: SystemMouseCursors.click,
                   //   child: BookCardV2(book: book),

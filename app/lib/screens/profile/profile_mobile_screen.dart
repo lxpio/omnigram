@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/providers/auth.provider.dart';
-import 'package:omnigram/providers/server_info.provider.dart';
 import 'package:omnigram/providers/theme.provider.dart';
 import 'package:omnigram/utils/constants.dart';
 

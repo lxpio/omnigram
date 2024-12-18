@@ -52,7 +52,7 @@ class TtsSettingsScreen extends ConsumerWidget {
                     value: ttsConfig.enabled,
                     onChanged: (bool value) =>
                         ref.read(ttsConfigProvider.notifier).update(ttsConfig.copyWith(enabled: value))),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 // Icon(Icons.arrow_forward_ios),
               ],
             ),
@@ -138,7 +138,7 @@ class TtsSettingsScreen extends ConsumerWidget {
           TextListTileView(
             "temperature".tr(),
             icon: const Icon(Icons.api),
-            subtitle: ttsConfig.maxNewTokens.toString(),
+            subtitle: ttsConfig.temperature.toString(),
             onSaved: (value) {
               if (kDebugMode) {
                 debugPrint("update max_new_tokens: $value");
@@ -150,7 +150,7 @@ class TtsSettingsScreen extends ConsumerWidget {
           TextListTileView(
             "top_p".tr(),
             icon: const Icon(Icons.api),
-            subtitle: ttsConfig.maxNewTokens.toString(),
+            subtitle: ttsConfig.topP.toString(),
             onSaved: (value) {
               if (kDebugMode) {
                 debugPrint("update max_new_tokens: $value");
@@ -165,7 +165,7 @@ class TtsSettingsScreen extends ConsumerWidget {
 }
 
 class _TTSServcieEnumSelectDialogView extends HookConsumerWidget {
-  const _TTSServcieEnumSelectDialogView(this.srvType, {super.key});
+  const _TTSServcieEnumSelectDialogView(this.srvType);
 
   final TTSServiceEnum? srvType;
 
