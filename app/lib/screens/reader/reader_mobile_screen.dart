@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:isar/isar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,16 +9,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/components/book_image.dart';
 import 'package:omnigram/entities/book.entity.dart';
 
-import 'package:omnigram/providers/api.provider.dart';
 import 'package:omnigram/providers/book.provider.dart';
 import 'package:omnigram/providers/db.provider.dart';
-import 'package:omnigram/providers/image/remote_image_provider.dart';
 
 import 'package:omnigram/providers/select_book.dart';
 import 'package:omnigram/services/book.service.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/show_snackbar.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class ReaderMobileScreen extends HookConsumerWidget {
   const ReaderMobileScreen({super.key, required this.book}) : super();

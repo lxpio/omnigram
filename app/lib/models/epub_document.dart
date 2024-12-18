@@ -77,9 +77,6 @@ class EpubDocument {
     final chapterIndex = index.chapterIndex > chapters.length - 1 ? 0 : index.chapterIndex;
     final chapter = chapters[chapterIndex];
     final paragraphIndex = index.paragraphIndex;
-    if (paragraphIndex == null) {
-      return null;
-    }
 
     return chapter.Anchor == null
         ? '/${chapter.ContentFileName}?$paragraphIndex'
