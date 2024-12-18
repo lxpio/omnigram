@@ -1,8 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:omnigram/components/text_listtile_view.dart';
 import 'package:omnigram/entities/setting.entity.dart';
 
 import 'package:omnigram/providers/tts/tts.service.dart';
@@ -32,7 +34,7 @@ class TtsSettingsScreen extends ConsumerWidget {
         ),
         title: const Text('TTS'),
       ),
-      body: Container(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(8.0),
         child:
             Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -80,6 +82,10 @@ class TtsSettingsScreen extends ConsumerWidget {
               ],
             ),
             onTap: () async {
+              if (kDebugMode) {
+                debugPrint("ttsConfig.ttsType: ${ttsConfig.ttsType}");
+              }
+
               final result = await showDialog(
                   builder: (context) {
                     return _TTSServcieEnumSelectDialogView(ttsConfig.ttsType);
@@ -95,27 +101,63 @@ class TtsSettingsScreen extends ConsumerWidget {
             },
           ),
           if (ttsConfig.ttsType != TTSServiceEnum.device)
-            ListTile(
-              leading: const Icon(
-                Icons.cloud,
-                // size: 64,
-              ),
-              title: Text("tts_server_addr".tr()),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text("tts_engine_desc".tr(), style: Theme.of(context).textTheme.bodyMedium),
-                  // Icon(Icons.arrow_forward_ios),
-                ],
-              ),
+            TextListTileView(
+              "tts_server_addr".tr(),
+              icon: const Icon(Icons.cloud),
+              subtitle: ttsConfig.endpoint,
+              onSaved: (value) {
+                if (kDebugMode) {
+                  debugPrint("update tts_server_addr: $value");
+                }
+                ref.read(ttsConfigProvider.notifier).update(ttsConfig.copyWith(endpoint: value));
+              },
             ),
-          const SizedBox(height: 8),
-          Text("tts_engine_desc".tr(), style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(height: 8),
-          Text("tts_engine_default".tr(), style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(height: 8),
-          Text("tts_engine_google".tr(), style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(height: 8),
+          TextListTileView(
+            "tts_voice_id".tr(),
+            icon: const Icon(Icons.group_work),
+            subtitle: ttsConfig.voiceId,
+            onSaved: (value) {
+              if (kDebugMode) {
+                debugPrint("update tts_voice_id: $value");
+              }
+              ref.read(ttsConfigProvider.notifier).update(ttsConfig.copyWith(voiceId: value));
+            },
+          ),
+          TextListTileView(
+            "max_new_tokens".tr(),
+            icon: const Icon(Icons.autofps_select),
+            subtitle: ttsConfig.maxNewTokens.toString(),
+            onSaved: (value) {
+              if (kDebugMode) {
+                debugPrint("update max_new_tokens: $value");
+              }
+
+              ref.read(ttsConfigProvider.notifier).update(ttsConfig.copyWith(maxNewTokens: int.parse(value)));
+            },
+          ),
+          TextListTileView(
+            "temperature".tr(),
+            icon: const Icon(Icons.api),
+            subtitle: ttsConfig.maxNewTokens.toString(),
+            onSaved: (value) {
+              if (kDebugMode) {
+                debugPrint("update max_new_tokens: $value");
+              }
+
+              ref.read(ttsConfigProvider.notifier).update(ttsConfig.copyWith(temperature: double.parse(value)));
+            },
+          ),
+          TextListTileView(
+            "top_p".tr(),
+            icon: const Icon(Icons.api),
+            subtitle: ttsConfig.maxNewTokens.toString(),
+            onSaved: (value) {
+              if (kDebugMode) {
+                debugPrint("update max_new_tokens: $value");
+              }
+              ref.read(ttsConfigProvider.notifier).update(ttsConfig.copyWith(topP: double.parse(value)));
+            },
+          ),
         ]),
       ),
     );
