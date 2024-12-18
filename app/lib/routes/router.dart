@@ -7,7 +7,7 @@ import 'package:omnigram/screens/discover/discover_small_screen.dart';
 
 import 'package:omnigram/screens/coming_soon.dart';
 import 'package:omnigram/screens/profile/profile_mobile_screen.dart';
-import 'package:omnigram/screens/profile/views/tts_settings_screen.dart';
+import 'package:omnigram/screens/profile/tts_settings_screen.dart';
 import 'package:omnigram/screens/reader/read_epub_screen.dart';
 import 'package:omnigram/screens/reader/reader_mobile_screen.dart';
 import 'package:omnigram/screens/splash_screen.dart';
