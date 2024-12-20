@@ -83,6 +83,29 @@ make
 # make docker 
 ```
 
+
+### TTS Service
+
+When the current App supports the FishTTS API Server, refer to [FishTTS](https://github.com/fishaudio/fish-speech).
+
+```bash
+git clone https://github.com/fishaudio/fish-speech.git
+cd fish-speech
+
+pip install -e .
+python -m tools.api_server --listen 0.0.0.0:8999 --llama-checkpoint-path "checkpoints/fish-speech-1.5" --decoder-checkpoint-path "checkpoints/fish-speech-1.5/firefly-gan-vq-fsq-8x1024-21hz-generator.pth"
+```
+
+## Acknowledgments
+
+This project makes extensive use of code from [Immich](https://github.com/immich-app/immich), and we thank them for their open-source contributions.
+
+The creation of this project utilized three libraries, including:
+
+- [riverpod](https://docs-v2.riverpod.dev/docs)
+- [isar](https://isar.dev)
+- [fish-speech](https://github.com/fishaudio/fish-speech)
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
