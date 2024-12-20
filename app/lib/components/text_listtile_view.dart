@@ -39,10 +39,15 @@ class TextListTileView extends HookConsumerWidget {
                   child: TextField(
                     autofocus: true,
                     controller: textController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       // hintText: "tts_server_addr".tr(),
                       border: InputBorder.none,
+                      suffixIcon: IconButton(
+                        onPressed: textController.clear,
+                        icon: const Icon(Icons.clear, size: 14),
+                      ),
                     ),
+
                     // onChanged: onChanged,
                   ),
                 ),

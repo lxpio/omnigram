@@ -20,9 +20,12 @@ class FishTTSService extends TTS {
   Future<Stream> gen(String content) async {
     log.finest('Generating TTS for content: $content');
 
-    final req = http.Request('POST', Uri.parse('${config.endpoint}/api/v1/tts'));
+    final req = http.Request('POST', Uri.parse('${config.endpoint}/v1/tts'));
 
-    final headers = ApiService.getDeviceHeaders();
+    // final headers = ApiService.getDeviceHeaders();
+    final headers = <String, String>{};
+
+    headers['Content-Type'] = 'application/json';
 
     if (config.accessToken != null) {
       headers['Authorization'] = 'Bearer ${config.accessToken}';
@@ -30,6 +33,7 @@ class FishTTSService extends TTS {
     req.headers.addAll(headers);
 
     req.body = json.encode(_reqBody(content));
+    // req.contentLength = req.body.length;
 
     final httpResponse = await _httpClient.send(req);
 

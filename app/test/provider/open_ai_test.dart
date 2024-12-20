@@ -3,9 +3,18 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
-import 'package:test/test.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:isar/isar.dart';
+import 'package:logging/logging.dart';
+import 'package:omnigram/entities/setting.entity.dart';
+import 'package:omnigram/providers/tts/fishtts.service.dart';
+import 'package:omnigram/providers/tts/tts.service.dart';
+// import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
-import 'package:omnigram/utils/wav.dart';
+// import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 
 void main() {
   test('sse should be worked', () async {
@@ -71,46 +80,70 @@ void main() {
   //   print(onGetResponse.data); // {message: Successfully mocked GET!}
   // });
 
-  test('simple get should be created2', () async {
-    //  WidgetsFlutterBinding.ensureInitialized();
+  test('simple tts get should be save', () async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-    // await AppStore.initialize('db');
+    PathProviderPlatform.instance = FakePathProviderPlatform();
 
-    // final ref = ProviderContainer();
+    var log = Logger("OmmigramErrorLogger");
 
-    // final p = ref.read(conversationProvider);
-    final dio = Dio();
-    final onGetResponse = await dio.post("http://192.168.1.202:8080/m4t/pcm/stream",
-        data: {
-          "text": "你未看此花时，此花与汝同归于寂；你来看此花时，则此花颜色一时明白起来，便知此花不在你的心外。",
-          "lang": "zh",
-          "audio_id": "female_001",
-        },
-        options: Options(responseType: ResponseType.stream));
-    // print(onGetResponse.data); // {message: Successfully mocked GET!}
-    final Float32Wav raw = Float32Wav(
-      numChannels: 1,
-      sampleRate: 24000,
-    );
-    // Pipe the stream to the StreamController
-    final subscription = onGetResponse.data!.stream.listen(
-      (chunk) {
-        final data = Uint8List.fromList(chunk);
+    final config =
+        TTSConfig(enabled: false, ttsType: TTSServiceEnum.fishtts, endpoint: 'http://10.0.0.202:8999', accessToken: '');
 
-        raw.append(data);
-        print('Received chunk: ');
-      },
-      onDone: () {
-        raw.writeFile("test.wav");
-      },
-      onError: (error) {
-        print('Error during stream playback: $error');
-      },
-      cancelOnError: true,
-    );
+    final TTS service = FishTTSService(config);
 
-    await Future.delayed(const Duration(seconds: 10), () => subscription.cancel());
+    final outfile = await service.saveToFile('test2', 'mp3', "你未看此花时，此花与汝同归于寂；你来看此花时，则此花颜色一时明白起来，便知此花不在你的心外。");
 
-    log("exit....");
+    log.info(",save data to  $outfile, exit....");
   });
+}
+
+class FakePathProviderPlatform extends Fake with MockPlatformInterfaceMixin implements PathProviderPlatform {
+  @override
+  Future<String?> getTemporaryPath() async {
+    return '/tmp';
+  }
+
+  @override
+  Future<String?> getApplicationSupportPath() async {
+    return '/tmp';
+  }
+
+  @override
+  Future<String?> getLibraryPath() async {
+    return '/tmp';
+  }
+
+  @override
+  Future<String?> getApplicationDocumentsPath() async {
+    return '/tmp';
+  }
+
+  @override
+  Future<String?> getExternalStoragePath() async {
+    return '/tmp';
+  }
+
+  @override
+  Future<List<String>?> getExternalCachePaths() async {
+    return <String>['/tmp'];
+  }
+
+  @override
+  Future<List<String>?> getExternalStoragePaths({
+    StorageDirectory? type,
+  }) async {
+    return <String>['/tmp'];
+  }
+
+  @override
+  Future<String?> getDownloadsPath() async {
+    return '/tmp';
+  }
+
+  @override
+  Future<String?> getApplicationCachePath() {
+    // TODO: implement getApplicationCachePath
+    throw UnimplementedError();
+  }
 }

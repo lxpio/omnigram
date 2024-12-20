@@ -38,16 +38,16 @@ abstract class TTS {
     }
 
     try {
-      final stream = await gen(key);
+      final stream = await gen(content);
 
       final IOSink sink = file.openWrite();
 
       await stream.pipe(sink);
 
       await sink.close();
-      await stream.forEach((element) {
-        sink.add(element);
-      });
+      // await stream.forEach((element) {
+      //   sink.add(element);
+      // });
 
       return file.path;
     } catch (e) {
