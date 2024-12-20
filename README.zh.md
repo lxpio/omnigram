@@ -58,10 +58,7 @@ Omnigram 是 Flutter 编写的支持多平台（iOS、Android、Web、Windows、
 
 ## 二次开发
 
-本项目创建过程使用三分库包括：
 
-- [riverpod](https://docs-v2.riverpod.dev/docs)
-- [isar](https://isar.dev)
 
 ### 编译
 
@@ -84,3 +81,30 @@ make
 
 # make docker 
 ```
+
+#### 语音服务
+
+当当前App支持FishTTS API Server，参考 [FishTTS](https://github.com/fishaudio/fish-speech)。
+
+```bash
+
+git clone https://github.com/fishaudio/fish-speech.git
+cd fish-speech
+
+pip install -e .
+python -m tools.api_server --listen 0.0.0.0:8999 --llama-checkpoint-path "checkpoints/fish-speech-1.5"     --decoder-checkpoint-path "checkpoints/fish-speech-1.5/firefly-gan-vq-fsq-8x1024-21hz-generator.pth"
+
+```
+
+
+## 感谢
+
+本项目使用了大量 [Immich](https://github.com/immich-app/immich) 的代码，感谢其开源精神。
+
+本项目创建过程使用三分库包括：
+
+- [riverpod](https://docs-v2.riverpod.dev/docs)
+- [isar](https://isar.dev)
+- [fish-speech](https://github.com/fishaudio/fish-speech)
+
+

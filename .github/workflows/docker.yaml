@@ -36,6 +36,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@main
+      # - name: Clone fish tts repo
+      #   uses: actions/checkout@main
+      #   with:
+      #     repository: fishaudio/fish-speech
+      #     fetch-depth: 1
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     path: fishtts/fish-speech
       - name: Set env
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: Commit hash
