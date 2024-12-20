@@ -80,6 +80,10 @@ dev_dependencies:
   riverpod_generator: ^2.3.1
   json_serializable: ^6.7.1
   analyzer: ^6.7.0
+  plugin_platform_interface: ^2.1.8
+  path_provider_platform_interface: ^2.1.2
+  flutter_test:
+    sdk: flutter
 
 
 

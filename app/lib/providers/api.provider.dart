@@ -113,7 +113,9 @@ class ApiService extends _$ApiService {
             if (user == null) {
               return handler.next(error);
             }
-
+            if (kDebugMode) {
+              debugPrint("Refreshing token for ${user.name}");
+            }
             await refreshToken(user.name);
 
             return handler.next(error);
