@@ -137,7 +137,8 @@ class ApiService extends _$ApiService {
             );
 
             if (error.requestOptions.headers.containsKey('Authorization')) {
-              error.requestOptions.headers['Authorization'] = IsarStore.tryGet(StoreKey.accessToken) ?? '';
+              final token = IsarStore.tryGet(StoreKey.accessToken) ?? '';
+              error.requestOptions.headers['Authorization'] = 'Bearer $token';
             }
 
             final result = await retryDio.fetch(error.requestOptions);
@@ -168,7 +169,7 @@ class ApiService extends _$ApiService {
 
       throw DioException(requestOptions: result.requestOptions);
     }
-
+    log.info("Refreshed token for $account");
     IsarStore.put(StoreKey.accessToken, result.data!.accessToken);
   }
 

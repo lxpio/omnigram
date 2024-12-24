@@ -6,7 +6,7 @@ part of 'book.provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$booksHash() => r'b121fe5548d621767ced16a07f3c99d99e0db8d2';
+String _$bookSearchHash() => r'c30c0b74159d6b38e49684235645b65fe0a13fb3';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -28,6 +28,148 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
+
+abstract class _$BookSearch extends BuildlessAutoDisposeNotifier<BookState> {
+  late final BookQuery query;
+
+  BookState build(
+    BookQuery query,
+  );
+}
+
+/// See also [BookSearch].
+@ProviderFor(BookSearch)
+const bookSearchProvider = BookSearchFamily();
+
+/// See also [BookSearch].
+class BookSearchFamily extends Family<BookState> {
+  /// See also [BookSearch].
+  const BookSearchFamily();
+
+  /// See also [BookSearch].
+  BookSearchProvider call(
+    BookQuery query,
+  ) {
+    return BookSearchProvider(
+      query,
+    );
+  }
+
+  @override
+  BookSearchProvider getProviderOverride(
+    covariant BookSearchProvider provider,
+  ) {
+    return call(
+      provider.query,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'bookSearchProvider';
+}
+
+/// See also [BookSearch].
+class BookSearchProvider
+    extends AutoDisposeNotifierProviderImpl<BookSearch, BookState> {
+  /// See also [BookSearch].
+  BookSearchProvider(
+    BookQuery query,
+  ) : this._internal(
+          () => BookSearch()..query = query,
+          from: bookSearchProvider,
+          name: r'bookSearchProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$bookSearchHash,
+          dependencies: BookSearchFamily._dependencies,
+          allTransitiveDependencies:
+              BookSearchFamily._allTransitiveDependencies,
+          query: query,
+        );
+
+  BookSearchProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.query,
+  }) : super.internal();
+
+  final BookQuery query;
+
+  @override
+  BookState runNotifierBuild(
+    covariant BookSearch notifier,
+  ) {
+    return notifier.build(
+      query,
+    );
+  }
+
+  @override
+  Override overrideWith(BookSearch Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: BookSearchProvider._internal(
+        () => create()..query = query,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        query: query,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<BookSearch, BookState> createElement() {
+    return _BookSearchProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is BookSearchProvider && other.query == query;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, query.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin BookSearchRef on AutoDisposeNotifierProviderRef<BookState> {
+  /// The parameter `query` of this provider.
+  BookQuery get query;
+}
+
+class _BookSearchProviderElement
+    extends AutoDisposeNotifierProviderElement<BookSearch, BookState>
+    with BookSearchRef {
+  _BookSearchProviderElement(super.provider);
+
+  @override
+  BookQuery get query => (origin as BookSearchProvider).query;
+}
+
+String _$booksHash() => r'acc3ff8423dc51d985d6f88f868ed1007514b586';
 
 abstract class _$Books extends BuildlessAutoDisposeNotifier<BookState> {
   late final BookQuery query;

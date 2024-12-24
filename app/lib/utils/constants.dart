@@ -115,35 +115,31 @@ String translateToJapanese({required String word}) => "Translate this into Japan
 
 //router
 
-const kLoginPage = 'login';
-const kLoginPath = '/login';
+const kLoginPage = '/login';
+const kSplashPage = '/splash';
 
-const kSplashPath = '/splash';
-const kSplashPage = 'splash';
+const kHomePage = '/home';
 
-const kHomePath = '/';
-const kHomePage = 'home';
+const kSummaryPage = 'reader'; // /home/reader
+const kReaderDetailPage = 'reader_detail'; // /home/reader_detail
+
+const kReaderSearchPage = 'reader_search'; // /home/reader_search
 
 const kMusicPath = '/music';
-const kDiscoverPage = 'discover';
-const kDiscoverPath = '/discover';
 
-const kProfilePath = '/profile';
-const kProfilePage = 'profile';
+const kDiscoverPage = '/discover';
 
-const kReaderDetailPath = '/read';
+const kProfilePage = '/profile';
+
 const kSummaryPath = '/summary';
 
-const kChatPage = 'chat';
+const kNotePage = '/note';
 
-const kChatPath = '/chat';
 const kChatPagePath = 'detailpage';
 
 const kManagerPage = 'manager';
 const kManagerPath = '/manager';
 
-const kSummaryPage = 'reader';
-const kReaderDetailPage = 'reader_detail';
 const kTTSSettingPage = 'tts_settings';
 
 const kNoConnectionPage = 'no_connection';

@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:omnigram/services/book.service.dart';
@@ -84,29 +85,84 @@ class BookState {
   }
 }
 
+typedef QueryFn = QueryBuilder<BookEntity, BookEntity, QAfterSortBy> Function(
+    QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition>);
+
+// typedef QueryFn<T extends QueryBuilder> = QueryBuilder<BookEntity, BookEntity, QAfterSortBy> Function(T queryBuilder);
+
 enum BookQuery {
   recents('recents', recentsFilter),
   likes('likes', likesFilter),
   readings('readings', readingsFilter);
 
-  const BookQuery(this.label, this.fn);
-  final String label;
+  final String name;
   final QueryFn fn;
+
+  const BookQuery(this.name, this.fn);
 }
 
-typedef QueryFn = QueryBuilder<BookEntity, BookEntity, QAfterSortBy> Function(IsarCollection<int, BookEntity>);
+final queryFnMap = {
+  BookQuery.recents: recentsFilter,
+  BookQuery.likes: likesFilter,
+  BookQuery.readings: readingsFilter,
+};
 
-QueryBuilder<BookEntity, BookEntity, QAfterSortBy> recentsFilter(IsarCollection<int, BookEntity> bookEntitys) {
-  return bookEntitys.where().sortByUtime();
+QueryBuilder<BookEntity, BookEntity, QAfterSortBy> recentsFilter(
+    QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> condition) {
+  return condition.sortByUtime();
 }
 
-QueryBuilder<BookEntity, BookEntity, QAfterSortBy> likesFilter(IsarCollection<int, BookEntity> bookEntitys) {
+QueryBuilder<BookEntity, BookEntity, QAfterSortBy> likesFilter(
+    QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> condition) {
   // debugPrint('build books with favStatusEqualTo true query');
-  return bookEntitys.where().favStatusEqualTo(true).sortByUtime();
+  return condition.favStatusEqualTo(true).sortByUtime();
 }
 
-QueryBuilder<BookEntity, BookEntity, QAfterSortBy> readingsFilter(IsarCollection<int, BookEntity> bookEntitys) {
-  return bookEntitys.where().sortByAtime();
+QueryBuilder<BookEntity, BookEntity, QAfterSortBy> readingsFilter(
+    QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition> condition) {
+  return condition.sortByAtime();
+}
+
+@riverpod
+class BookSearch extends _$BookSearch {
+  @override
+  BookState build(BookQuery query) {
+    debugPrint('build book search riverpod with query: $query');
+    final items = _getRecentBook(0);
+    return BookState(page: 0, items: items, loading: false, noMore: items.length < 12);
+  }
+
+  List<BookEntity> _getRecentBook(int page, {String? search}) {
+    final db = ref.watch(dbProvider);
+
+    final condition = (search == null)
+        ? db.bookEntitys.where().idGreaterThan(0)
+        : db.bookEntitys
+            .where()
+            .titleContains(search, caseSensitive: false)
+            .or()
+            .authorContains(search, caseSensitive: false); //QueryBuilder<BookEntity, BookEntity, QAfterFilterCondition>
+
+    return query.fn(condition).findAll(offset: page * 12, limit: 12);
+  }
+
+  Future<void> search(String? keyword) async {
+    if (state.loading || state.noMore) return;
+
+    final items = _getRecentBook(0, search: keyword);
+    state = BookState(page: 0, items: items, loading: false, noMore: false);
+  }
+
+  Future<void> loadMore(String? keyword) async {
+    if (state.loading) return;
+
+    state = state.copyWith(loading: true);
+
+    final more = _getRecentBook(state.page + 1, search: keyword);
+
+    state = BookState(loading: false, noMore: more.isEmpty, items: [...state.items, ...more], page: state.page + 1);
+    debugPrint(' book search load More keyword: $keyword more: ${more.isEmpty} length: ${state.items.length}');
+  }
 }
 
 @riverpod
@@ -120,7 +176,10 @@ class Books extends _$Books {
 
   List<BookEntity> _getRecentBook(int page) {
     final db = ref.watch(dbProvider);
-    return query.fn(db.bookEntitys).findAll(offset: page * 12, limit: 12);
+
+    final condition = db.bookEntitys.where().idGreaterThan(0);
+
+    return query.fn(condition).findAll(offset: page * 12, limit: 12);
   }
 
   Future<void> loadMore() async {

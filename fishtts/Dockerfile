@@ -21,10 +21,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     && apt-get -y install --no-install-recommends ${DEPENDENCIES} \
     && echo "no" | dpkg-reconfigure dash
 
+COPY fish-speech /opt/fish-speech
+COPY docker-entrypoint.sh /opt/fish-speech/docker-entrypoint.sh
+    
 WORKDIR /opt/fish-speech
-
-COPY ./fish-speech/* .
-
+    
 RUN --mount=type=cache,target=/root/.cache,sharing=locked \
     set -ex \
     && pip install -e .[stable]
