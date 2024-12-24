@@ -25,12 +25,13 @@ class BookGroup extends HookConsumerWidget {
             title,
             style: TextStyle(color: Colors.grey[700], fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          trailing: Text(
-            viewmore,
-            style: TextStyle(
-                color: Colors.blue[700],
-                // fontSize: 18,
-                fontWeight: FontWeight.bold),
+          trailing: InkWell(
+            child: Text(viewmore),
+            // icon: ,
+            onTap: () {
+              if (!context.mounted) return;
+              context.pushNamed(kReaderSearchPage, extra: query);
+            },
           ),
         ),
         Container(

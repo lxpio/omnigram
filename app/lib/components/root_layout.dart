@@ -54,8 +54,6 @@ class RootLayout extends HookConsumerWidget {
   }
 }
 
-
-
 class Destination {
   const Destination(this.icon, this.label, this.route);
   final Icon icon;
@@ -64,8 +62,8 @@ class Destination {
 }
 
 const List<Destination> destinations = <Destination>[
-  Destination(Icon(Icons.book), 'nav_read', kHomePath),
-  Destination(Icon(Icons.explore), 'nav_discover', kDiscoverPath),
-  Destination(Icon(Icons.messenger_outline_rounded), 'nav_chat', kChatPath),
-  Destination(Icon(Icons.person), 'nav_profile', kProfilePath),
+  Destination(Icon(Icons.book), 'nav_read', kHomePage),
+  Destination(Icon(Icons.explore), 'nav_discover', kDiscoverPage),
+  Destination(Icon(Icons.messenger_outline_rounded), 'nav_note', kNotePage),
+  Destination(Icon(Icons.person), 'nav_profile', kProfilePage),
 ];

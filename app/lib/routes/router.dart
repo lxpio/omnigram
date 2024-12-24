@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:omnigram/components/root_layout.dart';
 import 'package:omnigram/entities/book.entity.dart';
+import 'package:omnigram/providers/book.provider.dart';
 
 import 'package:omnigram/screens/discover/discover_small_screen.dart';
 
 import 'package:omnigram/screens/coming_soon.dart';
+import 'package:omnigram/screens/home/book_search_screen.dart';
 import 'package:omnigram/screens/profile/profile_mobile_screen.dart';
 import 'package:omnigram/screens/profile/tts_settings_screen.dart';
 import 'package:omnigram/screens/reader/read_epub_screen.dart';
@@ -20,24 +22,24 @@ import '../screens/login_screen.dart';
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     debugLogDiagnostics: true,
-    initialLocation: kSplashPath,
+    initialLocation: kSplashPage,
     routes: [
       GoRoute(
-        path: kSplashPath,
+        path: kSplashPage,
         name: kSplashPage,
         builder: (context, state) {
           return const SplashScreen();
         },
       ),
       GoRoute(
-        path: kLoginPath,
+        path: kLoginPage,
         name: kLoginPage,
         builder: (context, state) {
           return const LoginScreen();
         },
       ),
       GoRoute(
-        path: kHomePath,
+        path: kHomePage,
         name: kHomePage,
         pageBuilder: (context, state) => const MaterialPage(
           // key: _pageKey,
@@ -47,48 +49,60 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             child: HomeSmallScreen(),
           ),
         ),
-      ),
-      GoRoute(
-        path: kSummaryPath,
-        name: kSummaryPage,
-        pageBuilder: (context, state) {
-          final book = state.extra as BookEntity;
-          return MaterialPage(
-            // key: _pageKey,
-            child: ReaderMobileScreen(
-              book: book,
-            ),
-          );
-        },
-        // routes: [],
-      ),
-      GoRoute(
-        path: kReaderDetailPath,
-        name: kReaderDetailPage,
-        pageBuilder: (context, GoRouterState state) {
-          // final bookPath = state.extra as String;
-          final args = state.extra == null ? false : state.extra as bool;
+        routes: [
+          GoRoute(
+            path: kSummaryPage,
+            name: kSummaryPage,
+            pageBuilder: (context, state) {
+              final book = state.extra as BookEntity;
+              return MaterialPage(
+                // key: _pageKey,
+                child: ReaderMobileScreen(
+                  book: book,
+                ),
+              );
+            },
+            // routes: [],
+          ),
+          GoRoute(
+            path: kReaderSearchPage,
+            name: kReaderSearchPage,
+            pageBuilder: (context, state) {
+              final query = state.extra as BookQuery;
+              return MaterialPage(
+                // key: _pageKey,
+                child: BookSearchScreen(query),
+              );
+            },
+            // routes: [],
+          ),
+          GoRoute(
+            path: kReaderDetailPage,
+            name: kReaderDetailPage,
+            pageBuilder: (context, GoRouterState state) {
+              // final bookPath = state.extra as String;
+              final args = state.extra == null ? false : state.extra as bool;
 
-          return MaterialPage(
-            child: ReadEpubScreen(playtask: args),
-          );
-        },
+              return MaterialPage(
+                child: ReadEpubScreen(playtask: args),
+              );
+            },
+          ),
+        ],
       ),
       GoRoute(
-        path: kDiscoverPath,
+        path: kDiscoverPage,
         name: kDiscoverPage,
         pageBuilder: (context, state) => const MaterialPage(
-          // key: _pageKey,
           child: RootLayout(
-            // key: _scaffoldKey,
             currentIndex: 1,
-            child: DiscoverSmallScreen(),
+            child: PhotoPageBody(),
           ),
         ),
       ),
       GoRoute(
-        path: kChatPath,
-        name: kChatPage,
+        path: kNotePage,
+        name: kNotePage,
         pageBuilder: (context, state) => const MaterialPage(
           child: RootLayout(
             currentIndex: 2,
@@ -119,7 +133,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
-        path: kProfilePath,
+        path: kProfilePage,
         name: kProfilePage,
         pageBuilder: (context, state) => const MaterialPage(
           // key: _pageKey,
