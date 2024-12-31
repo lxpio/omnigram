@@ -4,7 +4,6 @@ import 'package:logging/logging.dart';
 import 'package:omnigram/entities/setting.entity.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:omnigram/providers/api.provider.dart';
 
 import 'tts.service.dart';
 

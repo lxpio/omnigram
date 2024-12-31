@@ -29,9 +29,12 @@ class RootLayout extends HookConsumerWidget {
     }
 
     return AdaptiveScaffold(
-      smallBreakpoint: const WidthPlatformBreakpoint(end: 600),
-      mediumBreakpoint: const WidthPlatformBreakpoint(begin: 600, end: 1000),
-      largeBreakpoint: const WidthPlatformBreakpoint(begin: 1000),
+      smallBreakpoint: const Breakpoint(endWidth: 600),
+      mediumBreakpoint: const Breakpoint(beginWidth: 600, endWidth: 1000),
+      mediumLargeBreakpoint: const Breakpoint(beginWidth: 1000, endWidth: 1200),
+      largeBreakpoint: const Breakpoint(beginWidth: 1200, endWidth: 1600),
+      extraLargeBreakpoint: const Breakpoint(beginWidth: 1600),
+      useDrawer: false,
       destinations: destinations
           .map((e) => NavigationDestination(
                 icon: e.icon,

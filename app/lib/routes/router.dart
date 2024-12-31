@@ -4,8 +4,6 @@ import 'package:omnigram/components/root_layout.dart';
 import 'package:omnigram/entities/book.entity.dart';
 import 'package:omnigram/providers/book.provider.dart';
 
-import 'package:omnigram/screens/discover/discover_small_screen.dart';
-
 import 'package:omnigram/screens/coming_soon.dart';
 import 'package:omnigram/screens/home/book_search_screen.dart';
 import 'package:omnigram/screens/profile/profile_mobile_screen.dart';
