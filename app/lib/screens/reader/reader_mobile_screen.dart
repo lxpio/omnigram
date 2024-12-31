@@ -13,9 +13,12 @@ import 'package:omnigram/providers/book.provider.dart';
 import 'package:omnigram/providers/db.provider.dart';
 
 import 'package:omnigram/providers/select_book.dart';
+
 import 'package:omnigram/services/book.service.dart';
 import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/show_snackbar.dart';
+
+import 'views/description_text_view.dart';
 
 class ReaderMobileScreen extends HookConsumerWidget {
   const ReaderMobileScreen({super.key, required this.book}) : super();
@@ -35,14 +38,10 @@ class ReaderMobileScreen extends HookConsumerWidget {
           ),
           actions: [
             IconButton(
-              icon: const Icon(Icons.bookmark, size: 24),
-              onPressed: () {},
-            ),
-            IconButton(
               icon: Icon(
-                Icons.star,
+                Icons.favorite,
                 size: 24,
-                color: liked.value ? Colors.amber : Colors.grey,
+                color: liked.value ? Colors.red : Colors.grey,
               ),
               onPressed: () {
                 liked.value = !liked.value;
@@ -54,79 +53,96 @@ class ReaderMobileScreen extends HookConsumerWidget {
                 ref.invalidate(booksProvider(BookQuery.readings));
               },
             ),
+            IconButton(
+              icon: const Icon(Icons.share, size: 24),
+              onPressed: () {},
+            ),
           ],
         ),
-        body: Center(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            const SizedBox(height: 32),
-            Container(
-              // color: Theme.of(context).colorScheme.surface,
-              height: MediaQuery.of(context).size.height * .4,
-              width: MediaQuery.of(context).size.width * .7,
-
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: Theme.of(context).colorScheme.surface,
+        body: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          children: [
+            const SizedBox(height: 10.0),
+            _BookDescSection(book: book),
+            const SizedBox(height: 30.0),
+            ListTile(
+              title: Text(
+                'reader_book_description'.tr(),
+                style: TextStyle(color: Colors.grey[700], fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              child: bookImage(book),
             ),
-            const SizedBox(height: 32),
-            Text(book.title, style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 8),
-            Text('${book.author}', style: Theme.of(context).textTheme.bodySmall),
-            const SizedBox(width: 16),
-            Container(
-              padding: const EdgeInsets.all(8),
-              width: MediaQuery.of(context).size.width * .7,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.star, color: Colors.yellow, size: 20),
-                      const SizedBox(width: 5),
-                      Text(
-                        '4.5',
-                        style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600),
-                      )
-                    ],
+            const Divider(),
+            DescriptionTextView(text: book.description),
+            const SizedBox(height: 30.0),
+            ListTile(
+              title: Text(
+                'reader_more_from_author'.tr(),
+                style: TextStyle(color: Colors.grey[700], fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+            // const _Divider(),
+          ],
+        ));
+  }
+}
+
+class _BookDescSection extends ConsumerWidget {
+  const _BookDescSection({super.key, required this.book});
+
+  final BookEntity book;
+//
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Hero(
+          tag: book.identifier,
+          child: SizedBox(
+            width: 130,
+            height: 200,
+            child: bookImage(book),
+          ),
+        ),
+        const SizedBox(width: 20.0),
+        Flexible(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const SizedBox(height: 5.0),
+              Hero(
+                tag: book.title,
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: Text(
+                    book.title.replaceAll(r'\', ''),
+                    style: const TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 3,
                   ),
-                  Row(
-                    children: [
-                      Icon(Icons.access_time, color: Colors.grey.shade600, size: 20),
-                      const SizedBox(width: 5),
-                      Text(
-                        '2h',
-                        style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.2,
-                    child: Row(
-                      children: [
-                        Icon(Icons.cloud_download, color: Colors.grey.shade600, size: 20),
-                        const SizedBox(width: 5),
-                        Text(
-                          'Watch',
-                          style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600),
-                        )
-                      ],
+                ),
+              ),
+              const SizedBox(height: 5.0),
+              Hero(
+                tag: '${book.author} -',
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: Text(
+                    '${book.author}',
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.grey,
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
-            SizedBox(
-              // alignment: Alignment.centerLeft,
-              width: MediaQuery.of(context).size.width * 0.7,
-              child: Text('${book.description}', style: Theme.of(context).textTheme.bodyMedium),
-            ),
-            const SizedBox(height: 32),
-            Container(
-              padding: const EdgeInsets.all(8),
-              width: MediaQuery.of(context).size.width * .7,
-              child: Row(
+              const SizedBox(height: 5.0),
+              // _CategoryChips(entry: entry),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   FilledButton.tonal(
@@ -179,9 +195,11 @@ class ReaderMobileScreen extends HookConsumerWidget {
                   ),
                 ],
               ),
-            )
-          ]),
-        ));
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   Future<String> getOrDownloadBook(WidgetRef ref, BookEntity book) async {

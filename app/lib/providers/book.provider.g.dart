@@ -6,7 +6,7 @@ part of 'book.provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$bookSearchHash() => r'c30c0b74159d6b38e49684235645b65fe0a13fb3';
+String _$bookSearchHash() => r'd1b6c4cce0d374c8a811d841b613e2b06b95e3f3';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-abstract class _$BookSearch extends BuildlessAutoDisposeNotifier<BookState> {
+abstract class _$BookSearch extends BuildlessNotifier<BookState> {
   late final BookQuery query;
 
   BookState build(
@@ -80,8 +80,7 @@ class BookSearchFamily extends Family<BookState> {
 }
 
 /// See also [BookSearch].
-class BookSearchProvider
-    extends AutoDisposeNotifierProviderImpl<BookSearch, BookState> {
+class BookSearchProvider extends NotifierProviderImpl<BookSearch, BookState> {
   /// See also [BookSearch].
   BookSearchProvider(
     BookQuery query,
@@ -137,7 +136,7 @@ class BookSearchProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<BookSearch, BookState> createElement() {
+  NotifierProviderElement<BookSearch, BookState> createElement() {
     return _BookSearchProviderElement(this);
   }
 
@@ -155,21 +154,20 @@ class BookSearchProvider
   }
 }
 
-mixin BookSearchRef on AutoDisposeNotifierProviderRef<BookState> {
+mixin BookSearchRef on NotifierProviderRef<BookState> {
   /// The parameter `query` of this provider.
   BookQuery get query;
 }
 
 class _BookSearchProviderElement
-    extends AutoDisposeNotifierProviderElement<BookSearch, BookState>
-    with BookSearchRef {
+    extends NotifierProviderElement<BookSearch, BookState> with BookSearchRef {
   _BookSearchProviderElement(super.provider);
 
   @override
   BookQuery get query => (origin as BookSearchProvider).query;
 }
 
-String _$booksHash() => r'acc3ff8423dc51d985d6f88f868ed1007514b586';
+String _$booksHash() => r'a5500886c7aaa527761c0af8000c2f0d739f47b4';
 
 abstract class _$Books extends BuildlessAutoDisposeNotifier<BookState> {
   late final BookQuery query;

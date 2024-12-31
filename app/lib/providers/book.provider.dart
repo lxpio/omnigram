@@ -5,23 +5,26 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
-import 'package:omnigram/services/book.service.dart';
-import 'package:omnigram/services/sync.service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:omnigram/entities/book.entity.dart';
 import 'package:omnigram/providers/db.provider.dart';
+import 'package:omnigram/services/book.service.dart';
+import 'package:omnigram/services/sync.service.dart';
 
 part 'book.provider.g.dart';
 
 class BookState {
   final List<BookEntity> items;
   final int page;
+  final String? search;
   final bool loading;
   final bool noMore;
+
   BookState({
     required this.items,
     required this.page,
+    required this.search,
     required this.loading,
     required this.noMore,
   });
@@ -29,12 +32,14 @@ class BookState {
   BookState copyWith({
     List<BookEntity>? items,
     int? page,
+    String? search,
     bool? loading,
     bool? noMore,
   }) {
     return BookState(
       items: items ?? this.items,
       page: page ?? this.page,
+      search: search ?? this.search,
       loading: loading ?? this.loading,
       noMore: noMore ?? this.noMore,
     );
@@ -44,6 +49,7 @@ class BookState {
     return <String, dynamic>{
       'items': items.map((x) => x.toMap()).toList(),
       'page': page,
+      'search': search,
       'loading': loading,
       'noMore': noMore,
     };
@@ -57,6 +63,7 @@ class BookState {
         ),
       ),
       page: map['page'] as int,
+      search: map['search'] as String,
       loading: map['loading'] as bool,
       noMore: map['noMore'] as bool,
     );
@@ -68,7 +75,7 @@ class BookState {
 
   @override
   String toString() {
-    return 'BookState(items: $items, page: $page, loading: $loading, noMore: $noMore)';
+    return 'BookState(items: $items, page: $page, search: $search, loading: $loading, noMore: $noMore)';
   }
 
   @override
@@ -76,12 +83,16 @@ class BookState {
     if (identical(this, other)) return true;
     final listEquals = const DeepCollectionEquality().equals;
 
-    return listEquals(other.items, items) && other.page == page && other.loading == loading && other.noMore == noMore;
+    return listEquals(other.items, items) &&
+        other.page == page &&
+        other.search == search &&
+        other.loading == loading &&
+        other.noMore == noMore;
   }
 
   @override
   int get hashCode {
-    return items.hashCode ^ page.hashCode ^ loading.hashCode ^ noMore.hashCode;
+    return items.hashCode ^ page.hashCode ^ search.hashCode ^ loading.hashCode ^ noMore.hashCode;
   }
 }
 
@@ -123,13 +134,13 @@ QueryBuilder<BookEntity, BookEntity, QAfterSortBy> readingsFilter(
   return condition.sortByAtime();
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class BookSearch extends _$BookSearch {
   @override
   BookState build(BookQuery query) {
     debugPrint('build book search riverpod with query: $query');
     final items = _getRecentBook(0);
-    return BookState(page: 0, items: items, loading: false, noMore: items.length < 12);
+    return BookState(page: 0, items: items, loading: false, search: null, noMore: items.length < 12);
   }
 
   List<BookEntity> _getRecentBook(int page, {String? search}) {
@@ -147,21 +158,36 @@ class BookSearch extends _$BookSearch {
   }
 
   Future<void> search(String? keyword) async {
-    if (state.loading || state.noMore) return;
-
+    debugPrint(' book search  keyword: $keyword loading: ${state.loading} noMore: ${state.noMore}');
+    if (state.loading) return;
+    state = state.copyWith(loading: true);
     final items = _getRecentBook(0, search: keyword);
-    state = BookState(page: 0, items: items, loading: false, noMore: false);
+
+    state = BookState(page: 0, items: items, search: keyword, loading: false, noMore: items.length < 12);
+    debugPrint(' book search  keyword: $keyword more: ${items.isEmpty} length: ${state.items.length}');
+    // state = BookState(page: 0, items: items, search: keyword, loading: false, noMore: false);
   }
 
   Future<void> loadMore(String? keyword) async {
-    if (state.loading) return;
+    if (state.loading || state.noMore) return;
 
     state = state.copyWith(loading: true);
 
     final more = _getRecentBook(state.page + 1, search: keyword);
 
-    state = BookState(loading: false, noMore: more.isEmpty, items: [...state.items, ...more], page: state.page + 1);
-    debugPrint(' book search load More keyword: $keyword more: ${more.isEmpty} length: ${state.items.length}');
+    if (state.search != keyword) {
+      state = BookState(page: 0, items: more, search: keyword, loading: false, noMore: more.length < 12);
+      debugPrint(' book search  keyword: $keyword more: ${more.isEmpty} length: ${state.items.length}');
+    } else {
+      state = BookState(
+          loading: false,
+          noMore: more.isEmpty,
+          search: keyword,
+          items: [...state.items, ...more],
+          page: state.page + 1);
+
+      debugPrint(' book  load More keyword: $keyword more: ${more.isEmpty} length: ${state.items.length}');
+    }
   }
 }
 
@@ -171,7 +197,7 @@ class Books extends _$Books {
   BookState build(BookQuery query) {
     // debugPrint('build books with query: ${query.label}');
     final items = _getRecentBook(0);
-    return BookState(page: 0, items: items, loading: false, noMore: false);
+    return BookState(page: 0, items: items, search: null, loading: false, noMore: false);
   }
 
   List<BookEntity> _getRecentBook(int page) {
@@ -189,7 +215,8 @@ class Books extends _$Books {
 
     final more = _getRecentBook(state.page + 1);
 
-    state = BookState(loading: false, noMore: more.isEmpty, items: [...state.items, ...more], page: state.page + 1);
+    state = BookState(
+        loading: false, search: null, noMore: more.isEmpty, items: [...state.items, ...more], page: state.page + 1);
   }
 }
 

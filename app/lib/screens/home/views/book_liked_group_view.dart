@@ -37,7 +37,7 @@ class BookGroup extends HookConsumerWidget {
         Container(
           // padding: EdgeInsets.all(20),
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          height: 230,
+          height: 200,
           // child: ListView.builder(itemBuilder: itemBuilder, itemCount: books.length),
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
@@ -45,7 +45,6 @@ class BookGroup extends HookConsumerWidget {
             itemBuilder: (context, index) {
               if (index < state.items.length) {
                 final book = state.items[index];
-
                 return GestureDetector(
                     child: Container(
                       padding: const EdgeInsets.all(8),
@@ -53,43 +52,15 @@ class BookGroup extends HookConsumerWidget {
                       child: BookCard(
                         book: book,
                         width: 160,
-                        height: 230,
+                        height: 200,
                       ),
                     ),
                     onTap: () async {
-                      // BookModel? b;
-                      // //if progress or chapterPos is null , try request backend to get
-                      // if (book.progress == null || book.progressIndex == null) {
-                      //   final api = ref.read(bookAPIProvider);
-
-                      //   final data = await api.getReadProcess(book.id);
-
-                      //   if (data != null) {
-                      //     // await ref.read(selectBookProvider.notifier).refresh(book);
-                      //     b = book.copyWith(
-                      //         progress: (data["progress"] + 0.0),
-                      //         progressIndex: data["progress_index"]);
-                      //   }
-                      // }
                       if (!context.mounted) return;
                       context.pushNamed(kSummaryPage, extra: book);
                     }
                     //'/reader/books/${book.id}'
                     );
-
-                // return AspectRatio(
-                //   aspectRatio: 2.1 / 3,
-                //   child: GestureDetector(
-                //     child: Container(
-                //       padding: const EdgeInsets.all(8),
-                //       child: BookCard(
-                //         book: book!,
-                //       ),
-                //     ),
-                //     onTap: () => context.push(kReaderPath, extra: book),
-                //     //'/reader/books/${book.id}'
-                //   ),
-                // );
               } else {
                 return const Text("No data available");
               }

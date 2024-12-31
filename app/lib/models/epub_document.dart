@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'epub/_chapter_index.dart';
 import 'epub/_paragraph.dart';
 import 'epub/_parse_result.dart';

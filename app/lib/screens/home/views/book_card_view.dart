@@ -23,76 +23,37 @@ class BookCard extends HookConsumerWidget {
       debugPrint('build book card ${book.title}');
     }
 
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      // ? SystemMouseCursors.click
-      // : SystemMouseCursors.basic,
+    return SizedBox(
+      height: height,
+      width: width,
       child: Card(
-        elevation: 0,
+        elevation: 1.0,
         shape: const RoundedRectangleBorder(
           // side: BorderSide(
           //   color: Theme.of(context).colorScheme.outline,
           // ),
-          borderRadius: BorderRadius.all(Radius.circular(16)),
+          borderRadius: BorderRadius.all(Radius.circular(16.0)),
         ),
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                Container(
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(16)),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.all(
+            Radius.circular(10.0),
+          ),
+          child: Hero(
+            tag: book.identifier,
+            child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(16)),
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    stops: const [.1, .5],
+                    colors: [
+                      Colors.black.withOpacity(.1),
+                      Colors.black.withOpacity(.05),
+                    ],
                   ),
-                  height: height * .7,
-                  width: width * 1,
-                  child: bookImage(book),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(16)),
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      stops: const [.1, .5],
-                      colors: [
-                        Colors.black.withOpacity(.1),
-                        Colors.black.withOpacity(.05),
-                      ],
-                    ),
-                  ),
-                  height: height * .7,
-                  width: width * 1,
-                ),
-              ],
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(
-                        book.title,
-                        style: Theme.of(context).textTheme.titleSmall,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                      const SizedBox(height: 10),
-                      if (book.progress != null && book.progress! > 0)
-                        LinearProgressIndicator(
-                          value: book.progress, // Change this value to represent the progress
-                          valueColor: const AlwaysStoppedAnimation<Color>(Colors.grey), // Set to gray
-                          backgroundColor: Colors.grey[300],
-                          // color:,
-                          // style: TextStyle(color: Colors.white, fontSize: 14),
-                        )
-                    ]),
-                  ),
-                ],
-              ),
-            ),
-          ],
+                child: bookImage(book)),
+          ),
         ),
       ),
     );

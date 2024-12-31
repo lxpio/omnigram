@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -33,43 +34,57 @@ class BookSearchScreen extends HookConsumerWidget {
       }
 
       scrollController.addListener(someCallback);
-      return () => scrollController.removeListener(someCallback);
+      return () {
+        scrollController.removeListener(someCallback);
+        ref.invalidate(bookSearchProvider(query));
+      };
     }, [scrollController]);
 
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
-          onPressed: () => context.pop(),
+          onPressed: () {
+            context.pop();
+            ref.invalidate(bookSearchProvider(query));
+          },
           icon: const Icon(Icons.arrow_back),
         ),
-        title: const Text('Search'),
+        title: Text('search'.tr()),
       ),
       body: Column(
         children: [
-          SearchAnchor(
-            builder: (BuildContext context, SearchController controller) {
-              return IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: () {
-                  controller.openView();
-                },
-              );
-            },
-            suggestionsBuilder: (BuildContext context, SearchController controller) {
-              return List<ListTile>.generate(
-                5,
-                (int index) {
-                  final String item = 'item $index';
-                  return ListTile(
-                    title: Text(item),
-                    onTap: () {
-                      controller.closeView(item);
-                    },
-                  );
-                },
-              );
-            },
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SearchAnchor(
+              builder: (BuildContext context, SearchController controller) {
+                return SearchBar(
+                  controller: controller,
+                  hintText: 'search'.tr(),
+                  onSubmitted: (String value) async {
+                    await ref.watch(bookSearchProvider(query).notifier).search(value);
+                    debugPrint('Submitted: $value');
+                  },
+                  leading: const Icon(Icons.search),
+                  shadowColor: null,
+                  padding: const WidgetStatePropertyAll<EdgeInsets>(EdgeInsets.symmetric(horizontal: 8.0)),
+                );
+              },
+              suggestionsBuilder: (BuildContext context, SearchController controller) {
+                return List<ListTile>.generate(
+                  5,
+                  (int index) {
+                    final String item = 'item $index';
+                    return ListTile(
+                      title: Text(item),
+                      onTap: () {
+                        controller.closeView(item);
+                      },
+                    );
+                  },
+                );
+              },
+            ),
           ),
           Expanded(
             child: GridView.builder(
@@ -91,8 +106,8 @@ class BookSearchScreen extends HookConsumerWidget {
                   child: GestureDetector(
                     child: BookCard(
                       book: book,
-                      width: 130,
-                      height: 200,
+                      width: 120,
+                      height: 180,
                     ),
                     onTap: () {
                       if (!context.mounted) return;

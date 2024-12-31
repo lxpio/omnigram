@@ -84,6 +84,8 @@
   "top_p": "Top P",
   "top_p_hint": "Top P",
   "top_p_error": "Top P must be greater than 0",
+  "reader_book_description": "Book Description",
+  "reader_more_from_author": "More from Author",
   "scan_book_total_units": "",
   "scan_disk_usage": "",
   "about": "About",

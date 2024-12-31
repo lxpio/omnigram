@@ -85,6 +85,8 @@
   "top_p": "Top P",
   "top_p_hint": "Top P",
   "top_p_error": "Top P必须大于0",
+  "reader_book_description": "简介",
+  "reader_more_from_author": "更多作者作品",
   "about": "关于",
   "scan_book_total_units": "本",
   "scan_disk_usage": "磁盘使用",
