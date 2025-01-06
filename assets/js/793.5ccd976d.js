@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkomnigram_docs=self.webpackChunkomnigram_docs||[]).push([[793],{2793:(a,c,s)=>{s.r(c),s.d(c,{DocSearchModal:()=>e.a1});var e=s(1837)}}]);
