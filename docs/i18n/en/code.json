@@ -524,5 +524,8 @@
   "theme.unlistedContent.message": {
     "message": "This page is unlisted. Search engines will not index it, and only users having a direct link can access it.",
     "description": "The unlisted content banner message"
-  }
+  },
+  "announcementBar": {
+    "message": "The project is under very active development. Expect bugs and changes. Do not use it as the only way to store your files!"
+}
 }

@@ -116,8 +116,6 @@ String translateToJapanese({required String word}) => "Translate this into Japan
 //router
 
 const kLoginPage = '/login';
-const kSplashPage = '/splash';
-
 const kHomePage = '/home';
 
 const kSummaryPage = 'reader'; // /home/reader

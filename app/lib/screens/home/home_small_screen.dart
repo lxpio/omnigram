@@ -8,11 +8,14 @@ import 'package:omnigram/providers/book.provider.dart';
 import 'package:omnigram/providers/tts.player.provider.dart';
 import 'package:omnigram/screens/home/views/book_liked_group_view.dart';
 import 'package:omnigram/screens/home/views/book_reading_group_view.dart';
+import 'package:omnigram/utils/constants.dart';
 
 import '../views/stackbar.dart';
 
 class HomeSmallScreen extends HookConsumerWidget {
   const HomeSmallScreen({super.key});
+
+  static const routePath = kHomePage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

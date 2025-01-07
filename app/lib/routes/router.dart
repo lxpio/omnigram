@@ -20,11 +20,11 @@ import '../screens/login_screen.dart';
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     debugLogDiagnostics: true,
-    initialLocation: kSplashPage,
+    initialLocation: SplashScreen.routePath,
     routes: [
       GoRoute(
-        path: kSplashPage,
-        name: kSplashPage,
+        path: SplashScreen.routePath,
+        name: SplashScreen.routePath,
         builder: (context, state) {
           return const SplashScreen();
         },
@@ -37,8 +37,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: kHomePage,
-        name: kHomePage,
+        path: HomeSmallScreen.routePath,
+        name: HomeSmallScreen.routePath,
         pageBuilder: (context, state) => const MaterialPage(
           // key: _pageKey,
           child: RootLayout(
