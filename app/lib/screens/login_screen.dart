@@ -12,6 +12,8 @@ import 'package:omnigram/utils/constants.dart';
 import 'package:omnigram/utils/show_snackbar.dart';
 import 'package:lottie/lottie.dart';
 
+import 'home/home_small_screen.dart';
+
 class LoginScreen extends HookConsumerWidget {
   // const LoginScreen({super.key});
   const LoginScreen({super.key});
@@ -137,7 +139,7 @@ class LoginScreen extends HookConsumerWidget {
 
                   if (context.mounted) {
                     if (authState) {
-                      context.goNamed(kHomePage);
+                      context.goNamed(HomeSmallScreen.routePath);
                     } else {
                       showSnackBar(context, 'get_user_info_error'.tr());
                     }

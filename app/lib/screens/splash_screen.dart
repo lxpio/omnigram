@@ -8,8 +8,12 @@ import 'package:omnigram/providers/api.provider.dart';
 import 'package:omnigram/providers/auth.provider.dart';
 import 'package:omnigram/utils/constants.dart';
 
+import 'home/home_small_screen.dart';
+
 class SplashScreen extends HookConsumerWidget {
   const SplashScreen({super.key});
+
+  static const routePath = '/splash';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -59,7 +63,7 @@ class SplashScreen extends HookConsumerWidget {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           performLoggingIn();
           debugPrint('Performing login');
-          context.goNamed(kHomePage);
+          context.goNamed(HomeSmallScreen.routePath);
         });
 
         return null;

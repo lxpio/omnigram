@@ -8,6 +8,7 @@ import 'package:omnigram/entities/book.entity.dart';
 import 'package:omnigram/entities/etag.entity.dart';
 import 'package:omnigram/entities/logger_message.entity.dart';
 import 'package:omnigram/entities/isar_store.entity.dart';
+import 'package:omnigram/entities/note.entity.dart';
 import 'package:omnigram/entities/user.entity.dart';
 import 'package:omnigram/providers/tts/tts.service.dart';
 import 'package:omnigram/services/logger.service.dart';
@@ -93,6 +94,7 @@ Future<Isar> loadDb(String dbPath) async {
       BookEntitySchema,
       UserSchema,
       ETagSchema, //存储扫描相关结果
+      NoteEntitySchema, //笔记
       // if (Platform.isAndroid) AndroidDeviceAssetSchema,
       // if (Platform.isIOS) IOSDeviceAssetSchema,
     ],
