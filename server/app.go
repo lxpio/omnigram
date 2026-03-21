@@ -41,6 +41,8 @@ func (m *App) StartContext(ctx context.Context) error {
 
 		store.Initialize(ctx)
 
+		schema.InitData()
+
 		service.Initialize(ctx)
 
 		log.I(`init http router...`)

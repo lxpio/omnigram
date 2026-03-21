@@ -57,7 +57,7 @@ func OauthMiddleware(c *gin.Context) {
 		//获取到了session，校验session合法性
 		if session := getSession(c); session != `` {
 			handleSession(c, session)
-
+			return
 		}
 	}
 

@@ -1,17 +1,19 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { apiFetch, setToken, removeToken } from "./client";
-import type { LoginRequest, LoginResponse, User } from "@/types";
+import { apiFetch } from "./client";
+import type { LoginRequest, User } from "@/types";
+
+interface ApiResponse {
+  code: number;
+  message: string;
+}
 
 export function useLogin() {
   return useMutation({
     mutationFn: (data: LoginRequest) =>
-      apiFetch<LoginResponse>("/auth/login", {
+      apiFetch<ApiResponse>("/auth/login", {
         method: "POST",
         body: JSON.stringify({ ...data, client_id: "web" }),
       }),
-    onSuccess: (data) => {
-      setToken(data.access_token);
-    },
   });
 }
 
@@ -20,7 +22,6 @@ export function useLogout() {
     mutationFn: () =>
       apiFetch("/auth/logout", { method: "POST" }),
     onSuccess: () => {
-      removeToken();
       window.location.href = "/login";
     },
   });

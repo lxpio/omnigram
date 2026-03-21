@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { getToken, removeToken } from "@/api/client";
 import { useUserInfo } from "@/api/auth";
 import type { User } from "@/types";
 
@@ -18,7 +17,7 @@ const AuthContext = createContext<AuthContextValue>({
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(!!getToken());
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { data: user, isLoading, isError } = useUserInfo();
 
   useEffect(() => {
@@ -30,7 +29,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [user, isError]);
 
   const logout = () => {
-    removeToken();
     setIsAuthenticated(false);
     window.location.href = "/login";
   };

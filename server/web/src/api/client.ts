@@ -16,14 +16,9 @@ export async function apiFetch<T>(
   url: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const token = getToken();
   const headers: Record<string, string> = {
     ...(options.headers as Record<string, string>),
   };
-
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
 
   if (
     !(options.body instanceof FormData) &&
@@ -32,11 +27,12 @@ export async function apiFetch<T>(
     headers["Content-Type"] = "application/json";
   }
 
-  const res = await fetch(url, { ...options, headers });
+  const res = await fetch(url, { ...options, headers, credentials: "include" });
 
   if (res.status === 401) {
-    removeToken();
-    window.location.href = "/login";
+    if (!url.includes("/auth/login") && !url.includes("/user/userinfo")) {
+      window.location.href = "/login";
+    }
     throw new Error("Unauthorized");
   }
 

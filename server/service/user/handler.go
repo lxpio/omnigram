@@ -65,7 +65,8 @@ func loginHandle(c *gin.Context) {
 
 	sessionCache.Add(cacheKeySession+session.Session, session)
 
-	c.SetCookie(middleware.UserSessionTag, session.Session, 0, "/", getHostName(c), true, true)
+	secure := c.Request.TLS != nil || c.GetHeader("X-Forwarded-Proto") == "https"
+	c.SetCookie(middleware.UserSessionTag, session.Session, 0, "/", getHostName(c), secure, true)
 
 	c.JSON(200, utils.SUCCESS)
 }
@@ -85,7 +86,8 @@ func logoutHandle(c *gin.Context) {
 
 	userInfoCache.Remove(cacheKeySession + sessin)
 
-	c.SetCookie(middleware.UserSessionTag, "", -1, "/", getHostName(c), true, true)
+	secure := c.Request.TLS != nil || c.GetHeader("X-Forwarded-Proto") == "https"
+	c.SetCookie(middleware.UserSessionTag, "", -1, "/", getHostName(c), secure, true)
 
 	c.JSON(200, utils.SUCCESS)
 
