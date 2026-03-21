@@ -18,6 +18,7 @@ import (
 	"github.com/lxpio/omnigram/server/store"
 	"github.com/lxpio/omnigram/server/utils"
 	"github.com/nexptr/epub"
+	pdfapi "github.com/pdfcpu/pdfcpu/pkg/api"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -392,16 +393,29 @@ func (book *Book) IsDuplicate(id string) bool {
 	return book.Identifier == id
 }
 
-// GetMetadataFromFile reads metadata from an epub file.
+// GetMetadataFromFile reads metadata from book file based on file type.
 func (book *Book) GetMetadataFromFile() error {
 
 	_, err := os.Stat(book.Path)
 	if os.IsNotExist(err) {
-		// path/to/whatever does not exist
 		log.D(`文件不存在`, book.Path, `无法访问或者不存在`)
 		return errors.New(`缓存目录无法访问或者不存在`)
 	}
 
+	switch book.FileType {
+	case EPUB:
+		return book.getEpubMetadata()
+	case PDF:
+		return book.getPDFMetadata()
+	default:
+		// MOBI, AZW3, TXT, MD — 从文件名提取基本信息
+		book.getFilenameMetadata()
+		return nil
+	}
+}
+
+// getEpubMetadata 从 EPUB 文件提取元数据
+func (book *Book) getEpubMetadata() error {
 	e, err := epub.Open(book.Path)
 	if err != nil {
 		log.E(`打开文件失败：`, err.Error())
@@ -432,13 +446,69 @@ func (book *Book) GetMetadataFromFile() error {
 		buf.ReadFrom(fp)
 
 		book.coverData = buf.Bytes()
-
-		//将 CoverURL 地址覆盖成解析后的地址
-		// book.CoverURL = filepath.Join(book.Identifier, book.CoverURL) //TODO 这里要用bookid 获取其他标记避免冲突
-
 	}
 
 	return nil
+}
+
+// getPDFMetadata 从 PDF 文件提取元数据
+func (book *Book) getPDFMetadata() error {
+	f, err := os.Open(book.Path)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	info, err := pdfapi.PDFInfo(f, book.Path, nil, false, nil)
+	if err != nil {
+		log.E(`解析 PDF 元数据失败：`, err.Error())
+		// 即使 PDF 解析失败，仍用文件名兜底
+		book.getFilenameMetadata()
+		return nil
+	}
+
+	if info.Title != "" {
+		book.Title = info.Title
+	}
+	if info.Author != "" {
+		book.Author = info.Author
+	}
+	if info.Subject != "" {
+		book.Description = info.Subject
+	}
+	if info.Creator != "" && book.Publisher == "" {
+		book.Publisher = info.Creator
+	}
+	if len(info.Keywords) > 0 {
+		book.Tags = Tags(info.Keywords)
+	}
+	if info.CreationDate != "" {
+		book.PublishDate = info.CreationDate
+	}
+
+	// 如果 PDF 没有 Title，用文件名兜底
+	if book.Title == "" {
+		book.getFilenameMetadata()
+	}
+
+	return nil
+}
+
+// getFilenameMetadata 从文件名提取基本元数据
+// 支持格式：
+//   - "Title - Author.ext"
+//   - "Title.ext" (无作者)
+func (book *Book) getFilenameMetadata() {
+	base := filepath.Base(book.Path)
+	name := strings.TrimSuffix(base, filepath.Ext(base))
+
+	// 尝试 "Title - Author" 格式
+	if parts := strings.SplitN(name, " - ", 2); len(parts) == 2 {
+		book.Title = strings.TrimSpace(parts[0])
+		book.Author = strings.TrimSpace(parts[1])
+	} else {
+		book.Title = strings.TrimSpace(name)
+	}
 }
 
 func (m *Book) parseOPF(opf *epub.PackageDocument) {
