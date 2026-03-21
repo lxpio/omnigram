@@ -18,3 +18,4 @@
 | 010 | [App Legacy 亮点功能记录](./010-app-legacy-highlights.md) | 2026-03-21 | 📋 参考 |
 | 011 | [Server 产品差距分析](./011-server-gap-analysis.md) | 2026-03-21 | ✅ 已决策（含审计修订） |
 | 011-review | [Server 差距分析审计意见](./011-review.md) | 2026-03-21 | 📋 审计完成 |
+| 012 | [Server Phase 2.0 技术设计文档](./012-server-phase2-design.md) | 2026-03-21 | 📐 设计完成 |
