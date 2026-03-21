@@ -2,14 +2,14 @@
 
 <picture>
   <source
-    srcset="./docs/static/img/logo_with_letter_dark.svg"
+    srcset="./assets/img/logo_with_letter_dark.svg"
     media="(prefers-color-scheme: dark)"
   />
   <source
-    srcset="./docs/static/img/logo_with_letter_white.svg"
+    srcset="./assets/img/logo_with_letter_white.svg"
     media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
   />
-  <img src="./docs/static/img/logo_with_letter_white.svg" />
+  <img src="./assets/img/logo_with_letter_white.svg" />
 </picture>
 
 <div style="font-size: 1.5rem;">
@@ -62,7 +62,7 @@ Omnigram 是一个 **AI 原生的自托管书库管理与阅读服务**。通过
 
 ## 基本构架
 
-![base_struct](docs/static/img/struct.svg)
+![base_struct](assets/img/struct.svg)
 
 ## 官方文档
 
@@ -77,9 +77,6 @@ Omnigram 是一个 **AI 原生的自托管书库管理与阅读服务**。通过
 用户名：admin
 密码： 123456
 ```
-> 服务器信息：腾讯轻量服务器（ 2cpu - 2GB RAM - 3Mbps）
-
-![](/docs/images/login_page.png) ![](/docs/images/discover_screen.png)
 
 ## 二次开发
 

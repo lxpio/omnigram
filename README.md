@@ -2,14 +2,14 @@
 
 <picture>
   <source
-    srcset="./docs/static/img/logo_with_letter_dark.svg"
+    srcset="./assets/img/logo_with_letter_dark.svg"
     media="(prefers-color-scheme: dark)"
   />
   <source
-    srcset="./docs/static/img/logo_with_letter_white.svg"
+    srcset="./assets/img/logo_with_letter_white.svg"
     media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
   />
-  <img src="./docs/static/img/logo_with_letter_white.svg" />
+  <img src="./assets/img/logo_with_letter_white.svg" />
 </picture>
 
 <div style="font-size: 1.5rem;">
@@ -62,7 +62,7 @@ Built with a Go backend and Flutter multi-platform client, Omnigram combines boo
 
 ## Omnigram Infrastructure
 
-![base_struct](docs/static/img/struct.svg)
+![base_struct](assets/img/struct.svg)
 
 ## Official Documentation
 
