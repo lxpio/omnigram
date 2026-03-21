@@ -68,7 +68,7 @@
 
 | 功能模块 | 对应阶段 | 优先级 | 说明 |
 |---------|---------|-------|------|
-| Web 在线阅读器 | v0.4.0 (Phase 2.5) | P1 | 嵌入 EPUB/PDF 阅读器 UI |
+| ~~Web 在线阅读器~~ | v0.4.0 (Phase 2.5) | P1 | ✅ 已完成 — foliate-js 集成，支持 EPUB/MOBI/FB2/PDF |
 | TTS 后台生成（整书/章节→MP3） | v0.4.0 (Phase 2.5) | P2 | 当前仅流式，需后台任务队列 |
 | AI 语义搜索 | v0.5.0 (Phase 3) | P2 | 按主题搜索章节内容 |
 | AI 阅读问答（RAG） | v0.5.0 (Phase 3) | P2 | 基于书籍内容的对话式问答 |
@@ -104,7 +104,7 @@
 30% Calibre-Web 基线        ~95% Phase 2.0 覆盖
 16 个模块完全缺失            核心功能已齐全
 5 个 P0 安全漏洞             已修复（健康检查/CORS/分页已就位）
-无 Web UI                   8 页面 React SPA + 批量操作
+无 Web UI                   9 页面 React SPA + 批量操作 + Web 阅读器
 OPDS/WebDAV 空壳            完整实现
 ```
 
@@ -116,4 +116,5 @@ OPDS/WebDAV 空壳            完整实现
 2. ~~**优先级 P1**：补齐多格式元数据提取（PDF/MOBI）~~ ✅ 已完成 — FB2/MOBI/AZW3 解析器 + PDF 封面提取
 3. ~~**优先级 P1**：Calibre 导入 API 化~~ ✅ 已完成 — `POST /sys/import/calibre` + 封面存入 BadgerDB
 4. ~~**优先级 P2**：Web UI 补齐标签/书架/统计页面~~ ✅ 已完成 — 书架/标签/统计/批量操作/注解/Calibre导入 UI
-5. **优先级 P2**：进入 Phase 2.5 — Web 阅读器 + TTS 后台生成
+5. ~~**优先级 P1**：Web 在线阅读器~~ ✅ 已完成 — foliate-js 全格式阅读器 + 进度同步 + TOC/字体/暗色模式
+6. **优先级 P2**：TTS 后台生成（整书/章节→MP3）— 需后台任务队列基础设施
