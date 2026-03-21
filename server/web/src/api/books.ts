@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "./client";
-import type { Book, PaginatedResponse } from "@/types";
+import type { Book, BooksResponse } from "@/types";
 
 interface BooksParams {
   page?: number;
@@ -20,7 +20,7 @@ export function useBooks(params: BooksParams = {}) {
   return useQuery({
     queryKey: ["books", { page, page_size, q, sort }],
     queryFn: () =>
-      apiFetch<PaginatedResponse<Book>>(
+      apiFetch<BooksResponse>(
         `/reader/books?${searchParams.toString()}`
       ),
   });
@@ -29,14 +29,14 @@ export function useBooks(params: BooksParams = {}) {
 export function useRecentBooks() {
   return useQuery({
     queryKey: ["books", "recent"],
-    queryFn: () => apiFetch<PaginatedResponse<Book>>("/reader/recent"),
+    queryFn: () => apiFetch<BooksResponse>("/reader/recent"),
   });
 }
 
 export function useFavoriteBooks() {
   return useQuery({
     queryKey: ["books", "favorites"],
-    queryFn: () => apiFetch<PaginatedResponse<Book>>("/reader/fav"),
+    queryFn: () => apiFetch<Book[]>("/reader/fav"),
   });
 }
 

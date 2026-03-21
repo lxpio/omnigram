@@ -45,8 +45,13 @@ export interface LoginResponse {
   expires_in: number;
 }
 
-export interface PaginatedResponse<T> {
-  data: T[];
+export interface BooksResponse {
+  total: number;
+  books: Book[];
+}
+
+export interface AccountsResponse {
+  items: User[];
   total: number;
 }
 
