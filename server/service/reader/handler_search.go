@@ -2,10 +2,37 @@ package reader
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lxpio/omnigram/server/schema"
 )
+
+// sanitizeFTS5Query 清理 FTS5 查询输入，防止查询崩溃
+func sanitizeFTS5Query(q string) string {
+	replacer := strings.NewReplacer(
+		`"`, ``, `*`, ``, `(`, ``, `)`, ``,
+		`:`, ``, `^`, ``,
+	)
+	q = replacer.Replace(q)
+	q = strings.TrimSpace(q)
+	if q == "" {
+		return ""
+	}
+	words := strings.Fields(q)
+	result := make([]string, 0, len(words))
+	for _, w := range words {
+		upper := strings.ToUpper(w)
+		if upper == "AND" || upper == "OR" || upper == "NOT" || upper == "NEAR" {
+			continue
+		}
+		result = append(result, `"`+w+`"`)
+	}
+	if len(result) == 0 {
+		return ""
+	}
+	return strings.Join(result, " ")
+}
 
 func enhancedSearchHandle(c *gin.Context) {
 	q := c.Query("q")
@@ -41,7 +68,10 @@ func enhancedSearchHandle(c *gin.Context) {
 
 	// FTS5 search
 	if q != "" {
-		query = query.Where("id IN (SELECT book_id FROM books_fts WHERE books_fts MATCH ?)", q)
+		sanitized := sanitizeFTS5Query(q)
+		if sanitized != "" {
+			query = query.Where("id IN (SELECT book_id FROM books_fts WHERE books_fts MATCH ?)", sanitized)
+		}
 	}
 
 	// Filters

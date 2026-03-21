@@ -20,7 +20,7 @@ func Setup(router *gin.Engine) {
 
 	oauthMD := middleware.Get(middleware.OathMD)
 
-	// adminMD := middleware.Get(middleware.AdminMD)
+	adminMD := middleware.Get(middleware.AdminMD)
 
 	book := router.Group("/reader", oauthMD)
 
@@ -85,7 +85,7 @@ func Setup(router *gin.Engine) {
 	book.GET("/stats/books", statsTopBooksHandle)
 
 	// Batch operations
-	book.POST("/books/batch/delete", batchDeleteHandle)
+	book.POST("/books/batch/delete", adminMD, batchDeleteHandle)
 	book.POST("/books/batch/tag", batchTagHandle)
 	book.POST("/books/batch/shelf", batchShelfHandle)
 

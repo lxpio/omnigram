@@ -106,7 +106,7 @@ func initReaderData() error {
 		}
 
 		// Create FTS5 virtual table
-		tx.Exec(`CREATE VIRTUAL TABLE IF NOT EXISTS books_fts USING fts5(
+		if err := tx.Exec(`CREATE VIRTUAL TABLE IF NOT EXISTS books_fts USING fts5(
 			book_id,
 			title,
 			author,
@@ -116,7 +116,9 @@ func initReaderData() error {
 			content='books',
 			content_rowid='rowid',
 			tokenize='unicode61'
-		)`)
+		)`).Error; err != nil {
+			log.E("FTS5 virtual table creation failed (FTS5 may not be available): ", err)
+		}
 
 		// Sync triggers
 		tx.Exec(`CREATE TRIGGER IF NOT EXISTS books_fts_ai AFTER INSERT ON books BEGIN

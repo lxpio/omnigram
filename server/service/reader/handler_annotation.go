@@ -132,6 +132,11 @@ func updateBookRatingHandle(c *gin.Context) {
 		return
 	}
 
+	if req.Rating < 0 || req.Rating > 5 {
+		schema.Error(c, http.StatusBadRequest, "VALIDATION_ERROR", "Rating must be between 0 and 5")
+		return
+	}
+
 	if err := orm.Model(&schema.Book{}).Where("id = ?", bookID).Update("rating", req.Rating).Error; err != nil {
 		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
 		return
@@ -154,17 +159,28 @@ func syncAnnotationsHandle(c *gin.Context) {
 		return
 	}
 
-	// upsert client annotations
+	// upsert client annotations — only allow upserting own annotations
+	synced := 0
 	for i := range req.Annotations {
 		req.Annotations[i].UserID = userID
 		if req.DeviceID != "" {
 			req.Annotations[i].DeviceID = req.DeviceID
+		}
+		// If annotation has an ID, verify it belongs to this user before updating
+		if req.Annotations[i].ID > 0 {
+			var existing schema.Annotation
+			if err := orm.First(&existing, "id = ? AND user_id = ?", req.Annotations[i].ID, userID).Error; err != nil {
+				// Not found or not owned — create as new instead
+				req.Annotations[i].ID = 0
+			}
 		}
 		if err := orm.Clauses(clause.OnConflict{
 			Columns:   []clause.Column{{Name: "id"}},
 			DoUpdates: clause.AssignmentColumns([]string{"content", "selected_text", "cfi", "page_number", "position", "color", "chapter", "utime"}),
 		}).Create(&req.Annotations[i]).Error; err != nil {
 			log.E("sync annotation upsert failed: ", err)
+		} else {
+			synced++
 		}
 	}
 
@@ -174,6 +190,7 @@ func syncAnnotationsHandle(c *gin.Context) {
 
 	schema.Success(c, gin.H{
 		"annotations": serverAnnotations,
+		"synced":      synced,
 		"sync_time":   currentTimeMillis(),
 	})
 }
