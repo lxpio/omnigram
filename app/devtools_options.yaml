@@ -1,0 +1,2 @@
+extensions:
+  - shared_preferences: true

@@ -1,0 +1,33 @@
+import 'package:omnigram/l10n/generated/L10n.dart';
+import 'package:omnigram/widgets/reading_page/more_settings/other_settings.dart';
+import 'package:omnigram/widgets/reading_page/more_settings/reading_settings.dart';
+import 'package:omnigram/widgets/reading_page/more_settings/style_settings.dart';
+import 'package:omnigram/widgets/settings/settings_section.dart';
+import 'package:omnigram/widgets/settings/settings_tile.dart';
+import 'package:omnigram/widgets/settings/settings_title.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class ReadingSettings extends ConsumerStatefulWidget {
+  const ReadingSettings({super.key});
+
+  @override
+  ConsumerState<ReadingSettings> createState() => _ReadingSettingsState();
+}
+
+class _ReadingSettingsState extends ConsumerState<ReadingSettings> {
+  @override
+  Widget build(BuildContext context) {
+    return settingsSections(sections: [
+      SettingsSection(title: Text(L10n.of(context).readingPageReading), tiles: [
+        CustomSettingsTile(child: ReadingMoreSettings()),
+      ]),
+      SettingsSection(title: Text(L10n.of(context).readingPageStyle), tiles: [
+        CustomSettingsTile(child: StyleSettings()),
+      ]),
+      SettingsSection(title: Text(L10n.of(context).readingPageOther), tiles: [
+        CustomSettingsTile(child: OtherSettings()),
+      ]),
+    ]);
+  }
+}

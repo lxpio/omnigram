@@ -1,0 +1,94 @@
+name: Build for Play Store
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      flutter_version:
+        required: true
+        type: string
+      is_alpha:
+        required: true
+        type: string
+      is_beta:
+        required: true
+        type: string
+    secrets:
+      PLAY_STORE_JSON_KEY:
+        required: true
+      KEYSTORE_BASE64:
+        required: true
+      KEYSTORE_PASSWORD:
+        required: true
+      KEY_PASSWORD:
+        required: true
+      KEY_ALIAS:
+        required: true
+
+jobs:
+  build-playstore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      TRACK: internal
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Decide Play track
+        run: |
+          if [[ "${{ inputs.is_alpha }}" == "true" ]]; then
+            echo "TRACK=internal" >> $GITHUB_ENV
+          elif [[ "${{ inputs.is_beta }}" == "true" ]]; then
+            echo "TRACK=alpha" >> $GITHUB_ENV
+          else
+            echo "TRACK=alpha" >> $GITHUB_ENV
+          fi
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+          check-latest: true
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ inputs.flutter_version }}
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7'
+          bundler-cache: true
+          working-directory: android
+
+      - name: Setup Android signing
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks        
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties    
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties    
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties    
+          echo "storeFile=keystore.jks" >> android/key.properties
+
+      - name: Setup Play Store service account
+        run: echo "${{ secrets.PLAY_STORE_JSON_KEY }}" | base64 --decode > google_service_account.json
+
+      - name: Get Dependencies
+        run: |
+          flutter --version
+          flutter pub get
+
+      - name: Build and Release to Play Store
+        run: |
+          cd android
+          bundle install --path vendor/bundle
+          bundle exec fastlane android release_play_store track:${TRACK}
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON_PATH: google_service_account.json

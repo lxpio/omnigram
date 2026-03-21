@@ -31,7 +31,7 @@ std::vector<std::string> GetCommandLineArguments() {
 
   std::vector<std::string> command_line_arguments;
 
-  // Skip the first argument as it"s the binary name.
+  // Skip the first argument as it's the binary name.
   for (int i = 1; i < argc; i++) {
     command_line_arguments.push_back(Utf8FromUtf16(argv[i]));
   }
@@ -45,13 +45,13 @@ std::string Utf8FromUtf16(const wchar_t* utf16_string) {
   if (utf16_string == nullptr) {
     return std::string();
   }
-  int target_length = ::WideCharToMultiByte(
+  unsigned int target_length = ::WideCharToMultiByte(
       CP_UTF8, WC_ERR_INVALID_CHARS, utf16_string,
       -1, nullptr, 0, nullptr, nullptr)
     -1; // remove the trailing null character
   int input_length = (int)wcslen(utf16_string);
   std::string utf8_string;
-  if (target_length <= 0 || target_length > utf8_string.max_size()) {
+  if (target_length == 0 || target_length > utf8_string.max_size()) {
     return utf8_string;
   }
   utf8_string.resize(target_length);

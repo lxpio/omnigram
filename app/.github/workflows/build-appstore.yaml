@@ -1,0 +1,87 @@
+name: Build for App Store Connect
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      flutter_version:
+        required: true
+        type: string
+      xcode_version:
+        required: true
+        type: string
+    secrets:
+      ASC_KEY_ID:
+        required: true
+      ASC_ISSUER_ID:
+        required: true
+      ASC_KEY_P8_BASE64:
+        required: true
+      MATCH_PASSWORD:
+        required: true
+      MATCH_GIT_BASIC_AUTHORIZATION:
+        required: true
+      APP_BUNDLE_ID:
+        required: true
+
+jobs:
+  build-appstore:
+    runs-on: macos-26
+    timeout-minutes: 60
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ inputs.flutter_version }}
+
+      - name: check ruby and pod versions
+        run: |
+          cd ios && bundle install
+          which ruby && ruby --version
+          which pod && pod --version
+
+      - name: Get Dependencies
+        run: |
+          sudo xcode-select -switch /Applications/Xcode_${{ inputs.xcode_version }}.app/Contents/Developer
+          # xcodebuild -downloadPlatform iOS -buildVersion 18.2
+          flutter --version
+          # flutter doctor -v
+          # flutter pub get
+          # dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build iOS App
+        timeout-minutes: 25
+        continue-on-error: true
+        run: |
+          cd ios
+          bundle install
+          fastlane ios release_app_store
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+          APP_BUNDLE_ID: ${{ secrets.APP_BUNDLE_ID }}
+
+      - name: Build macos App
+        timeout-minutes: 25
+        continue-on-error: true
+        run: |
+          cd macos
+          bundle install
+          fastlane release_app_store
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+          APP_BUNDLE_ID: ${{ secrets.APP_BUNDLE_ID }}

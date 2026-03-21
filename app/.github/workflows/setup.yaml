@@ -1,0 +1,110 @@
+name: Setup Environment
+
+on:
+  workflow_call:
+    secrets:
+      NOTIFICATION_URL:
+        required: true
+    outputs:
+      tag:
+        description: "Git tag"
+        value: ${{ jobs.setup.outputs.tag }}
+      version:
+        description: "Version string"
+        value: ${{ jobs.setup.outputs.version }}
+      is_alpha:
+        description: "Is alpha release"
+        value: ${{ jobs.setup.outputs.is_alpha }}
+      is_beta:
+        description: "Is beta release"
+        value: ${{ jobs.setup.outputs.is_beta }}
+      release_notes:
+        description: "Release notes"
+        value: ${{ jobs.setup.outputs.release_notes }}
+      flutter_version:
+        description: "Flutter SDK version"
+        value: ${{ jobs.setup.outputs.flutter_version }}
+      xcode_version:
+        description: "Xcode version"
+        value: ${{ jobs.setup.outputs.xcode_version }}
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.get_version.outputs.tag }}
+      version: ${{ steps.get_version.outputs.version }}
+      is_alpha: ${{ steps.get_version.outputs.is_alpha }}
+      is_beta: ${{ steps.get_version.outputs.is_beta }}
+      release_notes: ${{ steps.extract_release_notes.outputs.release_notes }}
+      flutter_version: ${{ steps.get_flutter_version.outputs.flutter_version }}
+      xcode_version: ${{ steps.get_xcode_version.outputs.xcode_version }}
+    
+    steps:
+      - name: Send build start notification
+        shell: bash
+        run: |
+          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BASE_NOTIFICATION_URL="${{ secrets.NOTIFICATION_URL }}/Anx-Reader%20Action"
+          curl -s "$BASE_NOTIFICATION_URL/Build%20Started?url=$RUN_URL&level=timeSensitive&icon=https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" || echo "Notification failed, continuing..."
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read Flutter version
+        id: get_flutter_version
+        run: |
+          FLUTTER_VERSION=3.35.3
+          echo "flutter_version=${FLUTTER_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Read Xcode version
+        id: get_xcode_version
+        run: |
+          XCODE_VERSION=26.2
+          echo "xcode_version=${XCODE_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Get version from tag and determine release type
+        id: get_version
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+
+          PUBSPEC_VERSION=$( grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d '+' -f 1 )
+
+          if [[ "$TAG" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)-alpha\.([0-9]+)$ ]]; then
+            BASE_VERSION="${BASH_REMATCH[1]}"
+            PRE_BUILD="${BASH_REMATCH[2]}"
+            echo "is_alpha=true" >> $GITHUB_OUTPUT
+            echo "is_beta=false" >> $GITHUB_OUTPUT
+            echo "version=${BASE_VERSION}-alpha.${PRE_BUILD}" >> $GITHUB_OUTPUT
+          elif [[ "$TAG" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)-beta\.([0-9]+)$ ]]; then
+            BASE_VERSION="${BASH_REMATCH[1]}"
+            PRE_BUILD="${BASH_REMATCH[2]}"
+            echo "is_alpha=false" >> $GITHUB_OUTPUT
+            echo "is_beta=true" >> $GITHUB_OUTPUT
+            echo "version=${BASE_VERSION}-beta.${PRE_BUILD}" >> $GITHUB_OUTPUT
+          elif [[ "$TAG" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            BASE_VERSION="${BASH_REMATCH[1]}"
+            echo "is_alpha=false" >> $GITHUB_OUTPUT
+            echo "is_beta=false" >> $GITHUB_OUTPUT
+            echo "version=${BASE_VERSION}" >> $GITHUB_OUTPUT
+          else
+            echo "::error::Unsupported tag format: ${TAG}" >&2
+            exit 1
+          fi
+
+          if [[ "${BASE_VERSION}" != "${PUBSPEC_VERSION}" ]]; then
+            echo "::warning::Tag version ${BASE_VERSION} does not match pubspec version ${PUBSPEC_VERSION}" >&2
+          fi
+
+      - name: Extract release notes
+        id: extract_release_notes
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          MAIN_VERSION=${VERSION%%-*}
+          CHANGELOG_CONTENT=$(sed -n "/## $MAIN_VERSION/,/## /p" assets/CHANGELOG.md | sed '$d')
+          echo "release_notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG_CONTENT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        shell: bash

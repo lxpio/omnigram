@@ -1,0 +1,139 @@
+name: Build Windows
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      flutter_version:
+        required: true
+        type: string
+    secrets:
+      SIGNPATH_API_TOKEN:
+        required: true
+      NOTIFICATION_URL:
+        required: true
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    env:
+      BASE_NOTIFICATION_URL: ${{ secrets.NOTIFICATION_URL }}/Anx-Reader%20Action
+      NOTIFICATION_PARAMS: ?url=https://app.signpath.io/Web/254a26d6-6c3a-4a55-9ca6-890d0d34deb1/SigningRequests&level=timeSensitive&icon=https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png
+      IS_ALPHA: ${{ contains(inputs.version, '-alpha.') }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ inputs.flutter_version }}
+
+      - name: Get Dependencies
+        run: |
+          flutter --version
+          flutter pub get
+
+      - name: Prepare for Windows
+        shell: bash
+        run: |
+          flutter config --enable-windows-desktop
+          sed -i "1i #define MyAppVersion \"${{ inputs.version }}\"" scripts/compile_windows_setup-inno.iss
+
+      - name: Install Inno Setup
+        run: |
+          # Use chocolatey to install Inno Setup as it's more reliable than winget in CI
+          choco install innosetup -y --no-progress
+        shell: pwsh
+
+      - name: Build for Windows
+        shell: pwsh
+        run: ./scripts/build_windows.ps1
+
+      - name: Upload unsigned Windows zip
+        uses: actions/upload-artifact@v4
+        id: upload-unsigned-zip
+        with:
+          name: windows-unsigned-zip
+          path: build/windows/unsigned/app.zip
+          if-no-files-found: error
+
+      - name: Send notification after zip signing
+        if: ${{ env.IS_ALPHA != 'true' }}
+        run: |
+          curl -s "$BASE_NOTIFICATION_URL/zip%20File%20Waiting%20for%20approval$NOTIFICATION_PARAMS" || echo "Notification failed, continuing..."
+        shell: bash
+
+      - name: Sign Windows zip
+        if: ${{ env.IS_ALPHA != 'true' }}
+        uses: signpath/github-action-submit-signing-request@v1.1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: '254a26d6-6c3a-4a55-9ca6-890d0d34deb1'
+          project-slug: 'anx-reader'
+          signing-policy-slug: ${{ env.IS_ALPHA == 'true' && 'test-signing' || 'release-signing' }}
+          artifact-configuration-slug: 'initial_zip'
+          github-artifact-id: ${{ steps.upload-unsigned-zip.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: 'build/windows'
+      
+      - name: Prepare unsigned zip for alpha
+        if: ${{ env.IS_ALPHA == 'true' }}
+        run: cp build/windows/unsigned/app.zip build/windows/app.zip
+        shell: bash
+
+      - name: Build unsigned Windows exe
+        shell: pwsh
+        run: ./scripts/build_windows_exe.ps1
+
+      - name: Upload unsigned Windows exe
+        uses: actions/upload-artifact@v4
+        id: upload-unsigned-exe
+        with:
+          name: windows-unsigned-exe
+          path: build/windows/unsigned/app.exe
+          if-no-files-found: error
+
+      - name: Send notification after exe signing
+        if: ${{ env.IS_ALPHA != 'true' }}
+        run: |
+          curl -s "$BASE_NOTIFICATION_URL/exe%20File%20Waiting%20for%20approval$NOTIFICATION_PARAMS" || echo "Notification failed, continuing..."
+        shell: bash
+
+      - name: Sign Windows exe
+        if: ${{ env.IS_ALPHA != 'true' }}
+        uses: signpath/github-action-submit-signing-request@v1.1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: 254a26d6-6c3a-4a55-9ca6-890d0d34deb1
+          project-slug: 'anx-reader'
+          signing-policy-slug: ${{ env.IS_ALPHA == 'true' && 'test-signing' || 'release-signing' }}
+          artifact-configuration-slug: 'initial_exe'
+          github-artifact-id: ${{ steps.upload-unsigned-exe.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: 'build/windows'
+
+      - name: Prepare unsigned exe for alpha
+        if: ${{ env.IS_ALPHA == 'true' }}
+        run: cp build/windows/unsigned/app.exe build/windows/app.exe
+        shell: bash
+
+      - name: Rename builds
+        run: |
+          cd build
+          mv windows/app.zip windows/Anx-Reader-windows-${{ inputs.version }}.zip
+          mv windows/app.exe windows/Anx-Reader-windows-${{ inputs.version }}.exe
+        shell: bash
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-artifacts
+          path: |
+            build/windows/*.zip
+            build/windows/*.exe
+          if-no-files-found: error

@@ -5,9 +5,11 @@
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
 migrate_working_dir/
 
 # IntelliJ related
@@ -41,3 +43,31 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# riverpod generated files
+lib/gen/
+release.sh
+*.g.dart
+*.freezed.dart
+
+/.vscode/
+CLAUDE.md
+.claude/
+AGENTS.md
+
+macos/DerivedData/
+
+.env
+*.jks
+key.properties
+google_service_account.json
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots
+**/fastlane/test_output
+
+google_service_account.json
+
+# FVM Version Cache
+.fvm/
+.fvmrc

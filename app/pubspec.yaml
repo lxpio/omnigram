@@ -1,123 +1,192 @@
 name: omnigram
-version: 1.0.2+5
-publish_to: none
-description: A Audio Book project.
-environment:
-  sdk: ">=3.5.3-0 <4.0.0"
-  flutter: 3.24.3
-dependencies:
+description: "An e-book reader."
+publish_to: 'none'
 
+version: 1.14.0+6321
+
+environment:
+  sdk: '>=3.8.0 <4.0.0'
+
+dependencies:
   flutter:
     sdk: flutter
-  pretty_dio_logger: ^1.3.1
-  dio: ^5.7.0
-  hive_flutter: ^1.1.0
-  flutter_easyloading: ^3.0.5
-  highlight: ^0.7.0
-  url_launcher: ^6.1.12
-  markdown: ^7.1.1
-  flutter_markdown: ^0.6.17
-  share_plus: ^10.0.2
-  flutter_svg: ^2.0.7
-  cached_network_image: ^3.2.3
-  flutter_highlight: ^0.7.0
-  path_provider: ^2.0.15
-  hooks_riverpod: ^2.5.3
-  riverpod_annotation: ^2.5.3
-  go_router: ^14.2.7
-  universal_platform: ^1.0.0+1
-  test: ^1.24.9
-  json_annotation: ^4.8.1
-  desktop_window: ^0.4.0
-  adaptive_components: ^0.0.9
-  flutter_adaptive_scaffold: ^0.3.1
-  flutter_highlighter: ^0.1.1
-  sse_stream: ^1.0.2
-
-  epubx:
-    git: 
-      url: https://github.com/lxpio/epubx.dart.git
-      ref: v4.0.2
-  # epubx:
-  #   path: ../epubx.dart
-
-  flutter_slidable: ^3.0.0
-  transparent_image: ^2.0.1
-  flutter_hooks: ^0.20.3
-  scrollable_positioned_list: ^0.3.8
-  flutter_html: ^3.0.0-beta.2
-  just_audio: ^0.9.36
-  lottie: ^3.0.0
-  simple_animations: ^5.0.2
-  easy_localization: ^3.0.7
-  isar: ^4.0.0-dev.14
-  isar_flutter_libs: ^4.0.0-dev.14
-  timezone: ^0.9.4
-  device_info_plus: ^10.1.2
-  openapi:
-    path: openapi
-  flutter_udid: ^3.0.0
-  logging: ^1.2.0
-  timeago: ^3.7.0
-  carousel_slider: ^5.0.0
-  package_info_plus: ^8.1.1
-  flutter_cache_manager: ^3.4.1
-  http: ^1.2.2
-  rxdart: ^0.28.0
-  # macros: ^0.1.3-main.0
-
-#dependency_overrides:
-#  collection: ^1.19.0
-
-dev_dependencies:
-  flutter_lints: ^4.0.0
-  # flutter_test:
-  #   sdk: flutter
-  build_runner: ^2.4.11
-  flutter_launcher_icons: "^0.13.1"
-  custom_lint: ^0.6.6 
-  riverpod_lint: ^2.0.1
-  riverpod_generator: ^2.3.1
-  json_serializable: ^6.7.1
-  analyzer: ^6.7.0
-  plugin_platform_interface: ^2.1.8
-  path_provider_platform_interface: ^2.1.2
-  flutter_test:
+  flutter_localizations:
     sdk: flutter
 
+  cupertino_icons: ^1.0.6
+  file_picker: ^10.3.10
+  path_provider: ^2.1.2
+  image: ^4.3.0
+  sqflite: ^2.3.2
+  path: ^1.9.0
+  shared_preferences: ^2.2.2
+  provider: ^6.1.2
+  flutter_gen_runner: ^5.4.0
+  intl: 0.20.2
+  flutter_colorpicker: ^1.0.3
+  html: ^0.15.4
+  flutter_html: ^3.0.0-beta.2
+  archive: ^4.0.7
+  flutter_inappwebview:
+    git:
+      url: https://github.com/Anxcye/flutter_inappwebview.git
+      ref: 4a275c3
+      path: flutter_inappwebview
+  shelf: ^1.4.1
+  fl_chart: ^1.2.0
+  graphview: ^1.3.2
+  flutter_rating_bar: ^4.0.1
+  permission_handler: ^12.0.1
+  webdav_client:
+    git:
+      url: https://github.com/Anxcye/webdav_client.git
+  fluttertoast: ^9.0.0
+  dio: ^5.4.3+1
+  pubspec_parse: ^1.2.3
+  logging: ^1.2.0
+  flutter_file_dialog: ^3.0.2
+  contentsize_tabbarview:
+    git:
+      url: https://github.com/Anxcye/contentsize_tabbarview.git
+      ref: feat/animation
+  wakelock_plus: ^1.2.5
+  icons_plus: ^5.0.0
+  url_launcher: ^6.2.6
+  sqflite_common_ffi: ^2.3.3
+  battery_plus: ^7.0.0
+  flutter_tts:
+    git:
+      url: https://github.com/Anxcye/flutter_tts.git
+      ref: 88d20d282354d6d211f15f721b9c43796edd1b68
+  sticky_headers: ^0.3.0+2
+  photo_view: ^0.15.0
+  flutter_smart_dialog: ^5.1.0
+  saver_gallery: ^4.0.1
+  share_plus: ^12.0.1
+  device_info_plus: ^12.3.0
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+  chinese_font_library: ^1.2.0
+  flex_color_scheme: ^8.3.0
+  sqlite3_flutter_libs: ^0.6.0+eol
+  flutter_reorderable_grid_view: ^5.4.0
+  uuid: ^4.5.1
+  desktop_drop: ^0.7.0
+  audio_service: ^0.18.16
+  audio_session: ^0.2.3
+  freezed_annotation: ^3.0.0
+  json_annotation: ^4.9.0
+  flutter_heatmap_calendar:
+    git:
+      url: https://github.com/Anxcye/flutter_heatmap_calendar
+  csv: ^8.0.0
+  fast_gbk: ^1.0.0
+  window_manager: ^0.5.1
+  screen_retriever: ^0.2.0
+  pretty_dio_logger: ^1.4.0
+  dio_intercept_to_curl: ^0.2.0
+  flutter_gemini: ^3.0.0
+  gpt_markdown: ^1.1.4
+  pointer_interceptor: ^0.10.1+2
+  connectivity_plus: ^7.0.0
+  http: ^1.3.0
+  web_socket_channel: ^3.0.2
+  crypto: ^3.0.6
+  audioplayers: ^6.4.0
+  charset: ^2.0.1
+  flutter_slidable: ^4.0.0
+  cached_network_image: ^3.4.1
+  lpinyin: ^2.0.3
+  mongol: ^9.0.0
+  introduction_screen: ^4.0.0
+  flutter_floating_bottom_bar: ^1.3.0
+  langchain: ^0.8.1
+  langchain_anthropic: ^0.3.1
+  langchain_google: ^0.7.1+2
+  langchain_openai: 0.8.1+1
+    # git:
+    #   url: https://github.com/Anxcye/langchain_dart.git
+    #   ref: bb06c17ca667a906e3e37154b0bda95023d0c9bd
+    #   path: packages/langchain_openai
+  langchain_core: ^0.4.1
+  skeletonizer: ^2.1.0+1
+  scrollable_positioned_list: ^0.3.8
+  math_expressions: ^3.1.0
+  # share_handler: ^0.0.25
+  share_handler:
+    git:
+      url: https://github.com/Anxcye/share_handler.git
+      path: share_handler
+      ref: eeaa04d22e7e70babb55b6825b9ca7016e89c89a
+  heroine: ^0.7.1
+  vibration: ^3.1.4
+  staggered_reorderable:
+    git:
+      url: https://github.com/Anxcye/staggered_reorderable.git
+      ref: 2ac799a6eeb5da74bf5080a2ba2057272fa52b78
+  haptic_feedback: ^0.6.4+2
+
+dependency_overrides:
+  langchain:
+    git:
+      url: https://github.com/Anxcye/langchain_dart.git
+      ref: 310fb6b3
+      path: packages/langchain
+  langchain_core:
+    git:
+      url: https://github.com/Anxcye/langchain_dart.git
+      ref: 310fb6b3
+      path: packages/langchain_core
+  langchain_openai:
+    git:
+      url: https://github.com/Anxcye/langchain_dart.git
+      ref: 310fb6b3
+      path: packages/langchain_openai
+  langchain_anthropic:
+    git:
+      url: https://github.com/Anxcye/langchain_dart.git
+      ref: 310fb6b3
+      path: packages/langchain_anthropic
+#  analyzer: ^8.0.0
 
 
-  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.13
+  custom_lint: ^0.7.5
+  riverpod_generator: ^2.4.3
+  riverpod_lint: ^2.3.13
+  freezed: ^3.0.2
+  json_serializable: ^6.9.0
+#  flutter_launcher_icons: ^0.11.0
+
 
 flutter:
   uses-material-design: true
-  generate: true # Add this line
+  generate: true
   assets:
+    - assets/fonts/SourceHanSerifSC-Regular.otf
+    - pubspec.yaml
+    - assets/foliate-js/index.html
+    - assets/foliate-js/dist/
+    - assets/foliate-js/src/
+    - assets/foliate-js/src/vendor/
+    - assets/foliate-js/src/vendor/pdfjs/
+    - assets/foliate-js/src/vendor/prism/
+    - assets/foliate-js/src/vendor/prism/components/
+    - assets/foliate-js/src/vendor/prism/themes/
     - assets/images/
-    - assets/files/
-    - assets/i18n/
+    - assets/images/book_share/
+    - assets/images/bgimg/
+    - assets/icon/
+    - assets/CHANGELOG.md
 
-
-
-
-
-flutter_launcher_icons:
-  android: true
-  ios: true
-  remove_alpha_ios: true
-  image_path: "assets/images/logo-white.png"
-  min_sdk_android: 21 # android min sdk min:16, default 21
-  web:
-    generate: true
-    image_path: "assets/images/logo-white-s.png"
-    background_color: "#hexcode"
-    theme_color: "#hexcode"
-  windows:
-    generate: true
-    image_path: "assets/images/logo-white-s.png"
-    icon_size: 48 # min:48, max:256, default: 48
-  macos:
-    generate: true
-    image_path: "assets/images/logo-white-s.png"
-
-
+  fonts:
+    - family: SourceHanSerif
+      fonts:
+        - asset: assets/fonts/SourceHanSerifSC-Regular.otf
+          weight: 400
+        - asset: assets/fonts/SourceHanSerifSC-Bold.otf
+          weight: 700

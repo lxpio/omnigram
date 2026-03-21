@@ -1,0 +1,109 @@
+import 'package:omnigram/config/shared_preference_provider.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
+import 'package:omnigram/main.dart';
+import 'package:omnigram/utils/app_version.dart';
+import 'package:omnigram/utils/env_var.dart';
+import 'package:omnigram/utils/log/common.dart';
+import 'package:omnigram/utils/toast/common.dart';
+import 'package:omnigram/widgets/markdown/styled_markdown.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+Future<void> checkUpdate(bool manualCheck) async {
+  if (!EnvVar.enableCheckUpdate) {
+    return;
+  }
+  // if is today
+  if (!manualCheck &&
+      DateTime.now().difference(Prefs().lastShowUpdate) <
+          const Duration(days: 1)) {
+    return;
+  }
+  Prefs().lastShowUpdate = DateTime.now();
+
+  BuildContext context = navigatorKey.currentContext!;
+  Response response;
+  try {
+    response = await Dio().get('https://api.anx.anxcye.com/api/info/latest');
+  } catch (e) {
+    if (manualCheck) {
+      AnxToast.show(L10n.of(context).commonFailed);
+    }
+    AnxLog.severe('Update: Failed to check for updates $e');
+    return;
+  }
+  String newVersion = response.data['version'].toString().substring(1);
+  String currentVersion = (await getAppVersion()).split('+').first;
+  AnxLog.info('Update: new version $newVersion');
+
+  List<String> newVersionList = newVersion.split('.');
+  List<String> currentVersionList = currentVersion.split('.');
+  AnxLog.info(
+      'Current version: $currentVersionList, New version: $newVersionList');
+  bool needUpdate = false;
+  for (int i = 0; i < newVersionList.length; i++) {
+    int newVer = int.parse(newVersionList[i]);
+    int curVer = int.parse(currentVersionList[i]);
+    if (newVer > curVer) {
+      needUpdate = true;
+      break;
+    } else if (newVer < curVer) {
+      needUpdate = false;
+      break;
+    }
+  }
+
+  if (needUpdate) {
+    if (manualCheck) {
+      Navigator.of(context).pop();
+    }
+    SmartDialog.show(
+      builder: (BuildContext context) {
+        final body =
+            response.data['body'].toString().split('\n').skip(1).join('\n');
+        return AlertDialog(
+          title: Text(L10n.of(context).commonNewVersion,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              )),
+          content: SingleChildScrollView(
+            child: StyledMarkdown(
+                data: '''### ${L10n.of(context).updateNewVersion} $newVersion\n
+${L10n.of(context).updateCurrentVersion} $currentVersion\n
+$body'''),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                SmartDialog.dismiss();
+              },
+              child: Text(L10n.of(context).commonCancel),
+            ),
+            TextButton(
+              onPressed: () {
+                launchUrl(
+                    Uri.parse(
+                        'https://github.com/Anxcye/anx-reader/releases/latest'),
+                    mode: LaunchMode.externalApplication);
+              },
+              child: Text(L10n.of(context).updateViaGithub),
+            ),
+            TextButton(
+              onPressed: () {
+                launchUrl(Uri.parse('https://anx.anxcye.com/download'),
+                    mode: LaunchMode.externalApplication);
+              },
+              child: Text(L10n.of(context).updateViaOfficialWebsite),
+            ),
+          ],
+        );
+      },
+    );
+  } else {
+    if (manualCheck) {
+      AnxToast.show(L10n.of(context).commonNoNewVersion);
+    }
+  }
+}

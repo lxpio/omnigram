@@ -1,0 +1,81 @@
+import 'package:omnigram/l10n/generated/L10n.dart';
+import 'package:omnigram/utils/platform_utils.dart';
+import 'package:omnigram/utils/log/common.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+
+const minWebviewVersion = 70;
+void showUnsupportedWebviewDialog(int version) {
+  SmartDialog.show(
+    animationType: SmartAnimationType.fade,
+    builder: (context) {
+      return AlertDialog(
+        title: const Center(
+          child: Icon(Icons.warning_rounded),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(L10n.of(context).webviewUnsupportedVersion,
+                style: Theme.of(context).textTheme.titleMedium),
+            Text(L10n.of(context)
+                .webviewUnsupportedMessage(minWebviewVersion, version)),
+          ],
+        ),
+        actions: [
+          TextButton(
+              onPressed: () {
+                SmartDialog.dismiss();
+              },
+              child: Text(L10n.of(context).webviewCancel)),
+        ],
+      );
+    },
+  );
+}
+
+void handleWebviewVersion(String message) {
+  try {
+    int webviewVersion =
+        int.tryParse(message.split('Chrome/')[1].split('.')[0]) ?? -1;
+    int appleWebkitVersion =
+        int.tryParse(message.split('AppleWebKit/')[1].split('.')[0]) ?? -1;
+
+    bool isApple = AnxPlatform.isIOS || AnxPlatform.isMacOS;
+
+    if ((!isApple && (webviewVersion < minWebviewVersion)) ||
+        (isApple && (appleWebkitVersion < 605))) {
+      showUnsupportedWebviewDialog(webviewVersion);
+    }
+  } catch (e) {
+    if (e.toString().contains("Invalid value: Only valid value is 0: 1")) {
+      return;
+    }
+    AnxLog.severe('Webview: $e');
+  }
+}
+
+void webviewConsoleMessage(
+  InAppWebViewController controller,
+  ConsoleMessage consoleMessage,
+) {
+  const ignoreMsg = [
+    'An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing',
+    'JavaScript execution returned a result of an unsupported type'
+  ];
+  if (ignoreMsg.contains(consoleMessage.message)) {
+    return;
+  }
+
+  if (consoleMessage.messageLevel == ConsoleMessageLevel.LOG) {
+    AnxLog.info('Webview: ${consoleMessage.message}');
+    if (consoleMessage.message.contains("AnxUA")) {
+      handleWebviewVersion(consoleMessage.message);
+    }
+  } else if (consoleMessage.messageLevel == ConsoleMessageLevel.WARNING) {
+    AnxLog.warning('Webview: ${consoleMessage.message}');
+  } else if (consoleMessage.messageLevel == ConsoleMessageLevel.ERROR) {
+    AnxLog.severe('Webview: ${consoleMessage.message}');
+  }
+}
