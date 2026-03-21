@@ -5,6 +5,8 @@ go 1.25.0
 require (
 	github.com/dgraph-io/badger/v4 v4.3.1
 	github.com/gin-gonic/gin v1.12.0
+	github.com/google/uuid v1.6.0
+	github.com/gorilla/websocket v1.5.3
 	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/nexptr/epub v0.0.0-20231119094044-2967c379aa0e
