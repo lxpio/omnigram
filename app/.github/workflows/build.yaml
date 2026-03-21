@@ -1,0 +1,100 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]*.[0-9]*.[0-9]*'
+      - 'v[0-9]*.[0-9]*.[0-9]*-alpha.[0-9]*'
+      - 'v[0-9]*.[0-9]*.[0-9]*-beta.[0-9]*'
+
+permissions:
+  contents: write
+
+jobs:
+  setup:
+    uses: ./.github/workflows/setup.yaml
+    secrets:
+      NOTIFICATION_URL: ${{ secrets.NOTIFICATION_URL }}
+
+  build-android:
+    needs: setup
+    uses: ./.github/workflows/build-android.yaml
+    with:
+      version: ${{ needs.setup.outputs.version }}
+      flutter_version: ${{ needs.setup.outputs.flutter_version }}
+    secrets:
+      KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+
+  build-ios:
+    needs: setup
+    uses: ./.github/workflows/build-ios.yaml
+    with:
+      version: ${{ needs.setup.outputs.version }}
+      flutter_version: ${{ needs.setup.outputs.flutter_version }}
+      xcode_version: ${{ needs.setup.outputs.xcode_version }}
+
+  build-windows:
+    needs: setup
+    uses: ./.github/workflows/build-windows.yaml
+    with:
+      version: ${{ needs.setup.outputs.version }}
+      flutter_version: ${{ needs.setup.outputs.flutter_version }}
+    secrets:
+      SIGNPATH_API_TOKEN: ${{ secrets.SIGNPATH_API_TOKEN }}
+      NOTIFICATION_URL: ${{ secrets.NOTIFICATION_URL }}
+
+  build-macos:
+    needs: setup
+    uses: ./.github/workflows/build-macos.yaml
+    with:
+      version: ${{ needs.setup.outputs.version }}
+      flutter_version: ${{ needs.setup.outputs.flutter_version }}
+      xcode_version: ${{ needs.setup.outputs.xcode_version }}
+
+  build-appstore:
+    needs: setup
+    uses: ./.github/workflows/build-appstore.yaml
+    with:
+      version: ${{ needs.setup.outputs.version }}
+      flutter_version: ${{ needs.setup.outputs.flutter_version }}
+      xcode_version: ${{ needs.setup.outputs.xcode_version }}
+    secrets:
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
+      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+      MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+      APP_BUNDLE_ID: ${{ secrets.APP_BUNDLE_ID }}
+
+  # build-playstore:
+  #   needs: setup
+  #   uses: ./.github/workflows/build-playstore.yaml
+  #   with:
+  #     version: ${{ needs.setup.outputs.version }}
+  #     flutter_version: ${{ needs.setup.outputs.flutter_version }}
+  #     is_alpha: ${{ needs.setup.outputs.is_alpha }}
+  #     is_beta: ${{ needs.setup.outputs.is_beta }}
+  #   secrets:
+  #     PLAY_STORE_JSON_KEY: ${{ secrets.PLAY_STORE_JSON_KEY }}
+  #     KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+  #     KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+  #     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+  #     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+
+  release:
+    # needs: [setup, build-android, build-ios, build-windows, build-macos, build-appstore, build-playstore]
+    needs: [setup, build-android, build-ios, build-windows, build-macos, build-appstore]
+    uses: ./.github/workflows/release.yaml
+    with:
+      tag: ${{ needs.setup.outputs.tag }}
+      version: ${{ needs.setup.outputs.version }}
+      is_alpha: ${{ needs.setup.outputs.is_alpha }}
+      is_beta: ${{ needs.setup.outputs.is_beta }}
+      release_notes: ${{ needs.setup.outputs.release_notes }}
+    secrets:
+      NOTIFICATION_URL: ${{ secrets.NOTIFICATION_URL }}
+      TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}

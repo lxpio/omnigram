@@ -1,0 +1,127 @@
+{
+  "ar": [
+    "settingsAiProviderReasoningEffort",
+    "settingsAiProviderReasoningEffortHelp",
+    "settingsAiProviderReasoningEffortAuto",
+    "settingsAiProviderReasoningEffortLow",
+    "settingsAiProviderReasoningEffortMedium",
+    "settingsAiProviderReasoningEffortHigh"
+  ],
+
+  "de": [
+    "settingsAiProviderReasoningEffort",
+    "settingsAiProviderReasoningEffortHelp",
+    "settingsAiProviderReasoningEffortAuto",
+    "settingsAiProviderReasoningEffortLow",
+    "settingsAiProviderReasoningEffortMedium",
+    "settingsAiProviderReasoningEffortHigh"
+  ],
+
+  "es": [
+    "settingsAiProviderReasoningEffort",
+    "settingsAiProviderReasoningEffortHelp",
+    "settingsAiProviderReasoningEffortAuto",
+    "settingsAiProviderReasoningEffortLow",
+    "settingsAiProviderReasoningEffortMedium",
+    "settingsAiProviderReasoningEffortHigh"
+  ],
+
+  "fr": [
+    "settingsAiProviderReasoningEffort",
+    "settingsAiProviderReasoningEffortHelp",
+    "settingsAiProviderReasoningEffortAuto",
+    "settingsAiProviderReasoningEffortLow",
+    "settingsAiProviderReasoningEffortMedium",
+    "settingsAiProviderReasoningEffortHigh"
+  ],
+
+  "it": [
+    "settingsAiProviderReasoningEffort",
+    "settingsAiProviderReasoningEffortHelp",
+    "settingsAiProviderReasoningEffortAuto",
+    "settingsAiProviderReasoningEffortLow",
+    "settingsAiProviderReasoningEffortMedium",
+    "settingsAiProviderReasoningEffortHigh"
+  ],
+
+  "ja": [
+    "settingsAiProviderReasoningEffort",
+    "settingsAiProviderReasoningEffortHelp",
+    "settingsAiProviderReasoningEffortAuto",
+    "settingsAiProviderReasoningEffortLow",
+    "settingsAiProviderReasoningEffortMedium",
+    "settingsAiProviderReasoningEffortHigh"
+  ],
+
+  "ko": [
+    "settingsAiProviderReasoningEffort",
+    "settingsAiProviderReasoningEffortHelp",
+    "settingsAiProviderReasoningEffortAuto",
+    "settingsAiProviderReasoningEffortLow",
+    "settingsAiProviderReasoningEffortMedium",
+    "settingsAiProviderReasoningEffortHigh"
+  ],
+
+  "pt": [
+    "settingsAiProviderReasoningEffort",
+    "settingsAiProviderReasoningEffortHelp",
+    "settingsAiProviderReasoningEffortAuto",
+    "settingsAiProviderReasoningEffortLow",
+    "settingsAiProviderReasoningEffortMedium",
+    "settingsAiProviderReasoningEffortHigh"
+  ],
+
+  "ro": [
+    "settingsAiProviderReasoningEffort",
+    "settingsAiProviderReasoningEffortHelp",
+    "settingsAiProviderReasoningEffortAuto",
+    "settingsAiProviderReasoningEffortLow",
+    "settingsAiProviderReasoningEffortMedium",
+    "settingsAiProviderReasoningEffortHigh"
+  ],
+
+  "ru": [
+    "settingsAiProviderReasoningEffort",
+    "settingsAiProviderReasoningEffortHelp",
+    "settingsAiProviderReasoningEffortAuto",
+    "settingsAiProviderReasoningEffortLow",
+    "settingsAiProviderReasoningEffortMedium",
+    "settingsAiProviderReasoningEffortHigh"
+  ],
+
+  "tr": [
+    "settingsAiProviderReasoningEffort",
+    "settingsAiProviderReasoningEffortHelp",
+    "settingsAiProviderReasoningEffortAuto",
+    "settingsAiProviderReasoningEffortLow",
+    "settingsAiProviderReasoningEffortMedium",
+    "settingsAiProviderReasoningEffortHigh"
+  ],
+
+  "zh": [
+    "settingsAiProviderReasoningEffort",
+    "settingsAiProviderReasoningEffortHelp",
+    "settingsAiProviderReasoningEffortAuto",
+    "settingsAiProviderReasoningEffortLow",
+    "settingsAiProviderReasoningEffortMedium",
+    "settingsAiProviderReasoningEffortHigh"
+  ],
+
+  "zh_LZH": [
+    "settingsAiProviderReasoningEffort",
+    "settingsAiProviderReasoningEffortHelp",
+    "settingsAiProviderReasoningEffortAuto",
+    "settingsAiProviderReasoningEffortLow",
+    "settingsAiProviderReasoningEffortMedium",
+    "settingsAiProviderReasoningEffortHigh"
+  ],
+
+  "zh_TW": [
+    "settingsAiProviderReasoningEffort",
+    "settingsAiProviderReasoningEffortHelp",
+    "settingsAiProviderReasoningEffortAuto",
+    "settingsAiProviderReasoningEffortLow",
+    "settingsAiProviderReasoningEffortMedium",
+    "settingsAiProviderReasoningEffortHigh"
+  ]
+}

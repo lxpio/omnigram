@@ -11,3 +11,9 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+
+# .cxx
+app/.cxx/
+
+/vendor/
+/.bundle/

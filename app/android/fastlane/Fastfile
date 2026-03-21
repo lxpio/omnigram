@@ -1,0 +1,53 @@
+import "../../Fastfile"
+
+default_platform(:android)
+
+platform :android do
+  # Ensure required Play Store credentials exist
+  private_lane :prepare_play_store do
+    unless File.exist?(google_service_account_json_path)
+      UI.user_error!("google_service_account.json file not found. Please add it to the root of the flutter project or set GOOGLE_SERVICE_ACCOUNT_JSON_PATH. See https://docs.fastlane.tools/actions/supply/")
+    end
+  end
+
+  # Build Android bundle or apk with consistent versioning
+  private_lane :build_android do
+    prepare_play_store
+
+    fetch_dependencies
+
+    build_command = "flutter build appbundle --release --dart-define=isPlayStore=true"
+
+    sh_on_root(command: build_command)
+  end
+
+  # Build flutter Android app
+  lane :build do
+    build_android
+  end
+
+  # Release to Play Store using Fastlane Supply (https://docs.fastlane.tools/actions/supply/)
+  desc "Release to Play Store"
+  lane :release_play_store do |options|
+    build_android
+
+    track = options[:track] || 'internal'
+    # Set release_status based on track: completed for internal/beta, draft for production
+    # release_status = (track == 'production') ? 'draft' : 'completed'
+    release_status = 'draft'
+
+
+    supply(
+      track: track,
+      release_status: release_status,
+      aab: "../build/app/outputs/bundle/release/app-release.aab",
+      json_key: google_service_account_json_path,
+      skip_upload_apk: true, # Upload the aab instead of apk
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
+end

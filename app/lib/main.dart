@@ -1,101 +1,102 @@
-import "dart:io";
+import 'package:omnigram/utils/platform_utils.dart';
 
-import "package:easy_localization/easy_localization.dart";
-import 'package:device_info_plus/device_info_plus.dart';
-import "package:flutter/material.dart";
-import "package:flutter/services.dart";
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import "package:omnigram/consts/locales.dart";
-import "package:omnigram/extensions/build_context_extensions.dart";
-import "package:omnigram/providers/app_life_cycle.provider.dart";
-import "package:omnigram/providers/theme.provider.dart";
-import "package:omnigram/routes/router.dart";
-import "package:universal_platform/universal_platform.dart";
-import 'package:desktop_window/desktop_window.dart';
+import 'package:omnigram/config/shared_preference_provider.dart';
+import 'package:omnigram/dao/database.dart';
+import 'package:omnigram/enums/sync_direction.dart';
+import 'package:omnigram/enums/sync_trigger.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
+import 'package:omnigram/models/window_info.dart';
+import 'package:omnigram/page/home_page.dart';
+import 'package:omnigram/page/migration_page.dart';
+import 'package:omnigram/service/book_player/book_player_server.dart';
+import 'package:omnigram/service/tts/tts_handler.dart';
+import 'package:omnigram/utils/get_path/macos_migration.dart';
+import 'package:omnigram/utils/color_scheme.dart';
+import 'package:omnigram/utils/error/common.dart';
+import 'package:omnigram/utils/get_path/get_base_path.dart';
+import 'package:omnigram/utils/log/common.dart';
+import 'package:omnigram/utils/window_position_validator.dart';
+import 'package:omnigram/providers/sync.dart';
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:heroine/heroine.dart';
+import 'package:provider/provider.dart' as provider;
+import 'package:window_manager/window_manager.dart';
 
-import "providers/db.provider.dart";
-import "utils/build_config.dart";
+final navigatorKey = GlobalKey<NavigatorState>();
+late AudioHandler audioHandler;
+final heroineController = HeroineController();
 
-Future setDesktopWindow() async {
-  await DesktopWindow.setMinWindowSize(const Size(600, 400));
-  await DesktopWindow.setWindowSize(const Size(1300, 900));
-}
+/// Whether macOS data migration is needed (checked at startup)
+bool _needsMigration = false;
+MigrationCheckResult? _migrationCheckResult;
 
 Future<void> main() async {
-//加载数据前动画效果
   WidgetsFlutterBinding.ensureInitialized();
+  await Prefs().initPrefs();
 
-  if (Platform.isAndroid) {
-    SystemUiOverlayStyle systemUiOverlayStyle = const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-    );
-    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+  // Initialize desktop window with validated position
+  if (AnxPlatform.isWindows || AnxPlatform.isMacOS) {
+    await initializeDesktopWindow();
   }
 
-  if (UniversalPlatform.isDesktop) {
-    setDesktopWindow();
+  // Check if migration is needed before initializing paths
+  if (AnxPlatform.isMacOS) {
+    _migrationCheckResult = await checkMigrationNeeded();
+    _needsMigration = _migrationCheckResult?.needsMigration ?? false;
   }
 
-  // if (kReleaseMode && Platform.isAndroid) {
-  //   try {
-  //     await FlutterDisplayMode.setHighRefreshRate();
-  //     debugPrint("Enabled high refresh mode");
-  //   } catch (e) {
-  //     debugPrint("Error setting high refresh rate: $e");
-  //   }
-  // }
+  // If no migration needed, initialize paths normally
+  if (!_needsMigration) {
+    initBasePath();
+    AnxLog.init();
+    AnxError.init();
+    await DBHelper().initDB();
+  }
 
-  final db = await BuildConfig.initialize();
+  Server().start();
 
-  //加载proxy配置
-  // HttpOverrides.global = HttpProxyOverrides();
+  audioHandler = await AudioService.init(
+    builder: () => TtsHandler(),
+    config: const AudioServiceConfig(
+      androidNotificationChannelId: 'com.anx.reader.tts.channel.audio',
+      androidNotificationChannelName: 'ANX Reader TTS',
+      androidNotificationOngoing: true,
+      androidStopForegroundOnPause: true,
+    ),
+  );
+
+  SmartDialog.config.custom = SmartConfigCustom(
+    maskColor: Colors.black.withAlpha(35),
+    useAnimation: true,
+    animationType: SmartAnimationType.centerFade_otherSlide,
+  );
 
   runApp(
-    ProviderScope(
-      overrides: [dbProvider.overrideWithValue(db)],
-      child: const MainWidget(),
+    const ProviderScope(
+      child: MyApp(),
     ),
   );
 }
 
-class OmnigramApp extends ConsumerStatefulWidget {
-  const OmnigramApp({super.key});
+class MyApp extends ConsumerStatefulWidget {
+  const MyApp({super.key});
 
   @override
-  ConsumerState<OmnigramApp> createState() => _OmnigramAppState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _MyAppState();
 }
 
-class _OmnigramAppState extends ConsumerState<OmnigramApp> with WidgetsBindingObserver {
-  @override
-  Widget build(BuildContext context) {
-    final router = ref.watch(appRouterProvider);
-
-    return MaterialApp(
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      debugShowCheckedModeBanner: false,
-      home: MaterialApp.router(
-        title: 'Omnigram',
-        debugShowCheckedModeBanner: false,
-        themeMode: ref.watch(themeStateProvider),
-        darkTheme: omnigramDarkTheme,
-        theme: omnigramLightTheme,
-        routerConfig: router,
-      ),
-    );
-  }
+class _MyAppState extends ConsumerState<MyApp>
+    with WidgetsBindingObserver, WindowListener {
+  static const Locale _englishFallbackLocale = Locale('en');
 
   @override
   void initState() {
     super.initState();
-
-    _initApp().then((_) => debugPrint("App Init Completed"));
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // needs to be delayed so that EasyLocalization is working
-      //TODO
-      // ref.read(backgroundServiceProvider).resumeServiceIfEnabled();
-    });
+    WidgetsBinding.instance.addObserver(this);
+    windowManager.addListener(this);
   }
 
   @override
@@ -105,66 +106,175 @@ class _OmnigramAppState extends ConsumerState<OmnigramApp> with WidgetsBindingOb
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.resumed:
-        debugPrint("[APP STATE] resumed");
-        ref.read(appLifeCycleProvider.notifier).handleAppResume();
-        break;
-      case AppLifecycleState.inactive:
-        debugPrint("[APP STATE] inactive");
-        ref.read(appLifeCycleProvider.notifier).handleAppInactivity();
-        break;
-      case AppLifecycleState.paused:
-        debugPrint("[APP STATE] paused");
-        ref.read(appLifeCycleProvider.notifier).handleAppPause();
-        break;
-      case AppLifecycleState.detached:
-        debugPrint("[APP STATE] detached");
-        ref.read(appLifeCycleProvider.notifier).handleAppDetached();
-        break;
-      case AppLifecycleState.hidden:
-        debugPrint("[APP STATE] hidden");
-        ref.read(appLifeCycleProvider.notifier).handleAppHidden();
-        break;
-    }
+  Future<void> onWindowClose() async {
+    await Server().stop();
+    await webViewEnvironment?.dispose();
+    webViewEnvironment = null;
+    await DBHelper.close();
+    await windowManager.destroy();
   }
 
-  Future<void> _initApp() async {
-    WidgetsBinding.instance.addObserver(this);
+  @override
+  Future<void> onWindowMoved() async {
+    await _updateWindowInfo();
+  }
 
-    // Draw the app from edge to edge
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  @override
+  Future<void> onWindowMaximize() async {
+    await _updateWindowInfo();
+  }
 
-    // Sets the navigation bar color
-    SystemUiOverlayStyle overlayStyle = const SystemUiOverlayStyle(
-      systemNavigationBarColor: Colors.transparent,
-    );
-    if (Platform.isAndroid) {
-      // Android 8 does not support transparent app bars
-      final info = await DeviceInfoPlugin().androidInfo;
-      if (info.version.sdkInt <= 26) {
-        overlayStyle = context.isDarkTheme ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light;
+  @override
+  Future<void> onWindowUnmaximize() async {
+    await _updateWindowInfo();
+  }
+
+  @override
+  Future<void> onWindowResized() async {
+    await _updateWindowInfo();
+  }
+
+  Future<void> _updateWindowInfo() async {
+    if (!AnxPlatform.isWindows && !AnxPlatform.isMacOS) {
+      return;
+    }
+    final windowOffset = await windowManager.getPosition();
+    final windowSize = await windowManager.getSize();
+    final isMaximized = await windowManager.isMaximized();
+
+    Prefs().windowInfo = WindowInfo(
+        x: windowOffset.dx,
+        y: windowOffset.dy,
+        width: windowSize.width,
+        height: windowSize.height,
+        isMaximized: isMaximized);
+    AnxLog.info('onWindowClose: Offset: $windowOffset, Size: $windowSize');
+  }
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden) {
+      if (Prefs().webdavStatus) {
+        ref
+            .read(syncProvider.notifier)
+            .syncData(SyncDirection.both, ref, trigger: SyncTrigger.auto);
+      }
+    } else if (state == AppLifecycleState.resumed) {
+      if (AnxPlatform.isIOS) {
+        Server().start();
       }
     }
-    SystemChrome.setSystemUIOverlayStyle(overlayStyle);
-    //TODO : check if this is needed
-    // await ref.read(localNotificationService).setup();
   }
-}
-
-// ignore: prefer-single-widget-per-file
-class MainWidget extends StatelessWidget {
-  const MainWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return EasyLocalization(
-      supportedLocales: locales.values.toList(),
-      path: translationsPath,
-      useFallbackTranslations: true,
-      fallbackLocale: locales.values.first,
-      child: const OmnigramApp(),
+    return provider.MultiProvider(
+      providers: [
+        provider.ChangeNotifierProvider(
+          create: (_) => Prefs(),
+        ),
+      ],
+      child: provider.Consumer<Prefs>(
+        builder: (context, prefsNotifier, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            scrollBehavior: ScrollConfiguration.of(context).copyWith(
+              physics: const BouncingScrollPhysics(),
+              // dragDevices: {
+              //   PointerDeviceKind.touch,
+              //   PointerDeviceKind.mouse,
+              // },
+            ),
+            navigatorObservers: [
+              FlutterSmartDialog.observer,
+              heroineController
+            ],
+            builder: FlutterSmartDialog.init(),
+            navigatorKey: navigatorKey,
+            locale: prefsNotifier.locale,
+            localeListResolutionCallback: _resolveLocale,
+            localizationsDelegates: L10n.localizationsDelegates,
+            supportedLocales: L10n.supportedLocales,
+            title: 'Anx Reader',
+            themeMode: prefsNotifier.themeMode,
+            theme: colorSchema(prefsNotifier, context, Brightness.light),
+            darkTheme: colorSchema(prefsNotifier, context, Brightness.dark),
+            home: _needsMigration
+                ? _MigrationWrapper(
+                    migrationCheckResult: _migrationCheckResult!)
+                : const HomePage(),
+          );
+        },
+      ),
     );
+  }
+
+  Locale _resolveLocale(
+    List<Locale>? preferredLocales,
+    Iterable<Locale> supportedLocales,
+  ) {
+    if (preferredLocales == null || preferredLocales.isEmpty) {
+      return _englishFallbackLocale;
+    }
+
+    final Locale resolvedLocale = basicLocaleListResolution(
+      preferredLocales,
+      supportedLocales,
+    );
+
+    final bool hasMatch = preferredLocales.any((Locale preferredLocale) {
+      return supportedLocales.any((Locale supportedLocale) {
+        if (preferredLocale.languageCode != supportedLocale.languageCode) {
+          return false;
+        }
+
+        final String? preferredCountryCode = preferredLocale.countryCode;
+        final String? supportedCountryCode = supportedLocale.countryCode;
+
+        return preferredCountryCode == null ||
+            supportedCountryCode == null ||
+            preferredCountryCode == supportedCountryCode;
+      });
+    });
+
+    return hasMatch ? resolvedLocale : _englishFallbackLocale;
+  }
+}
+
+/// Widget that wraps the migration flow on macOS.
+/// Shows MigrationPage during migration, then navigates to HomePage.
+class _MigrationWrapper extends StatefulWidget {
+  final MigrationCheckResult migrationCheckResult;
+
+  const _MigrationWrapper({required this.migrationCheckResult});
+
+  @override
+  State<_MigrationWrapper> createState() => _MigrationWrapperState();
+}
+
+class _MigrationWrapperState extends State<_MigrationWrapper> {
+  bool _migrationComplete = false;
+
+  Future<void> _onMigrationComplete() async {
+    // Initialize paths and DB after migration
+    initBasePath();
+    AnxLog.init();
+    AnxError.init();
+    await DBHelper().initDB();
+
+    if (mounted) {
+      setState(() {
+        _migrationComplete = true;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_migrationComplete) {
+      return const HomePage();
+    }
+    return MigrationPage(onMigrationComplete: _onMigrationComplete);
   }
 }
