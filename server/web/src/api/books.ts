@@ -158,6 +158,50 @@ export function useSearchBooks(params: SearchParams) {
   });
 }
 
+export function useBatchDelete() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { book_ids: string[]; delete_files?: boolean }) =>
+      apiFetch<{ data: { deleted: number } }>("/reader/books/batch/delete", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["books"] });
+    },
+  });
+}
+
+export function useBatchTag() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { book_ids: string[]; tags: string[]; action: "add" | "remove" | "set" }) =>
+      apiFetch<{ data: { updated: number } }>("/reader/books/batch/tag", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["books"] });
+      qc.invalidateQueries({ queryKey: ["tags"] });
+    },
+  });
+}
+
+export function useBatchShelf() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { book_ids: string[]; shelf_id: number; action: "add" | "remove" }) =>
+      apiFetch<{ data: { updated: number } }>("/reader/books/batch/shelf", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["books"] });
+      qc.invalidateQueries({ queryKey: ["shelves"] });
+    },
+  });
+}
+
 export function getCoverUrl(coverUrl: string): string {
   if (!coverUrl) return "";
   return `/img/covers/${coverUrl}`;

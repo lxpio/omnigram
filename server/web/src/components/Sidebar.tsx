@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Library, Clock, Star, BookMarked, Tags, Shield, Settings, BookOpen } from "lucide-react";
+import { Library, Clock, Star, BookMarked, Tags, BarChart3, Shield, Settings, BookOpen } from "lucide-react";
 
 interface SidebarProps {
   open?: boolean;
@@ -18,6 +18,7 @@ const navItems = [
 ];
 
 const adminItems = [
+  { to: "/stats", icon: BarChart3, label: "Statistics" },
   { to: "/admin", icon: Shield, label: "Admin" },
   { to: "/settings", icon: Settings, label: "Settings" },
 ];

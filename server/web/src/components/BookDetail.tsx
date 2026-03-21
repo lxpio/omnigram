@@ -16,7 +16,9 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { toast } from "@/components/ui/use-toast";
-import { BookOpen, Save, Trash2, Download, ImagePlus } from "lucide-react";
+import { BookOpen, Save, Trash2, Download, ImagePlus, MessageSquare, Highlighter, Bookmark as BookmarkIcon } from "lucide-react";
+import { useAnnotations, useDeleteAnnotation } from "@/api/annotations";
+import type { Annotation } from "@/api/annotations";
 
 interface BookDetailProps {
   book: Book | null;
@@ -30,6 +32,9 @@ export function BookDetail({ book, open, onClose }: BookDetailProps) {
   const updateBook = useUpdateBook();
   const deleteBook = useDeleteBook();
   const uploadCover = useUploadCover();
+  const { data: annotationsResp } = useAnnotations(book?.id);
+  const deleteAnnotation = useDeleteAnnotation();
+  const annotations: Annotation[] = annotationsResp?.data ?? [];
 
   const startEdit = () => {
     if (!book) return;
@@ -66,6 +71,16 @@ export function BookDetail({ book, open, onClose }: BookDetailProps) {
       onClose();
     } catch {
       toast({ title: "Failed to delete book", variant: "destructive" });
+    }
+  };
+
+  const handleDeleteAnnotation = async (ann: Annotation) => {
+    if (!book) return;
+    try {
+      await deleteAnnotation.mutateAsync({ bookId: book.id, annotationId: ann.id });
+      toast({ title: "Annotation deleted" });
+    } catch {
+      toast({ title: "Failed to delete", variant: "destructive" });
     }
   };
 
@@ -209,6 +224,49 @@ export function BookDetail({ book, open, onClose }: BookDetailProps) {
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
+
+                {/* Annotations */}
+                {annotations.length > 0 && (
+                  <>
+                    <Separator />
+                    <div>
+                      <h4 className="mb-3 text-sm font-medium text-muted-foreground">
+                        Annotations ({annotations.length})
+                      </h4>
+                      <div className="space-y-3">
+                        {annotations.map((ann) => (
+                          <div key={ann.id} className="group rounded-lg border p-3 text-sm">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                {ann.type === "highlight" && <Highlighter className="h-3 w-3" />}
+                                {ann.type === "note" && <MessageSquare className="h-3 w-3" />}
+                                {ann.type === "bookmark" && <BookmarkIcon className="h-3 w-3" />}
+                                <span className="capitalize">{ann.type}</span>
+                                {ann.chapter && <span>· {ann.chapter}</span>}
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 text-destructive"
+                                onClick={() => handleDeleteAnnotation(ann)}
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                            {ann.selected_text && (
+                              <p className="mt-1.5 border-l-2 border-primary/30 pl-2 italic text-muted-foreground">
+                                {ann.selected_text}
+                              </p>
+                            )}
+                            {ann.content && (
+                              <p className="mt-1.5">{ann.content}</p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             )}
           </div>
