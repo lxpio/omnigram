@@ -11,6 +11,7 @@ import { AdminPage } from "@/pages/AdminPage";
 import { SettingsPage } from "@/pages/SettingsPage";
 import { ShelvesPage } from "@/pages/ShelvesPage";
 import { TagsPage } from "@/pages/TagsPage";
+import { StatsPage } from "@/pages/StatsPage";
 import { Loader2 } from "lucide-react";
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -51,6 +52,7 @@ function AppLayout() {
             <Route path="/favorites" element={<LibraryPage mode="favorites" />} />
             <Route path="/shelves" element={<ShelvesPage />} />
             <Route path="/tags" element={<TagsPage />} />
+            <Route path="/stats" element={<StatsPage />} />
             <Route path="/books/:bookId" element={<BookPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/settings" element={<SettingsPage />} />

@@ -71,3 +71,25 @@ export function useDeleteAccount() {
     },
   });
 }
+
+interface CalibreImportResult {
+  total: number;
+  imported: number;
+  skipped: number;
+  errors: number;
+  messages?: string[];
+}
+
+export function useImportCalibre() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (calibrePath: string) =>
+      apiFetch<CalibreImportResult>("/sys/import/calibre", {
+        method: "POST",
+        body: JSON.stringify({ calibre_path: calibrePath }),
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["books"] });
+    },
+  });
+}

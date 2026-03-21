@@ -1,16 +1,21 @@
-import { useSystemInfo, useScanStatus, useRunScan, useStopScan } from "@/api/system";
+import { useState } from "react";
+import { useSystemInfo, useScanStatus, useRunScan, useStopScan, useImportCalibre } from "@/api/system";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
-import { Settings, RefreshCw, StopCircle, Server, Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Settings, RefreshCw, StopCircle, Server, Loader2, FolderOpen } from "lucide-react";
 
 export function SettingsPage() {
   const { data: sysInfo, isLoading: sysLoading } = useSystemInfo();
   const { data: scanStatus } = useScanStatus();
   const runScan = useRunScan();
   const stopScan = useStopScan();
+  const [calibrePath, setCalibrePath] = useState("");
+  const importCalibre = useImportCalibre();
+  const [importResult, setImportResult] = useState<any>(null);
 
   const handleRunScan = async () => {
     try {
@@ -18,6 +23,17 @@ export function SettingsPage() {
       toast({ title: "Library scan started" });
     } catch {
       toast({ title: "Failed to start scan", variant: "destructive" });
+    }
+  };
+
+  const handleImport = async () => {
+    if (!calibrePath.trim()) return;
+    try {
+      const result = await importCalibre.mutateAsync(calibrePath);
+      setImportResult(result);
+      toast({ title: `Imported ${result.imported} books` });
+    } catch {
+      toast({ title: "Import failed", variant: "destructive" });
     }
   };
 
@@ -117,6 +133,64 @@ export function SettingsPage() {
                 </Button>
               )}
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Calibre Import */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FolderOpen className="h-4 w-4" />
+              Calibre Import
+            </CardTitle>
+            <CardDescription>Import books from a Calibre library</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <span className="text-sm text-muted-foreground">Calibre Library Path</span>
+              <Input
+                placeholder="/path/to/calibre/library"
+                value={calibrePath}
+                onChange={(e) => setCalibrePath(e.target.value)}
+              />
+            </div>
+            <Button
+              onClick={handleImport}
+              disabled={!calibrePath.trim() || importCalibre.isPending}
+              className="gap-2"
+            >
+              {importCalibre.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <FolderOpen className="h-4 w-4" />
+              )}
+              Import
+            </Button>
+            {importResult && (
+              <>
+                <Separator />
+                <div className="grid gap-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Total</span>
+                    <span className="font-medium">{importResult.total}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Imported</span>
+                    <span className="font-medium text-green-500">{importResult.imported}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Skipped</span>
+                    <span className="font-medium">{importResult.skipped}</span>
+                  </div>
+                  {importResult.errors > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Errors</span>
+                      <span className="font-medium text-destructive">{importResult.errors}</span>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
       </div>
