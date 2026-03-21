@@ -259,7 +259,7 @@ func refreshAccessTokenHandle(c *gin.Context) {
 	}
 
 	//DeleteSessionByID
-	store.Store().Transaction(func(tx *gorm.DB) error {
+	err = store.Store().Transaction(func(tx *gorm.DB) error {
 
 		if err := schema.DeleteSessionByID(tx, origin.Session); err != nil {
 			return err
@@ -267,13 +267,17 @@ func refreshAccessTokenHandle(c *gin.Context) {
 		sessionCache.Remove(cacheKeySession + origin.Session)
 
 		if err := session.Save(tx); err != nil {
-			log.E(`保存session失败：`, err.Error())
-			c.JSON(500, utils.ErrSaveToken)
+			return err
 		}
 
 		sessionCache.Add(cacheKeySession+session.Session, session)
 		return nil
 	})
+	if err != nil {
+		log.E(`刷新token事务失败：`, err.Error())
+		c.JSON(500, utils.ErrSaveToken)
+		return
+	}
 
 	c.JSON(200, struct {
 		TokenType    string `json:"token_type"`

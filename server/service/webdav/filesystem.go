@@ -26,13 +26,27 @@ func NewOmnigramFS(booksRoot, syncRoot string) *OmnigramFS {
 }
 
 func (fs *OmnigramFS) resolvePath(name string) (realPath string, writable bool) {
-	if strings.HasPrefix(name, "/sync/") {
-		return filepath.Join(fs.syncRoot, strings.TrimPrefix(name, "/sync/")), true
+	if name == "/sync" || strings.HasPrefix(name, "/sync/") {
+		rel := strings.TrimPrefix(name, "/sync")
+		rel = strings.TrimPrefix(rel, "/")
+		cleaned := filepath.Clean(filepath.Join(fs.syncRoot, rel))
+		root := filepath.Clean(fs.syncRoot)
+		if cleaned != root && !strings.HasPrefix(cleaned, root+string(os.PathSeparator)) {
+			return "", false // path traversal blocked
+		}
+		return cleaned, true
 	}
-	if strings.HasPrefix(name, "/books/") {
-		return filepath.Join(fs.booksRoot, strings.TrimPrefix(name, "/books/")), false
+	if name == "/books" || strings.HasPrefix(name, "/books/") {
+		rel := strings.TrimPrefix(name, "/books")
+		rel = strings.TrimPrefix(rel, "/")
+		cleaned := filepath.Clean(filepath.Join(fs.booksRoot, rel))
+		root := filepath.Clean(fs.booksRoot)
+		if cleaned != root && !strings.HasPrefix(cleaned, root+string(os.PathSeparator)) {
+			return "", false // path traversal blocked
+		}
+		return cleaned, false
 	}
-	return filepath.Join(fs.booksRoot, name), false
+	return filepath.Join(fs.booksRoot, filepath.Clean(name)), false
 }
 
 func (fs *OmnigramFS) Mkdir(ctx context.Context, name string, perm os.FileMode) error {

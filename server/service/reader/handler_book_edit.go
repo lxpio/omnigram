@@ -84,7 +84,9 @@ func updateBookHandle(c *gin.Context) {
 		}
 	}
 
-	schema.Success(c, book)
+	// 重新获取更新后的数据
+	updatedBook, _ := schema.FirstBookById(orm, bookID)
+	schema.Success(c, updatedBook)
 }
 
 // deleteBookHandle 删除书籍 DELETE /reader/books/:book_id
@@ -100,9 +102,15 @@ func deleteBookHandle(c *gin.Context) {
 
 	// 事务包裹关联数据删除
 	err = orm.Transaction(func(tx *gorm.DB) error {
-		tx.Where("book_id = ?", bookID).Delete(&schema.BookTagShip{})
-		tx.Where("book_id = ?", bookID).Delete(&schema.ReadProgress{})
-		tx.Where("book_id = ?", bookID).Delete(&schema.FavBook{})
+		if err := tx.Where("book_id = ?", bookID).Delete(&schema.BookTagShip{}).Error; err != nil {
+			return err
+		}
+		if err := tx.Where("book_id = ?", bookID).Delete(&schema.ReadProgress{}).Error; err != nil {
+			return err
+		}
+		if err := tx.Where("book_id = ?", bookID).Delete(&schema.FavBook{}).Error; err != nil {
+			return err
+		}
 		return tx.Delete(book).Error
 	})
 	if err != nil {
@@ -141,6 +149,13 @@ func uploadCoverHandle(c *gin.Context) {
 	// 限制封面大小 5MB
 	if header.Size > 5*1024*1024 {
 		schema.Error(c, 400, "VALIDATION_ERROR", "Cover file too large (max 5MB)")
+		return
+	}
+
+	// 验证文件类型
+	ct := header.Header.Get("Content-Type")
+	if ct != "" && ct != "image/jpeg" && ct != "image/png" && ct != "image/webp" && ct != "image/gif" {
+		schema.Error(c, 400, "VALIDATION_ERROR", "Invalid image type (allowed: jpeg, png, webp, gif)")
 		return
 	}
 
