@@ -8,6 +8,7 @@ import (
 	"github.com/lxpio/omnigram/server/service/reader"
 	"github.com/lxpio/omnigram/server/service/sys"
 	"github.com/lxpio/omnigram/server/service/user"
+	"github.com/lxpio/omnigram/server/service/opds"
 	"github.com/lxpio/omnigram/server/service/webdav"
 )
 
@@ -29,6 +30,7 @@ func Setup(router *gin.Engine) {
 	sys.Setup(router)
 	m4t.Setup(router)
 	webdav.Setup(router)
+	opds.Setup(router)
 }
 
 func Close() {
