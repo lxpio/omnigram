@@ -1,0 +1,21 @@
+{
+  "name": "omnigram-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "3.3.0",
+    "@astrojs/starlight": "0.33.2",
+    "@astrojs/tailwind": "^6.0.2",
+    "astro": "5.7.13",
+    "tailwindcss": "^3.4.19"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
