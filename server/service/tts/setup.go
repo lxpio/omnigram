@@ -14,6 +14,7 @@ import (
 )
 
 var manager *TTSManager
+var worker *AudiobookWorker
 
 // Initialize sets up the TTS providers based on config.
 func Initialize(ctx context.Context) {
@@ -42,6 +43,9 @@ func Initialize(ctx context.Context) {
 	}
 
 	manager = NewTTSManager(primary, fallback, timeout)
+
+	worker = NewAudiobookWorker(manager)
+	worker.Start()
 }
 
 // Setup registers TTS HTTP routes.
@@ -51,10 +55,22 @@ func Setup(router *gin.Engine) {
 	router.POST("/tts/synthesize", oauthMD, synthesizeHandler)
 	router.GET("/tts/voices", oauthMD, voicesHandler)
 	router.GET("/tts/health", oauthMD, healthHandler)
+
+	router.POST("/tts/audiobook/:book_id", oauthMD, createAudiobookHandler)
+	router.POST("/tts/audiobook/:book_id/chapter/:idx", oauthMD, createChapterHandler)
+	router.GET("/tts/tasks/:id", oauthMD, getTaskHandler)
+	router.GET("/tts/tasks/:id/stream", oauthMD, streamTaskHandler)
+	router.GET("/tts/audiobook/:book_id", oauthMD, getAudiobookHandler)
+	router.GET("/tts/audiobook/:book_id/:chapter", oauthMD, downloadChapterHandler)
+	router.DELETE("/tts/audiobook/:book_id", oauthMD, deleteAudiobookHandler)
 }
 
 // Close cleans up TTS resources.
-func Close() {}
+func Close() {
+	if worker != nil {
+		worker.Stop()
+	}
+}
 
 // synthesizeHandler handles text-to-speech synthesis requests.
 func synthesizeHandler(c *gin.Context) {
