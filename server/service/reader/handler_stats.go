@@ -10,6 +10,16 @@ import (
 )
 
 // recordSessionHandle POST /reader/sessions
+// @Summary Record reading session
+// @Description Record a completed reading session
+// @Tags Reader
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body schema.ReadingSession true "Reading session data"
+// @Success 200 {object} object{data=schema.ReadingSession}
+// @Failure 400 {object} schema.ErrorResponse
+// @Router /reader/sessions [post]
 func recordSessionHandle(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 
@@ -30,6 +40,13 @@ func recordSessionHandle(c *gin.Context) {
 }
 
 // statsOverviewHandle GET /reader/stats/overview
+// @Summary Reading stats overview
+// @Description Get overall reading statistics
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} object{data=object{total_books=int,total_reading_seconds=int,books_read=int}}
+// @Router /reader/stats/overview [get]
 func statsOverviewHandle(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 
@@ -50,6 +67,15 @@ func statsOverviewHandle(c *gin.Context) {
 }
 
 // statsDailyHandle GET /reader/stats/daily?from=2026-01-01&to=2026-03-21
+// @Summary Daily reading stats
+// @Description Get daily reading statistics for a date range
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Param from query string false "Start date (YYYY-MM-DD)"
+// @Param to query string false "End date (YYYY-MM-DD)"
+// @Success 200 {object} object{data=[]object{date=string,duration=int,sessions=int}}
+// @Router /reader/stats/daily [get]
 func statsDailyHandle(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 	from := c.Query("from")
@@ -79,6 +105,14 @@ func statsDailyHandle(c *gin.Context) {
 }
 
 // statsTopBooksHandle GET /reader/stats/books?limit=10
+// @Summary Top books by reading time
+// @Description Get most-read books ranked by total reading time
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Param limit query int false "Number of results (1-50)" default(10)
+// @Success 200 {object} object{data=[]object{book_id=string,title=string,author=string,duration=int,sessions=int}}
+// @Router /reader/stats/books [get]
 func statsTopBooksHandle(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))

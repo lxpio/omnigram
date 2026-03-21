@@ -6,7 +6,13 @@ import (
 	"github.com/lxpio/omnigram/server/utils"
 )
 
-// ScanStatus 获取当前扫描状态
+// @Summary Get scan status
+// @Description Get the current library scan status (admin only)
+// @Tags System
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} object{running=bool,count=int,last_scan_time=string}
+// @Router /sys/scan/status [get]
 func getScanStatusHandle(c *gin.Context) {
 	log.I(`获取当前扫描状态数据`)
 	states := manager.Status()
@@ -15,7 +21,13 @@ func getScanStatusHandle(c *gin.Context) {
 
 }
 
-// stopScan 停止当前扫描
+// @Summary Stop library scan
+// @Description Stop a running library scan (admin only)
+// @Tags System
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} object{running=bool,count=int}
+// @Router /sys/scan/stop [post]
 func stopScanHandle(c *gin.Context) {
 
 	log.I(`停止当前扫描`)
@@ -25,7 +37,16 @@ func stopScanHandle(c *gin.Context) {
 
 }
 
-// runScanHandle 执行目录扫描
+// @Summary Start library scan
+// @Description Start scanning the library directory for books (admin only)
+// @Tags System
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body object{refresh=bool,max_thread=int} true "Scan options"
+// @Success 200 {object} object{running=bool,count=int}
+// @Failure 400 {object} utils.Response
+// @Router /sys/scan/run [post]
 func runScanHandle(c *gin.Context) {
 
 	if manager.IsRunning() {

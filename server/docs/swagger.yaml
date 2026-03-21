@@ -1,0 +1,2739 @@
+basePath: /
+definitions:
+  conf.AIOptions:
+    properties:
+      api_key:
+        type: string
+      auto_metadata:
+        type: boolean
+      auto_summary:
+        type: boolean
+      base_url:
+        type: string
+      enabled:
+        type: boolean
+      model:
+        type: string
+      provider:
+        type: string
+    type: object
+  schema.APIToken:
+    properties:
+      api_key:
+        type: string
+      ctime:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  schema.Annotation:
+    properties:
+      book_id:
+        type: string
+      cfi:
+        type: string
+      chapter:
+        type: string
+      color:
+        type: string
+      content:
+        type: string
+      ctime:
+        type: integer
+      device_id:
+        type: string
+      id:
+        type: integer
+      page_number:
+        type: integer
+      position:
+        type: string
+      selected_text:
+        type: string
+      type:
+        $ref: '#/definitions/schema.AnnotationType'
+      user_id:
+        type: integer
+      utime:
+        type: integer
+    type: object
+  schema.AnnotationType:
+    enum:
+    - note
+    - highlight
+    - bookmark
+    type: string
+    x-enum-varnames:
+    - AnnotationNote
+    - AnnotationHighlight
+    - AnnotationBookmark
+  schema.Book:
+    properties:
+      asin:
+        type: string
+      author:
+        type: string
+      author_sort:
+        type: string
+      author_url:
+        type: string
+      category:
+        type: string
+      count_download:
+        type: integer
+      count_visit:
+        type: integer
+      cover_url:
+        type: string
+      ctime:
+        type: integer
+      description:
+        type: string
+      file_type:
+        $ref: '#/definitions/schema.FileType'
+      id:
+        type: string
+      identifier:
+        type: string
+      isbn:
+        type: string
+      language:
+        type: string
+      pubdate:
+        type: string
+      publisher:
+        description: Publisher identifies the publication's publisher.
+        type: string
+      publisher_url:
+        type: string
+      rating:
+        type: number
+      series:
+        description: Series is the series to which this book belongs to.
+        type: string
+      seriesIndex:
+        description: SeriesIndex is the position in the series to which the book belongs
+          to.
+        type: string
+      size:
+        type: integer
+      sub_title:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      utime:
+        type: integer
+      uuid:
+        type: string
+    type: object
+  schema.BookStats:
+    properties:
+      author:
+        type: integer
+      publisher:
+        type: integer
+      tag:
+        type: integer
+      total:
+        type: integer
+    type: object
+  schema.BookTagShip:
+    properties:
+      book_id:
+        type: string
+      id:
+        type: integer
+      tag:
+        type: string
+    type: object
+  schema.ErrorResponse:
+    properties:
+      code:
+        type: string
+      details: {}
+      message:
+        type: string
+    type: object
+  schema.FileType:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    type: integer
+    x-enum-varnames:
+    - UnkownFile
+    - EPUB
+    - AZW3
+    - MOBI
+    - PDF
+    - TXT
+    - MD
+  schema.ProgressBook:
+    properties:
+      asin:
+        type: string
+      author:
+        type: string
+      author_sort:
+        type: string
+      author_url:
+        type: string
+      category:
+        type: string
+      count_download:
+        type: integer
+      count_visit:
+        type: integer
+      cover_url:
+        type: string
+      ctime:
+        type: integer
+      description:
+        type: string
+      file_type:
+        $ref: '#/definitions/schema.FileType'
+      id:
+        type: string
+      identifier:
+        type: string
+      isbn:
+        type: string
+      language:
+        type: string
+      para_position:
+        type: integer
+      progress:
+        type: number
+      progress_index:
+        type: integer
+      pubdate:
+        type: string
+      publisher:
+        description: Publisher identifies the publication's publisher.
+        type: string
+      publisher_url:
+        type: string
+      rating:
+        type: number
+      series:
+        description: Series is the series to which this book belongs to.
+        type: string
+      seriesIndex:
+        description: SeriesIndex is the position in the series to which the book belongs
+          to.
+        type: string
+      size:
+        type: integer
+      sub_title:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      utime:
+        type: integer
+      uuid:
+        type: string
+    type: object
+  schema.ReadProgress:
+    properties:
+      book_id:
+        type: string
+      end_date:
+        type: integer
+      expt_end_date:
+        description: 预计完成日期
+        type: integer
+      id:
+        type: integer
+      para_position:
+        description: 段落定位
+        type: integer
+      progress:
+        type: number
+      progress_index:
+        type: integer
+      start_date:
+        type: integer
+      updated_at:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  schema.ReadingSession:
+    properties:
+      book_id:
+        type: string
+      device_id:
+        type: string
+      duration:
+        description: seconds
+        type: integer
+      end_time:
+        type: integer
+      id:
+        type: integer
+      pages_read:
+        type: integer
+      start_time:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  schema.Shelf:
+    properties:
+      book_count:
+        type: integer
+      cover_url:
+        type: string
+      ctime:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      sort_order:
+        type: integer
+      user_id:
+        type: integer
+      utime:
+        type: integer
+    type: object
+  schema.User:
+    properties:
+      atime:
+        type: integer
+      avatar_url:
+        type: string
+      credential:
+        type: string
+      ctime:
+        type: integer
+      email:
+        type: string
+      id:
+        type: integer
+      locked:
+        type: boolean
+      mfa_switch:
+        type: integer
+      mobile:
+        type: string
+      name:
+        type: string
+      nick_name:
+        type: string
+      role_id:
+        type: integer
+      utime:
+        type: integer
+      wx_unionid:
+        type: string
+    type: object
+  utils.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+host: localhost:9527
+info:
+  contact: {}
+  description: Omnigram - AI-native self-hosted book library management service
+  title: Omnigram API
+  version: 0.1.0
+paths:
+  /admin/accounts:
+    get:
+      description: List all user accounts (admin only)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              items:
+                items:
+                  $ref: '#/definitions/schema.User'
+                type: array
+              total:
+                type: integer
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: List accounts
+      tags:
+      - Admin
+    post:
+      consumes:
+      - application/json
+      description: Create a new user account (admin only)
+      parameters:
+      - description: Account details
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+            password:
+              type: string
+            user_name:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Create account
+      tags:
+      - Admin
+  /admin/accounts/{user_id}:
+    delete:
+      description: Delete a user account (admin only, cannot delete self)
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Delete account
+      tags:
+      - Admin
+    get:
+      description: Get a specific user account by ID (admin only)
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.User'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Get account details
+      tags:
+      - Admin
+  /auth/accounts/{user_id}/apikeys:
+    get:
+      description: Get all API keys for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/schema.APIToken'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: List API keys
+      tags:
+      - Auth
+    post:
+      description: Generate a new API key for the authenticated user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.APIToken'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Create API key
+      tags:
+      - Auth
+  /auth/accounts/{user_id}/apikeys/{key_id}:
+    delete:
+      description: Delete an existing API key
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: API Key ID
+        in: path
+        name: key_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Delete API key
+      tags:
+      - Auth
+  /auth/accounts/{user_id}/reset:
+    post:
+      consumes:
+      - application/json
+      description: Reset user password (self or admin)
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: New password
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            code:
+              type: string
+            new_password:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Reset password
+      tags:
+      - Auth
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login with account credentials, sets session cookie on success
+      parameters:
+      - description: Login credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            account:
+              type: string
+            client_id:
+              type: string
+            grant_type:
+              type: string
+            password:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: User login
+      tags:
+      - Auth
+  /auth/logout:
+    post:
+      description: Logout current session and clear cookie
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: User logout
+      tags:
+      - Auth
+  /auth/token:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate and get a Bearer access token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            account:
+              type: string
+            device_id:
+              type: string
+            grant_type:
+              type: string
+            password:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              access_token:
+                type: string
+              expired_in:
+                type: integer
+              refresh_token:
+                type: string
+              token_type:
+                type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Get access token
+      tags:
+      - Auth
+  /auth/token/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Refresh an expired access token using a refresh token
+      parameters:
+      - description: Refresh token request
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            account:
+              type: string
+            device_id:
+              type: string
+            refresh_token:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              access_token:
+                type: string
+              expired_in:
+                type: integer
+              refresh_token:
+                type: string
+              token_type:
+                type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Refresh access token
+      tags:
+      - Auth
+  /img/covers/{book_cover_path}:
+    get:
+      description: Retrieve a book cover image by path
+      parameters:
+      - description: Cover image path
+        in: path
+        name: book_cover_path
+        required: true
+        type: string
+      produces:
+      - image/jpeg
+      responses:
+        "200":
+          description: Cover image
+          schema:
+            type: file
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Get book cover image
+      tags:
+      - Reader
+  /m4t/tts/speakers:
+    get:
+      description: Get available TTS voice speakers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                type: array
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: List TTS speakers
+      tags:
+      - TTS
+    post:
+      consumes:
+      - application/json
+      description: Upload and register a new TTS speaker voice
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                type: object
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Add TTS speaker
+      tags:
+      - TTS
+  /m4t/tts/speakers/{audio_id}:
+    delete:
+      description: Remove a TTS speaker voice
+      parameters:
+      - description: Speaker audio ID
+        in: path
+        name: audio_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              success:
+                type: boolean
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Delete TTS speaker
+      tags:
+      - TTS
+  /m4t/tts/stream:
+    post:
+      consumes:
+      - application/json
+      description: Synthesize text to speech with streaming audio output
+      parameters:
+      - description: TTS request
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            audio_id:
+              type: string
+            format:
+              type: integer
+            lang:
+              type: string
+            text:
+              type: string
+          type: object
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: Audio stream
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Stream TTS synthesis
+      tags:
+      - TTS
+  /opds:
+    get:
+      description: Get the OPDS root catalog feed
+      produces:
+      - application/atom+xml
+      responses:
+        "200":
+          description: OPDS Atom feed
+          schema:
+            type: string
+      summary: OPDS root catalog
+      tags:
+      - OPDS
+  /opds/authors:
+    get:
+      description: Get all authors as OPDS navigation feed
+      produces:
+      - application/atom+xml
+      responses:
+        "200":
+          description: OPDS Atom feed
+          schema:
+            type: string
+      summary: OPDS authors list
+      tags:
+      - OPDS
+  /opds/authors/{name}:
+    get:
+      description: Get books by a specific author as OPDS feed
+      parameters:
+      - description: Author name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/atom+xml
+      responses:
+        "200":
+          description: OPDS Atom feed
+          schema:
+            type: string
+      summary: OPDS books by author
+      tags:
+      - OPDS
+  /opds/download/{book_id}:
+    get:
+      description: Download a book file via OPDS
+      parameters:
+      - description: Book ID
+        in: path
+        name: book_id
+        required: true
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: Book file
+          schema:
+            type: file
+      summary: OPDS download book
+      tags:
+      - OPDS
+  /opds/new:
+    get:
+      description: Get recently added books as OPDS feed
+      produces:
+      - application/atom+xml
+      responses:
+        "200":
+          description: OPDS Atom feed
+          schema:
+            type: string
+      summary: OPDS new books
+      tags:
+      - OPDS
+  /opds/popular:
+    get:
+      description: Get popular books as OPDS feed
+      produces:
+      - application/atom+xml
+      responses:
+        "200":
+          description: OPDS Atom feed
+          schema:
+            type: string
+      summary: OPDS popular books
+      tags:
+      - OPDS
+  /opds/search:
+    get:
+      description: Search books via OPDS feed
+      parameters:
+      - description: Search query
+        in: query
+        name: q
+        required: true
+        type: string
+      produces:
+      - application/atom+xml
+      responses:
+        "200":
+          description: OPDS Atom feed
+          schema:
+            type: string
+      summary: OPDS search
+      tags:
+      - OPDS
+  /opds/shelves:
+    get:
+      description: Get all shelves as OPDS navigation feed
+      produces:
+      - application/atom+xml
+      responses:
+        "200":
+          description: OPDS Atom feed
+          schema:
+            type: string
+      summary: OPDS shelves list
+      tags:
+      - OPDS
+  /opds/shelves/{shelf_id}:
+    get:
+      description: Get books in a specific shelf as OPDS feed
+      parameters:
+      - description: Shelf ID
+        in: path
+        name: shelf_id
+        required: true
+        type: integer
+      produces:
+      - application/atom+xml
+      responses:
+        "200":
+          description: OPDS Atom feed
+          schema:
+            type: string
+      summary: OPDS shelf books
+      tags:
+      - OPDS
+  /opds/tags/{tag}:
+    get:
+      description: Get books with a specific tag as OPDS feed
+      parameters:
+      - description: Tag name
+        in: path
+        name: tag
+        required: true
+        type: string
+      produces:
+      - application/atom+xml
+      responses:
+        "200":
+          description: OPDS Atom feed
+          schema:
+            type: string
+      summary: OPDS books by tag
+      tags:
+      - OPDS
+  /reader/books:
+    get:
+      description: Search books by query parameters
+      parameters:
+      - description: Search keyword
+        in: query
+        name: search
+        type: string
+      - description: Category filter
+        in: query
+        name: category
+        type: string
+      - description: Author filter
+        in: query
+        name: author
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/schema.Book'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Search books
+      tags:
+      - Reader
+  /reader/books/{book_id}:
+    delete:
+      description: Delete a book and optionally its file
+      parameters:
+      - description: Book ID
+        in: path
+        name: book_id
+        required: true
+        type: string
+      - default: false
+        description: Also delete the physical file
+        in: query
+        name: delete_file
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                properties:
+                  deleted:
+                    type: boolean
+                  id:
+                    type: string
+                type: object
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete book
+      tags:
+      - Reader
+    get:
+      description: Get detailed information about a specific book
+      parameters:
+      - description: Book ID
+        in: path
+        name: book_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.Book'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Get book details
+      tags:
+      - Reader
+    put:
+      consumes:
+      - application/json
+      description: Update book metadata fields (title, author, description, etc.)
+      parameters:
+      - description: Book ID
+        in: path
+        name: book_id
+        required: true
+        type: string
+      - description: Book metadata
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            author:
+              type: string
+            description:
+              type: string
+            language:
+              type: string
+            publish_date:
+              type: string
+            publisher:
+              type: string
+            rating:
+              type: number
+            series:
+              type: string
+            series_index:
+              type: integer
+            tags:
+              items:
+                type: string
+              type: array
+            title:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/schema.Book'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update book metadata
+      tags:
+      - Reader
+  /reader/books/{book_id}/annotations:
+    get:
+      description: Get all annotations for a book
+      parameters:
+      - description: Book ID
+        in: path
+        name: book_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/schema.Annotation'
+                type: array
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List annotations
+      tags:
+      - Reader
+    post:
+      consumes:
+      - application/json
+      description: Create a new annotation (highlight, note, or bookmark)
+      parameters:
+      - description: Book ID
+        in: path
+        name: book_id
+        required: true
+        type: string
+      - description: Annotation details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schema.Annotation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/schema.Annotation'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create annotation
+      tags:
+      - Reader
+  /reader/books/{book_id}/annotations/{annotation_id}:
+    delete:
+      description: Delete an annotation
+      parameters:
+      - description: Book ID
+        in: path
+        name: book_id
+        required: true
+        type: string
+      - description: Annotation ID
+        in: path
+        name: annotation_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                properties:
+                  deleted:
+                    type: boolean
+                  id:
+                    type: integer
+                type: object
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete annotation
+      tags:
+      - Reader
+    put:
+      consumes:
+      - application/json
+      description: Update an existing annotation
+      parameters:
+      - description: Book ID
+        in: path
+        name: book_id
+        required: true
+        type: string
+      - description: Annotation ID
+        in: path
+        name: annotation_id
+        required: true
+        type: integer
+      - description: Annotation fields to update
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            cfi:
+              type: string
+            chapter:
+              type: string
+            color:
+              type: string
+            content:
+              type: string
+            page_number:
+              type: integer
+            position:
+              type: number
+            selected_text:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/schema.Annotation'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update annotation
+      tags:
+      - Reader
+  /reader/books/{book_id}/cover:
+    put:
+      consumes:
+      - multipart/form-data
+      description: Upload a custom cover image for a book (max 5MB, jpg/png/webp/gif)
+      parameters:
+      - description: Book ID
+        in: path
+        name: book_id
+        required: true
+        type: string
+      - description: Cover image file
+        in: formData
+        name: cover
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                properties:
+                  cover_url:
+                    type: string
+                type: object
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Upload book cover
+      tags:
+      - Reader
+  /reader/books/{book_id}/progress:
+    get:
+      description: Get user's reading progress for a specific book
+      parameters:
+      - description: Book ID
+        in: path
+        name: book_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.ReadProgress'
+      security:
+      - BearerAuth: []
+      summary: Get reading progress
+      tags:
+      - Reader
+    put:
+      consumes:
+      - application/json
+      description: Update user's reading progress for a specific book
+      parameters:
+      - description: Book ID
+        in: path
+        name: book_id
+        required: true
+        type: string
+      - description: Reading progress
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schema.ReadProgress'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.ReadProgress'
+      security:
+      - BearerAuth: []
+      summary: Update reading progress
+      tags:
+      - Reader
+  /reader/books/{book_id}/rating:
+    put:
+      consumes:
+      - application/json
+      description: Set a rating for a book (0-5)
+      parameters:
+      - description: Book ID
+        in: path
+        name: book_id
+        required: true
+        type: string
+      - description: Book rating (0-5)
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            rating:
+              type: number
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                properties:
+                  book_id:
+                    type: string
+                  rating:
+                    type: number
+                type: object
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Rate book
+      tags:
+      - Reader
+  /reader/books/batch/delete:
+    post:
+      consumes:
+      - application/json
+      description: Delete multiple books at once (admin only)
+      parameters:
+      - description: Books to delete
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            book_ids:
+              items:
+                type: string
+              type: array
+            delete_files:
+              type: boolean
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                properties:
+                  deleted:
+                    type: integer
+                type: object
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Batch delete books
+      tags:
+      - Reader
+  /reader/books/batch/shelf:
+    post:
+      consumes:
+      - application/json
+      description: Add or remove multiple books from a shelf
+      parameters:
+      - description: 'Batch shelf operation (action: add/remove)'
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            action:
+              type: string
+            book_ids:
+              items:
+                type: string
+              type: array
+            shelf_id:
+              type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                properties:
+                  updated:
+                    type: integer
+                type: object
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Batch shelf operation
+      tags:
+      - Reader
+  /reader/books/batch/tag:
+    post:
+      consumes:
+      - application/json
+      description: Add, remove, or set tags on multiple books
+      parameters:
+      - description: 'Batch tag operation (action: add/remove/set)'
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            action:
+              type: string
+            book_ids:
+              items:
+                type: string
+              type: array
+            tags:
+              items:
+                type: string
+              type: array
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                properties:
+                  updated:
+                    type: integer
+                type: object
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Batch tag books
+      tags:
+      - Reader
+  /reader/download/books/{book_id}:
+    get:
+      description: Download the original book file
+      parameters:
+      - description: Book ID
+        in: path
+        name: book_id
+        required: true
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: Book file
+          schema:
+            type: file
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Download book
+      tags:
+      - Reader
+  /reader/fav:
+    get:
+      description: Get user's favorite books with reading progress
+      parameters:
+      - default: 10
+        description: Number of results
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/schema.ProgressBook'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Get favorite books
+      tags:
+      - Reader
+  /reader/index:
+    get:
+      description: Get homepage data with random and recent books
+      parameters:
+      - default: 6
+        description: Number of random books
+        in: query
+        name: random
+        type: integer
+      - default: 12
+        description: Number of recent books
+        in: query
+        name: recent
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              random:
+                items:
+                  $ref: '#/definitions/schema.Book'
+                type: array
+              recent:
+                items:
+                  $ref: '#/definitions/schema.Book'
+                type: array
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get library index
+      tags:
+      - Reader
+  /reader/personal:
+    get:
+      description: Get user's reading and liked books
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              likes:
+                items:
+                  $ref: '#/definitions/schema.ProgressBook'
+                type: array
+              readings:
+                items:
+                  $ref: '#/definitions/schema.ProgressBook'
+                type: array
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get personal books
+      tags:
+      - Reader
+  /reader/recent:
+    get:
+      description: Get recently added or read books
+      parameters:
+      - default: 12
+        description: Number of books to return
+        in: query
+        name: recent
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/schema.Book'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Get recent books
+      tags:
+      - Reader
+  /reader/search:
+    get:
+      description: Search books with advanced filters and pagination
+      parameters:
+      - description: Search query
+        in: query
+        name: q
+        type: string
+      - description: File format filter (epub, pdf, mobi)
+        in: query
+        name: format
+        type: string
+      - description: Language filter
+        in: query
+        name: language
+        type: string
+      - description: Tag filter
+        in: query
+        name: tag
+        type: string
+      - description: Author filter
+        in: query
+        name: author
+        type: string
+      - default: ctime
+        description: Sort field (ctime, title, author, rating)
+        in: query
+        name: sort
+        type: string
+      - default: desc
+        description: Sort order (asc, desc)
+        in: query
+        name: order
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: Page size (1-100)
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/schema.Book'
+                type: array
+              page:
+                type: integer
+              page_size:
+                type: integer
+              total:
+                type: integer
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Enhanced search
+      tags:
+      - Reader
+  /reader/sessions:
+    post:
+      consumes:
+      - application/json
+      description: Record a completed reading session
+      parameters:
+      - description: Reading session data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schema.ReadingSession'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/schema.ReadingSession'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Record reading session
+      tags:
+      - Reader
+  /reader/shelves:
+    get:
+      description: Get all shelves for the current user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/schema.Shelf'
+                type: array
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List shelves
+      tags:
+      - Reader
+    post:
+      consumes:
+      - application/json
+      description: Create a new book shelf
+      parameters:
+      - description: Shelf details
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            cover_url:
+              type: string
+            description:
+              type: string
+            name:
+              type: string
+            sort_order:
+              type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/schema.Shelf'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create shelf
+      tags:
+      - Reader
+  /reader/shelves/{shelf_id}:
+    delete:
+      description: Delete a book shelf
+      parameters:
+      - description: Shelf ID
+        in: path
+        name: shelf_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                properties:
+                  deleted:
+                    type: boolean
+                  id:
+                    type: integer
+                type: object
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete shelf
+      tags:
+      - Reader
+    get:
+      description: Get shelf details with its books
+      parameters:
+      - description: Shelf ID
+        in: path
+        name: shelf_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                properties:
+                  books:
+                    items:
+                      $ref: '#/definitions/schema.Book'
+                    type: array
+                  shelf:
+                    $ref: '#/definitions/schema.Shelf'
+                type: object
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get shelf details
+      tags:
+      - Reader
+    put:
+      consumes:
+      - application/json
+      description: Update shelf details
+      parameters:
+      - description: Shelf ID
+        in: path
+        name: shelf_id
+        required: true
+        type: integer
+      - description: Shelf details
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            cover_url:
+              type: string
+            description:
+              type: string
+            name:
+              type: string
+            sort_order:
+              type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/schema.Shelf'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update shelf
+      tags:
+      - Reader
+  /reader/shelves/{shelf_id}/books:
+    delete:
+      consumes:
+      - application/json
+      description: Remove one or more books from a shelf
+      parameters:
+      - description: Shelf ID
+        in: path
+        name: shelf_id
+        required: true
+        type: integer
+      - description: Book IDs to remove
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            book_ids:
+              items:
+                type: string
+              type: array
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                properties:
+                  removed:
+                    type: integer
+                type: object
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Remove books from shelf
+      tags:
+      - Reader
+    post:
+      consumes:
+      - application/json
+      description: Add one or more books to a shelf
+      parameters:
+      - description: Shelf ID
+        in: path
+        name: shelf_id
+        required: true
+        type: integer
+      - description: Book IDs to add
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            book_ids:
+              items:
+                type: string
+              type: array
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                properties:
+                  added:
+                    type: integer
+                type: object
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Add books to shelf
+      tags:
+      - Reader
+  /reader/stats:
+    get:
+      description: Get aggregated library statistics
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.BookStats'
+      security:
+      - BearerAuth: []
+      summary: Get book statistics
+      tags:
+      - Reader
+  /reader/stats/books:
+    get:
+      description: Get most-read books ranked by total reading time
+      parameters:
+      - default: 10
+        description: Number of results (1-50)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    author:
+                      type: string
+                    book_id:
+                      type: string
+                    duration:
+                      type: integer
+                    sessions:
+                      type: integer
+                    title:
+                      type: string
+                  type: object
+                type: array
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Top books by reading time
+      tags:
+      - Reader
+  /reader/stats/daily:
+    get:
+      description: Get daily reading statistics for a date range
+      parameters:
+      - description: Start date (YYYY-MM-DD)
+        in: query
+        name: from
+        type: string
+      - description: End date (YYYY-MM-DD)
+        in: query
+        name: to
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    date:
+                      type: string
+                    duration:
+                      type: integer
+                    sessions:
+                      type: integer
+                  type: object
+                type: array
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Daily reading stats
+      tags:
+      - Reader
+  /reader/stats/overview:
+    get:
+      description: Get overall reading statistics
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                properties:
+                  books_read:
+                    type: integer
+                  total_books:
+                    type: integer
+                  total_reading_seconds:
+                    type: integer
+                type: object
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Reading stats overview
+      tags:
+      - Reader
+  /reader/tags:
+    get:
+      description: Get all tags with book counts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              properties:
+                count:
+                  type: integer
+                tag:
+                  type: string
+              type: object
+            type: array
+      security:
+      - BearerAuth: []
+      summary: List tags
+      tags:
+      - Reader
+    post:
+      consumes:
+      - application/json
+      description: Create a new tag, optionally associate with a book
+      parameters:
+      - description: Tag details
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            book_id:
+              type: string
+            tag:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/schema.BookTagShip'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create tag
+      tags:
+      - Reader
+  /reader/tags/{tag_id}:
+    delete:
+      description: Delete a tag by name
+      parameters:
+      - description: Tag name
+        in: path
+        name: tag_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                properties:
+                  deleted:
+                    type: boolean
+                  tag:
+                    type: string
+                type: object
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete tag
+      tags:
+      - Reader
+  /reader/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload a new book file (EPUB, PDF, etc.)
+      parameters:
+      - description: Book file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Upload book
+      tags:
+      - Reader
+  /sync/annotations:
+    post:
+      consumes:
+      - application/json
+      description: Synchronize annotations across devices
+      parameters:
+      - description: Sync request
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            annotations:
+              items:
+                $ref: '#/definitions/schema.Annotation'
+              type: array
+            device_id:
+              type: string
+            last_sync_time:
+              type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                properties:
+                  annotations:
+                    items:
+                      $ref: '#/definitions/schema.Annotation'
+                    type: array
+                  sync_time:
+                    type: integer
+                  synced:
+                    type: integer
+                type: object
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Sync annotations
+      tags:
+      - Sync
+  /sync/delta:
+    post:
+      consumes:
+      - application/json
+      description: Get books updated since a given timestamp
+      parameters:
+      - description: Delta sync parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            file_type:
+              type: string
+            limit:
+              type: integer
+            utime:
+              type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              books:
+                items:
+                  $ref: '#/definitions/schema.Book'
+                type: array
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delta data sync
+      tags:
+      - Sync
+  /sync/full:
+    post:
+      consumes:
+      - application/json
+      description: Synchronize all book data via SSE stream
+      parameters:
+      - description: Sync parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            file_type:
+              type: string
+            limit:
+              type: integer
+            until:
+              type: integer
+          type: object
+      produces:
+      - text/event-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              books:
+                items:
+                  $ref: '#/definitions/schema.Book'
+                type: array
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Full data sync
+      tags:
+      - Sync
+  /sys/ai/config:
+    put:
+      consumes:
+      - application/json
+      description: Update AI service configuration (admin only)
+      parameters:
+      - description: AI configuration
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/conf.AIOptions'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/conf.AIOptions'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update AI configuration
+      tags:
+      - AI
+  /sys/ai/status:
+    get:
+      description: Check if the AI service is enabled and configured
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                properties:
+                  enabled:
+                    type: boolean
+                  model:
+                    type: string
+                  provider:
+                    type: string
+                  status:
+                    type: string
+                type: object
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get AI service status
+      tags:
+      - AI
+  /sys/info:
+    get:
+      description: Get system configuration and status information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              architecture:
+                type: string
+              disk_usage:
+                type: object
+              docs_data_path:
+                type: string
+              system:
+                type: string
+              version:
+                type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get system info
+      tags:
+      - System
+    put:
+      consumes:
+      - application/json
+      description: Update system configuration (admin only)
+      parameters:
+      - description: System config
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            m4t_server_addr:
+              type: string
+            openai_apikey:
+              type: string
+            openai_url:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              system:
+                type: string
+              version:
+                type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Update system config
+      tags:
+      - System
+  /sys/ping:
+    get:
+      description: Check if the server is responsive
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              architecture:
+                type: string
+              system:
+                type: string
+              version:
+                type: string
+            type: object
+      summary: System heartbeat
+      tags:
+      - System
+  /sys/scan/run:
+    post:
+      consumes:
+      - application/json
+      description: Start scanning the library directory for books (admin only)
+      parameters:
+      - description: Scan options
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            max_thread:
+              type: integer
+            refresh:
+              type: boolean
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              count:
+                type: integer
+              running:
+                type: boolean
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Start library scan
+      tags:
+      - System
+  /sys/scan/status:
+    get:
+      description: Get the current library scan status (admin only)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              count:
+                type: integer
+              last_scan_time:
+                type: string
+              running:
+                type: boolean
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get scan status
+      tags:
+      - System
+  /sys/scan/stop:
+    post:
+      description: Stop a running library scan (admin only)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              count:
+                type: integer
+              running:
+                type: boolean
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Stop library scan
+      tags:
+      - System
+  /user/userinfo:
+    get:
+      description: Get information about the currently authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.User'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Get current user info
+      tags:
+      - User
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+  CookieAuth:
+    in: cookie
+    name: _omnigram_session
+    type: apiKey
+swagger: "2.0"

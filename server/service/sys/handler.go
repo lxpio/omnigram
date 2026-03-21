@@ -36,7 +36,13 @@ type ServerConfig struct {
 	OpenAIApiKey  string `json:"openai_apikey,omitempty"`
 }
 
-// getSysInfoHandle get sys info
+// @Summary Get system info
+// @Description Get system configuration and status information
+// @Tags System
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} object{version=string,system=string,architecture=string,docs_data_path=string,disk_usage=object}
+// @Router /sys/info [get]
 func getSysInfoHandle(c *gin.Context) {
 
 	// mng := epub.GetManager()
@@ -59,6 +65,12 @@ func getSysInfoHandle(c *gin.Context) {
 
 }
 
+// @Summary System heartbeat
+// @Description Check if the server is responsive
+// @Tags System
+// @Produce json
+// @Success 200 {object} object{version=string,system=string,architecture=string}
+// @Router /sys/ping [get]
 func getSysPingHandle(c *gin.Context) {
 	info := &ServerConfig{
 		Version:      conf.Version,
@@ -69,6 +81,16 @@ func getSysPingHandle(c *gin.Context) {
 	c.JSON(http.StatusOK, info)
 }
 
+// @Summary Update system config
+// @Description Update system configuration (admin only)
+// @Tags System
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body object{m4t_server_addr=string,openai_url=string,openai_apikey=string} true "System config"
+// @Success 200 {object} object{version=string,system=string}
+// @Failure 400 {object} utils.Response
+// @Router /sys/info [put]
 func updateSysInfoHandle(c *gin.Context) {
 
 	// mng := epub.GetManager()

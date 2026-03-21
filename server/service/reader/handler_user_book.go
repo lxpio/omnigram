@@ -23,6 +23,15 @@ import (
  * @apiSuccess {String} refresh_token  Issued if the original scope parameter included offline_access.
  * @apiSuccess {String} access_token   Issued for the scopes that were requested.
  */
+// @Summary Get favorite books
+// @Description Get user's favorite books with reading progress
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Param limit query int false "Number of results" default(10)
+// @Param offset query int false "Offset for pagination" default(0)
+// @Success 200 {array} schema.ProgressBook
+// @Router /reader/fav [get]
 func FavBookHandle(c *gin.Context) {
 
 	userID := c.GetInt64(middleware.XUserIDTag)
@@ -63,6 +72,13 @@ func FavBookHandle(c *gin.Context) {
  * @apiSuccess {String} refresh_token  Issued if the original scope parameter included offline_access.
  * @apiSuccess {String} access_token   Issued for the scopes that were requested.
  */
+// @Summary Get personal books
+// @Description Get user's reading and liked books
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} object{readings=[]schema.ProgressBook,likes=[]schema.ProgressBook}
+// @Router /reader/personal [get]
 func PersonalBooksHandle(c *gin.Context) {
 
 	userID := c.GetInt64(middleware.XUserIDTag)
@@ -91,6 +107,14 @@ func PersonalBooksHandle(c *gin.Context) {
 }
 
 // 获取个人阅读进度
+// @Summary Get reading progress
+// @Description Get user's reading progress for a specific book
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Param book_id path string true "Book ID"
+// @Success 200 {object} schema.ReadProgress
+// @Router /reader/books/{book_id}/progress [get]
 func getReadBookHandle(c *gin.Context) {
 	id := c.Param(`book_id`)
 	if id == `` {
@@ -120,6 +144,16 @@ func getReadBookHandle(c *gin.Context) {
 
 }
 
+// @Summary Update reading progress
+// @Description Update user's reading progress for a specific book
+// @Tags Reader
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param book_id path string true "Book ID"
+// @Param request body schema.ReadProgress true "Reading progress"
+// @Success 200 {object} schema.ReadProgress
+// @Router /reader/books/{book_id}/progress [put]
 func updateReadBookHandle(c *gin.Context) {
 
 	id := c.Param(`book_id`)

@@ -25,6 +25,35 @@ var (
 	initFlag bool
 )
 
+// @title Omnigram API
+// @version 0.1.0
+// @description Omnigram - AI-native self-hosted book library management service
+// @host localhost:9527
+// @BasePath /
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @securityDefinitions.apikey CookieAuth
+// @in cookie
+// @name _omnigram_session
+// @tag.name Auth
+// @tag.description Authentication and session management
+// @tag.name User
+// @tag.description User information
+// @tag.name Admin
+// @tag.description Admin account management
+// @tag.name Reader
+// @tag.description Book library management
+// @tag.name Sync
+// @tag.description Data synchronization
+// @tag.name System
+// @tag.description System configuration and scanning
+// @tag.name TTS
+// @tag.description Text-to-speech services
+// @tag.name AI
+// @tag.description AI configuration and status
+// @tag.name OPDS
+// @tag.description OPDS catalog feed
 func main() {
 
 	flag.BoolVar(&showVersion, "version", false, "show build version.")

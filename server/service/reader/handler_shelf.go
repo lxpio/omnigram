@@ -12,6 +12,13 @@ import (
 )
 
 // listShelvesHandle GET /reader/shelves
+// @Summary List shelves
+// @Description Get all shelves for the current user
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} object{data=[]schema.Shelf}
+// @Router /reader/shelves [get]
 func listShelvesHandle(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 
@@ -32,6 +39,16 @@ func listShelvesHandle(c *gin.Context) {
 }
 
 // createShelfHandle POST /reader/shelves
+// @Summary Create shelf
+// @Description Create a new book shelf
+// @Tags Reader
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body object{name=string,description=string,cover_url=string,sort_order=int} true "Shelf details"
+// @Success 200 {object} object{data=schema.Shelf}
+// @Failure 400 {object} schema.ErrorResponse
+// @Router /reader/shelves [post]
 func createShelfHandle(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 
@@ -63,6 +80,15 @@ func createShelfHandle(c *gin.Context) {
 }
 
 // getShelfHandle GET /reader/shelves/:shelf_id
+// @Summary Get shelf details
+// @Description Get shelf details with its books
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Param shelf_id path int true "Shelf ID"
+// @Success 200 {object} object{data=object{shelf=schema.Shelf,books=[]schema.Book}}
+// @Failure 404 {object} schema.ErrorResponse
+// @Router /reader/shelves/{shelf_id} [get]
 func getShelfHandle(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 	shelfID, err := strconv.ParseInt(c.Param("shelf_id"), 10, 64)
@@ -89,6 +115,18 @@ func getShelfHandle(c *gin.Context) {
 }
 
 // updateShelfHandle PUT /reader/shelves/:shelf_id
+// @Summary Update shelf
+// @Description Update shelf details
+// @Tags Reader
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param shelf_id path int true "Shelf ID"
+// @Param request body object{name=string,description=string,cover_url=string,sort_order=int} true "Shelf details"
+// @Success 200 {object} object{data=schema.Shelf}
+// @Failure 400 {object} schema.ErrorResponse
+// @Failure 404 {object} schema.ErrorResponse
+// @Router /reader/shelves/{shelf_id} [put]
 func updateShelfHandle(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 	shelfID := c.Param("shelf_id")
@@ -131,6 +169,15 @@ func updateShelfHandle(c *gin.Context) {
 }
 
 // deleteShelfHandle DELETE /reader/shelves/:shelf_id
+// @Summary Delete shelf
+// @Description Delete a book shelf
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Param shelf_id path int true "Shelf ID"
+// @Success 200 {object} object{data=object{id=int,deleted=bool}}
+// @Failure 404 {object} schema.ErrorResponse
+// @Router /reader/shelves/{shelf_id} [delete]
 func deleteShelfHandle(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 	shelfID := c.Param("shelf_id")
@@ -150,6 +197,17 @@ func deleteShelfHandle(c *gin.Context) {
 }
 
 // addBooksToShelfHandle POST /reader/shelves/:shelf_id/books
+// @Summary Add books to shelf
+// @Description Add one or more books to a shelf
+// @Tags Reader
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param shelf_id path int true "Shelf ID"
+// @Param request body object{book_ids=[]string} true "Book IDs to add"
+// @Success 200 {object} object{data=object{added=int}}
+// @Failure 400 {object} schema.ErrorResponse
+// @Router /reader/shelves/{shelf_id}/books [post]
 func addBooksToShelfHandle(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 	shelfID, err := strconv.ParseInt(c.Param("shelf_id"), 10, 64)
@@ -188,6 +246,17 @@ func addBooksToShelfHandle(c *gin.Context) {
 }
 
 // removeBooksFromShelfHandle DELETE /reader/shelves/:shelf_id/books
+// @Summary Remove books from shelf
+// @Description Remove one or more books from a shelf
+// @Tags Reader
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param shelf_id path int true "Shelf ID"
+// @Param request body object{book_ids=[]string} true "Book IDs to remove"
+// @Success 200 {object} object{data=object{removed=int}}
+// @Failure 400 {object} schema.ErrorResponse
+// @Router /reader/shelves/{shelf_id}/books [delete]
 func removeBooksFromShelfHandle(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 	shelfID := c.Param("shelf_id")
