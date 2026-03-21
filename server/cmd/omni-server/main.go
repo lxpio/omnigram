@@ -11,7 +11,6 @@ import (
 	"github.com/lxpio/omnigram/server"
 	"github.com/lxpio/omnigram/server/conf"
 	"github.com/lxpio/omnigram/server/log"
-	"github.com/lxpio/omnigram/server/store"
 )
 
 var (
@@ -97,7 +96,7 @@ func main() {
 
 	if *importCalibreFlag != "" {
 		server.InitServerData(ctx)
-		importCalibre(*importCalibreFlag, cf.EpubOptions.DataPath, store.FileStore())
+		importCalibre(*importCalibreFlag, cf.EpubOptions.DataPath)
 		os.Exit(0)
 	} else if initFlag {
 		server.InitServerData(ctx)

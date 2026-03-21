@@ -3463,6 +3463,57 @@
                 }
             }
         },
+        "/sys/import/calibre": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Import books from a Calibre library directory (admin only). Reads metadata.db and copies book files.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "Import Calibre library",
+                "parameters": [
+                    {
+                        "description": "Calibre library path",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/sys.CalibreImportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/sys.CalibreImportResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/sys/info": {
             "get": {
                 "security": [
@@ -4011,7 +4062,8 @@
                 3,
                 4,
                 5,
-                6
+                6,
+                7
             ],
             "x-enum-varnames": [
                 "UnkownFile",
@@ -4020,7 +4072,8 @@
                 "MOBI",
                 "PDF",
                 "TXT",
-                "MD"
+                "MD",
+                "FB2"
             ]
         },
         "schema.ProgressBook": {
@@ -4267,6 +4320,40 @@
                 },
                 "wx_unionid": {
                     "type": "string"
+                }
+            }
+        },
+        "sys.CalibreImportRequest": {
+            "type": "object",
+            "required": [
+                "calibre_path"
+            ],
+            "properties": {
+                "calibre_path": {
+                    "type": "string"
+                }
+            }
+        },
+        "sys.CalibreImportResult": {
+            "type": "object",
+            "properties": {
+                "errors": {
+                    "type": "integer"
+                },
+                "imported": {
+                    "type": "integer"
+                },
+                "messages": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "skipped": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },

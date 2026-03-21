@@ -4,11 +4,14 @@ import (
 	"bytes"
 	"context"
 	"crypto/md5"
+	"crypto/rand"
+	"encoding/base64"
+	"encoding/binary"
 	"encoding/hex"
+	"encoding/xml"
 	"errors"
 	"fmt"
-	"crypto/rand"
-	"encoding/binary"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -19,6 +22,7 @@ import (
 	"github.com/lxpio/omnigram/server/utils"
 	"github.com/nexptr/epub"
 	pdfapi "github.com/pdfcpu/pdfcpu/pkg/api"
+	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -45,6 +49,9 @@ const (
 
 	// MD represents the markdown file type.
 	MD
+
+	// FB2 represents the FictionBook 2 file type.
+	FB2
 )
 
 func ParseFileType(filename string) FileType {
@@ -61,6 +68,8 @@ func ParseFileType(filename string) FileType {
 		return TXT
 	case ".md", ".markdown":
 		return MD
+	case ".fb2":
+		return FB2
 	default:
 		return UnkownFile
 	}
@@ -389,6 +398,10 @@ func (book *Book) GetCoverData() []byte {
 	return book.coverData
 }
 
+func (book *Book) SetCoverData(data []byte) {
+	book.coverData = data
+}
+
 func (book *Book) IsDuplicate(id string) bool {
 	return book.Identifier == id
 }
@@ -407,8 +420,11 @@ func (book *Book) GetMetadataFromFile() error {
 		return book.getEpubMetadata()
 	case PDF:
 		return book.getPDFMetadata()
+	case FB2:
+		return book.getFB2Metadata()
+	case MOBI, AZW3:
+		return book.getMobiMetadata()
 	default:
-		// MOBI, AZW3, TXT, MD — 从文件名提取基本信息
 		book.getFilenameMetadata()
 		return nil
 	}
@@ -486,12 +502,358 @@ func (book *Book) getPDFMetadata() error {
 		book.PublishDate = info.CreationDate
 	}
 
+	// Extract cover from first page images
+	f.Seek(0, io.SeekStart)
+	var coverFound bool
+	_ = pdfapi.ExtractImages(f, []string{"1"}, func(img model.Image, singleImgPerPage bool, maxPageDigits int) error {
+		if coverFound {
+			return nil
+		}
+		data, err := io.ReadAll(img.Reader)
+		if err == nil && len(data) > 0 {
+			book.coverData = data
+			coverFound = true
+		}
+		return nil
+	}, nil)
+
 	// 如果 PDF 没有 Title，用文件名兜底
 	if book.Title == "" {
 		book.getFilenameMetadata()
 	}
 
 	return nil
+}
+
+// getFB2Metadata extracts metadata from FB2 (FictionBook 2) XML files.
+func (book *Book) getFB2Metadata() error {
+	data, err := os.ReadFile(book.Path)
+	if err != nil {
+		book.getFilenameMetadata()
+		return nil
+	}
+
+	type fb2Author struct {
+		FirstName  string `xml:"first-name"`
+		MiddleName string `xml:"middle-name"`
+		LastName   string `xml:"last-name"`
+	}
+
+	type fb2TitleInfo struct {
+		Genre      []string    `xml:"genre"`
+		Authors    []fb2Author `xml:"author"`
+		BookTitle  string      `xml:"book-title"`
+		Annotation struct {
+			P []string `xml:"p"`
+		} `xml:"annotation"`
+		Date struct {
+			Value string `xml:",chardata"`
+		} `xml:"date"`
+		Lang     string `xml:"lang"`
+		Sequence struct {
+			Name   string `xml:"name,attr"`
+			Number string `xml:"number,attr"`
+		} `xml:"sequence"`
+	}
+
+	type fb2PublishInfo struct {
+		Publisher string `xml:"publisher"`
+		ISBN      string `xml:"isbn"`
+		Year      string `xml:"year"`
+	}
+
+	type fb2Description struct {
+		TitleInfo   fb2TitleInfo   `xml:"title-info"`
+		PublishInfo fb2PublishInfo `xml:"publish-info"`
+	}
+
+	type fb2Book struct {
+		Description fb2Description `xml:"description"`
+		Binary      []struct {
+			ID          string `xml:"id,attr"`
+			ContentType string `xml:"content-type,attr"`
+			Data        string `xml:",chardata"`
+		} `xml:"binary"`
+	}
+
+	var fb fb2Book
+	if err := xml.Unmarshal(data, &fb); err != nil {
+		log.E("FB2 parse error:", err.Error())
+		book.getFilenameMetadata()
+		return nil
+	}
+
+	ti := fb.Description.TitleInfo
+	pi := fb.Description.PublishInfo
+
+	if ti.BookTitle != "" {
+		book.Title = ti.BookTitle
+	}
+
+	// Build author string
+	var authorParts []string
+	for _, a := range ti.Authors {
+		parts := []string{}
+		if a.FirstName != "" {
+			parts = append(parts, a.FirstName)
+		}
+		if a.MiddleName != "" {
+			parts = append(parts, a.MiddleName)
+		}
+		if a.LastName != "" {
+			parts = append(parts, a.LastName)
+		}
+		if len(parts) > 0 {
+			authorParts = append(authorParts, strings.Join(parts, " "))
+		}
+	}
+	if len(authorParts) > 0 {
+		book.Author = strings.Join(authorParts, ", ")
+	}
+
+	if len(ti.Genre) > 0 {
+		book.Tags = Tags(ti.Genre)
+	}
+	if ti.Lang != "" {
+		book.Language = ti.Lang
+	}
+	if ti.Annotation.P != nil {
+		book.Description = strings.Join(ti.Annotation.P, "\n")
+	}
+	if ti.Date.Value != "" {
+		book.PublishDate = ti.Date.Value
+	}
+	if ti.Sequence.Name != "" {
+		book.Series = ti.Sequence.Name
+		if ti.Sequence.Number != "" {
+			book.SeriesIndex = ti.Sequence.Number
+		}
+	}
+
+	if pi.Publisher != "" {
+		book.Publisher = pi.Publisher
+	}
+	if pi.ISBN != "" {
+		book.ISBN = pi.ISBN
+	}
+
+	// Extract cover image from binary data
+	for _, bin := range fb.Binary {
+		if strings.Contains(strings.ToLower(bin.ID), "cover") {
+			decoded, err := base64.StdEncoding.DecodeString(strings.TrimSpace(bin.Data))
+			if err == nil && len(decoded) > 0 {
+				book.coverData = decoded
+			}
+			break
+		}
+	}
+
+	if book.Title == "" {
+		book.getFilenameMetadata()
+	}
+
+	return nil
+}
+
+// getMobiMetadata extracts metadata from MOBI/AZW3 files by parsing the PalmDOC + MOBI header.
+func (book *Book) getMobiMetadata() error {
+	f, err := os.Open(book.Path)
+	if err != nil {
+		book.getFilenameMetadata()
+		return nil
+	}
+	defer f.Close()
+
+	// Read PalmDOC header (78 bytes)
+	header := make([]byte, 78)
+	if _, err := io.ReadFull(f, header); err != nil {
+		book.getFilenameMetadata()
+		return nil
+	}
+
+	// Get title from PalmDOC header (bytes 0-31, null-terminated)
+	palmTitle := strings.TrimRight(string(header[0:32]), "\x00 ")
+
+	// Number of records
+	numRecords := binary.BigEndian.Uint16(header[76:78])
+	if numRecords == 0 {
+		if palmTitle != "" {
+			book.Title = palmTitle
+		} else {
+			book.getFilenameMetadata()
+		}
+		return nil
+	}
+
+	// Read first record offset from record info
+	f.Seek(78, io.SeekStart)
+	recInfo := make([]byte, 8)
+	if _, err := io.ReadFull(f, recInfo); err != nil {
+		if palmTitle != "" {
+			book.Title = palmTitle
+		} else {
+			book.getFilenameMetadata()
+		}
+		return nil
+	}
+	firstRecordOffset := binary.BigEndian.Uint32(recInfo[0:4])
+
+	// Seek to first record (PalmDOC header in record)
+	f.Seek(int64(firstRecordOffset), io.SeekStart)
+
+	// Read PalmDOC record header (16 bytes) then MOBI header
+	palmDocHeader := make([]byte, 16)
+	if _, err := io.ReadFull(f, palmDocHeader); err != nil {
+		if palmTitle != "" {
+			book.Title = palmTitle
+		} else {
+			book.getFilenameMetadata()
+		}
+		return nil
+	}
+
+	// Check MOBI magic at offset 16
+	mobiMagic := make([]byte, 4)
+	if _, err := io.ReadFull(f, mobiMagic); err != nil || string(mobiMagic) != "MOBI" {
+		if palmTitle != "" {
+			book.Title = palmTitle
+		} else {
+			book.getFilenameMetadata()
+		}
+		return nil
+	}
+
+	// Read MOBI header (at least 232 bytes after magic)
+	mobiHeader := make([]byte, 232)
+	if _, err := io.ReadFull(f, mobiHeader); err != nil {
+		if palmTitle != "" {
+			book.Title = palmTitle
+		} else {
+			book.getFilenameMetadata()
+		}
+		return nil
+	}
+
+	// Language code at offset 36 from MOBI start (offset 32 from after magic)
+	langCode := binary.BigEndian.Uint32(mobiHeader[32:36])
+	if lang := mobiLangCode(langCode); lang != "" {
+		book.Language = lang
+	}
+
+	// Full title offset & length in MOBI header
+	fullTitleOffset := binary.BigEndian.Uint32(mobiHeader[80:84])
+	fullTitleLength := binary.BigEndian.Uint32(mobiHeader[84:88])
+
+	if fullTitleLength > 0 && fullTitleLength < 1024 {
+		f.Seek(int64(firstRecordOffset)+int64(fullTitleOffset), io.SeekStart)
+		titleBuf := make([]byte, fullTitleLength)
+		if _, err := io.ReadFull(f, titleBuf); err == nil {
+			book.Title = strings.TrimRight(string(titleBuf), "\x00")
+		}
+	}
+
+	if book.Title == "" && palmTitle != "" {
+		book.Title = palmTitle
+	}
+	if book.Title == "" {
+		book.getFilenameMetadata()
+	}
+
+	// Try to read EXTH header for extended metadata
+	exthOffset := binary.BigEndian.Uint32(mobiHeader[12:16])
+	if exthOffset > 0 {
+		book.parseEXTH(f, int64(firstRecordOffset)+16+4+int64(exthOffset))
+	}
+
+	return nil
+}
+
+// parseEXTH reads extended MOBI metadata (author, publisher, description, etc.)
+func (book *Book) parseEXTH(f *os.File, offset int64) {
+	f.Seek(offset, io.SeekStart)
+
+	magic := make([]byte, 4)
+	if _, err := io.ReadFull(f, magic); err != nil || string(magic) != "EXTH" {
+		return
+	}
+
+	header := make([]byte, 8)
+	if _, err := io.ReadFull(f, header); err != nil {
+		return
+	}
+	recordCount := binary.BigEndian.Uint32(header[4:8])
+
+	for i := uint32(0); i < recordCount && i < 200; i++ {
+		recHeader := make([]byte, 8)
+		if _, err := io.ReadFull(f, recHeader); err != nil {
+			return
+		}
+		recType := binary.BigEndian.Uint32(recHeader[0:4])
+		recLen := binary.BigEndian.Uint32(recHeader[4:8])
+		if recLen < 8 || recLen > 65536 {
+			return
+		}
+
+		data := make([]byte, recLen-8)
+		if _, err := io.ReadFull(f, data); err != nil {
+			return
+		}
+
+		value := strings.TrimSpace(string(data))
+		switch recType {
+		case 100: // Author
+			if book.Author == "" {
+				book.Author = value
+			}
+		case 101: // Publisher
+			book.Publisher = value
+		case 103: // Description
+			book.Description = value
+		case 104: // ISBN
+			book.ISBN = value
+		case 105: // Subject/Tag
+			book.Tags = append(book.Tags, value)
+		case 106: // PublishDate
+			book.PublishDate = value
+		case 113: // ASIN
+			book.ASIN = value
+		case 524: // Language
+			if book.Language == "" {
+				book.Language = value
+			}
+		}
+	}
+}
+
+// mobiLangCode maps MOBI language codes to ISO 639-1 codes.
+func mobiLangCode(code uint32) string {
+	primary := code & 0xFF
+	switch primary {
+	case 0x09:
+		return "en"
+	case 0x04:
+		return "zh"
+	case 0x11:
+		return "ja"
+	case 0x0A:
+		return "es"
+	case 0x0C:
+		return "fr"
+	case 0x07:
+		return "de"
+	case 0x10:
+		return "it"
+	case 0x16:
+		return "pt"
+	case 0x19:
+		return "ru"
+	case 0x12:
+		return "ko"
+	case 0x01:
+		return "ar"
+	default:
+		return ""
+	}
 }
 
 // getFilenameMetadata 从文件名提取基本元数据

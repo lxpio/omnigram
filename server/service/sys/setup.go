@@ -35,4 +35,6 @@ func Setup(router *gin.Engine) {
 	router.POST("/sys/scan/stop", oauthMD, adminMD, stopScanHandle)
 	router.POST("/sys/scan/run", oauthMD, adminMD, runScanHandle)
 
+	router.POST("/sys/import/calibre", oauthMD, adminMD, importCalibreHandle)
+
 }

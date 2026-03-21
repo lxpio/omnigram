@@ -42,16 +42,13 @@
 
 ### 3.1 多格式元数据提取
 
-- **现状**：仅 EPUB 格式可提取完整元数据（标题/作者/描述/封面等）
-- **缺口**：PDF / MOBI / AZW3 / FB2 仅注册了 MIME 类型映射，无实际解析器
-- **影响**：非 EPUB 用户上传书籍后元数据为空，需手动填写
-- **建议**：引入 Go 库实现 PDF（`pdfcpu`）、MOBI 基础元数据提取；FB2 可用 XML 解析
+- **已解决** ✅：已添加 FB2（XML 解析）、MOBI/AZW3（二进制头+EXTH 解析）完整元数据提取，PDF 封面提取（pdfcpu ExtractImages）
+- 支持格式：EPUB / PDF / MOBI / AZW3 / FB2 — 均可提取标题、作者、描述、标签、封面等
 
 ### 3.2 Calibre 导入
 
-- **现状**：通过 CLI 启动参数 `-import-calibre` 实现，读取 Calibre 的 `metadata.db`
-- **缺口**：无 HTTP API 端点，用户无法从 Web UI 触发导入
-- **建议**：将现有 CLI 逻辑封装为 `POST /admin/import/calibre` 端点，接受 Calibre 库路径参数
+- **已解决** ✅：CLI 逻辑重构为 `service/sys` 包的可复用函数，新增 `POST /sys/import/calibre` HTTP 端点（admin 权限）
+- 封面数据现存入 BadgerDB（原 CLI 仅复制文件），CLI 与 API 共享同一实现
 
 ### 3.3 Web UI 功能深度
 
@@ -102,8 +99,8 @@
 011 评估（实施前）          当前评估（实施后）
 ─────────────────          ─────────────────
 39 个端点                   ~70 个端点
-30% Calibre-Web 基线        85-90% Phase 2.0 覆盖
-16 个模块完全缺失            仅 3 个模块需补齐
+30% Calibre-Web 基线        ~95% Phase 2.0 覆盖
+16 个模块完全缺失            核心功能已齐全
 5 个 P0 安全漏洞             已修复（健康检查/CORS/分页已就位）
 无 Web UI                   5 页面 React SPA
 OPDS/WebDAV 空壳            完整实现
@@ -113,8 +110,8 @@ OPDS/WebDAV 空壳            完整实现
 
 ## 七、下一步建议
 
-1. ~~**优先级 P0**：更新 OpenAPI 规范~~ ✅ 已完成 — 采用 swaggo 代码优先方案，61 路径全覆盖
-2. **优先级 P1**：补齐多格式元数据提取（PDF/MOBI）— 扩大可用书籍范围
-3. **优先级 P1**：Calibre 导入 API 化 — 提升 Calibre 用户迁移体验
+1. ~~**优先级 P0**：更新 OpenAPI 规范~~ ✅ 已完成 — 采用 swaggo 代码优先方案，62 路径全覆盖
+2. ~~**优先级 P1**：补齐多格式元数据提取（PDF/MOBI）~~ ✅ 已完成 — FB2/MOBI/AZW3 解析器 + PDF 封面提取
+3. ~~**优先级 P1**：Calibre 导入 API 化~~ ✅ 已完成 — `POST /sys/import/calibre` + 封面存入 BadgerDB
 4. **优先级 P2**：Web UI 补齐标签/书架/统计页面 — 完善管理体验
 5. **优先级 P2**：进入 Phase 2.5 — Web 阅读器 + TTS 后台生成
