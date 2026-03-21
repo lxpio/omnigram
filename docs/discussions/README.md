@@ -16,3 +16,5 @@
 | 008 | [代码质量审计报告](./008-code-quality-audit.md) | 2026-03-21 | 🔴 需要修复 |
 | 009 | [App 客户端策略：Fork Anx Reader](./009-fork-anx-reader-plan.md) | 2026-03-21 | ✅ 已决策 |
 | 010 | [App Legacy 亮点功能记录](./010-app-legacy-highlights.md) | 2026-03-21 | 📋 参考 |
+| 011 | [Server 产品差距分析](./011-server-gap-analysis.md) | 2026-03-21 | ✅ 已决策（含审计修订） |
+| 011-review | [Server 差距分析审计意见](./011-review.md) | 2026-03-21 | 📋 审计完成 |
