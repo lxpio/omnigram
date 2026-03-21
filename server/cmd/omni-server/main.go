@@ -11,6 +11,7 @@ import (
 	"github.com/lxpio/omnigram/server"
 	"github.com/lxpio/omnigram/server/conf"
 	"github.com/lxpio/omnigram/server/log"
+	"github.com/lxpio/omnigram/server/store"
 )
 
 var (
@@ -29,6 +30,8 @@ func main() {
 	flag.BoolVar(&showVersion, "version", false, "show build version.")
 	flag.StringVar(&confFile, "conf", "./conf.yml", "The configure file")
 	flag.BoolVar(&initFlag, "init", false, "init server first user and token")
+
+	importCalibreFlag := flag.String("import-calibre", "", "path to Calibre library directory to import")
 
 	flag.Parse()
 
@@ -63,7 +66,11 @@ func main() {
 
 	var app *server.App
 
-	if initFlag {
+	if *importCalibreFlag != "" {
+		server.InitServerData(ctx)
+		importCalibre(*importCalibreFlag, cf.EpubOptions.DataPath, store.FileStore())
+		os.Exit(0)
+	} else if initFlag {
 		server.InitServerData(ctx)
 		os.Exit(0)
 	} else {

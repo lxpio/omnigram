@@ -50,6 +50,31 @@ func Setup(router *gin.Engine) {
 	router.POST("/sync/full", oauthMD, syncFullHandle) //同步全量数据
 
 	router.POST("/sync/delta", oauthMD, syncDeltaHandle) //同步增量数据
+
+	// Tags
+	book.GET("/tags", listTagsHandle)
+	book.POST("/tags", createTagHandle)
+	book.DELETE("/tags/:tag_id", deleteTagHandle)
+
+	// Shelves
+	book.GET("/shelves", listShelvesHandle)
+	book.POST("/shelves", createShelfHandle)
+	book.GET("/shelves/:shelf_id", getShelfHandle)
+	book.PUT("/shelves/:shelf_id", updateShelfHandle)
+	book.DELETE("/shelves/:shelf_id", deleteShelfHandle)
+	book.POST("/shelves/:shelf_id/books", addBooksToShelfHandle)
+	book.DELETE("/shelves/:shelf_id/books", removeBooksFromShelfHandle)
+
+	// Annotations
+	book.PUT("/books/:book_id/rating", updateBookRatingHandle)
+	book.GET("/books/:book_id/annotations", listAnnotationsHandle)
+	book.POST("/books/:book_id/annotations", createAnnotationHandle)
+	book.PUT("/books/:book_id/annotations/:annotation_id", updateAnnotationHandle)
+	book.DELETE("/books/:book_id/annotations/:annotation_id", deleteAnnotationHandle)
+
+	// Annotation sync
+	router.POST("/sync/annotations", oauthMD, syncAnnotationsHandle)
+
 	// router.GET("/books/:book_id/delete", BookDelete)
 	// router.GET("/books/:book_id/edit", BookEdit)
 
