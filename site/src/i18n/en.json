@@ -1,0 +1,43 @@
+{
+  "nav": {
+    "features": "Features",
+    "docs": "Docs",
+    "blog": "Blog",
+    "github": "GitHub"
+  },
+  "hero": {
+    "tagline": "Your Library, Alive.",
+    "subtitle": "Jellyfin for videos. Immich for photos.",
+    "subtitleHighlight": "Omnigram for books.",
+    "description": "AI-native, self-hosted book library. Deploy on your NAS in seconds.",
+    "cta": "Deploy Now \u2192",
+    "github": "\u2b50 Star on GitHub",
+    "docker": "docker compose up -d"
+  },
+  "features": {
+    "sectionLabel": "Core Features",
+    "sectionTitle": "What makes Omnigram different",
+    "ai": { "title": "AI-Enhanced Reading", "desc": "Summarize, Q&A, semantic search across your entire library" },
+    "tts": { "title": "TTS Audiobooks", "desc": "Turn any ebook into high-quality audiobook with AI voices" },
+    "library": { "title": "Library Management", "desc": "Scan, organize, tag, search \u2014 better than Calibre-Web" },
+    "reader": { "title": "Multi-Platform Reader", "desc": "iOS, Android, macOS, Windows \u2014 read anywhere, sync everywhere" },
+    "deploy": { "title": "One-Click Deploy", "desc": "Docker Compose on any NAS. Open source, self-hosted, yours forever" }
+  },
+  "quadrant": {
+    "sectionLabel": "Why Omnigram",
+    "sectionTitle": "The only AI-native self-hosted book library"
+  },
+  "quickstart": {
+    "sectionTitle": "Deploy in 30 seconds"
+  },
+  "cta": {
+    "title": "Ready to bring your library alive?",
+    "subtitle": "Open source. Self-hosted. AI-native.",
+    "primary": "Get Started \u2192",
+    "secondary": "Documentation"
+  },
+  "footer": {
+    "license": "MIT License",
+    "copyright": "\u00a9 2026 Omnigram"
+  }
+}
