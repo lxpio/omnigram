@@ -17,7 +17,7 @@ export function LoginPage() {
     async (e: React.FormEvent) => {
       e.preventDefault();
       try {
-        await login.mutateAsync({ user_name: userName, password });
+        await login.mutateAsync({ account: userName, password });
         navigate("/", { replace: true });
       } catch {
         // error handled by mutation

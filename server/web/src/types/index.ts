@@ -33,7 +33,7 @@ export interface User {
 }
 
 export interface LoginRequest {
-  user_name: string;
+  account: string;
   password: string;
   client_id?: string;
 }
