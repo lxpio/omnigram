@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTA from '../components/CTA.astro';
+
+const sections = [
+  { icon: '\u{1F916}', title: 'AI-Enhanced Reading', desc: 'Ask questions about any book. Get instant summaries. Search across your entire library by meaning, not just keywords. Auto-tag new imports with AI-generated categories.', details: 'Powered by OpenAI / Ollama \u2014 bring your own LLM or use the built-in integration.' },
+  { icon: '\u{1F3A7}', title: 'TTS Audiobook Generation', desc: 'Turn any ebook into a high-quality audiobook. Multiple AI voices, chapter-by-chapter generation, server-side processing so your phone stays cool.', details: 'Backed by Fish Audio gRPC. Supports multi-voice, adjustable speed, and scheduled generation.' },
+  { icon: '\u{1F4DA}', title: 'Library Management', desc: 'Scan your book directory, extract metadata from EPUB/PDF/MOBI/FB2, edit metadata, organize with tags and shelves. OPDS and WebDAV protocols for universal client access.', details: 'Supports 6 formats. SQLite FTS5 full-text search. Calibre database import.' },
+  { icon: '\u{1F4F1}', title: 'Multi-Platform Reader', desc: 'Native apps for iOS, Android, macOS, and Windows. Read offline, sync progress, notes, and highlights across all devices.', details: 'Built with Flutter. Based on Anx Reader (7,900+ \u2B50, MIT license).' },
+  { icon: '\u{1F433}', title: 'Self-Hosted & Open Source', desc: 'Deploy with a single Docker Compose command. Your data stays on your hardware. No cloud dependency, no subscription, no vendor lock-in.', details: 'MIT licensed. SQLite or PostgreSQL. Multi-arch Docker images (arm64/amd64).' },
+];
+---
+<BaseLayout title="Features" description="Explore what makes Omnigram the AI-native book library">
+  <div class="py-20 px-6">
+    <div class="max-w-5xl mx-auto">
+      <h1 class="text-4xl font-extrabold text-slate-100 text-center mb-16">Features</h1>
+      {sections.map((s, i) => (
+        <div class={`flex flex-col md:flex-row gap-8 mb-20 items-center ${i % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
+          <div class="flex-1">
+            <div class="text-4xl mb-4">{s.icon}</div>
+            <h2 class="text-2xl font-bold text-slate-100">{s.title}</h2>
+            <p class="text-slate-400 mt-3 leading-relaxed">{s.desc}</p>
+            <p class="text-slate-500 text-sm mt-3 italic">{s.details}</p>
+          </div>
+          <div class="flex-1 bg-brand-bg-light border border-brand-border rounded-xl h-48 flex items-center justify-center text-slate-600 text-sm">
+            [ Screenshot ]
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+  <CTA />
+</BaseLayout>

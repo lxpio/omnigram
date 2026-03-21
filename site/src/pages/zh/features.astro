@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CTA from '../../components/CTA.astro';
+
+const sections = [
+  { icon: '\u{1F916}', title: 'AI 增强阅读', desc: '向任何一本书提问，获取即时摘要，按语义搜索你的整个书库——不只是关键词匹配。导入时自动生成 AI 标签分类。', details: '支持 OpenAI / Ollama —— 自带 LLM 或使用内置集成。' },
+  { icon: '\u{1F3A7}', title: 'TTS 有声书生成', desc: '将任意电子书转为高质量有声书。多种 AI 音色，逐章生成，服务端处理不消耗你的手机性能。', details: '基于 Fish Audio gRPC，支持多音色、语速调节、定时生成。' },
+  { icon: '\u{1F4DA}', title: '书库管理', desc: '扫描书库目录，从 EPUB/PDF/MOBI/FB2 提取元数据，编辑元数据，用标签和书架组织书籍。支持 OPDS 和 WebDAV 协议。', details: '支持 6 种格式，SQLite FTS5 全文搜索，Calibre 数据库导入。' },
+  { icon: '\u{1F4F1}', title: '多端阅读器', desc: 'iOS、Android、macOS、Windows 原生应用。离线阅读，跨设备同步进度、笔记和高亮。', details: '基于 Flutter 构建，源自 Anx Reader（7,900+ \u2B50，MIT 许可证）。' },
+  { icon: '\u{1F433}', title: '自托管 & 开源', desc: '一条 Docker Compose 命令即可部署。数据留在你的硬件上，无云依赖、无订阅、无厂商锁定。', details: 'MIT 许可证，SQLite 或 PostgreSQL，多架构 Docker 镜像（arm64/amd64）。' },
+];
+---
+<BaseLayout title="功能" description="探索 Omnigram 的 AI 原生书库功能">
+  <div class="py-20 px-6">
+    <div class="max-w-5xl mx-auto">
+      <h1 class="text-4xl font-extrabold text-slate-100 text-center mb-16">功能</h1>
+      {sections.map((s, i) => (
+        <div class={`flex flex-col md:flex-row gap-8 mb-20 items-center ${i % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
+          <div class="flex-1">
+            <div class="text-4xl mb-4">{s.icon}</div>
+            <h2 class="text-2xl font-bold text-slate-100">{s.title}</h2>
+            <p class="text-slate-400 mt-3 leading-relaxed">{s.desc}</p>
+            <p class="text-slate-500 text-sm mt-3 italic">{s.details}</p>
+          </div>
+          <div class="flex-1 bg-brand-bg-light border border-brand-border rounded-xl h-48 flex items-center justify-center text-slate-600 text-sm">
+            [ 截图 ]
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+  <CTA />
+</BaseLayout>
