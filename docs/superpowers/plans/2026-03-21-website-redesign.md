@@ -194,7 +194,9 @@ export default {
 
 ```css
 /* site/src/styles/global.css */
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
   body {
@@ -245,15 +247,35 @@ cp assets/img/icon-512x512.png site/public/icons/
 cp assets/img/apple-touch-icon.png site/public/icons/
 ```
 
-- [ ] **Step 2: Verify files exist**
+- [ ] **Step 2: Create `robots.txt`**
 
 ```bash
-ls -la site/public/logo/ site/public/icons/ site/public/favicon.*
+cat > site/public/robots.txt << 'EOF'
+User-agent: *
+Allow: /
+Sitemap: https://omnigram.lxpio.com/sitemap-index.xml
+EOF
 ```
 
-Expected: 8 files total.
+- [ ] **Step 3: Create placeholder `og-image.png`**
 
-- [ ] **Step 3: Commit**
+Use the logo to create a 1200x630 social preview image. For now, copy the 512px icon as placeholder:
+
+```bash
+cp assets/img/icon-512x512.png site/public/og-image.png
+```
+
+> **TODO:** Replace with a proper 1200x630 branded OG image (logo + tagline on dark background) before launch.
+
+- [ ] **Step 4: Verify files exist**
+
+```bash
+ls -la site/public/logo/ site/public/icons/ site/public/favicon.* site/public/robots.txt site/public/og-image.png
+```
+
+Expected: 10 files total.
+
+- [ ] **Step 5: Commit**
 
 ```bash
 git add site/public/
@@ -272,7 +294,6 @@ git commit -m "feat(site): add brand assets (logo, favicon, icons)"
 - [ ] **Step 1: Write EN strings**
 
 ```json
-// site/src/i18n/en.json
 {
   "nav": {
     "features": "Features",
@@ -321,7 +342,6 @@ git commit -m "feat(site): add brand assets (logo, favicon, icons)"
 - [ ] **Step 2: Write ZH strings**
 
 ```json
-// site/src/i18n/zh.json
 {
   "nav": {
     "features": "功能",
@@ -407,6 +427,7 @@ git commit -m "feat(site): add i18n strings (EN/ZH) and helper"
 
 **Files:**
 - Create: `site/src/components/Nav.astro`
+- Create: `site/src/components/StarlightHeader.astro`
 - Create: `site/src/components/LanguageSwitch.astro`
 - Create: `site/src/components/Footer.astro`
 - Create: `site/src/layouts/BaseLayout.astro`
@@ -442,7 +463,21 @@ const prefix = lang === 'zh' ? '/zh' : '';
 </nav>
 ```
 
-- [ ] **Step 2: Write `LanguageSwitch.astro`**
+- [ ] **Step 2: Write `StarlightHeader.astro`**
+
+Thin wrapper that replaces Starlight's default header with our shared Nav.
+
+```astro
+---
+// site/src/components/StarlightHeader.astro
+// This replaces Starlight's Header component via astro.config.mjs override
+import Nav from './Nav.astro';
+---
+<Nav />
+```
+
+- [ ] **Step 3: Write `LanguageSwitch.astro`**
+
 
 ```astro
 ---
@@ -556,7 +591,7 @@ git commit -m "feat(site): add BaseLayout, Nav, Footer, LanguageSwitch"
 ```astro
 ---
 // site/src/components/Hero.astro
-import { getLangFromUrl, t } from '@/i18n/ui';
+import { getLangFromUrl, t, getLocalePath } from '@/i18n/ui';
 
 const lang = getLangFromUrl(Astro.url);
 const ui = t(lang);
@@ -572,7 +607,7 @@ const ui = t(lang);
     </p>
     <p class="mt-2 text-slate-500">{ui.hero.description}</p>
     <div class="mt-8 flex gap-3 justify-center flex-wrap">
-      <a href="/docs/getting-started/quick-start" class="bg-brand-accent hover:bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold transition">
+      <a href={getLocalePath(lang, '/docs/getting-started/quick-start')} class="bg-brand-accent hover:bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold transition">
         {ui.hero.cta}
       </a>
       <a href="https://github.com/lxpio/omnigram" target="_blank" class="border border-brand-border text-slate-300 hover:text-white px-6 py-3 rounded-lg transition">
@@ -939,11 +974,11 @@ git commit -m "feat(site): add Features detail page (EN + ZH)"
 
 **Files:**
 - Create: `site/src/content/config.ts`
-- Create: `site/src/content/docs/en/index.mdx`
-- Create: `site/src/content/docs/en/getting-started/quick-start.md`
-- Create: `site/src/content/docs/en/getting-started/installation.md`
-- Create: `site/src/content/docs/en/development/contributing.md`
-- Create: ZH mirror docs
+- Create: `site/src/content/docs/index.mdx` (EN, root locale)
+- Create: `site/src/content/docs/getting-started/quick-start.md`
+- Create: `site/src/content/docs/getting-started/installation.md`
+- Create: `site/src/content/docs/development/contributing.md`
+- Create: ZH mirror docs in `site/src/content/docs/zh/`
 
 - [ ] **Step 1: Write `content/config.ts`**
 
@@ -972,7 +1007,7 @@ export const collections = {
 
 ```mdx
 ---
-# site/src/content/docs/en/index.mdx
+# site/src/content/docs/index.mdx (EN root locale)
 title: Omnigram Documentation
 description: Learn how to deploy and use Omnigram
 ---
@@ -990,7 +1025,7 @@ Welcome to the Omnigram documentation. Omnigram is an AI-native, self-hosted boo
 
 ```md
 ---
-# site/src/content/docs/en/getting-started/quick-start.md
+# site/src/content/docs/getting-started/quick-start.md (EN root locale)
 title: Quick Start
 description: Deploy Omnigram with Docker in 30 seconds
 ---
@@ -1025,7 +1060,7 @@ Create `installation.md` with Docker Compose details and `contributing.md` with 
 
 - [ ] **Step 5: Create ZH mirror docs**
 
-Copy the EN docs to `site/src/content/docs/zh/` with translated content.
+Mirror the EN docs structure under `site/src/content/docs/zh/` with translated content. Starlight serves ZH docs at `/zh/docs/`.
 
 - [ ] **Step 6: Verify docs site**
 
@@ -1340,6 +1375,6 @@ cd site && npx astro preview
 - [ ] **Step 5: Final commit**
 
 ```bash
-git add -A
+git add site/ .github/workflows/site.yaml
 git commit -m "feat(site): Omnigram website v1 — landing, features, docs, blog"
 ```

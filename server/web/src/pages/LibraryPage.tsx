@@ -7,7 +7,7 @@ import { BookDetail } from "@/components/BookDetail";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { LayoutGrid, List, Upload, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
-import type { Book } from "@/types";
+import type { Book, BooksResponse } from "@/types";
 
 interface LibraryPageProps {
   mode?: "all" | "recent" | "favorites";
@@ -33,8 +33,12 @@ export function LibraryPage({ mode = "all", onUploadOpen, onUploadClose }: Libra
   const favQuery = useFavoriteBooks();
 
   const activeQuery = mode === "recent" ? recentQuery : mode === "favorites" ? favQuery : allBooksQuery;
-  const books = activeQuery.data?.data ?? [];
-  const total = activeQuery.data?.total ?? 0;
+  const books = mode === "favorites"
+    ? (favQuery.data ?? []) as Book[]
+    : (activeQuery.data as BooksResponse | undefined)?.books ?? [];
+  const total = mode === "favorites"
+    ? (favQuery.data as Book[] | undefined)?.length ?? 0
+    : (activeQuery.data as BooksResponse | undefined)?.total ?? 0;
   const totalPages = Math.ceil(total / pageSize);
 
   const toggleView = (v: "grid" | "list") => {

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "./client";
-import type { SystemInfo, ScanStatus, User } from "@/types";
+import type { SystemInfo, ScanStatus, AccountsResponse } from "@/types";
 
 export function useSystemInfo() {
   return useQuery({
@@ -43,7 +43,7 @@ export function useStopScan() {
 export function useAccounts() {
   return useQuery({
     queryKey: ["accounts"],
-    queryFn: () => apiFetch<User[]>("/admin/accounts"),
+    queryFn: () => apiFetch<AccountsResponse>("/admin/accounts"),
   });
 }
 

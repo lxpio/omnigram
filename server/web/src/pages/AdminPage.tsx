@@ -24,7 +24,8 @@ import { toast } from "@/components/ui/use-toast";
 import { Plus, Trash2, Loader2, Shield } from "lucide-react";
 
 export function AdminPage() {
-  const { data: accounts, isLoading } = useAccounts();
+  const { data: accountsData, isLoading } = useAccounts();
+  const accounts = accountsData?.items ?? [];
   const createAccount = useCreateAccount();
   const deleteAccount = useDeleteAccount();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -87,7 +88,7 @@ export function AdminPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {(accounts ?? []).map((user) => (
+              {(accounts).map((user) => (
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">{user.nick_name || user.name}</TableCell>
                   <TableCell className="text-muted-foreground">{user.email || "—"}</TableCell>
@@ -106,7 +107,7 @@ export function AdminPage() {
                   </TableCell>
                 </TableRow>
               ))}
-              {(!accounts || accounts.length === 0) && (
+              {accounts.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
                     No users found

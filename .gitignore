@@ -10,7 +10,7 @@
 .svn/
 migrate_working_dir/
 fishtts/fish-speech
-
+.claude/worktrees
 # IntelliJ related
 *.iml
 *.ipr
