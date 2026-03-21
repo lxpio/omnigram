@@ -13,16 +13,19 @@ on:
       SIGNPATH_API_TOKEN:
         required: true
       NOTIFICATION_URL:
-        required: true
+        required: false
 
 jobs:
   build-windows:
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: app
     env:
-      BASE_NOTIFICATION_URL: ${{ secrets.NOTIFICATION_URL }}/Anx-Reader%20Action
+      BASE_NOTIFICATION_URL: ${{ secrets.NOTIFICATION_URL }}/Omnigram%20Action
       NOTIFICATION_PARAMS: ?url=https://app.signpath.io/Web/254a26d6-6c3a-4a55-9ca6-890d0d34deb1/SigningRequests&level=timeSensitive&icon=https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png
       IS_ALPHA: ${{ contains(inputs.version, '-alpha.') }}
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -45,8 +48,8 @@ jobs:
           sed -i "1i #define MyAppVersion \"${{ inputs.version }}\"" scripts/compile_windows_setup-inno.iss
 
       - name: Install Inno Setup
+        working-directory: .
         run: |
-          # Use chocolatey to install Inno Setup as it's more reliable than winget in CI
           choco install innosetup -y --no-progress
         shell: pwsh
 
@@ -59,11 +62,12 @@ jobs:
         id: upload-unsigned-zip
         with:
           name: windows-unsigned-zip
-          path: build/windows/unsigned/app.zip
+          path: app/build/windows/unsigned/app.zip
           if-no-files-found: error
 
       - name: Send notification after zip signing
-        if: ${{ env.IS_ALPHA != 'true' }}
+        if: ${{ env.IS_ALPHA != 'true' && secrets.NOTIFICATION_URL != '' }}
+        working-directory: .
         run: |
           curl -s "$BASE_NOTIFICATION_URL/zip%20File%20Waiting%20for%20approval$NOTIFICATION_PARAMS" || echo "Notification failed, continuing..."
         shell: bash
@@ -74,13 +78,13 @@ jobs:
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: '254a26d6-6c3a-4a55-9ca6-890d0d34deb1'
-          project-slug: 'anx-reader'
+          project-slug: 'omnigram'
           signing-policy-slug: ${{ env.IS_ALPHA == 'true' && 'test-signing' || 'release-signing' }}
           artifact-configuration-slug: 'initial_zip'
           github-artifact-id: ${{ steps.upload-unsigned-zip.outputs.artifact-id }}
           wait-for-completion: true
-          output-artifact-directory: 'build/windows'
-      
+          output-artifact-directory: 'app/build/windows'
+
       - name: Prepare unsigned zip for alpha
         if: ${{ env.IS_ALPHA == 'true' }}
         run: cp build/windows/unsigned/app.zip build/windows/app.zip
@@ -95,11 +99,12 @@ jobs:
         id: upload-unsigned-exe
         with:
           name: windows-unsigned-exe
-          path: build/windows/unsigned/app.exe
+          path: app/build/windows/unsigned/app.exe
           if-no-files-found: error
 
       - name: Send notification after exe signing
-        if: ${{ env.IS_ALPHA != 'true' }}
+        if: ${{ env.IS_ALPHA != 'true' && secrets.NOTIFICATION_URL != '' }}
+        working-directory: .
         run: |
           curl -s "$BASE_NOTIFICATION_URL/exe%20File%20Waiting%20for%20approval$NOTIFICATION_PARAMS" || echo "Notification failed, continuing..."
         shell: bash
@@ -110,12 +115,12 @@ jobs:
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: 254a26d6-6c3a-4a55-9ca6-890d0d34deb1
-          project-slug: 'anx-reader'
+          project-slug: 'omnigram'
           signing-policy-slug: ${{ env.IS_ALPHA == 'true' && 'test-signing' || 'release-signing' }}
           artifact-configuration-slug: 'initial_exe'
           github-artifact-id: ${{ steps.upload-unsigned-exe.outputs.artifact-id }}
           wait-for-completion: true
-          output-artifact-directory: 'build/windows'
+          output-artifact-directory: 'app/build/windows'
 
       - name: Prepare unsigned exe for alpha
         if: ${{ env.IS_ALPHA == 'true' }}
@@ -125,8 +130,8 @@ jobs:
       - name: Rename builds
         run: |
           cd build
-          mv windows/app.zip windows/Anx-Reader-windows-${{ inputs.version }}.zip
-          mv windows/app.exe windows/Anx-Reader-windows-${{ inputs.version }}.exe
+          mv windows/app.zip windows/Omnigram-windows-${{ inputs.version }}.zip
+          mv windows/app.exe windows/Omnigram-windows-${{ inputs.version }}.exe
         shell: bash
 
       - name: Upload artifacts
@@ -134,6 +139,6 @@ jobs:
         with:
           name: windows-artifacts
           path: |
-            build/windows/*.zip
-            build/windows/*.exe
+            app/build/windows/*.zip
+            app/build/windows/*.exe
           if-no-files-found: error

@@ -10,7 +10,7 @@ jobs:
     permissions:
       issues: write
       pull-requests: write
-    
+
     steps:
       - name: Validate Bug Report
         if: github.event.label.name == 'bug'
@@ -19,17 +19,17 @@ jobs:
           script: |
             const issue = context.issue;
             const issueBody = context.payload.issue.body || '';
-            
+
             // Check if platform information is complete
-            const platformSection = issueBody.match(/- Platform:.*?\n.*?- OS:.*?\n.*?- AnxReader Version:.*?\n.*?- Device:.*?\n/s);
-            
+            const platformSection = issueBody.match(/- Platform:.*?\n.*?- OS:.*?\n.*?- (?:Omnigram|AnxReader) Version:.*?\n.*?- Device:.*?\n/s);
+
             if (!platformSection) {
               console.log('Platform section not found');
               return;
             }
-            
+
             const platformText = platformSection[0];
-            
+
             // Check for incomplete/default values
             const incompletePatterns = [
               /\[e\.g\.\s+Android\]/,
@@ -38,12 +38,12 @@ jobs:
               /\[e\.g\.\s+Xiaomi\s+13\]/,
               /- Platform:\s*\|\s*平台：\s*$/m,
               /- OS:\s*\|\s*操作系统：\s*$/m,
-              /- AnxReader Version:\s*\|\s*安读版本：\s*$/m,
+              /- (?:Omnigram|AnxReader) Version:\s*\|\s*版本：\s*$/m,
               /- Device:\s*\|\s*设备：\s*$/m
             ];
-            
+
             const isIncomplete = incompletePatterns.some(pattern => pattern.test(platformText));
-            
+
             if (isIncomplete) {
               // Add question label
               await github.rest.issues.addLabels({
@@ -52,13 +52,13 @@ jobs:
                 issue_number: issue.number,
                 labels: ['question']
               });
-              
+
               // Add comment
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue.number,
-                body: "👋 感谢您提交bug报告！\n\n我注意到您的平台信息可能不够完整。为了更好地帮助您解决问题，请提供以下完整信息：\n\n- **Platform | 平台**：(如: Android, iOS, Windows, macOS, Linux)\n- **OS | 操作系统**：(如: Android 13 (MIUI 14), iOS 17.1, Windows 11)  \n- **AnxReader Version | 安读版本**：(如: 1.6.3+2100，可在应用设置中查看)\n- **Device | 设备**：(如: Xiaomi 13, iPhone 15, ThinkPad X1)\n\n请编辑您的issue并填写完整的平台信息，这将帮助我们更快地定位和解决问题。\n\n---\n\nThank you for submitting this bug report!\n\nI noticed that your platform information might be incomplete. To better help you solve the issue, please provide complete information for:\n\n- **Platform**: (e.g., Android, iOS, Windows, macOS, Linux)\n- **OS**: (e.g., Android 13 (MIUI 14), iOS 17.1, Windows 11)\n- **AnxReader Version**: (e.g., 1.6.3+2100, check in app settings)\n- **Device**: (e.g., Xiaomi 13, iPhone 15, ThinkPad X1)\n\nPlease edit your issue and fill in the complete platform information to help us locate and resolve the issue faster."
+                body: "👋 感谢您提交bug报告！\n\n我注意到您的平台信息可能不够完整。为了更好地帮助您解决问题，请提供以下完整信息：\n\n- **Platform | 平台**：(如: Android, iOS, Windows, macOS, Linux)\n- **OS | 操作系统**：(如: Android 13 (MIUI 14), iOS 17.1, Windows 11)  \n- **Omnigram Version | 版本**：(如: 1.6.3+2100，可在应用设置中查看)\n- **Device | 设备**：(如: Xiaomi 13, iPhone 15, ThinkPad X1)\n\n请编辑您的issue并填写完整的平台信息，这将帮助我们更快地定位和解决问题。\n\n---\n\nThank you for submitting this bug report!\n\nI noticed that your platform information might be incomplete. To better help you solve the issue, please provide complete information for:\n\n- **Platform**: (e.g., Android, iOS, Windows, macOS, Linux)\n- **OS**: (e.g., Android 13 (MIUI 14), iOS 17.1, Windows 11)\n- **Omnigram Version**: (e.g., 1.6.3+2100, check in app settings)\n- **Device**: (e.g., Xiaomi 13, iPhone 15, ThinkPad X1)\n\nPlease edit your issue and fill in the complete platform information to help us locate and resolve the issue faster."
               });
             }
       - name: Handle need-test-file Label
@@ -67,7 +67,7 @@ jobs:
         with:
           script: |
             const issue = context.issue;
-            
+
             // Add question label
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
@@ -75,7 +75,7 @@ jobs:
               issue_number: issue.number,
               labels: ['question']
             });
-            
+
             // Add comment requesting test file
             await github.rest.issues.createComment({
               owner: context.repo.owner,
@@ -83,14 +83,14 @@ jobs:
               issue_number: issue.number,
               body: "📁 **需要测试文件 | Test File Required**\n\n为了更好地重现和解决您遇到的问题，我们需要您提供相关的测试文件。\n\n请提供：\n- 出现问题的书籍文件（epub、pdf、txt等）\n- 或者能够重现问题的最小示例文件\n- 如果涉及特定格式，请说明文件的具体格式和来源\n\n您可以：\n1. 直接拖拽文件到此评论区上传\n2. 提供文件的下载链接\n3. 如果文件较大，可以使用网盘分享\n\n**注意**：如果涉及版权内容，请提供公开或自创的测试文件。\n\n---\n\nTo better reproduce and resolve the issue you encountered, we need you to provide relevant test files.\n\nPlease provide:\n- The book file where the problem occurs (epub, pdf, txt, etc.)\n- Or a minimal example file that can reproduce the issue  \n- If it involves a specific format, please specify the file format and source\n\nYou can:\n1. Drag and drop files directly to this comment area to upload\n2. Provide download links for the files\n3. Use cloud storage sharing if the files are large\n\n**Note**: If copyrighted content is involved, please provide public or self-created test files."
             });
-            
-      - name: Handle need-more-info Label  
+
+      - name: Handle need-more-info Label
         if: github.event.label.name == 'need-more-info'
         uses: actions/github-script@v7
         with:
           script: |
             const issue = context.issue;
-            
+
             // Add question label
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
@@ -98,7 +98,7 @@ jobs:
               issue_number: issue.number,
               labels: ['question']
             });
-            
+
             // Add comment requesting more information
             await github.rest.issues.createComment({
               owner: context.repo.owner,

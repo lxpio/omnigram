@@ -2,6 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with this repository.
 
+
 ## Project Overview
 
 Omnigram is an **AI-native, self-hosted book library management and reading service**. Deploy on NAS/homeserver via Docker. Go backend + Flutter client (forked from Anx Reader).

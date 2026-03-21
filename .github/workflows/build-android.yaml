@@ -22,7 +22,10 @@ on:
 jobs:
   build-android:
     runs-on: ubuntu-latest
-    
+    defaults:
+      run:
+        working-directory: app
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -48,10 +51,10 @@ jobs:
 
       - name: Setup Android signing
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks        
-          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties    
-          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties    
-          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties    
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "storeFile=keystore.jks" >> android/key.properties
 
       - name: Build for Android
@@ -64,14 +67,14 @@ jobs:
       - name: Rename builds
         run: |
           cd build/app/outputs/flutter-apk
-          mv app-armeabi-v7a-release.apk Anx-Reader-android-${{ inputs.version }}-armeabi-v7a.apk
-          mv app-arm64-v8a-release.apk Anx-Reader-android-${{ inputs.version }}-arm64-v8a.apk
-          mv app-x86_64-release.apk Anx-Reader-android-${{ inputs.version }}-x86_64.apk
-          mv app-release.apk Anx-Reader-android-${{ inputs.version }}-universal.apk
+          mv app-armeabi-v7a-release.apk Omnigram-android-${{ inputs.version }}-armeabi-v7a.apk
+          mv app-arm64-v8a-release.apk Omnigram-android-${{ inputs.version }}-arm64-v8a.apk
+          mv app-x86_64-release.apk Omnigram-android-${{ inputs.version }}-x86_64.apk
+          mv app-release.apk Omnigram-android-${{ inputs.version }}-universal.apk
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: android-artifacts
-          path: build/app/outputs/flutter-apk/*.apk
+          path: app/build/app/outputs/flutter-apk/*.apk
           if-no-files-found: error

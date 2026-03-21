@@ -1,4 +1,4 @@
-name: Build & Release
+name: Build & Release App
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   setup:
-    uses: ./.github/workflows/setup.yaml
+    uses: ./.github/workflows/setup-app.yaml
     secrets:
       NOTIFICATION_URL: ${{ secrets.NOTIFICATION_URL }}
 
@@ -54,24 +54,24 @@ jobs:
       flutter_version: ${{ needs.setup.outputs.flutter_version }}
       xcode_version: ${{ needs.setup.outputs.xcode_version }}
 
-  build-appstore:
-    needs: setup
-    uses: ./.github/workflows/build-appstore.yaml
-    with:
-      version: ${{ needs.setup.outputs.version }}
-      flutter_version: ${{ needs.setup.outputs.flutter_version }}
-      xcode_version: ${{ needs.setup.outputs.xcode_version }}
-    secrets:
-      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-      ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
-      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-      MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
-      APP_BUNDLE_ID: ${{ secrets.APP_BUNDLE_ID }}
+  # build-appstore:
+  #   needs: setup
+  #   uses: ./.github/workflows/_archived/build-appstore.yaml
+  #   with:
+  #     version: ${{ needs.setup.outputs.version }}
+  #     flutter_version: ${{ needs.setup.outputs.flutter_version }}
+  #     xcode_version: ${{ needs.setup.outputs.xcode_version }}
+  #   secrets:
+  #     ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+  #     ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+  #     ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
+  #     MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+  #     MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+  #     APP_BUNDLE_ID: ${{ secrets.APP_BUNDLE_ID }}
 
   # build-playstore:
   #   needs: setup
-  #   uses: ./.github/workflows/build-playstore.yaml
+  #   uses: ./.github/workflows/_archived/build-playstore.yaml
   #   with:
   #     version: ${{ needs.setup.outputs.version }}
   #     flutter_version: ${{ needs.setup.outputs.flutter_version }}
@@ -85,9 +85,8 @@ jobs:
   #     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
 
   release:
-    # needs: [setup, build-android, build-ios, build-windows, build-macos, build-appstore, build-playstore]
-    needs: [setup, build-android, build-ios, build-windows, build-macos, build-appstore]
-    uses: ./.github/workflows/release.yaml
+    needs: [setup, build-android, build-ios, build-windows, build-macos]
+    uses: ./.github/workflows/release-app.yaml
     with:
       tag: ${{ needs.setup.outputs.tag }}
       version: ${{ needs.setup.outputs.version }}

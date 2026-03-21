@@ -16,7 +16,10 @@ on:
 jobs:
   build-macos:
     runs-on: macos-latest
-    
+    defaults:
+      run:
+        working-directory: app
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -46,18 +49,18 @@ jobs:
           ./scripts/macos_nosign.sh
           flutter build macos
           cd build/macos/Build/Products/Release
-          mkdir -p "Anx Reader"
-          cp -r "Anx Reader.app" "Anx Reader/AnxReader.app"
-          ln -s /Applications "Anx Reader/Applications"
-          hdiutil create -volname "Anx Reader" -srcfolder "Anx Reader" -ov -format UDZO Anx-Reader-${{ inputs.version }}.dmg
-          ditto -c -k --keepParent "Anx Reader.app" "Anx-Reader-${{ inputs.version }}.zip"
+          mkdir -p "Omnigram"
+          cp -r "Omnigram.app" "Omnigram/Omnigram.app" 2>/dev/null || cp -r "*.app" "Omnigram/"
+          ln -s /Applications "Omnigram/Applications"
+          hdiutil create -volname "Omnigram" -srcfolder "Omnigram" -ov -format UDZO Omnigram-${{ inputs.version }}.dmg
+          ditto -c -k --keepParent "Omnigram.app" "Omnigram-${{ inputs.version }}.zip" 2>/dev/null || ditto -c -k --keepParent *.app "Omnigram-${{ inputs.version }}.zip"
 
       - name: Rename builds
         run: |
           cd build
           mkdir -p macos
-          mv macos/Build/Products/Release/Anx-Reader-${{ inputs.version }}.dmg macos/Anx-Reader-macos-${{ inputs.version }}.dmg
-          mv macos/Build/Products/Release/Anx-Reader-${{ inputs.version }}.zip macos/Anx-Reader-macos-${{ inputs.version }}.zip
+          mv macos/Build/Products/Release/Omnigram-${{ inputs.version }}.dmg macos/Omnigram-macos-${{ inputs.version }}.dmg
+          mv macos/Build/Products/Release/Omnigram-${{ inputs.version }}.zip macos/Omnigram-macos-${{ inputs.version }}.zip
         shell: bash
 
       - name: Upload artifacts
@@ -65,6 +68,6 @@ jobs:
         with:
           name: macos-artifacts
           path: |
-            build/macos/*.dmg
-            build/macos/*.zip
+            app/build/macos/*.dmg
+            app/build/macos/*.zip
           if-no-files-found: error

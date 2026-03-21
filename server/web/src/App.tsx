@@ -9,14 +9,13 @@ import { LibraryPage } from "@/pages/LibraryPage";
 import { BookPage } from "@/pages/BookPage";
 import { AdminPage } from "@/pages/AdminPage";
 import { SettingsPage } from "@/pages/SettingsPage";
-import { getToken } from "@/api/client";
 import { Loader2 } from "lucide-react";
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { isLoading, isAuthenticated } = useAuth();
   const location = useLocation();
 
-  if (isLoading && getToken()) {
+  if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -24,7 +23,7 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!isAuthenticated && !getToken()) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
