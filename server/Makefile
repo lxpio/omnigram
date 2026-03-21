@@ -11,10 +11,12 @@ SHELL := /bin/bash
 DESTDIR=${PROJECT_PATH}/build/omnigram-server-${VERSION}
 
 
-.PHONY: all
+.PHONY: all web
 
+web:
+	cd web && npm ci && npm run build
 
-all : omnigram-server
+all : web omnigram-server
 
 
 service/m4t/m4t_grpc.pb.go service/m4t/m4t.pb.go:

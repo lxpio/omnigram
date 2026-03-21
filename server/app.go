@@ -123,6 +123,9 @@ func (m *App) initGinRoute(level zapcore.Level) *gin.Engine {
 
 	service.Setup(router)
 
+	// Web UI — SPA fallback（必须在所有 API 路由之后注册）
+	registerWebUI(router)
+
 	return router
 }
 
