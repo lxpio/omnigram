@@ -18,6 +18,22 @@ export interface Book {
   size: number;
 }
 
+export interface Shelf {
+  id: number;
+  name: string;
+  description: string;
+  cover_url: string;
+  sort_order: number;
+  book_count: number;
+  ctime: number;
+  utime: number;
+}
+
+export interface TagInfo {
+  tag: string;
+  count: number;
+}
+
 export interface User {
   id: number;
   name: string;
