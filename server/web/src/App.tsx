@@ -12,6 +12,7 @@ import { SettingsPage } from "@/pages/SettingsPage";
 import { ShelvesPage } from "@/pages/ShelvesPage";
 import { TagsPage } from "@/pages/TagsPage";
 import { StatsPage } from "@/pages/StatsPage";
+import { ReaderPage } from "@/pages/ReaderPage";
 import { Loader2 } from "lucide-react";
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -69,6 +70,14 @@ export default function App() {
     <>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/read/:bookId"
+          element={
+            <RequireAuth>
+              <ReaderPage />
+            </RequireAuth>
+          }
+        />
         <Route
           path="/*"
           element={
