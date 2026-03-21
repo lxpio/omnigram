@@ -1,0 +1,67 @@
+---
+import { getLangFromUrl, t } from '../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const i = t(lang);
+
+const codeBlock = `# One command to start
+docker compose up -d
+# Open browser
+open http://localhost:8080`;
+---
+
+<section class="py-20 sm:py-28">
+  <div class="mx-auto max-w-3xl px-6">
+    <!-- Section header -->
+    <div class="text-center">
+      <h2 class="text-3xl font-bold text-white sm:text-4xl">
+        {i.quickstart.sectionTitle}
+      </h2>
+    </div>
+
+    <!-- Code block -->
+    <div class="mt-10 relative group">
+      <div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-brand-accent/20 to-brand-accent-light/20 blur-sm opacity-50 group-hover:opacity-75 transition-opacity"></div>
+      <div class="relative rounded-xl border border-brand-border bg-brand-bg overflow-hidden">
+        <!-- Title bar -->
+        <div class="flex items-center justify-between border-b border-brand-border px-4 py-2.5">
+          <div class="flex items-center gap-2">
+            <div class="h-3 w-3 rounded-full bg-red-500/70"></div>
+            <div class="h-3 w-3 rounded-full bg-yellow-500/70"></div>
+            <div class="h-3 w-3 rounded-full bg-green-500/70"></div>
+          </div>
+          <span class="text-xs text-slate-500 font-mono">terminal</span>
+          <button
+            id="copy-btn"
+            class="text-xs text-slate-500 hover:text-brand-accent-light transition-colors cursor-pointer"
+            data-code="docker compose up -d && open http://localhost:8080"
+          >
+            Copy
+          </button>
+        </div>
+        <!-- Code -->
+        <pre class="p-5 text-sm leading-relaxed overflow-x-auto"><code class="font-mono" set:html={codeBlock.split('\n').map((line) => {
+          if (line.startsWith('#')) {
+            return `<span class="text-slate-500">${line}</span>`;
+          }
+          return `<span class="text-brand-accent-light">${line}</span>`;
+        }).join('\n')} /></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.getElementById('copy-btn')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    const code = btn.dataset.code || '';
+    try {
+      await navigator.clipboard.writeText(code);
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+    } catch {
+      btn.textContent = 'Failed';
+      setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+    }
+  });
+</script>

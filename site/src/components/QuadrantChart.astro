@@ -1,0 +1,89 @@
+---
+import { getLangFromUrl, t } from '../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const i = t(lang);
+
+const competitors = [
+  { name: 'Calibre-Web', x: 15, y: 80 },
+  { name: 'Kavita', x: 25, y: 75 },
+  { name: 'KOReader', x: 20, y: 25 },
+  { name: 'Anx Reader', x: 70, y: 20 },
+  { name: 'Readwise', x: 72, y: 55, label: 'SaaS' },
+];
+
+const omnigram = { name: 'Omnigram', x: 82, y: 82 };
+---
+
+<section class="py-20 sm:py-28">
+  <div class="mx-auto max-w-4xl px-6">
+    <!-- Section header -->
+    <div class="text-center">
+      <span class="inline-block rounded-full border border-brand-accent/30 bg-brand-accent/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-accent-light">
+        {i.quadrant.sectionLabel}
+      </span>
+      <h2 class="mt-4 text-3xl font-bold text-white sm:text-4xl">
+        {i.quadrant.sectionTitle}
+      </h2>
+    </div>
+
+    <!-- Chart -->
+    <div class="mt-14 flex justify-center">
+      <svg viewBox="0 0 500 400" class="w-full max-w-2xl" xmlns="http://www.w3.org/2000/svg">
+        <!-- Background -->
+        <rect x="50" y="20" width="420" height="340" rx="8" fill="#1e293b" fill-opacity="0.5" stroke="#334155" stroke-width="1" />
+
+        <!-- Grid lines -->
+        <line x1="260" y1="20" x2="260" y2="360" stroke="#334155" stroke-width="1" stroke-dasharray="4,4" />
+        <line x1="50" y1="190" x2="470" y2="190" stroke="#334155" stroke-width="1" stroke-dasharray="4,4" />
+
+        <!-- Axes -->
+        <line x1="50" y1="360" x2="470" y2="360" stroke="#475569" stroke-width="1.5" />
+        <line x1="50" y1="20" x2="50" y2="360" stroke="#475569" stroke-width="1.5" />
+
+        <!-- X-axis labels -->
+        <text x="80" y="385" fill="#64748b" font-size="11" font-family="Inter, sans-serif">No AI</text>
+        <text x="420" y="385" fill="#64748b" font-size="11" font-family="Inter, sans-serif">AI-Native</text>
+
+        <!-- Y-axis labels -->
+        <text x="10" y="355" fill="#64748b" font-size="11" font-family="Inter, sans-serif" transform="rotate(-90, 20, 340)">Client Only</text>
+        <text x="10" y="60" fill="#64748b" font-size="11" font-family="Inter, sans-serif" transform="rotate(-90, 20, 60)">Self-Hosted</text>
+
+        <!-- Competitor dots -->
+        {competitors.map((c) => {
+          const cx = 50 + (c.x / 100) * 420;
+          const cy = 360 - (c.y / 100) * 340;
+          return (
+            <g>
+              <circle cx={cx} cy={cy} r="5" fill="#64748b" />
+              <text x={cx + 8} y={cy + 4} fill="#94a3b8" font-size="11" font-family="Inter, sans-serif">
+                {c.name}
+              </text>
+              {c.label && (
+                <text x={cx + 8} y={cy + 17} fill="#64748b" font-size="9" font-family="Inter, sans-serif">
+                  ({c.label})
+                </text>
+              )}
+            </g>
+          );
+        })}
+
+        <!-- Omnigram dot with glow -->
+        {(() => {
+          const cx = 50 + (omnigram.x / 100) * 420;
+          const cy = 360 - (omnigram.y / 100) * 340;
+          return (
+            <g>
+              <circle cx={cx} cy={cy} r="20" fill="#6366f1" fill-opacity="0.15" />
+              <circle cx={cx} cy={cy} r="12" fill="#6366f1" fill-opacity="0.3" />
+              <circle cx={cx} cy={cy} r="6" fill="#6366f1" />
+              <text x={cx - 30} y={cy - 18} fill="#a5b4fc" font-size="13" font-weight="bold" font-family="Inter, sans-serif">
+                {omnigram.name}
+              </text>
+            </g>
+          );
+        })()}
+      </svg>
+    </div>
+  </div>
+</section>
