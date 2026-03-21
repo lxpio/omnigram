@@ -1,6 +1,7 @@
 # 012 - Omnigram Server Phase 2.0 技术设计文档
 
 > 创建日期：2026-03-21
+> 修订日期：2026-03-21（整合 012-review.md 审计意见）
 > 状态：📐 设计中
 > 范围：Phase 1.5（安全加固）+ Phase 2.0（v0.1.0 ~ v0.3.0 全量设计）
 > 前置：011-server-gap-analysis.md（产品路线图）、008-code-quality-audit.md（代码审计）
@@ -254,9 +255,9 @@ func Error(c *gin.Context, status int, code, message string) {
 #### CORS 中间件
 ```go
 // middleware/cors.go
-func CORSMiddleware() gin.HandlerFunc {
+func CORSMiddleware(allowOrigins string) gin.HandlerFunc {
     return func(c *gin.Context) {
-        c.Header("Access-Control-Allow-Origin", "*")
+        c.Header("Access-Control-Allow-Origin", allowOrigins)
         c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
         c.Header("Access-Control-Allow-Headers", "Origin, Content-Type, Authorization, X-API-Key")
         c.Header("Access-Control-Max-Age", "86400")
@@ -267,6 +268,13 @@ func CORSMiddleware() gin.HandlerFunc {
         c.Next()
     }
 }
+```
+
+配置文件新增：
+```yaml
+# conf.yaml
+server:
+  cors_origins: "*"  # 生产环境改为具体域名，如 "https://example.com"
 ```
 
 #### 分页参数化
@@ -319,6 +327,145 @@ USER omnigram
 ENV CONFIG_FILE=/conf/conf.yaml
 # OMNI_PASSWORD 和 OMNI_USER 不再设默认值
 # docker-entrypoint.sh 检查是否设置，未设置则生成随机密码并打印
+```
+
+#### 健康检查端点
+
+Docker 部署需要 `GET /healthz` 返回服务和数据库连接状态，用于 `docker-compose` 的 `healthcheck` 指令。
+
+```go
+// service/sys/health.go（新增）
+
+func healthzHandle(c *gin.Context) {
+    // 检查 SQLite 连接
+    sqlDB, err := store.FileMetaStore().DB()
+    if err != nil {
+        c.JSON(503, gin.H{"status": "unhealthy", "error": "db connection failed"})
+        return
+    }
+    if err := sqlDB.Ping(); err != nil {
+        c.JSON(503, gin.H{"status": "unhealthy", "error": "db ping failed"})
+        return
+    }
+    c.JSON(200, gin.H{"status": "healthy", "version": version.Version})
+}
+
+// 路由注册（无需认证）
+router.GET("/healthz", healthzHandle)
+```
+
+Docker Compose 使用：
+```yaml
+services:
+  omnigram:
+    image: omnigram-server
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+```
+
+#### 登录接口限流
+
+防止暴力破解登录，对 `/auth/login` 加 rate limit（基于 IP 的滑动窗口限流）。
+
+```go
+// middleware/rate_limit.go（新增）
+
+type RateLimiter struct {
+    mu       sync.Mutex
+    attempts map[string][]time.Time
+    window   time.Duration
+    limit    int
+}
+
+func NewRateLimiter(window time.Duration, limit int) *RateLimiter {
+    return &RateLimiter{
+        attempts: make(map[string][]time.Time),
+        window:   window,
+        limit:    limit,
+    }
+}
+
+func (rl *RateLimiter) Allow(key string) bool {
+    rl.mu.Lock()
+    defer rl.mu.Unlock()
+    
+    now := time.Now()
+    windowStart := now.Add(-rl.window)
+    
+    // 清理过期记录
+    valid := make([]time.Time, 0)
+    for _, t := range rl.attempts[key] {
+        if t.After(windowStart) {
+            valid = append(valid, t)
+        }
+    }
+    rl.attempts[key] = valid
+    
+    if len(valid) >= rl.limit {
+        return false
+    }
+    rl.attempts[key] = append(rl.attempts[key], now)
+    return true
+}
+
+func RateLimitMiddleware(limiter *RateLimiter) gin.HandlerFunc {
+    return func(c *gin.Context) {
+        key := c.ClientIP()
+        if !limiter.Allow(key) {
+            c.JSON(429, ErrorResponse{Code: "RATE_LIMITED", Message: "Too many attempts, try again later"})
+            c.Abort()
+            return
+        }
+        c.Next()
+    }
+}
+
+// 注册（仅对 /auth/login）：
+// loginLimiter := middleware.NewRateLimiter(15*time.Minute, 10) // 15 分钟内最多 10 次
+// auth.POST("/login", middleware.RateLimitMiddleware(loginLimiter), loginHandle)
+```
+
+#### 优雅关闭
+
+使用 `http.Server` + `Shutdown(ctx)` 处理 SIGTERM，避免请求中断。
+
+```go
+// server/app.go — 替换 router.Run()
+
+func (m *App) Run() error {
+    router := m.initGinRoute(m.level)
+    
+    srv := &http.Server{
+        Addr:    m.conf.APIAddr,
+        Handler: router,
+    }
+    
+    // 在 goroutine 中启动服务
+    go func() {
+        if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+            log.F("Server failed to start", zap.Error(err))
+        }
+    }()
+    
+    // 等待中断信号
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+    <-quit
+    log.I("Shutting down server...")
+    
+    // 给活跃请求 30 秒完成
+    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+    defer cancel()
+    if err := srv.Shutdown(ctx); err != nil {
+        log.F("Server forced to shutdown", zap.Error(err))
+    }
+    
+    log.I("Server exited")
+    return nil
+}
 ```
 
 ---
@@ -448,15 +595,19 @@ func deleteBookHandle(c *gin.Context) {
         return
     }
     
-    // 删除关联数据
-    orm.Where("book_id = ?", bookID).Delete(&schema.BookTagShip{})
-    orm.Where("book_id = ?", bookID).Delete(&schema.ReadProgress{})
-    orm.Where("book_id = ?", bookID).Delete(&schema.FavBook{})
+    // 事务包裹关联数据删除，保证一致性
+    err = orm.Transaction(func(tx *gorm.DB) error {
+        tx.Where("book_id = ?", bookID).Delete(&schema.BookTagShip{})
+        tx.Where("book_id = ?", bookID).Delete(&schema.ReadProgress{})
+        tx.Where("book_id = ?", bookID).Delete(&schema.FavBook{})
+        return tx.Delete(&book).Error
+    })
+    if err != nil {
+        schema.Error(c, 500, "DB_ERROR", err.Error())
+        return
+    }
     
-    // 删除书籍记录
-    orm.Delete(&book)
-    
-    // 可选删除文件
+    // 文件删除放在事务外（文件操作不可回滚）
     if deleteFile && book.Path != "" {
         os.Remove(book.Path)
     }
@@ -482,7 +633,7 @@ func Initialize(ctx context.Context) {
     cf := conf.GetConfig()
     davHandler = &webdav.Handler{
         Prefix:     "/dav",
-        FileSystem: NewOmnigramFS(cf.EpubOptions.DataPath),
+        FileSystem: NewOmnigramFS(cf.EpubOptions.DataPath, cf.EpubOptions.SyncPath),
         LockSystem: webdav.NewMemLS(),
         Logger: func(r *http.Request, err error) {
             if err != nil {
@@ -499,44 +650,94 @@ func Setup(router *gin.Engine) {
 }
 ```
 
-#### 自定义文件系统（权限控制）
+#### 自定义文件系统（双区权限控制）
+
+WebDAV 路径结构：
+```
+/dav/
+├── books/           # 只读 — 书库文件浏览和下载
+└── sync/            # 可写 — 阅读进度/笔记/配置同步
+    └── {user}/      # 按用户隔离（从 BasicAuth 获取用户名）
+```
+
+**设计原则：** 书库文件目录只读（保护原始文件），同步目录可写（支持 Anx Reader / KOReader 数据同步）。
+
 ```go
 // service/webdav/filesystem.go（新文件）
 
-// OmnigramFS 包装 webdav.Dir，添加用户权限控制
+// OmnigramFS 实现 webdav.FileSystem 接口
+// 双区设计：books/ 只读，sync/ 可写
 type OmnigramFS struct {
-    root string
+    booksRoot string // 书库文件根目录（只读）
+    syncRoot  string // 同步数据根目录（可写）
 }
 
-func NewOmnigramFS(root string) *OmnigramFS {
-    return &OmnigramFS{root: root}
+func NewOmnigramFS(booksRoot, syncRoot string) *OmnigramFS {
+    return &OmnigramFS{booksRoot: booksRoot, syncRoot: syncRoot}
 }
 
 // OpenFile 实现 webdav.FileSystem 接口
-// 只允许已认证用户访问
-// 只读模式：不允许通过 WebDAV 删除/修改书库文件
 func (fs *OmnigramFS) OpenFile(ctx context.Context, name string, flag int, perm os.FileMode) (webdav.File, error) {
-    // 只允许读取，禁止写入/删除
+    // 同步目录：允许读写（Anx Reader/KOReader 进度同步需要写入）
+    if strings.HasPrefix(name, "/sync/") {
+        syncPath := filepath.Join(fs.syncRoot, strings.TrimPrefix(name, "/sync/"))
+        return os.OpenFile(syncPath, flag, perm)
+    }
+    // 书库目录：只允许读取，禁止写入/删除
     if flag&(os.O_WRONLY|os.O_RDWR|os.O_CREATE|os.O_TRUNC) != 0 {
         return nil, os.ErrPermission
     }
-    return os.Open(filepath.Join(fs.root, name))
+    booksPath := name
+    if strings.HasPrefix(name, "/books/") {
+        booksPath = strings.TrimPrefix(name, "/books/")
+    }
+    return os.Open(filepath.Join(fs.booksRoot, booksPath))
 }
 
 func (fs *OmnigramFS) Stat(ctx context.Context, name string) (os.FileInfo, error) {
-    return os.Stat(filepath.Join(fs.root, name))
+    if strings.HasPrefix(name, "/sync/") {
+        return os.Stat(filepath.Join(fs.syncRoot, strings.TrimPrefix(name, "/sync/")))
+    }
+    booksPath := name
+    if strings.HasPrefix(name, "/books/") {
+        booksPath = strings.TrimPrefix(name, "/books/")
+    }
+    return os.Stat(filepath.Join(fs.booksRoot, booksPath))
 }
 
-// Mkdir, RemoveAll 返回 ErrPermission（只读）
+// Mkdir — 仅 sync/ 目录允许创建子目录
 func (fs *OmnigramFS) Mkdir(ctx context.Context, name string, perm os.FileMode) error {
+    if strings.HasPrefix(name, "/sync/") {
+        return os.MkdirAll(filepath.Join(fs.syncRoot, strings.TrimPrefix(name, "/sync/")), perm)
+    }
     return os.ErrPermission
 }
+
+// RemoveAll — 仅 sync/ 目录允许删除
 func (fs *OmnigramFS) RemoveAll(ctx context.Context, name string) error {
+    if strings.HasPrefix(name, "/sync/") {
+        return os.RemoveAll(filepath.Join(fs.syncRoot, strings.TrimPrefix(name, "/sync/")))
+    }
     return os.ErrPermission
 }
+
+// Rename — 仅 sync/ 目录允许重命名
 func (fs *OmnigramFS) Rename(ctx context.Context, oldName, newName string) error {
+    if strings.HasPrefix(oldName, "/sync/") && strings.HasPrefix(newName, "/sync/") {
+        old := filepath.Join(fs.syncRoot, strings.TrimPrefix(oldName, "/sync/"))
+        new := filepath.Join(fs.syncRoot, strings.TrimPrefix(newName, "/sync/"))
+        return os.Rename(old, new)
+    }
     return os.ErrPermission
 }
+```
+
+配置文件新增：
+```yaml
+# conf.yaml
+epub_options:
+  data_path: "/data/books"
+  sync_path: "/data/sync"   # 新增：WebDAV 同步目录
 ```
 
 #### HTTP Basic Auth（WebDAV/OPDS 共用）
@@ -665,7 +866,8 @@ func serveWebUI(c *gin.Context) {
     f, err := webUI.Open("web/dist" + path)
     if err == nil {
         f.Close()
-        c.FileFromFS(path, http.FS(subFS(webUI, "web/dist")))
+        sub, _ := fs.Sub(webUI, "web/dist")
+        c.FileFromFS(path, http.FS(sub))
         return
     }
     
@@ -1019,11 +1221,75 @@ identifiers (via link)          → Book.ISBN/ASIN/UUID
 cover.jpg (in book path)        → BadgerDB cover
 ```
 
+### 4.5 备份/恢复 CLI
+
+自托管用户的核心需求——数据可备份、可迁移。
+
+#### CLI 命令
+```go
+// cmd/omni-server/main.go — 新增 backup/restore 子命令
+
+// 备份：omni-server backup --output /backups/omnigram-2026-03-21.tar.gz
+// 恢复：omni-server restore --input /backups/omnigram-2026-03-21.tar.gz --config /conf/conf.yaml
+
+func backupData(outputPath string) error {
+    // 1. 暂停写入（可选：PRAGMA wal_checkpoint）
+    // 2. 打包 omnigram.db + file_meta.db + badger/ + conf.yaml → tar.gz
+    // 3. 记录版本号和创建时间到 backup-meta.json
+    // 4. 输出备份文件路径和大小
+    
+    files := []string{
+        filepath.Join(dataDir, "omnigram.db"),
+        filepath.Join(dataDir, "file_meta.db"),
+        filepath.Join(dataDir, "badger"),
+        confPath,
+    }
+    
+    meta := BackupMeta{
+        Version:   version.Version,
+        CreatedAt: time.Now().UTC(),
+        DBVersion: getCurrentMigrationVersion(),
+    }
+    
+    return createTarGz(outputPath, files, meta)
+}
+
+func restoreData(inputPath string) error {
+    // 1. 验证 backup-meta.json 中的版本兼容性
+    // 2. 停止服务（如果正在运行）
+    // 3. 解压覆盖 omnigram.db + file_meta.db + badger/
+    // 4. 运行数据库迁移（如果版本不同）
+    // 5. 输出恢复报告
+    
+    meta, err := readBackupMeta(inputPath)
+    if err != nil {
+        return fmt.Errorf("invalid backup: %w", err)
+    }
+    
+    log.I("Restoring from backup", 
+        zap.String("version", meta.Version),
+        zap.Time("created_at", meta.CreatedAt))
+    
+    return extractTarGz(inputPath, dataDir)
+}
+```
+
+Docker 用户备份示例：
+```bash
+# 创建备份
+docker exec omnigram omni-server backup --output /data/backup.tar.gz
+
+# 从宿主机拷贝
+docker cp omnigram:/data/backup.tar.gz ./backup.tar.gz
+```
+
 ---
 
 ## 五、v0.3.0 设计
 
 ### 5.1 搜索增强（SQLite FTS5）
+
+> **已知限制：** FTS5 使用 `unicode61` tokenizer 对中文做字符级分词（每个字一个 token），搜索精度不如词级分词。MVP 阶段可接受，后续可选方案：引入 [bleve](https://github.com/blevesearch/bleve) 全文搜索库（纯 Go，支持中文分词插件），或维持现状按需优化。
 
 #### FTS5 初始化
 ```go
@@ -1087,6 +1353,15 @@ Response: {
 ```
 
 ```go
+// 搜索排序字段白名单（防止 SQL 注入）
+var allowedSortFields = map[string]string{
+    "title":  "title",
+    "author": "author",
+    "utime":  "u_time",
+    "ctime":  "c_time",
+    "rating": "rating",
+}
+
 func searchBooksHandle(c *gin.Context) {
     q := c.Query("q")
     format := c.Query("format")
@@ -1094,6 +1369,15 @@ func searchBooksHandle(c *gin.Context) {
     tag := c.Query("tag")
     sort := c.DefaultQuery("sort", "utime")
     order := c.DefaultQuery("order", "desc")
+    
+    // 白名单校验：防止 sort/order 参数 SQL 注入
+    sortColumn, ok := allowedSortFields[sort]
+    if !ok {
+        sortColumn = "u_time"
+    }
+    if order != "asc" && order != "desc" {
+        order = "desc"
+    }
     
     var pagination schema.Pagination
     c.ShouldBindQuery(&pagination)
@@ -1123,8 +1407,8 @@ func searchBooksHandle(c *gin.Context) {
     // 总数
     query.Count(&total)
     
-    // 排序 + 分页
-    orderClause := sort + " " + order
+    // 排序 + 分页（使用白名单校验后的值）
+    orderClause := sortColumn + " " + order
     query.Order(orderClause).Offset(pagination.Offset()).Limit(pagination.PageSize).Find(&books)
     
     schema.SuccessPaged(c, books, pagination.Page, pagination.PageSize, total)
@@ -1415,6 +1699,7 @@ POST   /m4t/tts/speakers              [OAuth]
 DELETE /m4t/tts/speakers/:aid         [OAuth]
 
 # ─── 系统（现有 + 扩展） ──────────────────────────
+GET    /healthz                        [NoAuth]        ← v0.1.0 新增
 GET    /sys/ping
 GET    /sys/info                       [OAuth]
 PUT    /sys/info                       [OAuth+Admin]
@@ -1425,7 +1710,8 @@ GET    /sys/ai/status                  [OAuth]         ← v0.3.0 新增
 PUT    /sys/ai/config                  [OAuth+Admin]   ← v0.3.0 新增
 
 # ─── WebDAV（v0.1.0 新增） ────────────────────────
-*      /dav/*path                      [BasicAuth]
+*      /dav/books/*path                [BasicAuth]     ← 只读：书库文件浏览
+*      /dav/sync/*path                 [BasicAuth]     ← 读写：进度/笔记同步
 
 # ─── OPDS（v0.2.0 新增） ─────────────────────────
 GET    /opds/v1.2/catalog              [BasicAuth]
@@ -1443,7 +1729,7 @@ GET    /opds/v1.2/books/:id/download   [BasicAuth]
 GET    /*                              [NoAuth → SPA]  ← go:embed React
 ```
 
-**总计：~85 个端点（现有 39 + 新增 ~46）**
+**总计：~88 个端点（现有 39 + 新增 ~49）**
 
 ---
 
@@ -1497,3 +1783,27 @@ COPY / /omnigram-server
 | OPDS 兼容测试 | Moon+ Reader / FBReader | 手动验证 |
 | Web UI 测试 | 核心页面渲染 + 交互 | Vitest + Playwright (可选) |
 | 集成测试 | Docker 端到端 | docker-compose + curl |
+
+---
+
+## 十、修订记录
+
+| 日期 | 修订内容 |
+|------|---------|
+| 2026-03-21 | 初版（Phase 1.5 + v0.1.0 ~ v0.3.0 全量设计） |
+| 2026-03-21 | 整合 012-review.md 审计意见，主要变更：|
+
+**审计修复清单：**
+
+| # | 类型 | 修复内容 |
+|---|------|---------|
+| 1 | 🔴 严重 | WebDAV 改为双区设计：`/dav/books/` 只读 + `/dav/sync/` 可写（支持 Anx Reader / KOReader 同步） |
+| 2 | 🔴 严重 | 搜索 handler `sort`/`order` 参数增加白名单校验（防止 SQL 注入） |
+| 3 | 🟡 中等 | CORS `Allow-Origin` 改为从配置文件读取（`server.cors_origins`） |
+| 4 | 🟡 中等 | `deleteBookHandle` 用 `orm.Transaction` 包裹关联删除（保证一致性） |
+| 5 | 🟡 中等 | `serveWebUI` 中 `subFS()` 替换为标准库 `fs.Sub()` |
+| 6 | 🟡 中等 | FTS5 中文字符级分词标注为已知限制 |
+| 7 | 🟢 新增 | Phase 1.5 增加 `GET /healthz` 健康检查端点 |
+| 8 | 🟢 新增 | Phase 1.5 增加 `/auth/login` IP 限流（15 分钟 10 次） |
+| 9 | 🟢 新增 | Phase 1.5 增加优雅关闭（`http.Server` + `Shutdown` + SIGTERM） |
+| 10 | 🟢 新增 | v0.2.0 增加备份/恢复 CLI（`omni-server backup` / `restore`） |
