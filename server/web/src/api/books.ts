@@ -124,6 +124,40 @@ export function useBookStats() {
   });
 }
 
+interface SearchParams {
+  q?: string;
+  tag?: string;
+  author?: string;
+  format?: string;
+  language?: string;
+  sort?: string;
+  order?: string;
+  page?: number;
+  page_size?: number;
+}
+
+export function useSearchBooks(params: SearchParams) {
+  const sp = new URLSearchParams();
+  if (params.q) sp.set("q", params.q);
+  if (params.tag) sp.set("tag", params.tag);
+  if (params.author) sp.set("author", params.author);
+  if (params.format) sp.set("format", params.format);
+  if (params.language) sp.set("language", params.language);
+  if (params.sort) sp.set("sort", params.sort);
+  if (params.order) sp.set("order", params.order);
+  sp.set("page", String(params.page ?? 1));
+  sp.set("page_size", String(params.page_size ?? 50));
+
+  return useQuery({
+    queryKey: ["search", params],
+    queryFn: () =>
+      apiFetch<{ data: Book[]; total: number }>(
+        `/reader/search?${sp.toString()}`
+      ),
+    enabled: !!(params.q || params.tag || params.author || params.format),
+  });
+}
+
 export function getCoverUrl(coverUrl: string): string {
   if (!coverUrl) return "";
   return `/img/covers/${coverUrl}`;

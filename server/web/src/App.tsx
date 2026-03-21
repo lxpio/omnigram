@@ -9,6 +9,8 @@ import { LibraryPage } from "@/pages/LibraryPage";
 import { BookPage } from "@/pages/BookPage";
 import { AdminPage } from "@/pages/AdminPage";
 import { SettingsPage } from "@/pages/SettingsPage";
+import { ShelvesPage } from "@/pages/ShelvesPage";
+import { TagsPage } from "@/pages/TagsPage";
 import { Loader2 } from "lucide-react";
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -47,6 +49,8 @@ function AppLayout() {
             <Route path="/" element={<LibraryPage mode="all" onUploadOpen={uploadOpen} onUploadClose={() => setUploadOpen(false)} />} />
             <Route path="/recent" element={<LibraryPage mode="recent" />} />
             <Route path="/favorites" element={<LibraryPage mode="favorites" />} />
+            <Route path="/shelves" element={<ShelvesPage />} />
+            <Route path="/tags" element={<TagsPage />} />
             <Route path="/books/:bookId" element={<BookPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/settings" element={<SettingsPage />} />
