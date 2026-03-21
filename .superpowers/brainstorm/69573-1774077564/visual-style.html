@@ -1,0 +1,108 @@
+<h2>视觉风格方向</h2>
+<p class="subtitle">选择最符合 Omnigram 气质的风格</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="height: 260px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+      <!-- Dark Tech 风格模拟 -->
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #6366f1, #8b5cf6);"></div>
+        <span style="color: #e2e8f0; font-weight: 600; font-size: 14px;">Omnigram</span>
+        <div style="margin-left: auto; display: flex; gap: 16px;">
+          <span style="color: #94a3b8; font-size: 12px;">Features</span>
+          <span style="color: #94a3b8; font-size: 12px;">Docs</span>
+          <span style="color: #94a3b8; font-size: 12px;">GitHub</span>
+        </div>
+      </div>
+      <div style="text-align: center;">
+        <div style="color: #f1f5f9; font-size: 20px; font-weight: 700; margin-bottom: 8px;">Your AI-Powered<br>Book Library</div>
+        <div style="color: #94a3b8; font-size: 11px; margin-bottom: 12px;">Self-hosted. AI-native. Open source.</div>
+        <div style="display: flex; gap: 8px; justify-content: center;">
+          <div style="background: #6366f1; color: white; padding: 6px 16px; border-radius: 6px; font-size: 11px;">Get Started</div>
+          <div style="border: 1px solid #475569; color: #cbd5e1; padding: 6px 16px; border-radius: 6px; font-size: 11px;">GitHub ⭐</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 6px; justify-content: center;">
+        <div style="background: #1e293b; border: 1px solid #334155; padding: 4px 10px; border-radius: 4px; color: #6366f1; font-size: 9px;">docker pull omnigram</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. 暗色科技感</h3>
+      <p>深色背景 + 渐变紫/蓝主色。类似 Vercel / Linear / Immich 官网。极客感强，r/selfhosted 社区偏爱。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="height: 260px; background: #fafaf9; padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+      <!-- Clean Warm 风格模拟 -->
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #ea580c, #f97316);"></div>
+        <span style="color: #292524; font-weight: 600; font-size: 14px;">Omnigram</span>
+        <div style="margin-left: auto; display: flex; gap: 16px;">
+          <span style="color: #78716c; font-size: 12px;">Features</span>
+          <span style="color: #78716c; font-size: 12px;">Docs</span>
+          <span style="color: #78716c; font-size: 12px;">GitHub</span>
+        </div>
+      </div>
+      <div style="text-align: center;">
+        <div style="color: #1c1917; font-size: 20px; font-weight: 700; margin-bottom: 8px;">Your Personal<br>Book Library</div>
+        <div style="color: #78716c; font-size: 11px; margin-bottom: 12px;">AI-native reading, self-hosted on your NAS</div>
+        <div style="display: flex; gap: 8px; justify-content: center;">
+          <div style="background: #ea580c; color: white; padding: 6px 16px; border-radius: 8px; font-size: 11px;">Get Started</div>
+          <div style="border: 1px solid #d6d3d1; color: #44403c; padding: 6px 16px; border-radius: 8px; font-size: 11px;">View Demo</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <span style="color: #a8a29e; font-size: 9px;">📚 6 formats</span>
+        <span style="color: #a8a29e; font-size: 9px;">🤖 AI-native</span>
+        <span style="color: #a8a29e; font-size: 9px;">🎧 TTS</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. 明亮温暖</h3>
+      <p>浅色背景 + 暖色调（橙/琥珀）。类似 Notion / Readwise / Linear Light。亲和力强，知识工作者更容易接受。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="height: 260px; background: linear-gradient(180deg, #0f172a 0%, #0f172a 55%, #ffffff 55%, #ffffff 100%); padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+      <!-- Hybrid 风格模拟 -->
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #3b82f6, #6366f1);"></div>
+        <span style="color: #e2e8f0; font-weight: 600; font-size: 14px;">Omnigram</span>
+        <div style="margin-left: auto; display: flex; gap: 16px;">
+          <span style="color: #94a3b8; font-size: 12px;">Features</span>
+          <span style="color: #94a3b8; font-size: 12px;">Docs</span>
+          <span style="color: #94a3b8; font-size: 12px;">GitHub</span>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: -4px;">
+        <div style="color: #f1f5f9; font-size: 18px; font-weight: 700; margin-bottom: 6px;">AI-Native Book Library</div>
+        <div style="color: #94a3b8; font-size: 10px; margin-bottom: 10px;">Jellyfin for videos. Immich for photos. Omnigram for books.</div>
+        <div style="display: flex; gap: 8px; justify-content: center;">
+          <div style="background: #3b82f6; color: white; padding: 5px 14px; border-radius: 6px; font-size: 10px;">Deploy Now</div>
+          <div style="border: 1px solid #475569; color: #cbd5e1; padding: 5px 14px; border-radius: 6px; font-size: 10px;">GitHub</div>
+        </div>
+      </div>
+      <!-- 白色区域的功能卡片 -->
+      <div style="display: flex; gap: 6px; justify-content: center; margin-top: 4px;">
+        <div style="background: white; border: 1px solid #e5e7eb; padding: 8px 10px; border-radius: 8px; text-align: center; flex: 1; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+          <div style="font-size: 16px; margin-bottom: 2px;">📚</div>
+          <div style="color: #1f2937; font-size: 9px; font-weight: 600;">Library</div>
+        </div>
+        <div style="background: white; border: 1px solid #e5e7eb; padding: 8px 10px; border-radius: 8px; text-align: center; flex: 1; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+          <div style="font-size: 16px; margin-bottom: 2px;">🤖</div>
+          <div style="color: #1f2937; font-size: 9px; font-weight: 600;">AI</div>
+        </div>
+        <div style="background: white; border: 1px solid #e5e7eb; padding: 8px 10px; border-radius: 8px; text-align: center; flex: 1; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+          <div style="font-size: 16px; margin-bottom: 2px;">🎧</div>
+          <div style="color: #1f2937; font-size: 9px; font-weight: 600;">TTS</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. 混合风格（暗色 Hero + 明亮内容）</h3>
+      <p>Hero 区域暗色背景（冲击力），滚动后过渡到明亮内容区。类似 Supabase / Tailwind CSS 官网。兼顾极客感与可读性。</p>
+    </div>
+  </div>
+</div>

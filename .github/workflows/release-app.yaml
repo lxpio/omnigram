@@ -1,4 +1,4 @@
-name: Release
+name: Release App
 
 on:
   workflow_call:
@@ -20,11 +20,11 @@ on:
         type: string
     secrets:
       NOTIFICATION_URL:
-        required: true
+        required: false
       TELEGRAM_TO:
-        required: true
+        required: false
       TELEGRAM_TOKEN:
-        required: true
+        required: false
 
 permissions:
   contents: write
@@ -34,7 +34,7 @@ jobs:
     if: inputs.is_alpha == 'true'
     runs-on: ubuntu-latest
     env:
-      BASE_NOTIFICATION_URL: ${{ secrets.NOTIFICATION_URL }}/Anx-Reader%20Action
+      BASE_NOTIFICATION_URL: ${{ secrets.NOTIFICATION_URL }}/Omnigram%20Action
     steps:
       - name: Checkout tagged source
         uses: actions/checkout@v4
@@ -55,6 +55,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Send build completion notification
+        if: ${{ secrets.NOTIFICATION_URL != '' }}
         shell: bash
         run: |
           RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
@@ -64,7 +65,7 @@ jobs:
     if: inputs.is_alpha != 'true'
     runs-on: ubuntu-latest
     env:
-      BASE_NOTIFICATION_URL: ${{ secrets.NOTIFICATION_URL }}/Anx-Reader%20Action
+      BASE_NOTIFICATION_URL: ${{ secrets.NOTIFICATION_URL }}/Omnigram%20Action
     steps:
       - name: Checkout tagged source
         uses: actions/checkout@v4
@@ -93,19 +94,19 @@ jobs:
           prerelease: ${{ inputs.is_beta == 'true' }}
 
       - name: Format changelog for Telegram
-        if: ${{ inputs.is_beta == 'true' || (inputs.is_beta != 'true' && inputs.is_alpha != 'true') }}
+        if: ${{ secrets.TELEGRAM_TOKEN != '' && (inputs.is_beta == 'true' || (inputs.is_beta != 'true' && inputs.is_alpha != 'true')) }}
         id: format_changelog
         shell: bash
         run: |
           VERSION="${{ inputs.version }}"
           MAIN_VERSION=${VERSION%%-*}
-          
+
           # Format using the Node.js script (Node is pre-installed in GitHub Actions)
-          FORMATTED_NOTES=$(node scripts/format_telegram_message.js assets/CHANGELOG.md "$MAIN_VERSION" 2>&1) || {
+          FORMATTED_NOTES=$(node app/scripts/format_telegram_message.js app/assets/CHANGELOG.md "$MAIN_VERSION" 2>&1) || {
             echo "::warning::Format script failed, using original notes"
             FORMATTED_NOTES='${{ inputs.release_notes }}'
           }
-          
+
           # Save to output
           {
             echo "formatted_notes<<EOF"
@@ -114,7 +115,7 @@ jobs:
           } >> $GITHUB_OUTPUT
 
       - name: Send beta message
-        if: ${{ inputs.is_beta == 'true' }}
+        if: ${{ secrets.TELEGRAM_TOKEN != '' && inputs.is_beta == 'true' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
@@ -122,18 +123,18 @@ jobs:
           format: markdown
           message: |
             🧪 *Beta Version Released!*
-            
+
             🧪 **Testing Version:** `${{ inputs.version }}`
-            
+
             ⚠️ *This is a beta release for testing purposes. Please report any issues you encounter.*
-            
+
             **What's New:**
             ${{ steps.format_changelog.outputs.formatted_notes }}
-            
-            📥 **Download:** https://github.com/Anxcye/anx-reader/releases/tag/${{ inputs.tag }}
+
+            📥 **Download:** https://github.com/${{ github.repository }}/releases/tag/${{ inputs.tag }}
 
       - name: Send release message
-        if: ${{ inputs.is_beta != 'true' && inputs.is_alpha != 'true' }}
+        if: ${{ secrets.TELEGRAM_TOKEN != '' && inputs.is_beta != 'true' && inputs.is_alpha != 'true' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
@@ -141,15 +142,16 @@ jobs:
           format: markdown
           message: |
             🎉 *New Release Available!*
-            
+
             🚀 **Version:** `${{ inputs.version }}`
-            
+
             **What's New:**
             ${{ steps.format_changelog.outputs.formatted_notes }}
-            
-            📥 **Download:** https://github.com/Anxcye/anx-reader/releases/tag/${{ inputs.tag }}
+
+            📥 **Download:** https://github.com/${{ github.repository }}/releases/tag/${{ inputs.tag }}
 
       - name: Send build completion notification
+        if: ${{ secrets.NOTIFICATION_URL != '' }}
         shell: bash
         run: |
           RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"

@@ -16,93 +16,93 @@ jobs:
       - uses: actions/stale@v9
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          
+
           # General issues (60 days to stale, 14 days to close)
           days-before-stale: 60
           days-before-close: 14
           days-before-pr-stale: 60
           days-before-pr-close: 14
-          
+
           # Stale label and messages
           stale-issue-label: 'stale'
           stale-pr-label: 'stale'
           stale-issue-message: |
-            👋 This issue has been automatically marked as stale because it has not had recent activity. 
-            
+            👋 This issue has been automatically marked as stale because it has not had recent activity.
+
             这个 issue 因为长时间没有活动而被自动标记为 stale。
-            
+
             It will be closed in 14 days if no further activity occurs. To keep it open:
             - Add a comment with updates or clarifications
             - Remove the stale label
-            
+
             如果没有进一步的活动，它将在 14 天后被关闭。要保持开放状态：
             - 添加包含更新或澄清的评论
             - 移除 stale 标签
-            
+
             Thank you for your contributions! 感谢您的贡献！
-            
+
           stale-pr-message: |
             👋 This pull request has been automatically marked as stale because it has not had recent activity.
-            
+
             这个 pull request 因为长时间没有活动而被自动标记为 stale。
-            
+
             It will be closed in 14 days if no further activity occurs. To keep it open:
             - Push new commits
             - Add a comment with updates
             - Remove the stale label
-            
+
             如果没有进一步的活动，它将在 14 天后被关闭。要保持开放状态：
             - 推送新的提交
-            - 添加包含更新的评论  
+            - 添加包含更新的评论
             - 移除 stale 标签
-            
+
             Thank you for your contributions! 感谢您的贡献！
-          
+
           # Close messages
           close-issue-message: |
             🔒 This issue has been automatically closed due to inactivity.
-            
+
             这个 issue 因为不活跃而被自动关闭。
-            
+
             If this issue is still relevant, please:
             - Reopen the issue
             - Provide additional context or updates
             - Reference it in a new issue if the problem persists
-            
+
             如果这个问题仍然相关，请：
             - 重新打开 issue
             - 提供额外的上下文或更新
             - 如果问题仍然存在，在新的 issue 中引用它
-            
+
             Thank you for your understanding! 感谢您的理解！
-            
+
           close-pr-message: |
             🔒 This pull request has been automatically closed due to inactivity.
-            
+
             这个 pull request 因为不活跃而被自动关闭。
-            
+
             If you would like to continue this work:
             - Reopen the pull request
             - Create a new pull request with updated changes
             - Contact maintainers if you need assistance
-            
+
             如果您想继续这项工作：
             - 重新打开 pull request
             - 创建包含更新更改的新 pull request
             - 如果需要帮助，请联系维护者
-            
+
             Thank you for your contributions! 感谢您的贡献！
-          
+
           # Exempt labels (these issues will never go stale)
           exempt-issue-labels: 'P0,P1,P2,P3,good first issue,pinned'
           exempt-pr-labels: 'P0,P1,P2,P3,good first issue,pinned'
 
           # Remove stale label when issues/PRs are updated
           remove-stale-when-updated: true
-          
+
           # Limit operations per run to avoid hitting API limits
           operations-per-run: 100
-          
+
           # Don't mark issues as stale if they have assignees
           exempt-all-assignees: true
 
@@ -115,59 +115,59 @@ jobs:
       - uses: actions/stale@v9
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          
+
           # Question issues (30 days to stale, 7 days to close)
           days-before-stale: 30
           days-before-close: 7
           days-before-pr-stale: -1  # Disable for PRs in this job
           days-before-pr-close: -1  # Disable for PRs in this job
-          
+
           # Only target issues with 'question' label
           only-labels: 'question'
-          
+
           # Stale label and messages for questions
           stale-issue-label: 'stale'
           stale-issue-message: |
             ❓ This question has been automatically marked as stale because it has not had recent activity.
-            
+
             这个问题因为长时间没有活动而被自动标记为 stale。
-            
+
             It will be closed in 7 days if no further activity occurs. To keep it open:
             - Provide the requested information or test files
             - Add a comment with updates or clarifications
             - Remove the stale label
-            
+
             如果没有进一步的活动，它将在 7 天后被关闭。要保持开放状态：
             - 提供请求的信息或测试文件
             - 添加包含更新或澄清的评论
             - 移除 stale 标签
-            
+
             Thank you for your understanding! 感谢您的理解！
-            
+
           # Close message for questions
           close-issue-message: |
             🔒 This question has been automatically closed due to lack of response.
-            
+
             这个问题因为缺乏回应而被自动关闭。
-            
+
             If you still need help:
             - Provide the missing information and reopen this issue
             - Create a new issue with complete details
             - Make sure to include all requested information
-            
+
             如果您仍需要帮助：
             - 提供缺失的信息并重新打开此 issue
             - 创建包含完整详情的新 issue
             - 确保包含所有请求的信息
-            
+
             Thank you! 谢谢！
-          
+
           # Don't exempt any labels for questions (they should all be processed)
           exempt-issue-labels: 'p0,p1,p2,p3,good first issue,pinned'
-          
+
           # Remove stale label when updated
           remove-stale-when-updated: true
-          
+
           # Limit operations
           operations-per-run: 50
 
@@ -186,17 +186,17 @@ jobs:
           pr-lock-reason: 'resolved'
           issue-comment: |
             🔒 This issue has been locked because it has been closed for 30 days.
-            
+
             此 issue 已被锁定，因为它已关闭 30 天。
-            
+
             If you believe this issue should be reopened, please create a new issue and reference this one.
-            
+
             如果您认为此 issue 应该重新打开，请创建新的 issue 并引用此问题。
           pr-comment: |
             🔒 This pull request has been locked because it has been closed for 30 days.
-            
+
             此 pull request 已被锁定，因为它已关闭 30 天。
-            
+
             If you believe this should be reopened, please create a new pull request.
-            
+
             如果您认为此问题应该重新打开，请创建新的 pull request。

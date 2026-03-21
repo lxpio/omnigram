@@ -1,10 +1,10 @@
-name: Setup Environment
+name: Setup App Environment
 
 on:
   workflow_call:
     secrets:
       NOTIFICATION_URL:
-        required: true
+        required: false
     outputs:
       tag:
         description: "Git tag"
@@ -39,13 +39,14 @@ jobs:
       release_notes: ${{ steps.extract_release_notes.outputs.release_notes }}
       flutter_version: ${{ steps.get_flutter_version.outputs.flutter_version }}
       xcode_version: ${{ steps.get_xcode_version.outputs.xcode_version }}
-    
+
     steps:
       - name: Send build start notification
+        if: ${{ secrets.NOTIFICATION_URL != '' }}
         shell: bash
         run: |
           RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          BASE_NOTIFICATION_URL="${{ secrets.NOTIFICATION_URL }}/Anx-Reader%20Action"
+          BASE_NOTIFICATION_URL="${{ secrets.NOTIFICATION_URL }}/Omnigram%20Action"
           curl -s "$BASE_NOTIFICATION_URL/Build%20Started?url=$RUN_URL&level=timeSensitive&icon=https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" || echo "Notification failed, continuing..."
 
       - name: Checkout repository
@@ -70,7 +71,7 @@ jobs:
           TAG="${GITHUB_REF#refs/tags/}"
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
 
-          PUBSPEC_VERSION=$( grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d '+' -f 1 )
+          PUBSPEC_VERSION=$( grep '^version:' app/pubspec.yaml | awk '{print $2}' | cut -d '+' -f 1 )
 
           if [[ "$TAG" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)-alpha\.([0-9]+)$ ]]; then
             BASE_VERSION="${BASH_REMATCH[1]}"
@@ -103,7 +104,7 @@ jobs:
         run: |
           VERSION=${{ steps.get_version.outputs.version }}
           MAIN_VERSION=${VERSION%%-*}
-          CHANGELOG_CONTENT=$(sed -n "/## $MAIN_VERSION/,/## /p" assets/CHANGELOG.md | sed '$d')
+          CHANGELOG_CONTENT=$(sed -n "/## $MAIN_VERSION/,/## /p" app/assets/CHANGELOG.md | sed '$d')
           echo "release_notes<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGELOG_CONTENT" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT

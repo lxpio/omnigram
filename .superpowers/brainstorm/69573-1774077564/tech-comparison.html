@@ -1,0 +1,119 @@
+<h2>官网技术方案对比</h2>
+<p class="subtitle">选择最适合 Omnigram 当前阶段的方案</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>纯静态站（HTML + Tailwind CSS）</h3>
+      <p>单个 index.html + 少量 JS，GitHub Pages 部署</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>零依赖，零构建，极简</li>
+            <li>AI 一次性生成整页，维护成本最低</li>
+            <li>加载速度最快（无框架开销）</li>
+            <li>适合当前阶段（只需一个 Landing Page）</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>多页面时难以维护（无组件复用）</li>
+            <li>后续加文档/博客需要迁移</li>
+            <li>无 Markdown 支持，内容更新需改 HTML</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Astro（静态站生成器）</h3>
+      <p>组件化开发，支持 Markdown 内容，零 JS 输出</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>组件复用，Landing Page + 文档 + 博客都能做</li>
+            <li>默认零客户端 JS（性能接近纯静态）</li>
+            <li>Markdown/MDX 写文档，维护方便</li>
+            <li>Starlight 插件可一键生成文档站</li>
+            <li>开源项目主流选择（Starlight 专为文档设计）</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>需要 Node.js 构建环境</li>
+            <li>学习成本（Astro 语法，但 AI 辅助下可忽略）</li>
+            <li>比纯 HTML 多一层抽象</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>VitePress（文档站框架）</h3>
+      <p>Vue 驱动的文档站，Landing Page + 文档一体</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>文档体验极佳（搜索、侧边栏、导航）</li>
+            <li>Vue 组件嵌入 Markdown，灵活度高</li>
+            <li>开箱即用的主题（类似 Vue/Vite 官网风格）</li>
+            <li>构建快，热更新快</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>Landing Page 定制度受限于主题框架</li>
+            <li>想要独特视觉风格需要大量覆盖默认样式</li>
+            <li>偏「文档站」气质，不太像「产品官网」</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="d" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>Next.js SSG</h3>
+      <p>React 生态，静态导出，功能最强</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>React 组件生态，UI 库丰富</li>
+            <li>与 Server 端 Web UI（也是 React）技术栈统一</li>
+            <li>SSG 导出后性能好</li>
+            <li>AI 生成 React 代码质量最高</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>对「官网」来说过于重量级</li>
+            <li>客户端 JS bundle 较大</li>
+            <li>构建配置复杂度高于 Astro</li>
+            <li>杀鸡用牛刀</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 2rem; padding: 1.5rem; background: rgba(99, 102, 241, 0.08); border-radius: 12px; border-left: 4px solid #6366f1;">
+  <h3 style="margin-top: 0;">💡 推荐：B — Astro</h3>
+  <p style="margin: 0;">理由：Omnigram 当前需要 Landing Page + 安装文档 + API 文档。Astro + Starlight 插件可以一套框架覆盖「品牌官网 + 技术文档」，且输出零 JS 的纯静态页面。竞品参考：Immich 官网用 Docusaurus，但 Astro Starlight 是更现代的替代。AI 辅助下 Astro 组件和 HTML 写法几乎一样简单。</p>
+</div>
