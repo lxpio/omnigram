@@ -29,7 +29,9 @@ type Config struct {
 
 	KVType KVType `yaml:"kv_type" json:"kv_type"`
 
-	M4tOptions M4tOptions `yaml:"m4t_options" json:"m4t_options"`
+	M4tOptions M4tOptions `yaml:"m4t_options" json:"m4t_options"` // deprecated, kept for config compat
+
+	TTSOptions TTSOptions `yaml:"tts_options" json:"tts_options"`
 
 	DBOption *Opt `yaml:"db_options" json:"db_options"`
 
@@ -80,6 +82,14 @@ func InitConfig(path string) error {
 		cf.M4tOptions.RemoteAddr = `localhost:50051`
 	}
 
+	// Migrate M4tOptions → TTSOptions if not set
+	if cf.TTSOptions.Provider == "" {
+		cf.TTSOptions.Provider = "edge" // default fallback
+	}
+	if cf.TTSOptions.Timeout == "" {
+		cf.TTSOptions.Timeout = "120s"
+	}
+
 	gconfig = cf
 	return err
 }
@@ -126,6 +136,13 @@ type EpubOptions struct {
 
 type M4tOptions struct {
 	RemoteAddr string `json:"remote_addr" yaml:"remote_addr"`
+}
+
+type TTSOptions struct {
+	Provider   string `json:"provider" yaml:"provider"`       // kokoro | edge | openai
+	SidecarURL string `json:"sidecar_url" yaml:"sidecar_url"` // e.g. http://tts:8880
+	Timeout    string `json:"timeout" yaml:"timeout"`          // e.g. 120s
+	APIKey     string `json:"api_key" yaml:"api_key"`          // for OpenAI TTS proxy
 }
 
 func GetConfig() *Config {

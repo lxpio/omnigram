@@ -56,7 +56,7 @@ Built with a Go backend and Flutter multi-platform client, Omnigram combines boo
 - [x] Multi-user management with session auth
 - [x] Book search, favorites, reading progress sync
 - [x] Docker one-click deployment (SQLite/PostgreSQL/MySQL)
-- [x] Server-side TTS via gRPC (Fish Audio)
+- [x] Server-side TTS via Sidecar (Kokoro / Edge TTS, OpenAI-compatible API)
 
 ### Roadmap
 - [ ] 🔒 Server security hardening (in progress)
@@ -122,15 +122,20 @@ make docker
 
 ### TTS Service
 
-When the current App supports the FishTTS API Server, refer to [FishTTS](https://github.com/fishaudio/fish-speech).
+Omnigram Server supports TTS via a sidecar Docker container with OpenAI-compatible API. The default choice is [Kokoro-FastAPI](https://github.com/remsky/Kokoro-FastAPI):
 
-```bash
-git clone https://github.com/fishaudio/fish-speech.git
-cd fish-speech
-
-pip install -e .
-python -m tools.api_server --listen 0.0.0.0:8999 --llama-checkpoint-path "checkpoints/fish-speech-1.5" --decoder-checkpoint-path "checkpoints/fish-speech-1.5/firefly-gan-vq-fsq-8x1024-21hz-generator.pth"
+```yaml
+# docker-compose.yml — add TTS sidecar
+services:
+  tts:
+    image: ghcr.io/remsky/kokoro-fastapi:latest
+    # OpenAI-compatible API: POST /v1/audio/speech
+    # CPU mode by default, add GPU resources for acceleration
 ```
+
+Configure `TTS_PROVIDER=kokoro` and `TTS_SIDECAR_URL=http://tts:8880` in your Omnigram Server environment.
+
+Edge TTS is also available as a zero-deployment fallback (no additional container needed).
 
 ## Tech Stack
 
@@ -138,7 +143,7 @@ python -m tools.api_server --listen 0.0.0.0:8999 --llama-checkpoint-path "checkp
 |-----------|-----------|
 | **Server** | Go 1.23 + Gin + GORM + BadgerDB |
 | **Client** | Flutter 3.41 + Riverpod (Anx Reader fork) |
-| **TTS** | Fish Audio (gRPC) / langchain_dart (client) |
+| **TTS** | Kokoro / Edge TTS (OpenAI-compatible Sidecar) / langchain_dart (client) |
 | **Database** | SQLite / PostgreSQL / MySQL |
 | **Deployment** | Docker / Docker Compose |
 
@@ -152,7 +157,7 @@ Key libraries and dependencies:
 - [foliate-js](https://github.com/nickthecook/foliate-js) — Ebook rendering engine
 - [riverpod](https://riverpod.dev/) — State management
 - [langchain_dart](https://github.com/davidmigloz/langchain_dart) — AI integration
-- [fish-speech](https://github.com/fishaudio/fish-speech) — TTS engine
+- [Kokoro-FastAPI](https://github.com/remsky/Kokoro-FastAPI) — TTS engine (Sidecar)
 
 ## License
 

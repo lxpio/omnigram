@@ -34,7 +34,7 @@ var (
 
 	ErrParseUserID = Response{Code: 1101, Message: `parse user id error`}
 
-	ErrUpdateM4tServerAddr = Response{Code: 1100, Message: `update m4t server address error`}
+	ErrUpdateTTSConfig = Response{Code: 1100, Message: `update TTS config error`}
 
 	ErrInvalidKVType = Response{Code: 1200, Message: `invalid kv type`}
 )
