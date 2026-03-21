@@ -1,0 +1,43 @@
+---
+import FeatureCard from './FeatureCard.astro';
+import { getLangFromUrl, t } from '../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const i = t(lang);
+
+const features = [
+  { icon: '\u{1F9E0}', ...i.features.ai },
+  { icon: '\u{1F3A7}', ...i.features.tts },
+  { icon: '\u{1F4DA}', ...i.features.library },
+  { icon: '\u{1F4F1}', ...i.features.reader },
+  { icon: '\u{1F680}', ...i.features.deploy },
+];
+---
+
+<section class="py-20 sm:py-28">
+  <div class="mx-auto max-w-6xl px-6">
+    <!-- Section header -->
+    <div class="text-center">
+      <span class="inline-block rounded-full border border-brand-accent/30 bg-brand-accent/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-accent-light">
+        {i.features.sectionLabel}
+      </span>
+      <h2 class="mt-4 text-3xl font-bold text-white sm:text-4xl">
+        {i.features.sectionTitle}
+      </h2>
+    </div>
+
+    <!-- Top row: 3 cards -->
+    <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {features.slice(0, 3).map((f) => (
+        <FeatureCard icon={f.icon} title={f.title} description={f.desc} />
+      ))}
+    </div>
+
+    <!-- Bottom row: 2 cards centered -->
+    <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-2 max-w-3xl mx-auto">
+      {features.slice(3).map((f) => (
+        <FeatureCard icon={f.icon} title={f.title} description={f.desc} />
+      ))}
+    </div>
+  </div>
+</section>

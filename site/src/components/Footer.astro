@@ -1,0 +1,15 @@
+---
+import { getLangFromUrl, t } from '../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const ui = t(lang);
+---
+<footer class="border-t border-brand-border py-8">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col items-center gap-4">
+    <div class="flex gap-6">
+      <a href="https://github.com/lxpio/omnigram" target="_blank" class="text-slate-500 hover:text-slate-300 text-sm transition">GitHub</a>
+      <a href="https://github.com/lxpio/omnigram/discussions" target="_blank" class="text-slate-500 hover:text-slate-300 text-sm transition">Discussions</a>
+    </div>
+    <p class="text-slate-600 text-xs">{ui.footer.copyright} · {ui.footer.license}</p>
+  </div>
+</footer>

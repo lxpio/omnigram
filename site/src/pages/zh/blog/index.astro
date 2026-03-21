@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter(p => p.data.lang === 'zh')
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+<BaseLayout title="Blog">
+  <div class="py-20 px-6">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-4xl font-extrabold text-slate-100 mb-12">Blog</h1>
+      {posts.map(post => (
+        <a href={`/zh/blog/${post.id}`} class="block mb-8 p-6 bg-brand-bg-light border border-brand-border rounded-xl hover:border-brand-accent/50 transition">
+          <p class="text-brand-accent text-sm">{post.data.date.toISOString().split('T')[0]}</p>
+          <h2 class="text-xl font-bold text-slate-100 mt-1">{post.data.title}</h2>
+          <p class="text-slate-400 mt-2 text-sm">{post.data.description}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
