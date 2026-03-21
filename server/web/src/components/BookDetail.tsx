@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import type { Book } from "@/types";
 import { getCoverUrl, useUpdateBook, useDeleteBook, useUploadCover } from "@/api/books";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ interface BookDetailProps {
 }
 
 export function BookDetail({ book, open, onClose }: BookDetailProps) {
+  const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState<Partial<Book>>({});
   const updateBook = useUpdateBook();
@@ -213,7 +215,11 @@ export function BookDetail({ book, open, onClose }: BookDetailProps) {
                 <Separator />
 
                 <div className="flex gap-2">
-                  <Button onClick={startEdit} className="gap-2">Edit Metadata</Button>
+                  <Button onClick={() => { onClose(); navigate(`/read/${book.id}`); }} className="gap-2">
+                    <BookOpen className="h-4 w-4" />
+                    Read
+                  </Button>
+                  <Button variant="outline" onClick={startEdit} className="gap-2">Edit Metadata</Button>
                   <Button variant="outline" asChild className="gap-2">
                     <a href={`/reader/download/books/${book.id}`} download>
                       <Download className="h-4 w-4" />
