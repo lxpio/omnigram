@@ -171,6 +171,7 @@ definitions:
     - 4
     - 5
     - 6
+    - 7
     type: integer
     x-enum-varnames:
     - UnkownFile
@@ -180,6 +181,7 @@ definitions:
     - PDF
     - TXT
     - MD
+    - FB2
   schema.ProgressBook:
     properties:
       asin:
@@ -345,6 +347,28 @@ definitions:
         type: integer
       wx_unionid:
         type: string
+    type: object
+  sys.CalibreImportRequest:
+    properties:
+      calibre_path:
+        type: string
+    required:
+    - calibre_path
+    type: object
+  sys.CalibreImportResult:
+    properties:
+      errors:
+        type: integer
+      imported:
+        type: integer
+      messages:
+        items:
+          type: string
+        type: array
+      skipped:
+        type: integer
+      total:
+        type: integer
     type: object
   utils.Response:
     properties:
@@ -2543,6 +2567,39 @@ paths:
       summary: Get AI service status
       tags:
       - AI
+  /sys/import/calibre:
+    post:
+      consumes:
+      - application/json
+      description: Import books from a Calibre library directory (admin only). Reads
+        metadata.db and copies book files.
+      parameters:
+      - description: Calibre library path
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/sys.CalibreImportRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/sys.CalibreImportResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Import Calibre library
+      tags:
+      - System
   /sys/info:
     get:
       description: Get system configuration and status information
