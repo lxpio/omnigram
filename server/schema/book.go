@@ -476,7 +476,7 @@ func (m *Book) parseOPF(opf *epub.PackageDocument) {
 	}
 	m.Identifier = hex.EncodeToString(hasher.Sum(nil))
 
-	if len(mdata.Creator) > 0 {
+	if len(mdata.Title) > 0 {
 		m.Title = mdata.Title[0].Value
 	} else {
 		log.W(`查找图书名失败，使用文件名作为标题`, m.Path)

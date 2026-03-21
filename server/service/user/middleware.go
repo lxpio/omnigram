@@ -37,22 +37,21 @@ func OauthMiddleware(c *gin.Context) {
 
 		}
 
+		// Try as API Key first
+		if token, err := schema.FirstTokenByAPIKey(store.Store(), apiKey); err == nil {
+			if info, err1 := schema.FirstUserByID(store.Store(), token.UserID); err1 == nil {
+				info.Credential = ``
+				userInfoCache.Add(key, info)
+				c.Set(middleware.XUserIDTag, info.ID)
+				c.Set(middleware.XUserInfoTag, info)
+				c.Next()
+				return
+			}
+		}
+
+		// Fall back to session token
 		handleSession(c, apiKey)
 		return
-		//校验APIKey合法性
-		// if token, err := schema.FirstTokenByAPIKey(orm, apiKey); err == nil {
-
-		// 	if info, err1 := schema.FirstUserByID(orm, token.UserID); err1 == nil {
-		// 		//Credential 信息需要抹掉
-		// 		info.Credential = ``
-		// 		userInfoCache.Add(key, info)
-		// 		c.Set(middleware.XUserIDTag, info.ID)
-		// 		c.Set(middleware.XUserInfoTag, info)
-		// 		c.Next()
-		// 		return
-		// 	}
-
-		// }
 
 	} else {
 		//获取到了session，校验session合法性

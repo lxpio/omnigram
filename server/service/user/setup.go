@@ -24,17 +24,20 @@ func init() {
 
 	middleware.Register(middleware.OathMD, OauthMiddleware)
 	middleware.Register(middleware.AdminMD, AdminMiddleware)
-	//todo add service to clean session
 }
+
+// 登录限流：15 分钟内最多 10 次
+var loginLimiter = middleware.NewRateLimiter(15*time.Minute, 10)
 
 // Setup reg router
 func Setup(router *gin.Engine) {
 
 	oauthMD := middleware.Get(middleware.OathMD)
 	adminMD := middleware.Get(middleware.AdminMD)
+	rateLimitMD := middleware.RateLimitMiddleware(loginLimiter)
 
-	router.POST("/auth/login", loginHandle)
-	router.POST("/auth/token", getAccessTokenHandle)
+	router.POST("/auth/login", rateLimitMD, loginHandle)
+	router.POST("/auth/token", rateLimitMD, getAccessTokenHandle)
 	router.POST("/auth/token/refresh", refreshAccessTokenHandle)
 	router.POST("/auth/logout", oauthMD, logoutHandle)
 
