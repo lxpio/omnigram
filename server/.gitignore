@@ -9,3 +9,4 @@ apidoc
 *.wav
 m4t_server/__pycache__
 m4t_server/pb/__pycache__
+web/node_modules

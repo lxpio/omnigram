@@ -1,3 +1,9 @@
+# stage 1: build web frontend
+FROM node:20-alpine AS webbuilder
+COPY web/ /web/
+WORKDIR /web
+RUN npm ci && npm run build
+
 # stage 2: build golang backend
 FROM --platform=$BUILDPLATFORM golang:1.23.1-alpine3.20 as gobuilder
 
@@ -10,6 +16,7 @@ ARG BUILD_HASH=""
 
 
 COPY / /omnigram-server
+COPY --from=webbuilder /web/dist /omnigram-server/web/dist
 
 WORKDIR /omnigram-server
 

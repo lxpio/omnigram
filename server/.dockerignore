@@ -22,6 +22,8 @@ server/dist
 m4t_server
 chat_server
 apidoc
+web/node_modules
+web/dist
 Dockerfile
 README.md
 *.rest
