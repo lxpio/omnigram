@@ -37,7 +37,19 @@ type Config struct {
 
 	EpubOptions EpubOptions `yaml:"epub_options" json:"epub_options"`
 
+	AIOptions AIOptions `yaml:"ai_options" json:"ai_options"`
+
 	filePath string `yaml:"-" json:"-"`
+}
+
+type AIOptions struct {
+	Enabled      bool   `yaml:"enabled" json:"enabled"`
+	Provider     string `yaml:"provider" json:"provider"`
+	BaseURL      string `yaml:"base_url" json:"base_url"`
+	APIKey       string `yaml:"api_key" json:"api_key"`
+	Model        string `yaml:"model" json:"model"`
+	AutoMetadata bool   `yaml:"auto_metadata" json:"auto_metadata"`
+	AutoSummary  bool   `yaml:"auto_summary" json:"auto_summary"`
 }
 
 func InitConfig(path string) error {

@@ -100,10 +100,41 @@ func initReaderData() error {
 	return db.Transaction(func(tx *gorm.DB) error {
 
 		//auotoMigrate
-		if err := tx.AutoMigrate(&Book{}, &BookTagShip{}, &FavBook{}, &ReadProgress{}, &Shelf{}, &ShelfBook{}, &Annotation{}); err != nil {
+		if err := tx.AutoMigrate(&Book{}, &BookTagShip{}, &FavBook{}, &ReadProgress{}, &Shelf{}, &ShelfBook{}, &Annotation{}, &ReadingSession{}); err != nil {
 
 			return err
 		}
+
+		// Create FTS5 virtual table
+		tx.Exec(`CREATE VIRTUAL TABLE IF NOT EXISTS books_fts USING fts5(
+			book_id,
+			title,
+			author,
+			description,
+			tags,
+			publisher,
+			content='books',
+			content_rowid='rowid',
+			tokenize='unicode61'
+		)`)
+
+		// Sync triggers
+		tx.Exec(`CREATE TRIGGER IF NOT EXISTS books_fts_ai AFTER INSERT ON books BEGIN
+			INSERT INTO books_fts(book_id, title, author, description, tags, publisher)
+			VALUES (new.id, new.title, new.author, new.description, new.tags, new.publisher);
+		END`)
+
+		tx.Exec(`CREATE TRIGGER IF NOT EXISTS books_fts_au AFTER UPDATE ON books BEGIN
+			INSERT INTO books_fts(books_fts, book_id, title, author, description, tags, publisher)
+			VALUES ('delete', old.id, old.title, old.author, old.description, old.tags, old.publisher);
+			INSERT INTO books_fts(book_id, title, author, description, tags, publisher)
+			VALUES (new.id, new.title, new.author, new.description, new.tags, new.publisher);
+		END`)
+
+		tx.Exec(`CREATE TRIGGER IF NOT EXISTS books_fts_ad AFTER DELETE ON books BEGIN
+			INSERT INTO books_fts(books_fts, book_id, title, author, description, tags, publisher)
+			VALUES ('delete', old.id, old.title, old.author, old.description, old.tags, old.publisher);
+		END`)
 
 		log.I(`初始化书籍表成功。`)
 

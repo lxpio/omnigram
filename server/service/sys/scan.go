@@ -12,6 +12,7 @@ import (
 
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/schema"
+	"github.com/lxpio/omnigram/server/service/ai"
 	"github.com/lxpio/omnigram/server/store"
 )
 
@@ -124,6 +125,31 @@ func (m *Scanner) scanFiles(books <-chan *schema.Book) {
 						errs = append(errs, err.Error())
 					} else {
 						m.cacheFilePath(m.ctx, book.Path, book.Identifier)
+						// AI metadata enhancement
+						go func(b *schema.Book) {
+							if result, err := ai.EnhanceMetadata(context.Background(), b.Title, b.Author, b.Description); err == nil && result != nil {
+								db := store.FileStore()
+								updates := map[string]any{}
+								if result.Description != "" && b.Description == "" {
+									updates["description"] = result.Description
+								}
+								if result.Category != "" && b.Category == "" {
+									updates["category"] = result.Category
+								}
+								if result.Language != "" && b.Language == "" {
+									updates["language"] = result.Language
+								}
+								if len(updates) > 0 {
+									db.Model(b).Updates(updates)
+								}
+								if len(result.Tags) > 0 && len(b.Tags) == 0 {
+									for _, tag := range result.Tags {
+										db.FirstOrCreate(&schema.BookTagShip{BookID: b.ID, Tag: tag},
+											schema.BookTagShip{BookID: b.ID, Tag: tag})
+									}
+								}
+							}
+						}(book)
 					}
 					//
 

@@ -75,6 +75,20 @@ func Setup(router *gin.Engine) {
 	// Annotation sync
 	router.POST("/sync/annotations", oauthMD, syncAnnotationsHandle)
 
+	// Enhanced search
+	book.GET("/search", enhancedSearchHandle)
+
+	// Reading sessions & stats
+	book.POST("/sessions", recordSessionHandle)
+	book.GET("/stats/overview", statsOverviewHandle)
+	book.GET("/stats/daily", statsDailyHandle)
+	book.GET("/stats/books", statsTopBooksHandle)
+
+	// Batch operations
+	book.POST("/books/batch/delete", batchDeleteHandle)
+	book.POST("/books/batch/tag", batchTagHandle)
+	book.POST("/books/batch/shelf", batchShelfHandle)
+
 	// router.GET("/books/:book_id/delete", BookDelete)
 	// router.GET("/books/:book_id/edit", BookEdit)
 

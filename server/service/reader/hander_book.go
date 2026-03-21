@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/schema"
+	"github.com/lxpio/omnigram/server/service/ai"
 	"github.com/lxpio/omnigram/server/store"
 	"github.com/lxpio/omnigram/server/utils"
 )
@@ -98,6 +99,31 @@ func bookUploadHandle(c *gin.Context) {
 		c.JSON(http.StatusOK, utils.ErrSaveFile)
 		return
 	}
+
+	// AI metadata enhancement
+	go func() {
+		if result, err := ai.EnhanceMetadata(context.Background(), book.Title, book.Author, book.Description); err == nil && result != nil {
+			updates := map[string]any{}
+			if result.Description != "" && book.Description == "" {
+				updates["description"] = result.Description
+			}
+			if result.Category != "" && book.Category == "" {
+				updates["category"] = result.Category
+			}
+			if result.Language != "" && book.Language == "" {
+				updates["language"] = result.Language
+			}
+			if len(updates) > 0 {
+				orm.Model(book).Updates(updates)
+			}
+			if len(result.Tags) > 0 && len(book.Tags) == 0 {
+				for _, tag := range result.Tags {
+					orm.FirstOrCreate(&schema.BookTagShip{BookID: book.ID, Tag: tag},
+						schema.BookTagShip{BookID: book.ID, Tag: tag})
+				}
+			}
+		}
+	}()
 
 	c.JSON(http.StatusOK, utils.SUCCESS)
 }
