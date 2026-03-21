@@ -7,9 +7,6 @@ _want_init() {
 	local arg
 	for arg; do
 		case "$arg" in
-			# postgres --help | grep 'then exit'
-			# leaving out -C on purpose since it always fails and is unhelpful:
-			# postgres: could not access the server configuration file "/var/lib/postgresql/data/postgresql.conf": No such file or directory
 			--init|-init|-i)
 				return 0
 				;;
@@ -20,15 +17,27 @@ _want_init() {
 
 CONTAINER_FIRST_STARTUP="CONTAINER_FIRST_STARTUP"
 
+# 如果未设置用户名/密码，生成随机密码
+if [ -z "$OMNI_USER" ]; then
+    export OMNI_USER="admin"
+fi
+if [ -z "$OMNI_PASSWORD" ]; then
+    OMNI_PASSWORD=$(head -c 16 /dev/urandom | od -An -tx1 | tr -d ' \n' | head -c 16)
+    export OMNI_PASSWORD
+    echo "=========================================="
+    echo "  Generated admin password: $OMNI_PASSWORD"
+    echo "  Username: $OMNI_USER"
+    echo "  Change it after first login!"
+    echo "=========================================="
+fi
+
 # if command starts with an option, prepend omni-server
 if [ "${1:0:1}" = '-' ]; then
     exec omni-server "$@"
 fi
-# cd workspace
 
 if [ ! -e /metadata/$CONTAINER_FIRST_STARTUP ] && ! _want_init "$@"; then
     touch /metadata/$CONTAINER_FIRST_STARTUP
-    # place your script that you only want to run on first startup.
     omni-server -conf ${CONFIG_FILE} -init
 fi
 

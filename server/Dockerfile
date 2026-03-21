@@ -34,21 +34,26 @@ FROM --platform=$TARGETPLATFORM alpine:3.20.3
 
 LABEL author="exppii" \
     description="omnigram-server"
-# 注意使用 .dockerignore 忽略其他文件
 
 COPY --from=gobuilder /build/ ./
 COPY --from=gobuilder /omnigram-server/docker-entrypoint.sh ./
 
-ENV CONFIG_FILE=/conf/conf.yaml \
-  OMNI_PASSWORD="123456" \
-  OMNI_USER="admin"
+# 非 root 用户运行
+RUN addgroup -g 1000 omnigram && adduser -u 1000 -G omnigram -s /bin/sh -D omnigram && \
+    chown -R omnigram:omnigram /data /conf /bin
 
+ENV CONFIG_FILE=/conf/conf.yaml
 
-EXPOSE 80
+EXPOSE 8080
 # scan docs dir
 VOLUME [ "/docs" ]
 # save default metadata
 VOLUME [ "/metadata" ]
+
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+    CMD wget -q --spider http://localhost:8080/healthz || exit 1
+
+USER omnigram
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["omni-server"]
