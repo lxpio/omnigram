@@ -17,9 +17,8 @@
 </div>
 </br>
 
-![docs action](https://github.com/lxpio/omnigram/actions/workflows/docs.yaml/badge.svg) 
-![docs action](https://github.com/lxpio/omnigram/actions/workflows/docker.yaml/badge.svg) 
-![docs action](https://github.com/lxpio/omnigram/actions/workflows/build_app.yaml/badge.svg)
+![docker action](https://github.com/lxpio/omnigram/actions/workflows/docker.yaml/badge.svg) 
+![build app](https://github.com/lxpio/omnigram/actions/workflows/build_app.yaml/badge.svg)
 
 ## 关于
 
@@ -40,25 +39,41 @@ Omnigram 是一个 **AI 原生的自托管书库管理与阅读服务**。通过
 
 ## 特性
 
-### 已实现
-- [x] 多格式电子书阅读（EPUB、PDF）
-- [x] iOS & Android 原生客户端
-- [x] TTS 语音朗读，支持自定义引擎（Fish Audio）
-- [x] AI 对话助手辅助阅读
-- [x] 自托管书库，支持 NAS 存储
-- [x] 书籍搜索、笔记、书签、收藏、下载
-- [x] 多用户管理，OPDS 协议支持
-- [x] Docker 一键部署
+### 已实现（App — 基于 Anx Reader）
+- [x] 多格式电子书阅读（EPUB、MOBI、AZW3、FB2、TXT、PDF）
+- [x] iOS、Android、macOS、Windows 原生客户端
+- [x] AI 对话助手（本地 LLM 集成）
+- [x] TTS 语音朗读，支持多种音色
+- [x] 阅读笔记、高亮、书签
+- [x] AI 思维导图生成
+- [x] 全书翻译 + 双语对照阅读
+- [x] 阅读统计热力图
+- [x] WebDAV 同步（客户端）
+
+### 已实现（Server）
+- [x] 自托管书库，目录扫描
+- [x] 多格式元数据提取（EPUB）
+- [x] 多用户管理，会话认证
+- [x] 书籍搜索、收藏、阅读进度同步
+- [x] Docker 一键部署（SQLite/PostgreSQL/MySQL）
+- [x] 服务端 TTS（gRPC 连接 Fish Audio）
 
 ### 规划中
-- [ ] AI 书籍摘要与章节洞察
-- [ ] 全书库语义搜索
-- [ ] AI 跨书知识关联
-- [ ] 高质量多角色 TTS 有声书生成
-- [ ] AI 翻译增强 + 双语对照阅读
-- [ ] WebDAV 协议支持
-- [ ] Web 阅读器
-- [ ] Windows、Linux、Mac 桌面客户端
+- [ ] 🔒 Server 安全加固（进行中）
+- [ ] 📚 书籍元数据编辑管理 API
+- [ ] 🌐 **Web UI** — 精美的书库浏览界面，支持暗色模式
+- [ ] 📂 WebDAV 服务端（同步 Anx Reader / KOReader）
+- [ ] 📖 OPDS 目录协议
+- [ ] 🏷️ 标签、书架、书库组织
+- [ ] 📝 笔记 & 高亮跨设备同步
+- [ ] 🤖 AI 导入时自动补全元数据（LLM/Ollama）
+- [ ] 🔍 全书库语义搜索
+- [ ] 📊 AI 书籍摘要与章节洞察
+- [ ] 🧠 AI 跨书知识关联
+- [ ] 🎧 高质量多角色 TTS 有声书生成（服务端）
+- [ ] 📖 Web 阅读器（foliate-js 浏览器内阅读）
+- [ ] 📥 Calibre 数据库导入工具
+- [ ] 🐧 Linux 桌面客户端
 
 ## 基本构架
 
@@ -80,63 +95,60 @@ Omnigram 是一个 **AI 原生的自托管书库管理与阅读服务**。通过
 
 ## 二次开发
 
-
-
 ### 编译
 
-#### App 编译
+#### App 编译（Flutter）
 
 ```bash
-
-git clone github.com/lxpio/omnigram.git
+git clone https://github.com/lxpio/omnigram.git
 cd omnigram/app
-make
+flutter pub get
+flutter pub run build_runner build
+flutter build apk  # 或: flutter build ios / macos / windows
 ```
 
-#### Omnigram Server 编译
+#### Omnigram Server 编译（Go）
 
 ```bash
-
-git clone github.com/lxpio/omnigram.git
+git clone https://github.com/lxpio/omnigram.git
 cd omnigram/server
-make 
+make
 
-# make docker 
+# Docker 构建
+make docker
 ```
 
 #### 语音服务
 
-当当前App支持FishTTS API Server，参考 [FishTTS](https://github.com/fishaudio/fish-speech)。
+当前 App 支持 Fish Audio TTS API Server，参考 [FishTTS](https://github.com/fishaudio/fish-speech)。
 
 ```bash
-
 git clone https://github.com/fishaudio/fish-speech.git
 cd fish-speech
-
 pip install -e .
-python -m tools.api_server --listen 0.0.0.0:8999 --llama-checkpoint-path "checkpoints/fish-speech-1.5"     --decoder-checkpoint-path "checkpoints/fish-speech-1.5/firefly-gan-vq-fsq-8x1024-21hz-generator.pth"
-
+python -m tools.api_server --listen 0.0.0.0:8999 --llama-checkpoint-path "checkpoints/fish-speech-1.5" --decoder-checkpoint-path "checkpoints/fish-speech-1.5/firefly-gan-vq-fsq-8x1024-21hz-generator.pth"
 ```
-
 
 ## 技术栈
 
 | 组件 | 技术 |
 |------|------|
-| **服务端** | Go 1.23 + Gin + GORM |
-| **客户端** | Flutter 3.24 + Riverpod |
-| **语音合成** | Fish Audio (gRPC) |
-| **数据库** | SQLite/PostgreSQL + BadgerDB |
+| **服务端** | Go 1.23 + Gin + GORM + BadgerDB |
+| **客户端** | Flutter 3.41 + Riverpod（基于 Anx Reader） |
+| **语音合成** | Fish Audio (gRPC) / langchain_dart (客户端) |
+| **数据库** | SQLite / PostgreSQL / MySQL |
 | **部署** | Docker / Docker Compose |
 
 ## 感谢
 
-本项目使用了大量 [Immich](https://github.com/immich-app/immich) 的代码，感谢其开源精神。
+Omnigram 的客户端基于 [Anx Reader](https://github.com/Anxcye/anx-reader)（MIT 许可证）。感谢其在阅读体验方面的卓越工作。
 
 核心依赖库：
 
-- [riverpod](https://docs-v2.riverpod.dev/docs) — 状态管理
-- [isar](https://isar.dev) — 本地数据库
+- [Anx Reader](https://github.com/Anxcye/anx-reader) — 客户端基础
+- [foliate-js](https://github.com/nickthecook/foliate-js) — 电子书渲染引擎
+- [riverpod](https://riverpod.dev/) — 状态管理
+- [langchain_dart](https://github.com/davidmigloz/langchain_dart) — AI 集成
 - [fish-speech](https://github.com/fishaudio/fish-speech) — TTS 引擎
 
 

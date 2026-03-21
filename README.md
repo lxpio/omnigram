@@ -17,9 +17,8 @@
 </div>
 </br>
 
-![docs action](https://github.com/lxpio/omnigram/actions/workflows/docs.yaml/badge.svg) 
-![docs action](https://github.com/lxpio/omnigram/actions/workflows/docker.yaml/badge.svg) 
-![docs action](https://github.com/lxpio/omnigram/actions/workflows/build_app.yaml/badge.svg)
+![docker action](https://github.com/lxpio/omnigram/actions/workflows/docker.yaml/badge.svg) 
+![build app](https://github.com/lxpio/omnigram/actions/workflows/build_app.yaml/badge.svg)
 
 ## About Omnigram
 
@@ -40,25 +39,41 @@ Built with a Go backend and Flutter multi-platform client, Omnigram combines boo
 
 ## Features
 
-### Available Now
-- [x] Multi-format ebook reading (EPUB, PDF)
-- [x] iOS & Android native client
-- [x] TTS text-to-speech with customizable engines (Fish Audio)
-- [x] AI conversational assistant for reading
-- [x] Self-hosted book library with NAS storage support
-- [x] Book search, notes, bookmarks, favorites, downloads
-- [x] Multi-user management with OPDS protocol
-- [x] Docker one-click deployment
+### Available Now (App — Anx Reader Fork)
+- [x] Multi-format ebook reading (EPUB, MOBI, AZW3, FB2, TXT, PDF)
+- [x] iOS, Android, macOS, Windows native client
+- [x] AI conversational assistant (local LLM integration)
+- [x] TTS text-to-speech with customizable voices
+- [x] Reading notes, highlights, and bookmarks
+- [x] AI-powered mind map generation
+- [x] Full-book translation with bilingual side-by-side reading
+- [x] Reading statistics heatmap
+- [x] WebDAV sync (client-side)
+
+### Available Now (Server)
+- [x] Self-hosted book library with directory scanning
+- [x] Multi-format metadata extraction (EPUB)
+- [x] Multi-user management with session auth
+- [x] Book search, favorites, reading progress sync
+- [x] Docker one-click deployment (SQLite/PostgreSQL/MySQL)
+- [x] Server-side TTS via gRPC (Fish Audio)
 
 ### Roadmap
-- [ ] AI book summarization & chapter insights
-- [ ] Semantic search across entire library
-- [ ] AI-powered cross-book knowledge linking
-- [ ] High-quality multi-voice TTS audiobook generation
-- [ ] AI translation with bilingual side-by-side reading
-- [ ] WebDAV protocol support
-- [ ] Web reader interface
-- [ ] Windows, Linux, Mac desktop clients
+- [ ] 🔒 Server security hardening (in progress)
+- [ ] 📚 Book metadata editing & management API
+- [ ] 🌐 **Web UI** — Beautiful book library browser with dark mode
+- [ ] 📂 WebDAV server (sync with Anx Reader / KOReader)
+- [ ] 📖 OPDS catalog protocol
+- [ ] 🏷️ Tags, shelves, and library organization
+- [ ] 📝 Notes & highlights cross-device sync
+- [ ] 🤖 AI metadata auto-completion on import (LLM/Ollama)
+- [ ] 🔍 Full-text semantic search across entire library
+- [ ] 📊 AI book summarization & chapter insights
+- [ ] 🧠 AI-powered cross-book knowledge linking
+- [ ] 🎧 High-quality multi-voice TTS audiobook generation (server-side)
+- [ ] 📖 Web reader (foliate-js, in-browser reading)
+- [ ] 📥 Calibre database import tool
+- [ ] 🐧 Linux desktop client
 
 ## Omnigram Infrastructure
 
@@ -81,31 +96,27 @@ password: 123456
 
 ## For Dev
 
-This project uses a three-way repository including:
-
-- [riverpod](https://docs-v2.riverpod.dev/docs)
-- [isar](https://isar.dev)
-
 ### Build
 
-#### For Omnigram APP 
+#### For Omnigram App (Flutter)
 
 ```bash
-
-git clone github.com/lxpio/omnigram.git
+git clone https://github.com/lxpio/omnigram.git
 cd omnigram/app
-make
+flutter pub get
+flutter pub run build_runner build
+flutter build apk  # or: flutter build ios / macos / windows
 ```
 
-#### For Omnigram Server
+#### For Omnigram Server (Go)
 
 ```bash
-
-git clone github.com/lxpio/omnigram.git
+git clone https://github.com/lxpio/omnigram.git
 cd omnigram/server
-make 
+make
 
-# make docker 
+# Docker build
+make docker
 ```
 
 
@@ -125,20 +136,22 @@ python -m tools.api_server --listen 0.0.0.0:8999 --llama-checkpoint-path "checkp
 
 | Component | Technology |
 |-----------|-----------|
-| **Server** | Go 1.23 + Gin + GORM |
-| **Client** | Flutter 3.24 + Riverpod |
-| **TTS** | Fish Audio (gRPC) |
-| **Database** | SQLite/PostgreSQL + BadgerDB |
+| **Server** | Go 1.23 + Gin + GORM + BadgerDB |
+| **Client** | Flutter 3.41 + Riverpod (Anx Reader fork) |
+| **TTS** | Fish Audio (gRPC) / langchain_dart (client) |
+| **Database** | SQLite / PostgreSQL / MySQL |
 | **Deployment** | Docker / Docker Compose |
 
 ## Acknowledgments
 
-This project makes extensive use of code from [Immich](https://github.com/immich-app/immich), and we thank them for their open-source contributions.
+Omnigram's client app is based on [Anx Reader](https://github.com/Anxcye/anx-reader) (MIT License). We are deeply grateful for their excellent work on the reading experience.
 
 Key libraries and dependencies:
 
-- [riverpod](https://docs-v2.riverpod.dev/docs) — State management
-- [isar](https://isar.dev) — Local database
+- [Anx Reader](https://github.com/Anxcye/anx-reader) — Client app foundation
+- [foliate-js](https://github.com/nickthecook/foliate-js) — Ebook rendering engine
+- [riverpod](https://riverpod.dev/) — State management
+- [langchain_dart](https://github.com/davidmigloz/langchain_dart) — AI integration
 - [fish-speech](https://github.com/fishaudio/fish-speech) — TTS engine
 
 ## License
