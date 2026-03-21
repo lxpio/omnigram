@@ -1,26 +1,26 @@
-#Makefile
+# Makefile - Omnigram
 
+.PHONY: app-deps app-codegen app-analyze app-build-apk server-build server-docker
 
+# === App (Flutter) ===
 
+app-deps:
+	cd app && flutter pub get
 
-openapi:
-	@echo "openapi build"
-	@rm -rf app/openapi
-	@openapi-generator-cli generate -g dart-dio -i ./omnigram.openapi.spec.yaml -o app/openapi 
-	@cd app/openapi && dart run build_runner build
-	@patch -p1 < patch/api.patch
+app-codegen:
+	cd app && flutter gen-l10n
+	cd app && dart run build_runner build --delete-conflicting-outputs
 
-build_runner:
-	@echo "build_runner build"
-	@flutter clean
-	@dart run build_runner build
+app-analyze:
+	cd app && flutter analyze lib/
 
+app-build-apk:
+	cd app && flutter build apk --split-per-abi
 
+# === Server (Go) ===
 
-release: l10n
-	@echo "release build"
-	@flutter build appbundle 
+server-build:
+	cd server && make
 
-
-apk: l10n
-	@flutter build apk --split-per-abi
+server-docker:
+	cd server && make docker

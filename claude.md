@@ -4,36 +4,42 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 
 ## Project Overview
 
-Omnigram is a multi-platform file reading and audiobook client with a Go backend and Flutter frontend. It supports EPUB/PDF reading, TTS audiobook functionality via AI models, and local book management (NAS).
+Omnigram is an **AI-native, self-hosted book library management and reading service**. Deploy on NAS/homeserver via Docker. Go backend + Flutter client (forked from Anx Reader).
+
+**Positioning:** Jellyfin for videos, Immich for photos, **Omnigram for books**.
 
 ## Repository Structure
 
 ```
 omnigram/
 ├── server/          # Go backend (Gin + GORM)
-├── app/             # Flutter cross-platform client
+├── app/             # Flutter client (forked from Anx Reader, MIT)
 │   ├── lib/         # Dart source code
-│   └── openapi/     # Generated API client (dart-dio)
-├── docs/            # Docusaurus 3.x documentation site
+│   ├── android/     # Android platform (com.lxpio.omnigram)
+│   ├── ios/         # iOS platform
+│   ├── macos/       # macOS platform
+│   └── windows/     # Windows platform
+├── assets/img/      # Project logos, icons, favicons
+├── docs/            # Documentation
+│   ├── discussions/ # Strategic analysis documents (10 docs)
+│   └── omnigram.openapi.spec.yaml  # Server API spec (reference)
 ├── fishtts/         # Fish Audio TTS Docker service
-├── patch/           # Post-generation patches for OpenAPI client
-├── omnigram.openapi.spec.yaml  # API contract (OpenAPI 3.0.1)
 └── Makefile         # Root-level build orchestration
 ```
 
 ## Tech Stack
 
-| Layer       | Technology                  |
-|-------------|-----------------------------|
+| Layer       | Technology                    |
+|-------------|-------------------------------|
 | Backend     | Go 1.23, Gin, GORM, BadgerDB |
-| Frontend    | Flutter 3.24.3, Dart 3.5.3+ |
-| State Mgmt  | Riverpod (with code generation) |
-| Local DB    | Isar 4.0, Hive              |
-| Server DB   | SQLite / MySQL / PostgreSQL  |
-| API Spec    | OpenAPI 3.0.1 (dart-dio generator) |
-| Docs        | Docusaurus 3.x (pnpm)       |
-| TTS         | Fish Audio (Docker)          |
-| CI/CD       | GitHub Actions               |
+| Frontend    | Flutter 3.41, Dart 3.11       |
+| State Mgmt  | Riverpod v2 (with code gen)  |
+| Local DB    | sqflite                       |
+| Server DB   | SQLite / PostgreSQL           |
+| TTS         | Fish Audio (Docker/gRPC)      |
+| AI          | langchain_dart (multi-model)  |
+| Deployment  | Docker / Docker Compose       |
+| CI/CD       | GitHub Actions                |
 
 ## Build Commands
 
@@ -49,33 +55,20 @@ make docker   # Build Docker image
 
 ```bash
 cd app
-make                    # Full build
-flutter build apk --split-per-abi   # Build Android APK
+flutter pub get                          # Install dependencies
+flutter gen-l10n                         # Generate localizations
+dart run build_runner build --delete-conflicting-outputs  # Codegen
+flutter analyze lib/                     # Static analysis
+flutter build apk --split-per-abi       # Build Android APK
 ```
 
-### OpenAPI Client Regeneration
+Or from project root:
 
 ```bash
-# From project root
-make openapi    # Regenerate dart-dio client + apply patch
-```
-
-This runs: `openapi-generator-cli generate` → `build_runner build` → `patch -p1 < patch/api.patch`
-
-### Code Generation (Flutter)
-
-```bash
-cd app
-dart run build_runner build   # Riverpod, Isar, json_serializable
-```
-
-### Docs
-
-```bash
-cd docs
-pnpm install
-pnpm start      # Dev server
-pnpm build      # Production build
+make app-deps       # flutter pub get
+make app-codegen    # l10n + build_runner
+make app-analyze    # flutter analyze
+make app-build-apk  # Build APK
 ```
 
 ## Architecture Notes
@@ -89,36 +82,32 @@ pnpm build      # Production build
 - **Persistence:** `server/store/` (BadgerDB key-value store)
 - **Config:** YAML-based (`server/conf/`)
 - **Middleware:** `server/middleware/`
-- **gRPC:** Used for M4T TTS service integration
+- **gRPC:** Used for TTS service integration
 
 ### App (`app/lib/`)
 
-- **State:** `providers/` — Riverpod providers (API, auth, books, TTS, settings, etc.)
-- **UI:** `screens/` — login, home, reader, discover, profile, notes
-- **Models:** `models/` — generated data models
-- **Entities:** `entities/` — Isar local DB entities (book, user, notes, settings)
-- **Services:** `services/` — business logic layer
-- **Routing:** `routes/` — GoRouter navigation
-- **Widgets:** `components/` — reusable UI components
-- **Localization:** `easy_localization` for i18n
+- **Forked from:** [Anx Reader](https://github.com/Anxcye/anx-reader) (MIT license)
+- **State:** `providers/` — Riverpod providers
+- **UI:** `page/` — screens and pages
+- **Models:** `models/` — data models (with freezed)
+- **Services:** `service/` — business logic
+- **Widgets:** `widgets/` — reusable UI components
+- **DAO:** `dao/` — sqflite database access
+- **Config:** `config/` — shared preferences, settings
+- **Localization:** Flutter gen-l10n (ARB files in `l10n/`)
 
-### API Contract
+### Server API
 
-The OpenAPI spec (`omnigram.openapi.spec.yaml`) defines 6 endpoint categories:
-- 登录认证 (Auth)
-- 用户管理 (User Management)
-- 阅读管理 (Reader Management)
-- 系统管理 (System)
-- 同步接口 (Sync)
-- 语音服务 (TTS)
+The OpenAPI spec (`docs/omnigram.openapi.spec.yaml`) defines 6 endpoint categories:
+- Auth, User Management, Reader, System, Sync, TTS
 
 ## Coding Conventions
 
 - **Language:** Code in English; comments and docs may use Chinese
-- **Build orchestration:** Makefiles at project root, `server/`, `app/`, `docs/`
-- **Code generation:** Heavy use — OpenAPI client, Riverpod providers, Isar schemas, json_serializable
+- **Build orchestration:** Makefiles at project root and `server/`
+- **Code generation:** Riverpod providers, freezed models, json_serializable, l10n
 - **Versioning:** Git tags (`v*.*.*`) trigger CI release pipelines
-- **Config format:** YAML (server config, API spec, Flutter pubspec)
+- **License:** App is MIT (Anx Reader fork); Server is MIT
 
 ## CI/CD Pipelines
 
@@ -126,4 +115,8 @@ The OpenAPI spec (`omnigram.openapi.spec.yaml`) defines 6 endpoint categories:
 |-------------------|----------------------------|--------------------------------------|
 | `docker.yaml`     | Push tag `v*.*.*` / release | Build server Docker images (arm64/amd64) |
 | `build_app.yaml`  | Push/PR on main            | Build & sign Flutter APK             |
-| `docs.yaml`       | Push to main               | Deploy Docusaurus to GitHub Pages    |
+
+## Known Issues (from code audit)
+
+See `docs/discussions/008-code-quality-audit.md` for the full audit report.
+Top priorities: server security fixes (P0), app-server integration (Phase 2).

@@ -66,11 +66,12 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
           ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
         run: |
-          dart run --enable-experiment=macros build_runner build --delete-conflicting-outputs  
+          flutter gen-l10n
+          dart run build_runner build --delete-conflicting-outputs  
           flutter build apk --release --no-tree-shake-icons --split-per-abi --target-platform android-arm,android-arm64,android-x64
 
       - name: Publish Android Artifact
         uses: actions/upload-artifact@v4
         with:
           name: release-apk-signed
-          path: mobile/build/app/outputs/flutter-apk/*.apk
+          path: app/build/app/outputs/flutter-apk/*.apk
