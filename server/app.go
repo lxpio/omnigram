@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -21,9 +22,9 @@ import (
 )
 
 type App struct {
-	srv *http.Server
-
-	ctx context.Context
+	srv          *http.Server
+	ctx          context.Context
+	shutdownOnce sync.Once
 }
 
 // NewAPP with config
@@ -62,31 +63,31 @@ func (m *App) StartContext(ctx context.Context) error {
 		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 		<-quit
 		log.I(`Shutting down server...`)
-
-		// 给活跃请求 30 秒完成
-		shutdownCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-		defer cancel()
-		if err := m.srv.Shutdown(shutdownCtx); err != nil {
-			log.E(`Server forced to shutdown: `, err)
-		}
-
-		service.Close()
-		store.Close()
-		log.I(`Server exited`)
+		m.shutdown()
 	}()
 
 	return nil
 }
 
+// shutdown 执行一次性清理
+func (m *App) shutdown() {
+	m.shutdownOnce.Do(func() {
+		if m.srv != nil {
+			shutdownCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+			if err := m.srv.Shutdown(shutdownCtx); err != nil {
+				log.E(`Server forced to shutdown: `, err)
+			}
+		}
+		service.Close()
+		store.Close()
+		log.I(`Server exited`)
+	})
+}
+
 // GracefulStop 退出
 func (m *App) GracefulStop() {
-
-	if m.srv != nil {
-		log.D(`quit http server...`)
-		m.srv.Shutdown(m.ctx)
-	}
-	service.Close()
-	store.Close()
+	m.shutdown()
 }
 
 func (m *App) initGinRoute(level zapcore.Level) *gin.Engine {
@@ -97,7 +98,8 @@ func (m *App) initGinRoute(level zapcore.Level) *gin.Engine {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	router := gin.Default()
+	router := gin.New()
+	router.Use(gin.Recovery())
 
 	router.SetTrustedProxies([]string{"0.0.0.0/0", "::"})
 

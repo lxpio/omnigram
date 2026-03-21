@@ -17,10 +17,40 @@ type RateLimiter struct {
 
 // NewRateLimiter 创建限流器
 func NewRateLimiter(window time.Duration, limit int) *RateLimiter {
-	return &RateLimiter{
+	rl := &RateLimiter{
 		attempts: make(map[string][]time.Time),
 		window:   window,
 		limit:    limit,
+	}
+	// 定期清理过期条目，防止内存泄漏
+	go func() {
+		ticker := time.NewTicker(window * 2)
+		defer ticker.Stop()
+		for range ticker.C {
+			rl.cleanup()
+		}
+	}()
+	return rl
+}
+
+// cleanup 清理所有过期条目
+func (rl *RateLimiter) cleanup() {
+	rl.mu.Lock()
+	defer rl.mu.Unlock()
+	now := time.Now()
+	windowStart := now.Add(-rl.window)
+	for key, times := range rl.attempts {
+		valid := make([]time.Time, 0)
+		for _, t := range times {
+			if t.After(windowStart) {
+				valid = append(valid, t)
+			}
+		}
+		if len(valid) == 0 {
+			delete(rl.attempts, key)
+		} else {
+			rl.attempts[key] = valid
+		}
 	}
 }
 
