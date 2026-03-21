@@ -64,6 +64,7 @@ func createShelfHandle(c *gin.Context) {
 
 // getShelfHandle GET /reader/shelves/:shelf_id
 func getShelfHandle(c *gin.Context) {
+	userID := c.GetInt64(middleware.XUserIDTag)
 	shelfID, err := strconv.ParseInt(c.Param("shelf_id"), 10, 64)
 	if err != nil {
 		schema.Error(c, http.StatusBadRequest, "VALIDATION_ERROR", "invalid shelf_id")
@@ -71,7 +72,7 @@ func getShelfHandle(c *gin.Context) {
 	}
 
 	var shelf schema.Shelf
-	if err := orm.First(&shelf, "id = ?", shelfID).Error; err != nil {
+	if err := orm.First(&shelf, "id = ? AND user_id = ?", shelfID, userID).Error; err != nil {
 		schema.Error(c, http.StatusNotFound, "NOT_FOUND", "Shelf not found")
 		return
 	}
@@ -89,6 +90,7 @@ func getShelfHandle(c *gin.Context) {
 
 // updateShelfHandle PUT /reader/shelves/:shelf_id
 func updateShelfHandle(c *gin.Context) {
+	userID := c.GetInt64(middleware.XUserIDTag)
 	shelfID := c.Param("shelf_id")
 
 	var req struct {
@@ -117,26 +119,27 @@ func updateShelfHandle(c *gin.Context) {
 	}
 
 	if len(updates) > 0 {
-		if err := orm.Model(&schema.Shelf{}).Where("id = ?", shelfID).Updates(updates).Error; err != nil {
+		if err := orm.Model(&schema.Shelf{}).Where("id = ? AND user_id = ?", shelfID, userID).Updates(updates).Error; err != nil {
 			schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
 			return
 		}
 	}
 
 	var shelf schema.Shelf
-	orm.First(&shelf, "id = ?", shelfID)
+	orm.First(&shelf, "id = ? AND user_id = ?", shelfID, userID)
 	schema.Success(c, shelf)
 }
 
 // deleteShelfHandle DELETE /reader/shelves/:shelf_id
 func deleteShelfHandle(c *gin.Context) {
+	userID := c.GetInt64(middleware.XUserIDTag)
 	shelfID := c.Param("shelf_id")
 
 	err := orm.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Where("shelf_id = ?", shelfID).Delete(&schema.ShelfBook{}).Error; err != nil {
 			return err
 		}
-		return tx.Where("id = ?", shelfID).Delete(&schema.Shelf{}).Error
+		return tx.Where("id = ? AND user_id = ?", shelfID, userID).Delete(&schema.Shelf{}).Error
 	})
 	if err != nil {
 		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
@@ -148,9 +151,18 @@ func deleteShelfHandle(c *gin.Context) {
 
 // addBooksToShelfHandle POST /reader/shelves/:shelf_id/books
 func addBooksToShelfHandle(c *gin.Context) {
+	userID := c.GetInt64(middleware.XUserIDTag)
 	shelfID, err := strconv.ParseInt(c.Param("shelf_id"), 10, 64)
 	if err != nil {
 		schema.Error(c, http.StatusBadRequest, "VALIDATION_ERROR", "invalid shelf_id")
+		return
+	}
+
+	// verify ownership
+	var count int64
+	orm.Model(&schema.Shelf{}).Where("id = ? AND user_id = ?", shelfID, userID).Count(&count)
+	if count == 0 {
+		schema.Error(c, http.StatusNotFound, "NOT_FOUND", "Shelf not found")
 		return
 	}
 
@@ -177,7 +189,16 @@ func addBooksToShelfHandle(c *gin.Context) {
 
 // removeBooksFromShelfHandle DELETE /reader/shelves/:shelf_id/books
 func removeBooksFromShelfHandle(c *gin.Context) {
+	userID := c.GetInt64(middleware.XUserIDTag)
 	shelfID := c.Param("shelf_id")
+
+	// verify ownership
+	var count int64
+	orm.Model(&schema.Shelf{}).Where("id = ? AND user_id = ?", shelfID, userID).Count(&count)
+	if count == 0 {
+		schema.Error(c, http.StatusNotFound, "NOT_FOUND", "Shelf not found")
+		return
+	}
 
 	var req struct {
 		BookIDs []string `json:"book_ids" binding:"required"`

@@ -85,7 +85,7 @@ func catalogHandler(c *gin.Context) {
 		Author:  &Author{Name: "Omnigram"},
 		Link: []Link{
 			{Href: "/opds", Type: DirMime, Rel: "self"},
-			{Href: "/opds/search?q={searchTerms}", Type: AcqMime, Rel: "search"},
+			{Href: "/opds/search?q={searchTerms}", Type: "application/opensearchdescription+xml", Rel: "search"},
 		},
 		Entry: []Entry{
 			{ID: "urn:omnigram:new", Title: "New Books", Updated: nowAtom(),
@@ -224,8 +224,18 @@ func shelvesHandler(c *gin.Context) {
 
 // shelfBooksHandler — books in a shelf
 func shelfBooksHandler(c *gin.Context) {
+	userID := c.GetInt64(middleware.XUserIDTag)
 	shelfID := c.Param("shelf_id")
 	db := store.FileStore()
+
+	// verify ownership
+	var count int64
+	db.Model(&schema.Shelf{}).Where("id = ? AND user_id = ?", shelfID, userID).Count(&count)
+	if count == 0 {
+		writeAtomFeed(c, &Feed{ID: "urn:omnigram:shelf:" + shelfID, Title: "Not Found", Updated: nowAtom()})
+		return
+	}
+
 	var books []schema.Book
 	db.Raw(`SELECT b.* FROM books b INNER JOIN shelf_books sb ON b.id = sb.book_id WHERE sb.shelf_id = ? ORDER BY sb.sort_order ASC`, shelfID).Scan(&books)
 

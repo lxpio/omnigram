@@ -25,24 +25,31 @@ func listTagsHandle(c *gin.Context) {
 	schema.Success(c, tags)
 }
 
-// createTagHandle POST /reader/tags
+// createTagHandle POST /reader/tags — 预创建标签（关联到所有匹配书籍时使用）
 func createTagHandle(c *gin.Context) {
 	var req struct {
-		Tag string `json:"tag" binding:"required"`
+		Tag    string `json:"tag" binding:"required"`
+		BookID string `json:"book_id"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		schema.Error(c, http.StatusBadRequest, "VALIDATION_ERROR", err.Error())
 		return
 	}
+	if req.BookID != "" {
+		ts := schema.BookTagShip{BookID: req.BookID, Tag: req.Tag}
+		orm.Where("book_id = ? AND tag = ?", req.BookID, req.Tag).FirstOrCreate(&ts)
+		schema.Success(c, ts)
+		return
+	}
 	schema.Success(c, gin.H{"tag": req.Tag})
 }
 
-// deleteTagHandle DELETE /reader/tags/:tag_id
+// deleteTagHandle DELETE /reader/tags/:tag_id — 按标签名删除所有关联
 func deleteTagHandle(c *gin.Context) {
-	tagID := c.Param("tag_id")
-	if err := orm.Where("id = ?", tagID).Delete(&schema.BookTagShip{}).Error; err != nil {
+	tagName := c.Param("tag_id")
+	if err := orm.Where("tag = ?", tagName).Delete(&schema.BookTagShip{}).Error; err != nil {
 		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
 		return
 	}
-	schema.Success(c, gin.H{"id": tagID, "deleted": true})
+	schema.Success(c, gin.H{"tag": tagName, "deleted": true})
 }
