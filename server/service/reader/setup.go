@@ -31,13 +31,15 @@ func Setup(router *gin.Engine) {
 
 	book.GET("/fav", FavBookHandle)
 	book.GET("/personal", PersonalBooksHandle)
-	// router.GET("/book/hot", HotBook)
 
-	book.GET("/upload", bookUploadHandle)
+	book.POST("/upload", bookUploadHandle)
 
 	book.GET(`/download/books/:book_id`, bookDownloadHandle)
 
 	book.GET("/books/:book_id", BookDetail)
+	book.PUT("/books/:book_id", updateBookHandle)
+	book.DELETE("/books/:book_id", deleteBookHandle)
+	book.PUT("/books/:book_id/cover", uploadCoverHandle)
 
 	book.GET(`/books/:book_id/progress`, getReadBookHandle)
 	book.PUT(`/books/:book_id/progress`, updateReadBookHandle)

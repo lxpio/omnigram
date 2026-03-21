@@ -8,6 +8,7 @@ import (
 	"github.com/lxpio/omnigram/server/service/reader"
 	"github.com/lxpio/omnigram/server/service/sys"
 	"github.com/lxpio/omnigram/server/service/user"
+	"github.com/lxpio/omnigram/server/service/webdav"
 )
 
 func Initialize(ctx context.Context) {
@@ -17,6 +18,8 @@ func Initialize(ctx context.Context) {
 	reader.Initialize(ctx)
 
 	m4t.Initialize(ctx)
+
+	webdav.Initialize()
 }
 
 func Setup(router *gin.Engine) {
@@ -25,6 +28,7 @@ func Setup(router *gin.Engine) {
 	reader.Setup(router)
 	sys.Setup(router)
 	m4t.Setup(router)
+	webdav.Setup(router)
 }
 
 func Close() {
