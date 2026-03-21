@@ -1,0 +1,18 @@
+---
+interface Props {
+  lang: 'en' | 'zh';
+}
+
+const { lang } = Astro.props;
+const currentPath = Astro.url.pathname;
+const targetPath = lang === 'en'
+  ? `/zh${currentPath}`
+  : currentPath.replace(/^\/zh/, '') || '/';
+const targetLabel = lang === 'en' ? '中文' : 'EN';
+---
+<a
+  href={targetPath}
+  class="text-sm bg-brand-bg-light border border-brand-border px-3 py-1 rounded text-slate-400 hover:text-slate-100 transition"
+>
+  {targetLabel}
+</a>

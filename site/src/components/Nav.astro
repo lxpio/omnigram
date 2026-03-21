@@ -1,0 +1,23 @@
+---
+import LanguageSwitch from './LanguageSwitch.astro';
+import { getLangFromUrl, t } from '../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const ui = t(lang);
+const prefix = lang === 'zh' ? '/zh' : '';
+---
+<nav class="fixed top-0 left-0 right-0 z-50 bg-brand-bg/80 backdrop-blur-lg border-b border-brand-border">
+  <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+    <a href={`${prefix}/`} class="flex items-center gap-2">
+      <img src="/logo/logo_white.svg" alt="Omnigram" class="w-8 h-8" />
+      <span class="text-slate-100 font-semibold text-lg">Omnigram</span>
+    </a>
+    <div class="flex items-center gap-6">
+      <a href={`${prefix}/features`} class="text-slate-400 hover:text-slate-100 text-sm transition">{ui.nav.features}</a>
+      <a href="/docs" class="text-slate-400 hover:text-slate-100 text-sm transition">{ui.nav.docs}</a>
+      <a href={`${prefix}/blog`} class="text-slate-400 hover:text-slate-100 text-sm transition">{ui.nav.blog}</a>
+      <a href="https://github.com/lxpio/omnigram" target="_blank" class="text-slate-400 hover:text-slate-100 text-sm transition">{ui.nav.github}</a>
+      <LanguageSwitch lang={lang} />
+    </div>
+  </div>
+</nav>
