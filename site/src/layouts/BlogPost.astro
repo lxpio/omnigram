@@ -1,0 +1,22 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  date: Date;
+  description: string;
+}
+
+const { title, date, description } = Astro.props;
+---
+<BaseLayout title={title} description={description}>
+  <article class="py-20 px-6">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-brand-accent text-sm">{date.toISOString().split('T')[0]}</p>
+      <h1 class="text-4xl font-extrabold text-slate-100 mt-2 mb-8">{title}</h1>
+      <div class="prose prose-invert prose-indigo max-w-none">
+        <slot />
+      </div>
+    </div>
+  </article>
+</BaseLayout>
