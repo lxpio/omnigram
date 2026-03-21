@@ -1,8 +1,0 @@
-install.sh
-Dockerfile
-Dockerfile.bak
-**/.git
-Makefile
-samples
-__pycache__
-README.md

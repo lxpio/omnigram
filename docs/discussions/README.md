@@ -21,3 +21,5 @@
 | 012 | [Server Phase 2.0 技术设计文档](./012-server-phase2-design.md) | 2026-03-21 | ✅ 设计完成（含审计修订） |
 | 012-review | [Phase 2.0 设计审计意见](./012-review.md) | 2026-03-21 | 📋 审计完成 |
 | 013 | [Server Phase 2 实施评估](./013-server-phase2-assessment.md) | 2026-03-21 | 📊 评估完成 |
+| 014 | [TTS 多引擎架构设计](./014-tts-multi-engine-architecture.md) | 2026-03-21 | ✅ 已决策（含二轮审计修订） |
+| 014-review | [TTS 架构审计意见](./014-review.md) | 2026-03-21 | 📋 审计完成 |

@@ -33,7 +33,7 @@ func serveWebUI(c *gin.Context) {
 // registerWebUI 注册 Web UI 的 NoRoute 处理器
 func registerWebUI(router *gin.Engine) {
 	// API 前缀列表 — 这些路径不走 SPA fallback
-	apiPrefixes := []string{"/auth/", "/reader/", "/admin/", "/sys/", "/m4t/", "/dav/", "/opds/", "/img/", "/user/", "/sync/", "/healthz"}
+	apiPrefixes := []string{"/auth/", "/reader/", "/admin/", "/sys/", "/tts/", "/dav/", "/opds/", "/img/", "/user/", "/sync/", "/healthz"}
 
 	router.NoRoute(func(c *gin.Context) {
 		p := c.Request.URL.Path

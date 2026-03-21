@@ -19,7 +19,7 @@
 │  cmd/omni-server/main.go → server.App → gin.Engine           │
 │                                                              │
 │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        │
-│  │ user/   │  │ reader/ │  │  sys/   │  │  m4t/   │        │
+│  │ user/   │  │ reader/ │  │  sys/   │  │  tts/   │        │
 │  │ 认证管理 │  │ 书库阅读 │  │ 系统扫描 │  │ TTS语音 │        │
 │  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘        │
 │       │            │            │            │               │
@@ -43,7 +43,7 @@
 │  cmd/omni-server/main.go → server.App → gin.Engine                   │
 │                                                                      │
 │  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ │
-│  │ user/  │ │reader/ │ │  sys/  │ │  m4t/  │ │ webdav/│ │  ai/   │ │
+│  │ user/  │ │reader/ │ │  sys/  │ │  tts/  │ │ webdav/│ │  ai/   │ │
 │  │认证管理 │ │书库阅读 │ │系统扫描 │ │TTS语音 │ │文件同步 │ │AI增强  │ │
 │  └────┬───┘ └───┬────┘ └───┬────┘ └───┬────┘ └───┬────┘ └───┬────┘ │
 │       │         │          │          │          │          │        │
@@ -78,7 +78,7 @@ server/
 │   ├── reader/        # 现有 — 书库阅读（扩展：元数据编辑/标签/书架/笔记/统计）
 │   │   └── opds/      # 现有 struct — 补全路由注册
 │   ├── sys/           # 现有 — 系统管理
-│   ├── m4t/           # 现有 — TTS 语音
+│   ├── tts/           # 重构 — TTS 语音（Sidecar + Edge TTS）
 │   ├── webdav/        # 新增 — WebDAV 文件服务
 │   └── ai/            # 新增 — AI LLM 集成
 ├── schema/
@@ -846,7 +846,7 @@ func (m *App) initGinRoute(level zapcore.Level) *gin.Engine {
            strings.HasPrefix(c.Request.URL.Path, "/auth/") ||
            strings.HasPrefix(c.Request.URL.Path, "/reader/") ||
            strings.HasPrefix(c.Request.URL.Path, "/sys/") ||
-           strings.HasPrefix(c.Request.URL.Path, "/m4t/") ||
+           strings.HasPrefix(c.Request.URL.Path, "/tts/") ||
            strings.HasPrefix(c.Request.URL.Path, "/dav/") ||
            strings.HasPrefix(c.Request.URL.Path, "/opds/") {
             c.JSON(404, ErrorResponse{Code: "NOT_FOUND", Message: "API endpoint not found"})
@@ -1691,12 +1691,10 @@ POST   /sync/annotations              [OAuth]         ← v0.2.0 新增
 # ─── 封面图片（现有） ─────────────────────────────
 GET    /img/covers/*path               [OAuth]
 
-# ─── TTS（现有） ──────────────────────────────────
-POST   /m4t/tts/stream                [OAuth]
-POST   /m4t/tts/simple                [OAuth]
-GET    /m4t/tts/speakers              [OAuth]
-POST   /m4t/tts/speakers              [OAuth]
-DELETE /m4t/tts/speakers/:aid         [OAuth]
+# ─── TTS（重构，Sidecar 架构） ──────────────────────
+POST   /tts/synthesize                [OAuth]  ← 统一合成接口
+GET    /tts/voices                    [OAuth]  ← 获取可用音色
+GET    /tts/health                    [OAuth]  ← 引擎健康检查
 
 # ─── 系统（现有 + 扩展） ──────────────────────────
 GET    /healthz                        [NoAuth]        ← v0.1.0 新增
