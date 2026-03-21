@@ -16,6 +16,13 @@ func Setup(router *gin.Engine) {
 	sys.PUT("/ai/config", oauthMD, adminMD, aiConfigHandle)
 }
 
+// @Summary Get AI service status
+// @Description Check if the AI service is enabled and configured
+// @Tags AI
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} object{data=object{enabled=bool,provider=string,model=string,status=string}}
+// @Router /sys/ai/status [get]
 func aiStatusHandle(c *gin.Context) {
 	opts := conf.GetConfig().AIOptions
 	status := "disabled"
@@ -30,6 +37,17 @@ func aiStatusHandle(c *gin.Context) {
 	})
 }
 
+// @Summary Update AI configuration
+// @Description Update AI service configuration (admin only)
+// @Tags AI
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body conf.AIOptions true "AI configuration"
+// @Success 200 {object} object{data=conf.AIOptions}
+// @Failure 400 {object} schema.ErrorResponse
+// @Failure 500 {object} schema.ErrorResponse
+// @Router /sys/ai/config [put]
 func aiConfigHandle(c *gin.Context) {
 	var req conf.AIOptions
 	if err := c.ShouldBindJSON(&req); err != nil {

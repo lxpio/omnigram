@@ -14,6 +14,15 @@ import (
 	"github.com/lxpio/omnigram/server/utils"
 )
 
+// @Summary Get book cover image
+// @Description Retrieve a book cover image by path
+// @Tags Reader
+// @Produce image/jpeg
+// @Security BearerAuth
+// @Param book_cover_path path string true "Cover image path"
+// @Success 200 {file} binary "Cover image"
+// @Failure 404 {object} utils.Response
+// @Router /img/covers/{book_cover_path} [get]
 func coverImageHandle(c *gin.Context) {
 
 	coverPath := strings.TrimPrefix(c.Param(`book_cover_path`), `/`)
@@ -41,6 +50,15 @@ func coverImageHandle(c *gin.Context) {
 
 }
 
+// @Summary Get book details
+// @Description Get detailed information about a specific book
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Param book_id path string true "Book ID"
+// @Success 200 {object} schema.Book
+// @Failure 404 {object} utils.Response
+// @Router /reader/books/{book_id} [get]
 func BookDetail(c *gin.Context) {
 
 	id := c.Param(`book_id`)
@@ -63,7 +81,16 @@ func BookDetail(c *gin.Context) {
 
 }
 
-// BookUpload 上传文件
+// @Summary Upload book
+// @Description Upload a new book file (EPUB, PDF, etc.)
+// @Tags Reader
+// @Accept multipart/form-data
+// @Produce json
+// @Security BearerAuth
+// @Param file formData file true "Book file"
+// @Success 200 {object} utils.Response
+// @Failure 400 {object} utils.Response
+// @Router /reader/upload [post]
 func bookUploadHandle(c *gin.Context) {
 	//处理上传文件并存储到数据库
 
@@ -128,8 +155,15 @@ func bookUploadHandle(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.SUCCESS)
 }
 
-// BookDownload 下载图书
-// /books/:book_id/download
+// @Summary Download book
+// @Description Download the original book file
+// @Tags Reader
+// @Produce application/octet-stream
+// @Security BearerAuth
+// @Param book_id path string true "Book ID"
+// @Success 200 {file} binary "Book file"
+// @Failure 404 {object} utils.Response
+// @Router /reader/download/books/{book_id} [get]
 func bookDownloadHandle(c *gin.Context) {
 
 	id := c.Param(`book_id`)
@@ -156,6 +190,14 @@ func bookDownloadHandle(c *gin.Context) {
 
 }
 
+// @Summary Get recent books
+// @Description Get recently added or read books
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Param recent query int false "Number of books to return" default(12)
+// @Success 200 {array} schema.Book
+// @Router /reader/recent [get]
 func RecentBook(c *gin.Context) {
 	req := &struct {
 		Recent int `json:"recent" binding:"required,gte=0"`
@@ -180,7 +222,16 @@ func RecentBook(c *gin.Context) {
 
 }
 
-// SearchBook 模糊搜索
+// @Summary Search books
+// @Description Search books by query parameters
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Param search query string false "Search keyword"
+// @Param category query string false "Category filter"
+// @Param author query string false "Author filter"
+// @Success 200 {array} schema.Book
+// @Router /reader/books [get]
 func SearchBook(c *gin.Context) {
 
 	req := &schema.Query{}
@@ -206,7 +257,15 @@ func SearchBook(c *gin.Context) {
 
 }
 
-// Index 返回 首页 随机ID书籍和最近添加到书籍集。
+// @Summary Get library index
+// @Description Get homepage data with random and recent books
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Param random query int false "Number of random books" default(6)
+// @Param recent query int false "Number of recent books" default(12)
+// @Success 200 {object} object{random=[]schema.Book,recent=[]schema.Book}
+// @Router /reader/index [get]
 func Index(c *gin.Context) {
 
 	req := &struct {
@@ -265,8 +324,13 @@ func Index(c *gin.Context) {
 
 }
 
-// UserInfo GET /api/user/info
-// 获取用户信息
+// @Summary Get book statistics
+// @Description Get aggregated library statistics
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} schema.BookStats
+// @Router /reader/stats [get]
 func GetBookStats(c *gin.Context) {
 	log.D(`获取书籍概览信息`)
 

@@ -12,6 +12,14 @@ import (
 )
 
 // listAnnotationsHandle GET /reader/books/:book_id/annotations
+// @Summary List annotations
+// @Description Get all annotations for a book
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Param book_id path string true "Book ID"
+// @Success 200 {object} object{data=[]schema.Annotation}
+// @Router /reader/books/{book_id}/annotations [get]
 func listAnnotationsHandle(c *gin.Context) {
 	bookID := c.Param("book_id")
 	userID := c.GetInt64(middleware.XUserIDTag)
@@ -27,6 +35,17 @@ func listAnnotationsHandle(c *gin.Context) {
 }
 
 // createAnnotationHandle POST /reader/books/:book_id/annotations
+// @Summary Create annotation
+// @Description Create a new annotation (highlight, note, or bookmark)
+// @Tags Reader
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param book_id path string true "Book ID"
+// @Param request body schema.Annotation true "Annotation details"
+// @Success 200 {object} object{data=schema.Annotation}
+// @Failure 400 {object} schema.ErrorResponse
+// @Router /reader/books/{book_id}/annotations [post]
 func createAnnotationHandle(c *gin.Context) {
 	bookID := c.Param("book_id")
 	userID := c.GetInt64(middleware.XUserIDTag)
@@ -49,6 +68,19 @@ func createAnnotationHandle(c *gin.Context) {
 }
 
 // updateAnnotationHandle PUT /reader/books/:book_id/annotations/:annotation_id
+// @Summary Update annotation
+// @Description Update an existing annotation
+// @Tags Reader
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param book_id path string true "Book ID"
+// @Param annotation_id path int true "Annotation ID"
+// @Param request body object{content=string,selected_text=string,cfi=string,page_number=int,position=number,color=string,chapter=string} true "Annotation fields to update"
+// @Success 200 {object} object{data=schema.Annotation}
+// @Failure 400 {object} schema.ErrorResponse
+// @Failure 404 {object} schema.ErrorResponse
+// @Router /reader/books/{book_id}/annotations/{annotation_id} [put]
 func updateAnnotationHandle(c *gin.Context) {
 	annotationID := c.Param("annotation_id")
 	userID := c.GetInt64(middleware.XUserIDTag)
@@ -108,6 +140,16 @@ func updateAnnotationHandle(c *gin.Context) {
 }
 
 // deleteAnnotationHandle DELETE /reader/books/:book_id/annotations/:annotation_id
+// @Summary Delete annotation
+// @Description Delete an annotation
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Param book_id path string true "Book ID"
+// @Param annotation_id path int true "Annotation ID"
+// @Success 200 {object} object{data=object{id=int,deleted=bool}}
+// @Failure 404 {object} schema.ErrorResponse
+// @Router /reader/books/{book_id}/annotations/{annotation_id} [delete]
 func deleteAnnotationHandle(c *gin.Context) {
 	annotationID := c.Param("annotation_id")
 	userID := c.GetInt64(middleware.XUserIDTag)
@@ -121,6 +163,17 @@ func deleteAnnotationHandle(c *gin.Context) {
 }
 
 // updateBookRatingHandle PUT /reader/books/:book_id/rating
+// @Summary Rate book
+// @Description Set a rating for a book (0-5)
+// @Tags Reader
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param book_id path string true "Book ID"
+// @Param request body object{rating=number} true "Book rating (0-5)"
+// @Success 200 {object} object{data=object{book_id=string,rating=number}}
+// @Failure 400 {object} schema.ErrorResponse
+// @Router /reader/books/{book_id}/rating [put]
 func updateBookRatingHandle(c *gin.Context) {
 	bookID := c.Param("book_id")
 
@@ -146,6 +199,16 @@ func updateBookRatingHandle(c *gin.Context) {
 }
 
 // syncAnnotationsHandle POST /sync/annotations
+// @Summary Sync annotations
+// @Description Synchronize annotations across devices
+// @Tags Sync
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body object{device_id=string,last_sync_time=int,annotations=[]schema.Annotation} true "Sync request"
+// @Success 200 {object} object{data=object{annotations=[]schema.Annotation,synced=int,sync_time=int}}
+// @Failure 400 {object} schema.ErrorResponse
+// @Router /sync/annotations [post]
 func syncAnnotationsHandle(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 

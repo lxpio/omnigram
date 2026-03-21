@@ -67,6 +67,16 @@ func startfetchTask(ctx context.Context, req *TextRequest, errChan chan<- error)
 	return respChan, nil
 }
 
+// @Summary Stream TTS synthesis
+// @Description Synthesize text to speech with streaming audio output
+// @Tags TTS
+// @Accept json
+// @Produce application/octet-stream
+// @Security BearerAuth
+// @Param request body object{text=string,lang=string,audio_id=string,format=int} true "TTS request"
+// @Success 200 {file} binary "Audio stream"
+// @Failure 400 {object} utils.Response
+// @Router /m4t/tts/stream [post]
 func ttsStreamHandler(c *gin.Context) {
 
 	// Send a request to the server
@@ -149,6 +159,14 @@ func ttsStreamHandler(c *gin.Context) {
 	log.I(`exit  stream `)
 }
 
+// @Summary List TTS speakers
+// @Description Get available TTS voice speakers
+// @Tags TTS
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} object{data=array}
+// @Failure 404 {object} utils.Response
+// @Router /m4t/tts/speakers [get]
 func getSpeakersHandler(c *gin.Context) {
 
 	// if localCached !=
@@ -170,6 +188,15 @@ func getSpeakersHandler(c *gin.Context) {
 
 }
 
+// @Summary Add TTS speaker
+// @Description Upload and register a new TTS speaker voice
+// @Tags TTS
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} object{data=object}
+// @Failure 500 {object} utils.Response
+// @Router /m4t/tts/speakers [post]
 func postSpeakerHandler(c *gin.Context) {
 
 	// if localCached !=
@@ -193,6 +220,16 @@ func postSpeakerHandler(c *gin.Context) {
 
 }
 
+// @Summary Delete TTS speaker
+// @Description Remove a TTS speaker voice
+// @Tags TTS
+// @Produce json
+// @Security BearerAuth
+// @Param audio_id path string true "Speaker audio ID"
+// @Success 200 {object} object{success=bool}
+// @Failure 400 {object} utils.Response
+// @Failure 500 {object} utils.Response
+// @Router /m4t/tts/speakers/{audio_id} [delete]
 func delSpeakerHandler(c *gin.Context) {
 
 	id := c.Param("audio_id")

@@ -9,6 +9,16 @@ import (
 )
 
 // batchDeleteHandle POST /reader/books/batch/delete
+// @Summary Batch delete books
+// @Description Delete multiple books at once (admin only)
+// @Tags Reader
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body object{book_ids=[]string,delete_files=bool} true "Books to delete"
+// @Success 200 {object} object{data=object{deleted=int}}
+// @Failure 400 {object} schema.ErrorResponse
+// @Router /reader/books/batch/delete [post]
 func batchDeleteHandle(c *gin.Context) {
 	var req struct {
 		BookIDs     []string `json:"book_ids" binding:"required"`
@@ -58,6 +68,16 @@ func batchDeleteHandle(c *gin.Context) {
 }
 
 // batchTagHandle POST /reader/books/batch/tag
+// @Summary Batch tag books
+// @Description Add, remove, or set tags on multiple books
+// @Tags Reader
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body object{book_ids=[]string,tags=[]string,action=string} true "Batch tag operation (action: add/remove/set)"
+// @Success 200 {object} object{data=object{updated=int}}
+// @Failure 400 {object} schema.ErrorResponse
+// @Router /reader/books/batch/tag [post]
 func batchTagHandle(c *gin.Context) {
 	var req struct {
 		BookIDs []string `json:"book_ids" binding:"required"`
@@ -91,6 +111,16 @@ func batchTagHandle(c *gin.Context) {
 }
 
 // batchShelfHandle POST /reader/books/batch/shelf
+// @Summary Batch shelf operation
+// @Description Add or remove multiple books from a shelf
+// @Tags Reader
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body object{book_ids=[]string,shelf_id=int,action=string} true "Batch shelf operation (action: add/remove)"
+// @Success 200 {object} object{data=object{updated=int}}
+// @Failure 400 {object} schema.ErrorResponse
+// @Router /reader/books/batch/shelf [post]
 func batchShelfHandle(c *gin.Context) {
 	var req struct {
 		BookIDs []string `json:"book_ids" binding:"required"`

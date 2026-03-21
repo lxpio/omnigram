@@ -34,6 +34,23 @@ func sanitizeFTS5Query(q string) string {
 	return strings.Join(result, " ")
 }
 
+// enhancedSearchHandle GET /reader/search
+// @Summary Enhanced search
+// @Description Search books with advanced filters and pagination
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Param q query string false "Search query"
+// @Param format query string false "File format filter (epub, pdf, mobi)"
+// @Param language query string false "Language filter"
+// @Param tag query string false "Tag filter"
+// @Param author query string false "Author filter"
+// @Param sort query string false "Sort field (ctime, title, author, rating)" default(ctime)
+// @Param order query string false "Sort order (asc, desc)" default(desc)
+// @Param page query int false "Page number" default(1)
+// @Param page_size query int false "Page size (1-100)" default(20)
+// @Success 200 {object} object{data=[]schema.Book,total=int,page=int,page_size=int}
+// @Router /reader/search [get]
 func enhancedSearchHandle(c *gin.Context) {
 	q := c.Query("q")
 	format := c.Query("format")

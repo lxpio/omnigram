@@ -11,10 +11,13 @@ SHELL := /bin/bash
 DESTDIR=${PROJECT_PATH}/build/omnigram-server-${VERSION}
 
 
-.PHONY: all web
+.PHONY: all web swagger
 
 web:
 	cd web && npm ci && npm run build
+
+swagger:
+	swag init -g cmd/omni-server/main.go -o docs --parseDependency --parseInternal
 
 all : web omnigram-server
 

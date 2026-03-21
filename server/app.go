@@ -10,7 +10,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
+	_ "github.com/lxpio/omnigram/server/docs"
 	"github.com/lxpio/omnigram/server/conf"
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/middleware"
@@ -122,6 +125,9 @@ func (m *App) initGinRoute(level zapcore.Level) *gin.Engine {
 		}
 		c.JSON(200, gin.H{"status": "healthy", "version": conf.Version})
 	})
+
+	// Swagger API documentation
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	service.Setup(router)
 

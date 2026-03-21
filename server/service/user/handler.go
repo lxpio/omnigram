@@ -14,6 +14,16 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+// @Summary User login
+// @Description Login with account credentials, sets session cookie on success
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param request body object{account=string,password=string,client_id=string,grant_type=string} true "Login credentials"
+// @Success 200 {object} utils.Response
+// @Failure 400 {object} utils.Response
+// @Failure 404 {object} utils.Response
+// @Router /auth/login [post]
 func loginHandle(c *gin.Context) {
 
 	req := struct {
@@ -71,6 +81,14 @@ func loginHandle(c *gin.Context) {
 	c.JSON(200, utils.SUCCESS)
 }
 
+// @Summary User logout
+// @Description Logout current session and clear cookie
+// @Tags Auth
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} utils.Response
+// @Failure 500 {object} utils.Response
+// @Router /auth/logout [post]
 func logoutHandle(c *gin.Context) {
 
 	sessin := c.GetString(middleware.UserSessionTag)
@@ -93,6 +111,14 @@ func logoutHandle(c *gin.Context) {
 
 }
 
+// @Summary Get current user info
+// @Description Get information about the currently authenticated user
+// @Tags User
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} schema.User
+// @Failure 404 {object} utils.Response
+// @Router /user/userinfo [get]
 func getUserInfoHandle(c *gin.Context) {
 
 	userID := c.GetInt64(middleware.XUserIDTag)
@@ -119,6 +145,15 @@ func getUserInfoHandle(c *gin.Context) {
 	c.JSON(200, user)
 }
 
+// @Summary Create API key
+// @Description Generate a new API key for the authenticated user
+// @Tags Auth
+// @Produce json
+// @Security BearerAuth
+// @Param user_id path int true "User ID"
+// @Success 200 {object} schema.APIToken
+// @Failure 500 {object} utils.Response
+// @Router /auth/accounts/{user_id}/apikeys [post]
 func createAPIKeyHandle(c *gin.Context) {
 
 	userID := c.GetInt64(middleware.XUserIDTag)
@@ -135,7 +170,16 @@ func createAPIKeyHandle(c *gin.Context) {
 
 }
 
-// DELETE /user/apikeys/:id
+// @Summary Delete API key
+// @Description Delete an existing API key
+// @Tags Auth
+// @Produce json
+// @Security BearerAuth
+// @Param user_id path int true "User ID"
+// @Param key_id path string true "API Key ID"
+// @Success 200 {object} utils.Response
+// @Failure 500 {object} utils.Response
+// @Router /auth/accounts/{user_id}/apikeys/{key_id} [delete]
 func deleteAPIKeyHandle(c *gin.Context) {
 
 	id := c.Param(`id`)
@@ -150,6 +194,16 @@ func deleteAPIKeyHandle(c *gin.Context) {
 
 }
 
+// @Summary Get access token
+// @Description Authenticate and get a Bearer access token
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param request body object{account=string,password=string,device_id=string,grant_type=string} true "Login credentials"
+// @Success 200 {object} object{token_type=string,expired_in=int,refresh_token=string,access_token=string}
+// @Failure 400 {object} utils.Response
+// @Failure 404 {object} utils.Response
+// @Router /auth/token [post]
 func getAccessTokenHandle(c *gin.Context) {
 
 	req := struct {
@@ -209,7 +263,17 @@ func getAccessTokenHandle(c *gin.Context) {
 	}{"Bearer", int(session.Duration / 1000), session.RefreshToken, session.Session})
 }
 
-// refreshAccessTokenHandle 刷新token
+// @Summary Refresh access token
+// @Description Refresh an expired access token using a refresh token
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param request body object{account=string,device_id=string,refresh_token=string} true "Refresh token request"
+// @Success 200 {object} object{token_type=string,expired_in=int,refresh_token=string,access_token=string}
+// @Failure 400 {object} utils.Response
+// @Failure 403 {object} utils.Response
+// @Failure 404 {object} utils.Response
+// @Router /auth/token/refresh [post]
 func refreshAccessTokenHandle(c *gin.Context) {
 
 	req := struct {
@@ -290,6 +354,15 @@ func refreshAccessTokenHandle(c *gin.Context) {
 
 }
 
+// @Summary List API keys
+// @Description Get all API keys for a user
+// @Tags Auth
+// @Produce json
+// @Security BearerAuth
+// @Param user_id path int true "User ID"
+// @Success 200 {array} schema.APIToken
+// @Failure 500 {object} utils.Response
+// @Router /auth/accounts/{user_id}/apikeys [get]
 func getAPIKeysHandle(c *gin.Context) {
 
 	id := c.Param(`user_id`)
@@ -316,6 +389,19 @@ func getAPIKeysHandle(c *gin.Context) {
 
 }
 
+// @Summary Reset password
+// @Description Reset user password (self or admin)
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param user_id path int true "User ID"
+// @Param request body object{new_password=string,code=string} true "New password"
+// @Success 200 {object} utils.Response
+// @Failure 400 {object} utils.Response
+// @Failure 403 {object} utils.Response
+// @Failure 404 {object} utils.Response
+// @Router /auth/accounts/{user_id}/reset [post]
 func resetPasswordHandle(c *gin.Context) {
 
 	req := struct {
@@ -363,6 +449,17 @@ func resetPasswordHandle(c *gin.Context) {
 	c.JSON(200, utils.SUCCESS)
 }
 
+// @Summary Create account
+// @Description Create a new user account (admin only)
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body object{user_name=string,email=string,password=string} true "Account details"
+// @Success 200 {object} schema.User
+// @Failure 400 {object} utils.Response
+// @Failure 500 {object} utils.Response
+// @Router /admin/accounts [post]
 func createAccountHandle(c *gin.Context) {
 	req := struct {
 		UserName string `json:"user_name" binding:"required"`
@@ -392,7 +489,14 @@ func createAccountHandle(c *gin.Context) {
 
 }
 
-// listAccountHandle list accounts
+// @Summary List accounts
+// @Description List all user accounts (admin only)
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} object{items=[]schema.User,total=int}
+// @Failure 500 {object} utils.Response
+// @Router /admin/accounts [get]
 func listAccountHandle(c *gin.Context) {
 
 	users, err := schema.AllUsers(store.Store())
@@ -415,6 +519,15 @@ func listAccountHandle(c *gin.Context) {
 	c.JSON(200, data)
 
 }
+// @Summary Get account details
+// @Description Get a specific user account by ID (admin only)
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Param user_id path int true "User ID"
+// @Success 200 {object} schema.User
+// @Failure 404 {object} utils.Response
+// @Router /admin/accounts/{user_id} [get]
 func getAccountHandle(c *gin.Context) {
 	userID, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
 
@@ -434,6 +547,16 @@ func getAccountHandle(c *gin.Context) {
 	c.JSON(200, u)
 }
 
+// @Summary Delete account
+// @Description Delete a user account (admin only, cannot delete self)
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Param user_id path int true "User ID"
+// @Success 200 {object} utils.Response
+// @Failure 403 {object} utils.Response
+// @Failure 404 {object} utils.Response
+// @Router /admin/accounts/{user_id} [delete]
 func deleteAccountHandle(c *gin.Context) {
 
 	userID, err := strconv.ParseInt(c.Param("user_id"), 10, 64)

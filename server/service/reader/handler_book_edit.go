@@ -13,6 +13,18 @@ import (
 )
 
 // updateBookHandle 编辑书籍元数据 PUT /reader/books/:book_id
+// @Summary Update book metadata
+// @Description Update book metadata fields (title, author, description, etc.)
+// @Tags Reader
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param book_id path string true "Book ID"
+// @Param request body object{title=string,author=string,description=string,publisher=string,language=string,series=string,series_index=int,publish_date=string,rating=number,tags=[]string} true "Book metadata"
+// @Success 200 {object} object{data=schema.Book}
+// @Failure 400 {object} schema.ErrorResponse
+// @Failure 404 {object} schema.ErrorResponse
+// @Router /reader/books/{book_id} [put]
 func updateBookHandle(c *gin.Context) {
 	bookID := c.Param("book_id")
 
@@ -90,6 +102,16 @@ func updateBookHandle(c *gin.Context) {
 }
 
 // deleteBookHandle 删除书籍 DELETE /reader/books/:book_id
+// @Summary Delete book
+// @Description Delete a book and optionally its file
+// @Tags Reader
+// @Produce json
+// @Security BearerAuth
+// @Param book_id path string true "Book ID"
+// @Param delete_file query bool false "Also delete the physical file" default(false)
+// @Success 200 {object} object{data=object{id=string,deleted=bool}}
+// @Failure 404 {object} schema.ErrorResponse
+// @Router /reader/books/{book_id} [delete]
 func deleteBookHandle(c *gin.Context) {
 	bookID := c.Param("book_id")
 	deleteFile := c.Query("delete_file") == "true"
@@ -130,6 +152,18 @@ func deleteBookHandle(c *gin.Context) {
 }
 
 // uploadCoverHandle 上传封面 PUT /reader/books/:book_id/cover
+// @Summary Upload book cover
+// @Description Upload a custom cover image for a book (max 5MB, jpg/png/webp/gif)
+// @Tags Reader
+// @Accept multipart/form-data
+// @Produce json
+// @Security BearerAuth
+// @Param book_id path string true "Book ID"
+// @Param cover formData file true "Cover image file"
+// @Success 200 {object} object{data=object{cover_url=string}}
+// @Failure 400 {object} schema.ErrorResponse
+// @Failure 404 {object} schema.ErrorResponse
+// @Router /reader/books/{book_id}/cover [put]
 func uploadCoverHandle(c *gin.Context) {
 	bookID := c.Param("book_id")
 

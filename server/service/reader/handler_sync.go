@@ -22,6 +22,15 @@ type FullSyncReq struct {
 	Util int64 `json:"until" binding:"required,gt=0"`
 }
 
+// @Summary Full data sync
+// @Description Synchronize all book data via SSE stream
+// @Tags Sync
+// @Accept json
+// @Produce text/event-stream
+// @Security BearerAuth
+// @Param request body object{file_type=string,limit=int,until=int} true "Sync parameters"
+// @Success 200 {object} object{books=[]schema.Book}
+// @Router /sync/full [post]
 func syncFullHandle(c *gin.Context) {
 	req := &FullSyncReq{Limit: 5000}
 
@@ -78,6 +87,15 @@ type DeltaSyncReq struct {
 	Utime int64 `json:"utime" binding:"required,gt=0"`
 }
 
+// @Summary Delta data sync
+// @Description Get books updated since a given timestamp
+// @Tags Sync
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body object{file_type=string,limit=int,utime=int} true "Delta sync parameters"
+// @Success 200 {object} object{books=[]schema.Book}
+// @Router /sync/delta [post]
 func syncDeltaHandle(c *gin.Context) {
 	req := &DeltaSyncReq{Limit: 5000}
 

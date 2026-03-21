@@ -77,6 +77,12 @@ func bookToEntry(b schema.Book) Entry {
 }
 
 // catalogHandler — root navigation feed
+// @Summary OPDS root catalog
+// @Description Get the OPDS root catalog feed
+// @Tags OPDS
+// @Produce application/atom+xml
+// @Success 200 {string} string "OPDS Atom feed"
+// @Router /opds [get]
 func catalogHandler(c *gin.Context) {
 	feed := &Feed{
 		ID:      "urn:omnigram:catalog",
@@ -102,6 +108,12 @@ func catalogHandler(c *gin.Context) {
 }
 
 // newBooksHandler — latest 50 books
+// @Summary OPDS new books
+// @Description Get recently added books as OPDS feed
+// @Tags OPDS
+// @Produce application/atom+xml
+// @Success 200 {string} string "OPDS Atom feed"
+// @Router /opds/new [get]
 func newBooksHandler(c *gin.Context) {
 	db := store.FileStore()
 	var books []schema.Book
@@ -120,6 +132,12 @@ func newBooksHandler(c *gin.Context) {
 }
 
 // popularBooksHandler — top 50 by visits
+// @Summary OPDS popular books
+// @Description Get popular books as OPDS feed
+// @Tags OPDS
+// @Produce application/atom+xml
+// @Success 200 {string} string "OPDS Atom feed"
+// @Router /opds/popular [get]
 func popularBooksHandler(c *gin.Context) {
 	db := store.FileStore()
 	var books []schema.Book
@@ -138,6 +156,12 @@ func popularBooksHandler(c *gin.Context) {
 }
 
 // authorsHandler — list distinct authors
+// @Summary OPDS authors list
+// @Description Get all authors as OPDS navigation feed
+// @Tags OPDS
+// @Produce application/atom+xml
+// @Success 200 {string} string "OPDS Atom feed"
+// @Router /opds/authors [get]
 func authorsHandler(c *gin.Context) {
 	db := store.FileStore()
 	type authorRow struct {
@@ -164,6 +188,13 @@ func authorsHandler(c *gin.Context) {
 }
 
 // authorBooksHandler — books by author
+// @Summary OPDS books by author
+// @Description Get books by a specific author as OPDS feed
+// @Tags OPDS
+// @Produce application/atom+xml
+// @Param name path string true "Author name"
+// @Success 200 {string} string "OPDS Atom feed"
+// @Router /opds/authors/{name} [get]
 func authorBooksHandler(c *gin.Context) {
 	name := c.Param("name")
 	db := store.FileStore()
@@ -181,6 +212,13 @@ func authorBooksHandler(c *gin.Context) {
 }
 
 // tagBooksHandler — books by tag
+// @Summary OPDS books by tag
+// @Description Get books with a specific tag as OPDS feed
+// @Tags OPDS
+// @Produce application/atom+xml
+// @Param tag path string true "Tag name"
+// @Success 200 {string} string "OPDS Atom feed"
+// @Router /opds/tags/{tag} [get]
 func tagBooksHandler(c *gin.Context) {
 	tag := c.Param("tag")
 	db := store.FileStore()
@@ -198,6 +236,12 @@ func tagBooksHandler(c *gin.Context) {
 }
 
 // shelvesHandler — list user shelves
+// @Summary OPDS shelves list
+// @Description Get all shelves as OPDS navigation feed
+// @Tags OPDS
+// @Produce application/atom+xml
+// @Success 200 {string} string "OPDS Atom feed"
+// @Router /opds/shelves [get]
 func shelvesHandler(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 	db := store.FileStore()
@@ -223,6 +267,13 @@ func shelvesHandler(c *gin.Context) {
 }
 
 // shelfBooksHandler — books in a shelf
+// @Summary OPDS shelf books
+// @Description Get books in a specific shelf as OPDS feed
+// @Tags OPDS
+// @Produce application/atom+xml
+// @Param shelf_id path int true "Shelf ID"
+// @Success 200 {string} string "OPDS Atom feed"
+// @Router /opds/shelves/{shelf_id} [get]
 func shelfBooksHandler(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 	shelfID := c.Param("shelf_id")
@@ -250,6 +301,13 @@ func shelfBooksHandler(c *gin.Context) {
 }
 
 // searchHandler — search books by query
+// @Summary OPDS search
+// @Description Search books via OPDS feed
+// @Tags OPDS
+// @Produce application/atom+xml
+// @Param q query string true "Search query"
+// @Success 200 {string} string "OPDS Atom feed"
+// @Router /opds/search [get]
 func searchHandler(c *gin.Context) {
 	q := c.Query("q")
 	db := store.FileStore()
@@ -267,6 +325,13 @@ func searchHandler(c *gin.Context) {
 }
 
 // downloadHandler — serve book file
+// @Summary OPDS download book
+// @Description Download a book file via OPDS
+// @Tags OPDS
+// @Produce application/octet-stream
+// @Param book_id path string true "Book ID"
+// @Success 200 {file} binary "Book file"
+// @Router /opds/download/{book_id} [get]
 func downloadHandler(c *gin.Context) {
 	bookID := c.Param("book_id")
 	db := store.FileStore()
