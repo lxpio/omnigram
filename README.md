@@ -23,17 +23,42 @@
 
 ## About Omnigram
 
-Omnigram is a multi-platform (iOS, Android, Web, Windows, Linux, Mac) file reading and audiobook client written in Flutter. It supports multiple formats, including EPUB and PDF. It provides audiobook functionality through TTS models and supports other AI models for assisted reading. In addition, it has local book management capabilities, allowing users to easily manage book storage on NAS. For its backend service deployment, refer to [omnigam-server](server/README.md). Or check the [official project documentation](https://omnigram.lxpio.com/).
+> **Jellyfin for videos. Immich for photos. Omnigram for books.**
+
+Omnigram is an **AI-native, self-hosted book library management and reading service**. Deploy it on your NAS or homeserver with Docker, and turn your ebook collection into an intelligent, searchable, listenable personal library.
+
+Built with a Go backend and Flutter multi-platform client, Omnigram combines book management, AI-powered reading assistance, and TTS audiobook generation into a single, self-hosted solution — something no existing tool provides.
+
+### Why Omnigram?
+
+- 📚 **Calibre-Web** manages books but has no AI, no TTS, and an aging UI
+- 🎧 **Audiobookshelf** plays existing audiobooks but can't generate them from ebooks
+- 📖 **Anx Reader** is a great reader app but has no server — single-device only
+- 💸 **Readwise Reader** is powerful but costs $8.99/mo and isn't self-hostable
+
+**Omnigram fills the gap: self-hosted + AI + reading — all in one.**
 
 ## Features
 
-- [x] Supports iOS and Android for EPUB ebook reading
-- [x] Supports TTS text-to-speech, allows custom TTS engines
-- [x] Supports local book management (NAS), including searching, reading, listening, notes, favorites, downloading, deleting books, settings, etc.
-- [x] Supports conversational assistant with Markdown support, code block highlighting, conversation settings
-- [x] Books support TTS reading using models
-- [ ] Supports PDF, documents and other NAS content services management
-- [ ] Supports Web, Windows, Linux, Mac
+### Available Now
+- [x] Multi-format ebook reading (EPUB, PDF)
+- [x] iOS & Android native client
+- [x] TTS text-to-speech with customizable engines (Fish Audio)
+- [x] AI conversational assistant for reading
+- [x] Self-hosted book library with NAS storage support
+- [x] Book search, notes, bookmarks, favorites, downloads
+- [x] Multi-user management with OPDS protocol
+- [x] Docker one-click deployment
+
+### Roadmap
+- [ ] AI book summarization & chapter insights
+- [ ] Semantic search across entire library
+- [ ] AI-powered cross-book knowledge linking
+- [ ] High-quality multi-voice TTS audiobook generation
+- [ ] AI translation with bilingual side-by-side reading
+- [ ] WebDAV protocol support
+- [ ] Web reader interface
+- [ ] Windows, Linux, Mac desktop clients
 
 ## Omnigram Infrastructure
 
@@ -96,15 +121,25 @@ pip install -e .
 python -m tools.api_server --listen 0.0.0.0:8999 --llama-checkpoint-path "checkpoints/fish-speech-1.5" --decoder-checkpoint-path "checkpoints/fish-speech-1.5/firefly-gan-vq-fsq-8x1024-21hz-generator.pth"
 ```
 
+## Tech Stack
+
+| Component | Technology |
+|-----------|-----------|
+| **Server** | Go 1.23 + Gin + GORM |
+| **Client** | Flutter 3.24 + Riverpod |
+| **TTS** | Fish Audio (gRPC) |
+| **Database** | SQLite/PostgreSQL + BadgerDB |
+| **Deployment** | Docker / Docker Compose |
+
 ## Acknowledgments
 
 This project makes extensive use of code from [Immich](https://github.com/immich-app/immich), and we thank them for their open-source contributions.
 
-The creation of this project utilized three libraries, including:
+Key libraries and dependencies:
 
-- [riverpod](https://docs-v2.riverpod.dev/docs)
-- [isar](https://isar.dev)
-- [fish-speech](https://github.com/fishaudio/fish-speech)
+- [riverpod](https://docs-v2.riverpod.dev/docs) — State management
+- [isar](https://isar.dev) — Local database
+- [fish-speech](https://github.com/fishaudio/fish-speech) — TTS engine
 
 ## License
 

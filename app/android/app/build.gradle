@@ -44,8 +44,9 @@ android {
         applicationId = "com.lxpio.omnigram"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdk = 31
-        targetSdk = flutter.targetSdkVersion
+        minSdk = 35 // Minimum Android version supported (https://developer.android.com/ndk/guides/abis).
+        targetSdk = flutter.targetSdkVersion // Target Android version (https://developer.android.com/ndk/guides/abis).
+        targetSdkVersion = 35
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
 
