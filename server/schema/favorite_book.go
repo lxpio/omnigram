@@ -28,6 +28,7 @@ func LikedBooks(store *gorm.DB, userID int64, offset, limit int) ([]ProgressBook
 	sql := `
 		SELECT B.*,R.progress,R.progress_index,R.para_position FROM books as B JOIN fav_books AS F ON B.id = F.book_id 
 		LEFT JOIN read_progresses AS R ON R.book_id = B.id 
+		WHERE F.user_id = ?
 		ORDER BY F.updated_at desc LIMIT ? OFFSET ?;
 		`
 

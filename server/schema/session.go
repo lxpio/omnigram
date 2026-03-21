@@ -1,7 +1,7 @@
 package schema
 
 import (
-	"math/rand"
+	"crypto/rand"
 	"time"
 
 	"github.com/lxpio/omnigram/server/log"
@@ -115,10 +115,13 @@ func (m *Session) BeforeCreate(_ *gorm.DB) error {
 }
 
 func RandomString(n int) string {
-	letters := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	b := make([]byte, n)
+	if _, err := rand.Read(b); err != nil {
+		panic(err)
+	}
 	for i := range b {
-		b[i] = letters[rand.Intn(len(letters))]
+		b[i] = charset[int(b[i])%len(charset)]
 	}
 	return string(b)
 }

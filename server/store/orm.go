@@ -32,7 +32,7 @@ func OpenDB(opt *Opt) (*gorm.DB, error) {
 	if opt.LogLevel == zapcore.DebugLevel {
 		db = db.Debug()
 	}
-	return db, nil
+	return db, err
 
 }
 

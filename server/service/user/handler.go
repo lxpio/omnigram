@@ -60,7 +60,7 @@ func loginHandle(c *gin.Context) {
 	if err := session.Save(store.Store()); err != nil {
 		log.E(`保存session失败：`, err.Error())
 		c.JSON(500, utils.ErrSaveToken)
-
+		return
 	}
 
 	sessionCache.Add(cacheKeySession+session.Session, session)
@@ -194,7 +194,7 @@ func getAccessTokenHandle(c *gin.Context) {
 	if err := session.Save(store.Store()); err != nil {
 		log.E(`保存session失败：`, err.Error())
 		c.JSON(500, utils.ErrSaveToken)
-
+		return
 	}
 
 	sessionCache.Add(cacheKeySession+session.Session, session)
@@ -339,12 +339,14 @@ func resetPasswordHandle(c *gin.Context) {
 		return
 	}
 
-	//todo verify code
-	// if err := verifyCode(req.Code); err != nil {
-	// 	log.E(`验证码错误：`, err.Error())
-	// 	c.JSON(403, utils.ErrGetTokens)
-	// 	return
-	// }
+	//verify caller is the user themselves or an admin
+	callerID := c.GetInt64(middleware.XUserIDTag)
+	callerInfo, _ := c.Get(middleware.XUserInfoTag)
+	callerUser, _ := callerInfo.(*schema.User)
+	if callerID != userID && (callerUser == nil || callerUser.RoleID > 100) {
+		c.JSON(403, utils.ErrForbidden)
+		return
+	}
 
 	if err := u.ResetPassword(store.Store(), req.Password); err != nil {
 		log.E(`重置密码失败：`, err.Error())
@@ -377,6 +379,7 @@ func createAccountHandle(c *gin.Context) {
 	if err := store.Store().Create(&u).Error; err != nil {
 		log.E(`创建用户失败：`, err.Error())
 		c.JSON(500, utils.ErrCreateUser)
+		return
 	}
 
 	c.JSON(200, u.Masking())

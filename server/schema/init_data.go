@@ -54,7 +54,7 @@ func initUserData() error {
 			u.Credential = `123456`
 		}
 
-		log.I(`初始化数据, 用户信息: `, u.Name, u.Credential)
+		log.I(`初始化数据, 用户信息: `, u.Name, `[REDACTED]`)
 
 		if err = tx.Clauses(clause.OnConflict{
 			Columns:   []clause.Column{{Name: "name"}},
