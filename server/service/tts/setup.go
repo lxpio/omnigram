@@ -35,6 +35,18 @@ func Initialize(ctx context.Context) {
 			log.I("TTS: using Kokoro sidecar at " + cf.TTSOptions.SidecarURL)
 		}
 		fallback = NewEdgeTTSProvider()
+	case "openai":
+		url := cf.TTSOptions.SidecarURL
+		if url == "" {
+			url = "https://api.openai.com"
+		}
+		if cf.TTSOptions.APIKey != "" {
+			primary = NewSidecarProviderWithAuth("tts-1", url, cf.TTSOptions.APIKey, timeout)
+			log.I("TTS: using OpenAI-compatible API at " + url)
+		} else {
+			log.W("TTS: OpenAI provider requires api_key, falling back to Edge TTS")
+		}
+		fallback = NewEdgeTTSProvider()
 	case "edge":
 		primary = NewEdgeTTSProvider()
 	default:

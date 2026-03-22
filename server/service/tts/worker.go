@@ -19,6 +19,7 @@ import (
 // Concurrency = 1 because TTS sidecar typically can't handle parallel requests well.
 type AudiobookWorker struct {
 	manager   *TTSManager
+	processor *AudioProcessor
 	taskCh    chan string // receives task IDs to process
 	cancel    context.CancelFunc
 	ctx       context.Context
@@ -42,6 +43,7 @@ func NewAudiobookWorker(mgr *TTSManager) *AudiobookWorker {
 	ctx, cancel := context.WithCancel(context.Background())
 	w := &AudiobookWorker{
 		manager:   mgr,
+		processor: NewAudioProcessor(),
 		taskCh:    make(chan string, 100),
 		cancel:    cancel,
 		ctx:       ctx,
@@ -241,6 +243,31 @@ func (w *AudiobookWorker) processChapter(task *schema.AudiobookTask, chapter *sc
 			return
 		}
 		totalSize += n
+	}
+
+	// Close file before post-processing
+	outFile.Close()
+
+	// Post-process: LUFS normalization, silence trimming, ID3 tags
+	if w.processor.Available() {
+		book, _ := schema.FirstBookById(db, task.BookID)
+		meta := ChapterMeta{
+			ChapterTitle: chapter.ChapterTitle,
+			ChapterIndex: chapter.ChapterIndex,
+			TotalChaps:   task.TotalChapters,
+		}
+		if book != nil {
+			meta.BookTitle = book.Title
+			meta.Author = book.Author
+		}
+		if err := w.processor.Process(audioPath, meta); err != nil {
+			log.W(fmt.Sprintf("Post-processing chapter %d failed (non-fatal): %v", chapter.ChapterIndex, err))
+		} else {
+			// Update totalSize from processed file
+			if fi, err := os.Stat(audioPath); err == nil {
+				totalSize = fi.Size()
+			}
+		}
 	}
 
 	chapter.Status = schema.TaskCompleted
