@@ -1,0 +1,198 @@
+# Omnigram 实施进度索引
+
+> **最后更新：2026-03-22**
+> **参考设计：** `docs/superpowers/specs/2026-03-22-ambient-ai-reading-design.md`
+> **审核报告：** `docs/superpowers/specs/2026-03-22-ambient-ai-reading-review.md`
+
+---
+
+## 总览
+
+| 层级 | 名称 | 状态 | Sprint |
+|------|------|------|--------|
+| Layer 0 | 地基（设计系统 + 导航） | ✅ 完成 | Sprint 1 |
+| Layer 1 | 核心阅读闭环 | ✅ 完成 | Sprint 1 |
+| Layer 2 | AI 管道 | ✅ 完成 | Sprint 2 |
+| Layer 3 | 隐形 AI（Ambient AI） | 🔶 部分完成 | Sprint 2/3 |
+| Layer 4 | 深度 AI | ❌ 未开始 | Sprint 4 |
+| Layer 5 | 高级体验 | ❌ 未开始 | Sprint 5 |
+
+---
+
+## Layer 0 — 地基 ✅
+
+> Sprint 1 · 全部完成
+
+| 功能 | 设计文档章节 | 状态 | 关键文件 | 提交 |
+|------|-------------|------|----------|------|
+| 新 UI 设计系统（色彩、字体、主题） | §9 | ✅ | `theme/colors.dart`, `typography.dart`, `omnigram_theme.dart` | `ef62fe9` |
+| 基础组件（OmnigramCard, EmptyState） | §9 | ✅ | `widgets/common/omnigram_card.dart`, `empty_state.dart` | `ef62fe9` |
+| 四 Tab 导航框架 | §2.1 | ✅ | `page/omnigram_home.dart` | `37fd90f` |
+| 响应式布局（手机 BottomBar / 桌面 NavigationRail） | §2.1 | ✅ | `page/omnigram_home.dart` | `37fd90f` |
+
+---
+
+## Layer 1 — 核心阅读闭环 ✅
+
+> Sprint 1 · 全部完成
+
+| 功能 | 设计文档章节 | 状态 | 关键文件 | 提交 |
+|------|-------------|------|----------|------|
+| 阅读 Tab "书桌" | §3 | ✅ | `page/home/desk_page.dart` | `53a116c` |
+| ├─ 问候语 | §3.2 | ✅ | `widgets/desk/greeting_header.dart` | `53a116c` |
+| ├─ Hero 当前在读卡片 | §3.2 | ✅ | `widgets/desk/hero_book_card.dart` | `53a116c` |
+| ├─ 同时在读书架 | §3.2 | ✅ | `widgets/desk/also_reading_shelf.dart` | `53a116c` |
+| └─ 每日阅读摘要 | §3.2 | ✅ | （集成在 desk_page） | `53a116c` |
+| 书架 Tab | §4 | ✅ | `page/home/library_page.dart` | `696afa2` |
+| ├─ 书籍网格 | §4.2 | ✅ | `widgets/library/book_grid_item.dart` | `696afa2` |
+| ├─ 主题分区 | §4.2 | ✅ | `widgets/library/topic_section.dart` | `696afa2` |
+| └─ 导入 FAB | §4.4 | ✅ | `widgets/library/import_button.dart` | `696afa2` |
+| 洞察 Tab 骨架（纯数据，无 AI） | §6 | ✅ | `page/home/insights_page.dart` | `fcc46dc` |
+| ├─ 阅读统计卡片 | §6.1 | ✅ | `widgets/insights/reading_summary_card.dart` | `fcc46dc` |
+| ├─ 按书分组的笔记 | §6.2 | ✅ | `widgets/insights/notes_list.dart` | `fcc46dc` |
+| └─ 时间段选择器 | §6.1 | ✅ | `widgets/insights/time_period_selector.dart` | `fcc46dc` |
+| 设置页面框架 | §7.1 | ✅ | `page/home/settings_page.dart` | `b75733d` |
+| 全屏沉浸式阅读器入口 | §5, §2.2 | ✅ | `page/reader/immersive_reader.dart` | `d4fde8c` |
+| 阅读器 Chrome（Stub） | §5.2 | ✅ | `widgets/reader/reader_app_bar.dart` 等 | `d4fde8c` |
+
+---
+
+## Layer 2 — AI 管道 ✅
+
+> Sprint 2 · 全部完成
+
+| 功能 | 设计文档章节 | 状态 | 关键文件 | 提交 |
+|------|-------------|------|----------|------|
+| AI 服务抽象层（多 Provider 支持） | §10.6 | ✅ ¹ | `service/ai/index.dart`, `providers/ai_providers.dart` | (已有) |
+| AI 降级机制 | §10.3 | ✅ | `service/ai/ai_availability.dart`, `providers/ai_availability_provider.dart` | `7e89ff2` |
+| AI 后台处理管道（队列、缓存） | §10.6 | ✅ | `service/ai/ambient_ai_pipeline.dart` | `7e89ff2` |
+| 任务类型定义 | §10.6 | ✅ | `service/ai/ambient_tasks.dart` | `7e89ff2` |
+| TARS 伴侣人格配置 | §7.2 | ✅ | `models/companion_personality.dart` | `57635a0` |
+| ├─ 四维滑条（主动性、风格、深度、温度） | §7.2 | ✅ | `page/settings_page/companion_settings_page.dart` | `57635a0` |
+| ├─ 三个预设模板 | §7.2 | ✅ | `models/companion_personality.dart` (CompanionPresets) | `57635a0` |
+| ├─ 实时预览 | §7.2 | ✅ | `page/settings_page/companion_settings_page.dart` | `57635a0` |
+| └─ Prompt 工程框架 | §10.2 | ✅ | `service/ai/companion_prompt.dart` | `57635a0` |
+| 伴侣人格持久化 | §7.2 | ✅ | `providers/companion_provider.dart` | `57635a0` |
+
+¹ AI 服务抽象层为 Anx Reader 原有基础设施（LangChain + 多模型 + 流式 + 工具 + 缓存 + RPM 限流），非本次新建。
+
+---
+
+## Layer 3 — 隐形 AI（Ambient AI） 🔶
+
+> Sprint 2 部分完成 + Sprint 3 待完成
+
+| 功能 | 设计文档章节 | 状态 | 关键文件 | 提交 |
+|------|-------------|------|----------|------|
+| **阅读器 AI Layer 1：Context Bar** | §5.1 | ✅ | `widgets/reader/context_bar.dart` | `f8cfaf4` |
+| ├─ 章节切换自动触发 | §5.1 | ✅ | 监听 `currentReadingProvider` | `f8cfaf4` |
+| ├─ AI 生成上下文 + 淡入/淡出动画 | §5.1 | ✅ | 8 秒自动隐藏 | `f8cfaf4` |
+| └─ 无 AI 时降级为章节标题 | §10.3 | ✅ | | `f8cfaf4` |
+| **书桌 Memory Bridge** | §3.3 | ✅ | `widgets/desk/hero_book_card.dart` (memoryText) | `f8cfaf4` |
+| **书籍导入 AI 处理** | §4.4 Phase 2 | ✅ | `service/ai/post_import_ai.dart` | `d4f355e` |
+| ├─ 自动标签 | §4.3 | ✅ | AmbientTasks.autoTag() | `d4f355e` |
+| └─ 一句话摘要 | §4.3 | ✅ | AmbientTasks.summary() | `d4f355e` |
+| **阅读器 AI Layer 2：Inline Glossary** | §5.1 | ❌ | | |
+| ├─ 选词自动浮现释义 | §5.1 | ❌ | | |
+| └─ 自动检测难词 | §5.1 | ❌ | | |
+| **书架 AI 功能** | §4.3 | ❌ | | |
+| ├─ AI 推荐卡 | §4.2 | ❌ | | |
+| ├─ 智能分组（主题聚合） | §4.3 | ❌ | | |
+| └─ 语义搜索 | §4.2 | ❌ | | |
+| **洞察 Layer 1 升级：AI 叙事** | §6.1 | ❌ | | |
+| └─ AI 生成阅读旅程叙述 | §6.1 | ❌ | | |
+
+---
+
+## Layer 4 — 深度 AI ❌
+
+> Sprint 4 · 未开始
+
+| 功能 | 设计文档章节 | 状态 | 关键文件 | 提交 |
+|------|-------------|------|----------|------|
+| **阅读器 AI Layer 4：Companion Panel** | §5.1 | ❌ | | |
+| └─ 底部滑出双向对话面板 | §5.1 | ❌ | | |
+| **阅读器 AI Layer 3：Margin Notes** | §5.1 | ❌ | | |
+| ├─ 跨书关联页边批注 | §5.1 | ❌ | | |
+| ├─ 每章最多 3 条 | §5.1 | ❌ | | |
+| └─ 置信度过滤 + 用户反馈 | 审核建议 #3 | ❌ | | |
+| **语义搜索** | §4.2 | ❌ | | |
+| └─ 嵌入向量管道 | §10.2 | ❌ | | |
+| **TTS 集成（伴侣声音）** | §5.3 | ❌ | | |
+| └─ 伴侣风格的语音朗读 | §5.3 | ❌ | | |
+| **知识网络（洞察 Layer 2）** | §6.1 Layer 2 | ❌ | | |
+| ├─ 概念节点 + 笔记关联 | §6.1 | ❌ | | |
+| └─ Tag-based 聚合方案 | 审核建议 #2 | ❌ | | |
+
+---
+
+## Layer 5 — 高级体验 ❌
+
+> Sprint 5 · 未开始
+
+| 功能 | 设计文档章节 | 状态 | 关键文件 | 提交 |
+|------|-------------|------|----------|------|
+| **跨书连接（洞察 Layer 3）** | §6.1 Layer 3 | ❌ | | |
+| ├─ 跨书主题关联（非认知推断） | 审核建议 #1 | ❌ | | |
+| └─ "Record my thought" 按钮 | §6.1 | ❌ | | |
+| **隐身书房** | §8 | ❌ | | |
+| ├─ 独立加密空间 | §8.2 | ❌ | | |
+| ├─ Platform Keystore 密钥管理 | §10.4 | ❌ | | |
+| ├─ 隐藏入口 + 生物识别 | §7.3, §8.2 | ❌ | | |
+| ├─ AI 数据完全隔离 | §8.2 | ❌ | | |
+| └─ 快速锁定 + 卸载策略 | §10.4 | ❌ | | |
+
+---
+
+## 跨层级功能（设计文档中已定义但尚未排期）
+
+| 功能 | 设计文档章节 | 状态 | 备注 |
+|------|-------------|------|------|
+| Onboarding 流程 | §10.8 | ❌ | 渐进式引导，首次使用零 AI |
+| 多设备同步 | §10.7 | ❌ | 数据架构已定义，实现待排期 |
+| 数据导出/迁移 | §10.9 | ❌ | Markdown/JSON/CSV 导出 |
+| 外部高亮导入（Kindle/Apple Books） | §10.9 | ❌ | |
+| 阅读器 Chrome 重写 | §5.2 | ❌ | 当前用 stub，完整 chrome 待实现 |
+| 空状态受伴侣性格影响 | §10.5 | ❌ | 审核建议 #5 |
+| AI 处理预算（用户可配置） | §10.6 | ❌ | 审核建议 #5（NAS 资源控制） |
+| PDF 支持 | §10.2 | ❌ | 设计文档明确 defer |
+| 伴侣行为开关（5 个 toggle） | §7.2 | ❌ | 章节回顾/难词标注/跨书提醒等 |
+| 伴侣名称自定义 | §7.2 | ❌ | |
+| OPDS 目录 | §10.9 | ✅ ¹ | 服务端已有 |
+
+¹ 服务端 OPDS 已实现（`server/service/opds/`），客户端集成未完成。
+
+---
+
+## 基础设施状态
+
+| 组件 | 状态 | 备注 |
+|------|------|------|
+| Android 构建 | ✅ | AGP 8.9.1, Gradle 8.11.1, compileSdk 36 |
+| iOS 构建 | ⚠️ | 缺少签名证书（pre-existing） |
+| macOS 构建 | ⚠️ | 缺少签名证书（pre-existing） |
+| Release APK | ⚠️ | 缺少 keystore 配置 |
+| Debug APK | ✅ | 正常构建 |
+| Flutter Analyze | ✅ | 67 个 info（均为 pre-existing deprecation warnings） |
+| Codegen (build_runner) | ✅ | freezed + riverpod + json_serializable |
+| L10n | ✅ | 16 语言，含新增 key |
+
+---
+
+## 审核报告关键问题追踪
+
+| # | 问题 | 严重程度 | 状态 | 处理方式 |
+|---|------|---------|------|---------|
+| 1 | "认知变化追踪"是伪功能 | 🔴 Critical | ✅ 已采纳 | 设计文档已修改：降级为"跨书主题关联"，不做认知推断 |
+| 2 | 知识图谱方案未决 | 🔴 Critical | ✅ 已采纳 | 设计文档已修改：采用 tag-based 聚合方案 |
+| 3 | 缺少多设备同步设计 | 🔴 Critical | ✅ 已采纳 | 设计文档已新增 §10.7 数据架构 |
+| 4 | 隐身书房加密方案有误 | 🟡 Major | ✅ 已采纳 | 设计文档已修正 §10.4 |
+| 5 | NAS AI 处理负担 | 🟡 Major | 🔶 部分 | 管道优先级已实现，AI 预算配置未实现 |
+
+---
+
+## 更新记录
+
+| 日期 | 更新内容 |
+|------|---------|
+| 2026-03-22 | 初始创建。Sprint 1 全部完成，Sprint 2 全部完成 |

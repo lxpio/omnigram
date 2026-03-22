@@ -6,11 +6,12 @@ const lang = getLangFromUrl(Astro.url);
 const i = t(lang);
 
 const features = [
-  { icon: '\u{1F9E0}', ...i.features.ai },
+  { icon: '\u{1F916}', ...i.features.companion },
+  { icon: '\u{2728}', ...i.features.ambient },
+  { icon: '\u{1F4A1}', ...i.features.insights },
   { icon: '\u{1F3A7}', ...i.features.tts },
   { icon: '\u{1F4DA}', ...i.features.library },
-  { icon: '\u{1F4F1}', ...i.features.reader },
-  { icon: '\u{1F680}', ...i.features.deploy },
+  { icon: '\u{1F512}', ...i.features.privacy },
 ];
 ---
 
@@ -26,16 +27,9 @@ const features = [
       </h2>
     </div>
 
-    <!-- Top row: 3 cards -->
+    <!-- 3x2 grid -->
     <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {features.slice(0, 3).map((f) => (
-        <FeatureCard icon={f.icon} title={f.title} description={f.desc} />
-      ))}
-    </div>
-
-    <!-- Bottom row: 2 cards centered -->
-    <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-2 max-w-3xl mx-auto">
-      {features.slice(3).map((f) => (
+      {features.map((f) => (
         <FeatureCard icon={f.icon} title={f.title} description={f.desc} />
       ))}
     </div>

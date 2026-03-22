@@ -6,22 +6,23 @@
     "github": "GitHub"
   },
   "hero": {
-    "tagline": "Your Library, Alive.",
+    "tagline": "AI is Air, Not a Button.",
     "subtitle": "Jellyfin for videos. Immich for photos.",
     "subtitleHighlight": "Omnigram for books.",
-    "description": "AI-native, self-hosted book library. Deploy on your NAS in seconds.",
+    "description": "Self-hosted book library where AI is woven into every surface. You never \"open AI\" \u2014 you just read, and the experience is transformed.",
     "cta": "Deploy Now \u2192",
     "github": "\u2b50 Star on GitHub",
     "docker": "docker compose up -d"
   },
   "features": {
     "sectionLabel": "Core Features",
-    "sectionTitle": "What makes Omnigram different",
-    "ai": { "title": "AI-Enhanced Reading", "desc": "Summarize, Q&A, semantic search across your entire library" },
-    "tts": { "title": "TTS Audiobooks", "desc": "Turn any ebook into high-quality audiobook with AI voices" },
-    "library": { "title": "Library Management", "desc": "Scan, organize, tag, search \u2014 better than Calibre-Web" },
-    "reader": { "title": "Multi-Platform Reader", "desc": "iOS, Android, macOS, Windows \u2014 read anywhere, sync everywhere" },
-    "deploy": { "title": "One-Click Deploy", "desc": "Docker Compose on any NAS. Open source, self-hosted, yours forever" }
+    "sectionTitle": "AI changes everything, but you can\u2019t point to where it is",
+    "companion": { "title": "Reading Companion", "desc": "A TARS-style AI partner \u2014 adjust personality, style, depth, warmth" },
+    "ambient": { "title": "Ambient Intelligence", "desc": "Context bar, inline glossary, margin notes \u2014 AI speaks, you listen" },
+    "insights": { "title": "Insight, Not Statistics", "desc": "AI narrates your reading journey \u2014 knowledge network, cross-book connections" },
+    "tts": { "title": "TTS Audiobooks", "desc": "Turn any ebook into audiobook \u2014 your companion\u2019s voice reads to you" },
+    "library": { "title": "Smart Library", "desc": "Auto-tagging, summaries, semantic search \u2014 import a book, it\u2019s ready" },
+    "privacy": { "title": "Privacy as Freedom", "desc": "Hidden library with biometric access \u2014 zero trace, full AI inside" }
   },
   "quadrant": {
     "sectionLabel": "Why Omnigram",
@@ -31,8 +32,8 @@
     "sectionTitle": "Deploy in 30 seconds"
   },
   "cta": {
-    "title": "Ready to bring your library alive?",
-    "subtitle": "Open source. Self-hosted. AI-native.",
+    "title": "Your personal librarian is waiting.",
+    "subtitle": "Open source \u00b7 Self-hosted \u00b7 AI-native",
     "primary": "Get Started \u2192",
     "secondary": "Documentation"
   },

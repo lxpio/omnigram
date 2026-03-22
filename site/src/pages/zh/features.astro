@@ -3,14 +3,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CTA from '../../components/CTA.astro';
 
 const sections = [
-  { icon: '\u{1F916}', title: 'AI 增强阅读', desc: '向任何一本书提问，获取即时摘要，按语义搜索你的整个书库——不只是关键词匹配。导入时自动生成 AI 标签分类。', details: '支持 OpenAI / Ollama —— 自带 LLM 或使用内置集成。' },
-  { icon: '\u{1F3A7}', title: 'TTS 有声书生成', desc: '将任意电子书转为高质量有声书。多种 AI 音色，逐章生成，服务端处理不消耗你的手机性能。', details: '基于 Fish Audio gRPC，支持多音色、语速调节、定时生成。' },
-  { icon: '\u{1F4DA}', title: '书库管理', desc: '扫描书库目录，从 EPUB/PDF/MOBI/FB2 提取元数据，编辑元数据，用标签和书架组织书籍。支持 OPDS 和 WebDAV 协议。', details: '支持 6 种格式，SQLite FTS5 全文搜索，Calibre 数据库导入。' },
-  { icon: '\u{1F4F1}', title: '多端阅读器', desc: 'iOS、Android、macOS、Windows 原生应用。离线阅读，跨设备同步进度、笔记和高亮。', details: '基于 Flutter 构建，源自 Anx Reader（7,900+ \u2B50，MIT 许可证）。' },
-  { icon: '\u{1F433}', title: '自托管 & 开源', desc: '一条 Docker Compose 命令即可部署。数据留在你的硬件上，无云依赖、无订阅、无厂商锁定。', details: 'MIT 许可证，SQLite 或 PostgreSQL，多架构 Docker 镜像（arm64/amd64）。' },
+  { icon: '\u{1F916}', title: '阅读伴侣', desc: '不是聊天机器人，而是一个可配置性格的阅读伙伴——像《星际穿越》里的 TARS。可以调节主动性、风格、深度和温度。它可以是安静的书童，也可以是苏格拉底式的导师，也可以是和你一起读书的朋友。', details: '预设人格：默默帮忙型、读书搭子型、学术导师型。高级模式可微调四维滑条。' },
+  { icon: '\u{2728}', title: '隐形智能', desc: 'AI 融入每一个界面。翻到新章节——上下文条淡入一句前情提要。选中一个词——浮窗里自然出现释义。页边自动出现跨书知识关联。你没有点任何"AI 按钮"。', details: '阅读器四层 AI：上下文条（自动）→ 内联释义（自动）→ 页边批注（自动，每章最多 3 条）→ 伴侣面板（手动召唤）。' },
+  { icon: '\u{1F4A1}', title: '洞察而非统计', desc: '没有柱状图和热力图。AI 叙事性地讲述你的阅读旅程：你深入了什么领域，哪些书之间有知识关联，你的兴趣正在走向什么方向。笔记不是散落的高亮，而是按概念跨书聚合的知识网络。', details: '三层结构：阅读叙事（AI 故事）→ 知识网络（概念图谱）→ 跨书关联（主题关系）。' },
+  { icon: '\u{1F3A7}', title: 'TTS 有声书', desc: '任意电子书一键生成有声书。用你阅读伴侣配置的声音朗读给你听。服务端处理，不占用手机资源。', details: '支持 Kokoro / Edge TTS（服务端 sidecar）+ sherpa-onnx（设备端）。多种音色，可调速度。' },
+  { icon: '\u{1F4DA}', title: '智能书架', desc: '导入一本书，它就准备好了。AI 自动生成标签、摘要、难度评估和阅读时长估算。书按主题分组，不是按文件名排列。语义搜索——"那本讲拖延症的书"也能找到。', details: '两阶段导入：即时解析元数据，然后后台 AI 加工。批量导入 50 本书也能优雅处理。' },
+  { icon: '\u{1F512}', title: '隐私即自由', desc: '完全隔离的隐身书房，生物识别进入。主界面零痕迹。里面有完整的阅读体验和 AI 功能。隐私保护的是别人的视线，不是你自己的阅读体验。', details: '平台密钥加密存储。切换应用即锁定。可选加密备份到独立 WebDAV 路径。' },
 ];
 ---
-<BaseLayout title="功能" description="探索 Omnigram 的 AI 原生书库功能">
+<BaseLayout title="功能" description="AI 改变了一切，但你找不到 AI 在哪">
   <div class="py-20 px-6">
     <div class="max-w-5xl mx-auto">
       <h1 class="text-4xl font-extrabold text-slate-100 text-center mb-16">功能</h1>

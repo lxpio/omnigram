@@ -138,7 +138,56 @@ They remember what you've read, what you like, where you left off. Occasionally 
 
 ## Architecture
 
-![base_struct](assets/img/struct.svg)
+```mermaid
+graph TB
+    subgraph Client["📱 Omnigram App (Flutter)"]
+        Desk["📖 Reading Desk"]
+        Library["📚 Library"]
+        Insights["💡 Insights"]
+        Settings["⚙ Settings"]
+        Reader["📄 Immersive Reader<br/>(EPUB / foliate-js)"]
+        Companion["🤖 AI Companion<br/>(TARS personality)"]
+        LocalDB["💾 sqflite"]
+    end
+
+    subgraph Server["🖥️ Omnigram Server (Go + Gin)"]
+        API["REST API<br/>(Auth · Reader · Sync · AI · TTS · OPDS)"]
+        BookMgr["📚 Book Manager<br/>(scan · metadata · import)"]
+        AIService["🧠 AI Service<br/>(summary · tags · search)"]
+        SyncService["🔄 Sync Service<br/>(progress · notes · WebDAV)"]
+        DB["🗄️ SQLite / PostgreSQL"]
+        Store["📦 BadgerDB<br/>(key-value store)"]
+    end
+
+    subgraph External["☁️ External Services"]
+        LLM["LLM Provider<br/>(OpenAI · Claude · Gemini<br/>Ollama · DeepSeek)"]
+        TTS["TTS Sidecar<br/>(Kokoro / Edge TTS)"]
+    end
+
+    subgraph NAS["🏠 NAS / Homeserver"]
+        Docker["🐳 Docker Compose"]
+        Storage["📁 Book Storage<br/>(/books volume)"]
+    end
+
+    Desk --> Reader
+    Library --> Reader
+    Reader --> Companion
+    Client -->|REST API| API
+    Client -->|WebDAV| SyncService
+
+    API --> BookMgr
+    API --> AIService
+    API --> SyncService
+    BookMgr --> DB
+    BookMgr --> Storage
+    AIService --> LLM
+    SyncService --> DB
+    API --> Store
+
+    Docker --> Server
+    Docker --> TTS
+    Server --> TTS
+```
 
 ## Official Documentation
 

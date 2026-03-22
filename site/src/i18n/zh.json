@@ -1,43 +1,44 @@
 {
   "nav": {
-    "features": "\u529f\u80fd",
-    "docs": "\u6587\u6863",
-    "blog": "\u535a\u5ba2",
+    "features": "功能",
+    "docs": "文档",
+    "blog": "博客",
     "github": "GitHub"
   },
   "hero": {
-    "tagline": "\u8ba9\u4e66\u67b6\u6d3b\u8fc7\u6765",
-    "subtitle": "Jellyfin \u7ba1\u89c6\u9891\uff0cImmich \u7ba1\u7167\u7247\uff0c",
-    "subtitleHighlight": "Omnigram \u7ba1\u4e66\u3002",
-    "description": "AI \u539f\u751f\u3001\u81ea\u6258\u7ba1\u4e66\u5e93\u670d\u52a1\u3002Docker \u4e00\u952e\u90e8\u7f72\u5230\u4f60\u7684 NAS\u3002",
-    "cta": "\u7acb\u5373\u90e8\u7f72 \u2192",
-    "github": "\u2b50 GitHub Star",
+    "tagline": "AI 是空气，不是按钮。",
+    "subtitle": "Jellyfin 管视频，Immich 管照片，",
+    "subtitleHighlight": "Omnigram 管书。",
+    "description": "AI 原生的自部署书库服务。AI 融入每一个界面，你不是在\"用 AI\"，你是在读书——只是体验本身变了。",
+    "cta": "立即部署 →",
+    "github": "⭐ GitHub Star",
     "docker": "docker compose up -d"
   },
   "features": {
-    "sectionLabel": "\u6838\u5fc3\u529f\u80fd",
-    "sectionTitle": "Omnigram \u7684\u5dee\u5f02\u5316",
-    "ai": { "title": "AI \u589e\u5f3a\u9605\u8bfb", "desc": "\u81ea\u52a8\u6458\u8981\u3001\u667a\u80fd\u95ee\u7b54\u3001\u5168\u4e66\u5e93\u8bed\u4e49\u641c\u7d22" },
-    "tts": { "title": "TTS \u6709\u58f0\u4e66", "desc": "\u4efb\u610f\u7535\u5b50\u4e66\u4e00\u952e\u751f\u6210\u9ad8\u8d28\u91cf\u6709\u58f0\u4e66" },
-    "library": { "title": "\u4e66\u5e93\u7ba1\u7406", "desc": "\u626b\u63cf\u3001\u6574\u7406\u3001\u6807\u7b7e\u3001\u641c\u7d22 \u2014\u2014 \u6bd4 Calibre-Web \u66f4\u597d\u7528" },
-    "reader": { "title": "\u591a\u7aef\u9605\u8bfb\u5668", "desc": "iOS\u3001Android\u3001macOS\u3001Windows \u2014\u2014 \u968f\u5904\u9605\u8bfb\uff0c\u5168\u7aef\u540c\u6b65" },
-    "deploy": { "title": "\u4e00\u952e\u90e8\u7f72", "desc": "Docker Compose \u90e8\u7f72\u5230\u4efb\u4f55 NAS\uff0c\u5f00\u6e90\u3001\u81ea\u6258\u7ba1\u3001\u6570\u636e\u6c38\u8fdc\u5c5e\u4e8e\u4f60" }
+    "sectionLabel": "核心特性",
+    "sectionTitle": "AI 改变了一切，但你找不到 AI 在哪",
+    "companion": { "title": "阅读伴侣", "desc": "TARS 式 AI 伙伴——可调节主动性、风格、深度、温度" },
+    "ambient": { "title": "隐形智能", "desc": "上下文条、内联释义、页边批注——AI 默默地工作" },
+    "insights": { "title": "洞察而非统计", "desc": "AI 讲述你的阅读旅程——知识网络、跨书关联" },
+    "tts": { "title": "TTS 有声书", "desc": "任意电子书生成有声书——用你阅读伴侣的声音朗读" },
+    "library": { "title": "智能书架", "desc": "自动标签、摘要、语义搜索——导入即就绪" },
+    "privacy": { "title": "隐私即自由", "desc": "生物识别进入的隐身书房——零痕迹，完整 AI 体验" }
   },
   "quadrant": {
-    "sectionLabel": "\u4e3a\u4ec0\u4e48\u9009 Omnigram",
-    "sectionTitle": "\u552f\u4e00\u7684 AI \u539f\u751f\u81ea\u6258\u7ba1\u4e66\u5e93"
+    "sectionLabel": "为什么选 Omnigram",
+    "sectionTitle": "唯一的 AI 原生自部署书库"
   },
   "quickstart": {
-    "sectionTitle": "30 \u79d2\u5b8c\u6210\u90e8\u7f72"
+    "sectionTitle": "30 秒完成部署"
   },
   "cta": {
-    "title": "\u51c6\u5907\u597d\u8ba9\u4e66\u67b6\u6d3b\u8fc7\u6765\u4e86\u5417\uff1f",
-    "subtitle": "\u5f00\u6e90 \u00b7 \u81ea\u6258\u7ba1 \u00b7 AI \u539f\u751f",
-    "primary": "\u7acb\u5373\u5f00\u59cb \u2192",
-    "secondary": "\u67e5\u770b\u6587\u6863"
+    "title": "你的私人图书馆管理员已就位。",
+    "subtitle": "开源 · 自部署 · AI 原生",
+    "primary": "立即开始 →",
+    "secondary": "查看文档"
   },
   "footer": {
-    "license": "MIT \u8bb8\u53ef\u8bc1",
-    "copyright": "\u00a9 2026 Omnigram"
+    "license": "MIT 许可证",
+    "copyright": "© 2026 Omnigram"
   }
 }
