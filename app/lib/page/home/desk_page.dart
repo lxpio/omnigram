@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:omnigram/dao/theme.dart';
 import 'package:omnigram/models/book.dart';
-import 'package:omnigram/page/reading_page.dart';
+import 'package:omnigram/page/reader/immersive_reader.dart';
 import 'package:omnigram/providers/desk_provider.dart';
 import 'package:omnigram/widgets/desk/greeting_header.dart';
 import 'package:omnigram/widgets/desk/hero_book_card.dart';
@@ -14,17 +13,11 @@ import 'package:omnigram/theme/typography.dart';
 class DeskPage extends ConsumerWidget {
   const DeskPage({super.key});
 
-  void _openReader(BuildContext context, Book book) async {
-    final themes = await ThemeDao().selectThemes();
-    if (!context.mounted) return;
+  void _openReader(BuildContext context, Book book) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => ReadingPage(
-          key: readingPageKey,
-          book: book,
-          initialThemes: themes,
-        ),
+        builder: (_) => ImmersiveReader(book: book),
       ),
     );
   }
