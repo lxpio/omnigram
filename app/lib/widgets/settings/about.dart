@@ -179,7 +179,7 @@ Future<void> openAboutDialog() async {
                   title: Text(L10n.of(context).aboutPrivacyPolicy),
                   onTap: () async {
                     launchUrl(
-                      Uri.parse('https://anx.anxcye.com/privacy'),
+                      Uri.parse('https://omnigram.lxpio.com/privacy'),
                       mode: LaunchMode.externalApplication,
                     );
                   },
@@ -188,7 +188,7 @@ Future<void> openAboutDialog() async {
                   title: Text(L10n.of(context).aboutTermsOfUse),
                   onTap: () async {
                     launchUrl(
-                      Uri.parse('https://anx.anxcye.com/terms'),
+                      Uri.parse('https://omnigram.lxpio.com/terms'),
                       mode: LaunchMode.externalApplication,
                     );
                   },
@@ -197,7 +197,7 @@ Future<void> openAboutDialog() async {
                   title: Text(L10n.of(context).aboutHelp),
                   onTap: () async {
                     launchUrl(
-                      Uri.parse('https://anx.anxcye.com/docs'),
+                      Uri.parse('https://omnigram.lxpio.com/docs'),
                       mode: LaunchMode.externalApplication,
                     );
                   },
@@ -223,7 +223,7 @@ Future<void> openAboutDialog() async {
                             IonIcons.earth,
                             color: Theme.of(context).colorScheme.secondary,
                           ),
-                          url: 'https://anx.anxcye.com',
+                          url: 'https://omnigram.lxpio.com',
                           mode: LaunchMode.externalApplication),
                       linkIcon(
                           icon: Icon(

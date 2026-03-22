@@ -1,8 +1,8 @@
-[English](#contributing-to-anx-reader) | [简体中文](#让安读更好) | [Русский](#вклад-в-anx-reader)
+[English](#contributing-to-omnigram) | [简体中文](#让安读更好) | [Русский](#вклад-в-omnigram)
 
-# Contributing to Anx Reader
+# Contributing to Omnigram
 
-Anx Reader is an open-source project, and we welcome any contributions from you. You can help by translating, fixing bugs, adding new features, writing documentation, and more. If you want to contribute, the following guide may be helpful.
+Omnigram (forked from Anx Reader) is an open-source project, and we welcome any contributions from you. You can help by translating, fixing bugs, adding new features, writing documentation, and more. If you want to contribute, the following guide may be helpful.
 
 Let's get started!
 
@@ -46,7 +46,7 @@ android {
 
 
 ### Translation
-If you'd like Anx Reader to support your language, let's work together on the translation!
+If you'd like Omnigram to support your language, let's work together on the translation!
 
 You can translate project documentation or the app interface.
 
@@ -57,7 +57,7 @@ Currently, we have the following documents that need translation:
 Please copy README.md as README_language_code.md, translate it, and place the translated file in the project root directory. Then, add a link to the translation at the top of the README.md.
 
 **Translate the App Interface**
-- Anx Reader uses [intl](https://pub.dev/packages/intl) for multilingual support. You can find the localization files in the `lib/l10n` directory. Please copy `app_en.arb` to `app_language_code.arb`, and then translate it.
+- Omnigram uses [intl](https://pub.dev/packages/intl) for multilingual support. You can find the localization files in the `lib/l10n` directory. Please copy `app_en.arb` to `app_language_code.arb`, and then translate it.
 - You can translate missing fields or modify existing translations.
 - Place the translated file in the `lib/l10n` directory and run `flutter gen-l10n` to generate the localization files.
 - Add your `language name` and `code` to the [Settings Page](lib/page/settings_page/appearance.dart#L83).
@@ -66,7 +66,7 @@ Please copy README.md as README_language_code.md, translate it, and place the tr
 - Submit a Pull Request.
 
 ### Fixing Bugs and Adding New Features
-Anx Reader uses [Flutter_inappwebview](https://pub.dev/packages/flutter_inappwebview) to render eBooks, so the project relies on `JavaScript` to handle eBook rendering.
+Omnigram uses [Flutter_inappwebview](https://pub.dev/packages/flutter_inappwebview) to render eBooks, so the project relies on `JavaScript` to handle eBook rendering.
 
 The `JavaScript` code can be found in the `assets/foliate-js` directory, where you'll find the code responsible for rendering eBooks. The app loads the `index.html` file from the `assets/foliate-js` directory using a [built-in server](lib/service/book_player/book_player_server.dart).
 
@@ -207,9 +207,9 @@ npm run debug
 3. **Flutter 集成测试**：
    构建完成后，重新运行 Flutter 应用程序来测试集成效果。
 
-# Вклад в Anx Reader
+# Вклад в Omnigram
 
-Anx Reader — это проект с открытым исходным кодом, и мы приветствуем любой ваш вклад. Вы можете помочь с переводом, исправлением ошибок, добавлением новых функций, написанием документации и многим другим. Если вы хотите внести свой вклад, следующее руководство может оказаться полезным.
+Omnigram (форк Anx Reader) — это проект с открытым исходным кодом, и мы приветствуем любой ваш вклад. Вы можете помочь с переводом, исправлением ошибок, добавлением новых функций, написанием документации и многим другим. Если вы хотите внести свой вклад, следующее руководство может оказаться полезным.
 
 Давайте начнем!
 
@@ -253,7 +253,7 @@ android {
 
 
 ### Перевод
-Если вы хотите, чтобы Anx Reader поддерживал ваш язык, давайте поработаем над переводом вместе!
+Если вы хотите, чтобы Omnigram поддерживал ваш язык, давайте поработаем над переводом вместе!
 
 Вы можете переводить документацию проекта или интерфейс приложения.
 
@@ -264,7 +264,7 @@ android {
 Пожалуйста, скопируйте `README.md` как `README_код_языка.md`, переведите его и поместите переведенный файл в корневой каталог проекта. Затем добавьте ссылку на перевод вверху файла `README.md`.
 
 **Перевод интерфейса приложения**
-- Anx Reader использует [intl](https://pub.dev/packages/intl) для многоязычной поддержки. Файлы локализации находятся в каталоге `lib/l10n`. Пожалуйста, скопируйте `app_en.arb` в `app_код_языка.arb` и переведите его.
+- Omnigram использует [intl](https://pub.dev/packages/intl) для многоязычной поддержки. Файлы локализации находятся в каталоге `lib/l10n`. Пожалуйста, скопируйте `app_en.arb` в `app_код_языка.arb` и переведите его.
 - Вы можете перевести недостающие поля или изменить существующие переводы.
 - Поместите переведенный файл в каталог `lib/l10n` и выполните команду `flutter gen-l10n` для генерации файлов локализации.
 - Добавьте `название вашего языка` и `код` на [странице настроек](lib/page/settings_page/appearance.dart#L83).
@@ -273,7 +273,7 @@ android {
 - Создайте Pull Request.
 
 ### Исправление ошибок и добавление новых функций
-Anx Reader использует [Flutter_inappwebview](https://pub.dev/packages/flutter_inappwebview) для отображения электронных книг, поэтому рендеринг электронных книг в проекте реализован с помощью `JavaScript`.
+Omnigram использует [Flutter_inappwebview](https://pub.dev/packages/flutter_inappwebview) для отображения электронных книг, поэтому рендеринг электронных книг в проекте реализован с помощью `JavaScript`.
 
 Код `JavaScript` находится в каталоге `assets/foliate-js`. Там вы найдете код, отвечающий за рендеринг электронных книг. Приложение загружает файл `index.html` из каталога `assets/foliate-js` с помощью [встроенного сервера](lib/service/book_player/book_player_server.dart).
 

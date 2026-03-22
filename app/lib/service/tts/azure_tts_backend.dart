@@ -88,7 +88,7 @@ class AzureTtsProvider extends TtsServiceProvider {
         'Ocp-Apim-Subscription-Key': key,
         'Content-Type': 'application/ssml+xml',
         'X-Microsoft-OutputFormat': 'audio-24khz-48kbitrate-mono-mp3',
-        'User-Agent': 'AnxReader',
+        'User-Agent': 'Omnigram',
       },
       body: _createSsml(text, resolvedVoice, rate, pitch),
     );

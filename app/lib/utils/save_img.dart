@@ -83,7 +83,7 @@ class SaveImg {
         img,
         fileName: '$name.$extension',
         skipIfExists: false,
-        androidRelativePath: "Pictures/AnxReader",
+        androidRelativePath: "Pictures/Omnigram",
       );
 
       SmartDialog.dismiss();
@@ -159,7 +159,7 @@ class SaveImg {
     String name,
   ) async {
     String picName =
-        "AnxReader_${name}_${DateTime.now().toString().replaceAll(RegExp(r'[- :]'), '').split('.').first}";
+        "Omnigram_${name}_${DateTime.now().toString().replaceAll(RegExp(r'[- :]'), '').split('.').first}";
     switch (AnxPlatform.type) {
       case AnxPlatformEnum.android:
         return await androidImgSaver(img, extension, picName);

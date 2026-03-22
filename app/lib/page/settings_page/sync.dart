@@ -184,7 +184,7 @@ class _SyncSettingState extends ConsumerState<SyncSetting> {
       //   mimeTypesFilter: ['application/zip'],
       // );
       // final filePath = await FlutterFileDialog.saveFile(params: params);
-      String fileName = 'AnxReader-Backup-${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}-v3.zip';
+      String fileName = 'Omnigram-Backup-${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}-v3.zip';
 
       String? filePath = await saveFileToDownload(
         sourceFilePath: file.path,
@@ -288,7 +288,7 @@ Future<String> createZipFile(Map<String, dynamic> params) async {
   final File prefsBackupFile = File(prefsBackupFilePath);
   BackgroundIsolateBinaryMessenger.ensureInitialized(token);
   final date = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
-  final zipPath = '${(await getAnxTempDir()).path}/AnxReader-Backup-$date.zip';
+  final zipPath = '${(await getAnxTempDir()).path}/Omnigram-Backup-$date.zip';
   final docPath = await getAnxDocumentsPath();
   final directoryList = [
     getFileDir(path: docPath),

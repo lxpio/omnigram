@@ -137,7 +137,7 @@ class _ExcerptShareBottomSheetState
     SmartDialog.dismiss();
     if (imageData == null) return;
 
-    final fileName = 'AnxReader_${widget.bookTitle.replaceAll(' ', '_')}';
+    final fileName = 'Omnigram_${widget.bookTitle.replaceAll(' ', '_')}';
     await SaveImg.downloadImg(imageData, 'png', fileName);
   }
 
