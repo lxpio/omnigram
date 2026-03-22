@@ -60,10 +60,7 @@ class _ServiceConfigFormState extends State<ServiceConfigForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: widget.configItems.map((item) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12.0),
-          child: _buildConfigItem(item),
-        );
+        return Padding(padding: const EdgeInsets.only(bottom: 12.0), child: _buildConfigItem(item));
       }).toList(),
     );
   }
@@ -78,11 +75,8 @@ class _ServiceConfigFormState extends State<ServiceConfigForm> {
             border: const OutlineInputBorder(),
           ),
           controller: TextEditingController(
-            text: _currentConfig[item.key]?.toString() ??
-                item.defaultValue?.toString() ??
-                '',
-          )..selection = TextSelection.collapsed(
-              offset: _currentConfig[item.key]?.toString().length ?? 0),
+            text: _currentConfig[item.key]?.toString() ?? item.defaultValue?.toString() ?? '',
+          )..selection = TextSelection.collapsed(offset: _currentConfig[item.key]?.toString().length ?? 0),
           onChanged: (value) => _updateConfig(item.key, value),
         );
 
@@ -95,18 +89,13 @@ class _ServiceConfigFormState extends State<ServiceConfigForm> {
             helperText: item.description,
             border: const OutlineInputBorder(),
             suffixIcon: IconButton(
-              icon: Icon(
-                isVisible ? Icons.visibility_off : Icons.visibility,
-              ),
+              icon: Icon(isVisible ? Icons.visibility_off : Icons.visibility),
               onPressed: () => _togglePasswordVisibility(item.key),
             ),
           ),
           controller: TextEditingController(
-            text: _currentConfig[item.key]?.toString() ??
-                item.defaultValue?.toString() ??
-                '',
-          )..selection = TextSelection.collapsed(
-              offset: _currentConfig[item.key]?.toString().length ?? 0),
+            text: _currentConfig[item.key]?.toString() ?? item.defaultValue?.toString() ?? '',
+          )..selection = TextSelection.collapsed(offset: _currentConfig[item.key]?.toString().length ?? 0),
           onChanged: (value) => _updateConfig(item.key, value),
         );
 
@@ -119,21 +108,16 @@ class _ServiceConfigFormState extends State<ServiceConfigForm> {
           ),
           keyboardType: TextInputType.number,
           controller: TextEditingController(
-            text: _currentConfig[item.key]?.toString() ??
-                item.defaultValue?.toString() ??
-                '',
-          )..selection = TextSelection.collapsed(
-              offset: _currentConfig[item.key]?.toString().length ?? 0),
-          onChanged: (value) =>
-              _updateConfig(item.key, int.tryParse(value) ?? 0),
+            text: _currentConfig[item.key]?.toString() ?? item.defaultValue?.toString() ?? '',
+          )..selection = TextSelection.collapsed(offset: _currentConfig[item.key]?.toString().length ?? 0),
+          onChanged: (value) => _updateConfig(item.key, int.tryParse(value) ?? 0),
         );
 
       case ConfigItemType.range:
         final double min = item.min ?? 0.0;
         final double max = item.max ?? 100.0;
         final double step = item.step ?? 1.0;
-        final double currentValue =
-            (_currentConfig[item.key] ?? item.defaultValue ?? min).toDouble();
+        final double currentValue = (_currentConfig[item.key] ?? item.defaultValue ?? min).toDouble();
         final String unit = item.unit ?? '';
 
         return Column(
@@ -144,10 +128,7 @@ class _ServiceConfigFormState extends State<ServiceConfigForm> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    item.label,
-                    style: const TextStyle(fontSize: 16),
-                  ),
+                  Text(item.label, style: const TextStyle(fontSize: 16)),
                   Text(
                     '${currentValue.round()}$unit',
                     style: TextStyle(
@@ -162,13 +143,7 @@ class _ServiceConfigFormState extends State<ServiceConfigForm> {
             if (item.description != null)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  item.description!,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
-                ),
+                child: Text(item.description!, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
               ),
             Slider(
               value: currentValue.clamp(min, max),
@@ -196,7 +171,8 @@ class _ServiceConfigFormState extends State<ServiceConfigForm> {
           return const Text('No options');
         }
 
-        final String currentValue = _currentConfig[item.key]?.toString() ??
+        final String currentValue =
+            _currentConfig[item.key]?.toString() ??
             item.defaultValue?.toString() ??
             item.options!.first['value']?.toString() ??
             '';
@@ -207,11 +183,12 @@ class _ServiceConfigFormState extends State<ServiceConfigForm> {
             helperText: item.description,
             border: const OutlineInputBorder(),
           ),
+          isExpanded: true,
           value: currentValue,
           items: item.options!.map((option) {
             return DropdownMenuItem<String>(
               value: option['value'].toString(),
-              child: Text(option['label'].toString()),
+              child: Text(option['label'].toString(), overflow: TextOverflow.ellipsis),
             );
           }).toList(),
           onChanged: (value) {
@@ -233,16 +210,10 @@ class _ServiceConfigFormState extends State<ServiceConfigForm> {
           children: [
             Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
-              child: Text(
-                item.label,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
+              child: Text(item.label, style: const TextStyle(fontWeight: FontWeight.bold)),
             ),
             if (item.description != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(item.description!),
-              ),
+              Padding(padding: const EdgeInsets.only(bottom: 8.0), child: Text(item.description!)),
             ...item.options!.map((option) {
               return RadioListTile<dynamic>(
                 title: Text(option['label'].toString()),
@@ -277,22 +248,14 @@ class _ServiceConfigFormState extends State<ServiceConfigForm> {
                 children: [
                   const Icon(Icons.info_outline, size: 20),
                   const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      item.defaultValue?.toString() ?? '',
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ),
+                  Expanded(child: Text(item.defaultValue?.toString() ?? '', style: const TextStyle(fontSize: 14))),
                 ],
               ),
               if (item.link != null)
                 Padding(
                   padding: const EdgeInsets.only(left: 28.0, top: 4.0),
                   child: GestureDetector(
-                    onTap: () => launchUrl(
-                      Uri.parse(item.link!),
-                      mode: LaunchMode.externalApplication,
-                    ),
+                    onTap: () => launchUrl(Uri.parse(item.link!), mode: LaunchMode.externalApplication),
                     child: Text(
                       L10n.of(context).settingsNarrateClickForHelp,
                       style: TextStyle(

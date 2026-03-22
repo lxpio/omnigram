@@ -1,11 +1,13 @@
 import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/providers/tts_providers.dart';
+import 'package:omnigram/service/tts/model_manager.dart' as tts_mm;
 import 'package:omnigram/service/tts/models/tts_voice.dart';
 import 'package:omnigram/service/tts/online_tts.dart';
 import 'package:omnigram/service/tts/system_tts.dart';
 import 'package:omnigram/service/tts/tts_factory.dart';
 import 'package:omnigram/service/tts/tts_handler.dart';
+import 'package:omnigram/service/tts/tts_model.dart' as tts_model;
 import 'package:omnigram/service/tts/tts_service.dart' as tts_svc;
 import 'package:omnigram/utils/get_current_language_code.dart';
 import 'package:omnigram/utils/log/common.dart';
@@ -447,16 +449,111 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings> with SingleTi
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
-      child: ServiceConfigForm(
-        configItems: configItems,
-        initialConfig: config,
-        onConfigChanged: (newConfig) {
-          // Update config for each changed field
-          for (var entry in newConfig.entries) {
-            ref.read(onlineTtsConfigProvider(serviceId).notifier).updateConfig(entry.key, entry.value);
-          }
-        },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ServiceConfigForm(
+            configItems: configItems,
+            initialConfig: config,
+            onConfigChanged: (newConfig) {
+              for (var entry in newConfig.entries) {
+                ref.read(onlineTtsConfigProvider(serviceId).notifier).updateConfig(entry.key, entry.value);
+              }
+            },
+          ),
+          if (service == tts_svc.TtsService.sherpaOnnx)
+            _buildModelDownloadButton(config),
+        ],
       ),
+    );
+  }
+
+  Widget _buildModelDownloadButton(Map<String, dynamic> config) {
+    final modelId = config['model_id']?.toString() ?? '';
+    if (modelId.isEmpty) return const SizedBox.shrink();
+
+    final model = tts_model.builtInModels.where((m) => m.id == modelId).firstOrNull;
+    if (model == null) return const SizedBox.shrink();
+
+    return StreamBuilder<tts_mm.ModelDownloadProgress>(
+      stream: tts_mm.TtsModelManager().progressStream,
+      builder: (context, snapshot) {
+        final progress = snapshot.data;
+        final isThisModel = progress?.modelId == modelId;
+
+        return FutureBuilder<tts_mm.ModelStatus>(
+          future: tts_mm.TtsModelManager().getModelStatus(modelId),
+          builder: (context, statusSnapshot) {
+            final status = isThisModel ? (progress?.status ?? tts_mm.ModelStatus.notDownloaded)
+                : (statusSnapshot.data ?? tts_mm.ModelStatus.notDownloaded);
+
+            if (status == tts_mm.ModelStatus.downloaded) {
+              return Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Row(
+                  children: [
+                    const Icon(Icons.check_circle, color: Colors.green, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text('${model.name} ready',
+                          style: const TextStyle(color: Colors.green),
+                          overflow: TextOverflow.ellipsis),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        await tts_mm.TtsModelManager().deleteModel(modelId);
+                        setState(() {});
+                      },
+                      child: const Text('Delete', style: TextStyle(color: Colors.red)),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            if (status == tts_mm.ModelStatus.downloading) {
+              final pct = isThisModel ? (progress!.progress * 100).toStringAsFixed(0) : '...';
+              return Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Column(
+                  children: [
+                    LinearProgressIndicator(value: isThisModel ? progress!.progress : null),
+                    const SizedBox(height: 4),
+                    Text('Downloading $pct%'),
+                  ],
+                ),
+              );
+            }
+
+            if (status == tts_mm.ModelStatus.failed) {
+              return Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Column(
+                  children: [
+                    Text('Download failed: ${progress?.error ?? "unknown"}',
+                        style: const TextStyle(color: Colors.red)),
+                    const SizedBox(height: 8),
+                    ElevatedButton(
+                      onPressed: () => tts_mm.TtsModelManager().downloadModel(model),
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            // Not downloaded
+            return Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: ElevatedButton.icon(
+                onPressed: () => tts_mm.TtsModelManager().downloadModel(model),
+                icon: const Icon(Icons.download),
+                label: Text('Download ${model.name} (${model.sizeDisplay})'),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

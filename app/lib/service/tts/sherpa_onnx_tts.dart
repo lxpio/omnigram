@@ -10,6 +10,28 @@ import 'package:omnigram/utils/log/common.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sherpa_onnx/sherpa_onnx.dart' as sherpa;
 
+/// Kokoro speaker names → IDs mapping.
+const Map<String, int> _kokoroVoices = {
+  'zf_xiaobei (女·中文)': 45,
+  'zf_xiaoni (女·中文)': 46,
+  'zf_xiaoxiao (女·中文)': 47,
+  'zf_xiaoyi (女·中文)': 48,
+  'zm_yunjian (男·中文)': 49,
+  'zm_yunxi (男·中文)': 50,
+  'zm_yunxia (男·中文)': 51,
+  'zm_yunyang (男·中文)': 52,
+  'af_alloy (Female·EN)': 0,
+  'af_heart (Female·EN)': 3,
+  'af_nova (Female·EN)': 7,
+  'af_sarah (Female·EN)': 9,
+  'am_adam (Male·EN)': 11,
+  'am_michael (Male·EN)': 16,
+  'am_onyx (Male·EN)': 17,
+  'jf_alpha (女·日本語)': 37,
+  'jm_kumo (男·日本語)': 41,
+  'ff_siwis (Femme·FR)': 30,
+};
+
 /// On-device TTS provider using sherpa-onnx (Piper / Kokoro models).
 ///
 /// The user downloads a model via [TtsModelManager], then selects it here.
@@ -23,29 +45,47 @@ class SherpaOnnxProvider extends TtsServiceProvider {
 
   sherpa.OfflineTts? _tts;
   String? _loadedModelId;
+  bool _bindingsInitialized = false;
 
   @override
   TtsService get service => TtsService.sherpaOnnx;
+
+  @override
+  String get audioMimeType => 'audio/wav';
 
   @override
   String getLabel(BuildContext context) => 'On-Device (sherpa-onnx)';
 
   @override
   List<ConfigItem> getConfigItems(BuildContext context) {
+    final modelOptions = builtInModels.map((m) {
+      return {
+        'label': '${m.name} (${m.sizeDisplay})',
+        'value': m.id,
+      };
+    }).toList();
+
+    // Build voice options from Kokoro voice map
+    final voiceOptions = _kokoroVoices.entries.map((e) {
+      return {'label': e.key, 'value': e.value.toString()};
+    }).toList();
+
     return [
       ConfigItem(
         key: 'model_id',
         label: 'Model',
-        description: 'Select a downloaded model',
-        type: ConfigItemType.text,
-        defaultValue: '',
+        description: 'Select a model, then download it below',
+        type: ConfigItemType.select,
+        defaultValue: builtInModels.first.id,
+        options: modelOptions,
       ),
       ConfigItem(
         key: 'speaker_id',
-        label: 'Speaker ID',
-        description: 'Speaker index (for multi-speaker models)',
-        type: ConfigItemType.text,
-        defaultValue: '0',
+        label: 'Voice',
+        description: 'Speaker voice (Kokoro multi-speaker; Piper ignores this)',
+        type: ConfigItemType.select,
+        defaultValue: '50', // zm_yunxi – good default for Chinese
+        options: voiceOptions,
       ),
     ];
   }
@@ -53,7 +93,7 @@ class SherpaOnnxProvider extends TtsServiceProvider {
   @override
   Map<String, dynamic> getConfig() {
     final config = Prefs().getOnlineTtsConfig(serviceId);
-    return {'model_id': config['model_id'] ?? '', 'speaker_id': config['speaker_id'] ?? '0'};
+    return {'model_id': config['model_id'] ?? '', 'speaker_id': config['speaker_id'] ?? '50'};
   }
 
   @override
@@ -64,6 +104,12 @@ class SherpaOnnxProvider extends TtsServiceProvider {
   /// Load (or reload) the sherpa-onnx model from the local file system.
   Future<void> _ensureModel(String modelId) async {
     if (_tts != null && _loadedModelId == modelId) return;
+
+    // Initialize native bindings once
+    if (!_bindingsInitialized) {
+      sherpa.initBindings();
+      _bindingsInitialized = true;
+    }
 
     // Dispose previous model
     _tts?.free();
@@ -106,6 +152,7 @@ class SherpaOnnxProvider extends TtsServiceProvider {
             model: '$modelPath/${model.files['model']}',
             tokens: '$modelPath/${model.files['tokens']}',
             voices: '$modelPath/${model.files['voices']}',
+            dataDir: '$modelPath/espeak-ng-data',
             dictDir: model.files['dictDir'] != null ? '$modelPath/${model.files['dictDir']}' : '',
             lexicon: lexiconFiles,
           ),
@@ -115,9 +162,10 @@ class SherpaOnnxProvider extends TtsServiceProvider {
       throw Exception('Unsupported engine: ${model.engine}');
     }
 
+    AnxLog.info('SherpaOnnx: creating OfflineTts with config: ${config.model}');
     _tts = sherpa.OfflineTts(config);
     _loadedModelId = modelId;
-    AnxLog.info('SherpaOnnx: loaded model $modelId');
+    AnxLog.info('SherpaOnnx: loaded model $modelId (sampleRate=${_tts!.sampleRate}, numSpeakers=${_tts!.numSpeakers})');
   }
 
   @override
@@ -134,8 +182,14 @@ class SherpaOnnxProvider extends TtsServiceProvider {
 
     final audio = _tts!.generate(text: text, sid: speakerId, speed: rate);
 
+    if (audio.samples.isEmpty) {
+      throw Exception('TTS generated empty audio');
+    }
+
     // sherpa-onnx returns raw PCM samples (Float32). Encode as WAV.
-    return _encodeWav(audio.samples, audio.sampleRate);
+    final wav = _encodeWav(audio.samples, audio.sampleRate);
+
+    return wav;
   }
 
   /// Encode raw PCM float samples into a WAV byte array.
@@ -184,9 +238,15 @@ class SherpaOnnxProvider extends TtsServiceProvider {
     buffer.setUint32(offset, dataSize, Endian.little);
     offset += 4;
 
-    // PCM data (float32 → int16)
+    // PCM data (float32 → int16), guard against NaN/Infinity
     for (var i = 0; i < samples.length; i++) {
-      var s = (samples[i] * 32767).round().clamp(-32768, 32767);
+      final sample = samples[i];
+      int s;
+      if (sample.isNaN || sample.isInfinite) {
+        s = 0;
+      } else {
+        s = (sample * 32767).round().clamp(-32768, 32767);
+      }
       buffer.setInt16(offset, s, Endian.little);
       offset += 2;
     }
