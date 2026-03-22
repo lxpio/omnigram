@@ -483,13 +483,16 @@ Phase 3（v0.3）：
 | [kokoro-tts](https://github.com/neosun100/kokoro-tts) | All-in-One Docker（Web UI + REST + WebSocket） |
 | [IndexTTS-2](https://github.com/indexteam/IndexTTS) | 时长控制 + 情感表达（⚠️ 需自行包装 API Server） |
 
-### 待评估候选
+### 评估结论（详见 015-tts-model-evaluation.md）
 
-| 模型 | 说明 | 评估时间 |
-|------|------|---------|
-| [Parler-TTS](https://github.com/huggingface/parler-tts) | 自然语言控制说话风格，多角色有声书 | Phase 2 POC |
-| [Orpheus-TTS](https://github.com/canopylabs/orpheus-tts) | 情感表达 + 韵律自然度 | Phase 2 POC |
-| [Dia 1.6B](https://github.com/nari-labs/dia) | 对话式 TTS + 非语言声音（笑声/叹气），仅英文 | Phase 2 POC |
+| 模型 | 推荐 | 说明 |
+|------|------|------|
+| [Qwen3-TTS 1.7B](https://github.com/QwenLM/Qwen3-TTS) | 🥇 **GPU 有声书首选** | 中文最强（含方言）、10 语言、97ms 延迟、现成 Docker + OpenAI API |
+| [Chatterbox Turbo](https://github.com/resemble-ai/chatterbox) | 🥈 **轻量 GPU 首选** | 盲测胜 ElevenLabs、仅 4GB VRAM、23 语言、MIT 许可 |
+| [Orpheus 3B](https://github.com/canopyai/Orpheus-TTS) | 🥉 全能型备选 | 中英文都好、情感标签、Docker 成熟 |
+| IndexTTS-2 | 后备 | 质量好但无现成 Docker/API 镜像，待生态成熟 |
+| ~~Parler-TTS~~ | ❌ 淘汰 | 不支持中文 + 无声音克隆 + 无 Docker 生态 |
+| ~~Dia 1.6B~~ | ❌ 淘汰 | 仅英文，场景太窄 |
 
 ### App 端
 
