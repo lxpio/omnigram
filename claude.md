@@ -15,11 +15,26 @@ Omnigram is an **AI-native, self-hosted book library and reading service**. Depl
 
 | Document | Purpose |
 |----------|---------|
+| `docs/superpowers/PROGRESS.md` | **📊 实施进度索引** — 开工前必读，完工后必更新 |
 | `docs/superpowers/specs/2026-03-22-ambient-ai-reading-design.md` | **Active design spec** — the definitive reference for all UI/UX decisions |
 | `docs/discussions/011-ambient-ai-reading-brainstorm.md` | Brainstorm record with decision rationale |
 | `docs/superpowers/specs/2026-03-22-ambient-ai-reading-review.md` | External review of the design spec |
 | `docs/superpowers/plans/2026-03-22-sprint1-foundation-and-core-reading.md` | Sprint 1 implementation plan |
+| `docs/superpowers/plans/2026-03-22-sprint2-ai-pipeline.md` | Sprint 2 implementation plan |
 | `docs/discussions/005-ai-era-ebook-demand.md` | Strategic analysis: AI era ebook demand |
+
+## Progress Tracking (IMPORTANT)
+
+**Before starting any feature work**, read `docs/superpowers/PROGRESS.md` to check:
+1. Whether the feature is already implemented (avoid duplicate work)
+2. What layer/sprint it belongs to
+3. Whether its dependencies are complete
+
+**After completing any feature**, update `docs/superpowers/PROGRESS.md`:
+1. Change status from ❌ to ✅
+2. Fill in the key file path and commit hash
+3. Update the "更新记录" section at the bottom
+4. If Layer status changed (e.g., all items complete), update the 总览 table
 
 ## Repository Structure
 
@@ -216,9 +231,15 @@ func handlerName(c *gin.Context) {
 
 ## Implementation Status
 
-### Sprint 1 (In Progress): Foundation + Core Reading
-New 4-tab navigation, design system, Reading Desk, Library, Insights skeleton, Settings framework.
-Plan: `docs/superpowers/plans/2026-03-22-sprint1-foundation-and-core-reading.md`
+> **Full progress tracking: `docs/superpowers/PROGRESS.md`**
 
-### Sprint 2-5 (Planned): AI Pipeline → Ambient AI → Deep AI → Advanced
-See design spec §11 for the full 5-layer dependency chain and sprint targets.
+### Completed
+- **Sprint 1:** Foundation + Core Reading (Layer 0 + 1) — new 4-tab UI, design system, all pages
+- **Sprint 2:** AI Pipeline (Layer 2) — TARS personality, ambient pipeline, context bar, memory bridge, post-import AI, degradation
+
+### In Progress
+- **Sprint 3:** Ambient AI (Layer 3) — inline glossary, bookshelf AI, insights AI narrative
+
+### Planned
+- **Sprint 4:** Deep AI (Layer 4) — companion panel, margin notes, semantic search, TTS, knowledge network
+- **Sprint 5:** Advanced (Layer 5) — cross-book connections, stealth reading mode
