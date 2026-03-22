@@ -15,6 +15,7 @@ import 'package:omnigram/providers/current_reading.dart';
 import 'package:omnigram/providers/sync.dart';
 import 'package:omnigram/providers/book_list.dart';
 import 'package:omnigram/providers/toc_search.dart';
+import 'package:omnigram/service/ai/post_import_ai.dart';
 import 'package:omnigram/service/convert_to_epub/txt/convert_from_txt.dart';
 import 'package:omnigram/service/md5_service.dart';
 import 'package:omnigram/utils/webView/anx_headless_webview.dart';
@@ -585,6 +586,15 @@ Future<void> getBookMetadata(
               provideBook: book,
             );
             ref?.read(bookListProvider.notifier).refresh();
+            // Background AI processing — fire and forget
+            if (ref != null) {
+              triggerPostImportAi(
+                ref: ref,
+                title: title,
+                author: author,
+                description: description,
+              );
+            }
             // return;
           });
     },
