@@ -1237,10 +1237,11 @@ packages:
   langchain_google:
     dependency: "direct main"
     description:
-      name: langchain_google
-      sha256: "37e4917c42361149b41fe883e7ff9b0fc136ec7b2c6e4545c6d886e22656ec94"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "packages/langchain_google"
+      ref: "310fb6b3"
+      resolved-ref: "310fb6b3e9f7ff4f6b10b1a82838fa50a33f659f"
+      url: "https://github.com/Anxcye/langchain_dart.git"
+    source: git
     version: "0.7.1+2"
   langchain_openai:
     dependency: "direct main"

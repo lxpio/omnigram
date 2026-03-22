@@ -26,7 +26,7 @@ dependencies:
   flutter_colorpicker: ^1.0.3
   html: ^0.15.4
   flutter_html: ^3.0.0-beta.2
-  archive: ^4.0.7
+  archive: ^4.0.9
   flutter_inappwebview:
     git:
       url: https://github.com/Anxcye/flutter_inappwebview.git
@@ -149,6 +149,11 @@ dependency_overrides:
       url: https://github.com/Anxcye/langchain_dart.git
       ref: 310fb6b3
       path: packages/langchain_anthropic
+  langchain_google:
+    git:
+      url: https://github.com/Anxcye/langchain_dart.git
+      ref: 310fb6b3
+      path: packages/langchain_google
 #  analyzer: ^8.0.0
 
 
