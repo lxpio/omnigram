@@ -1,3 +1,4 @@
+import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:omnigram/service/tts/model_manager.dart';
@@ -9,6 +10,78 @@ import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/utils/log/common.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sherpa_onnx/sherpa_onnx.dart' as sherpa;
+
+/// Run TTS generation in a background isolate to avoid blocking the UI.
+/// This is a top-level function so it can be used with [Isolate.run].
+Uint8List _generateInBackground(Map<String, dynamic> params) {
+  final engine = params['engine'] as String;
+  final modelPath = params['modelPath'] as String;
+  final files = Map<String, String>.from(params['files'] as Map);
+  final text = params['text'] as String;
+  final sid = params['sid'] as int;
+  final speed = params['speed'] as double;
+
+  sherpa.initBindings();
+
+  sherpa.OfflineTtsConfig config;
+  if (engine == 'piper') {
+    config = sherpa.OfflineTtsConfig(
+      model: sherpa.OfflineTtsModelConfig(
+        vits: sherpa.OfflineTtsVitsModelConfig(
+          model: '$modelPath/${files['model']}',
+          tokens: '$modelPath/${files['tokens']}',
+          dataDir: '$modelPath/${files['dataDir'] ?? 'espeak-ng-data'}',
+        ),
+      ),
+    );
+  } else {
+    // kokoro
+    final lexiconFiles = (files['lexicon'] ?? '')
+        .split(',')
+        .where((s) => s.trim().isNotEmpty)
+        .map((s) => '$modelPath/${s.trim()}')
+        .join(',');
+    config = sherpa.OfflineTtsConfig(
+      model: sherpa.OfflineTtsModelConfig(
+        kokoro: sherpa.OfflineTtsKokoroModelConfig(
+          model: '$modelPath/${files['model']}',
+          tokens: '$modelPath/${files['tokens']}',
+          voices: '$modelPath/${files['voices']}',
+          dataDir: '$modelPath/espeak-ng-data',
+          dictDir: files['dictDir'] != null ? '$modelPath/${files['dictDir']}' : '',
+          lexicon: lexiconFiles,
+        ),
+      ),
+    );
+  }
+
+  final tts = sherpa.OfflineTts(config);
+  final audio = tts.generate(text: text, sid: sid, speed: speed);
+  tts.free();
+
+  if (audio.samples.isEmpty) {
+    return Uint8List(0);
+  }
+
+  // Check for NaN/zero samples (common in simulator environments)
+  int nanCount = 0;
+  int zeroCount = 0;
+  for (final s in audio.samples) {
+    if (s.isNaN || s.isInfinite) nanCount++;
+    if (s == 0.0) zeroCount++;
+  }
+  if (nanCount > 0 || zeroCount == audio.samples.length) {
+    // Return a special marker: 'NANS' in first 4 bytes to signal the issue
+    final marker = Uint8List(4);
+    marker[0] = 78; // N
+    marker[1] = 65; // A
+    marker[2] = 78; // N
+    marker[3] = 83; // S
+    return marker;
+  }
+
+  return SherpaOnnxProvider._encodeWav(audio.samples, audio.sampleRate);
+}
 
 /// Kokoro speaker names → IDs mapping.
 const Map<String, int> _kokoroVoices = {
@@ -45,6 +118,8 @@ class SherpaOnnxProvider extends TtsServiceProvider {
 
   sherpa.OfflineTts? _tts;
   String? _loadedModelId;
+  String? _loadedModelPath;
+  TtsModel? _loadedModel;
   bool _bindingsInitialized = false;
 
   @override
@@ -115,6 +190,8 @@ class SherpaOnnxProvider extends TtsServiceProvider {
     _tts?.free();
     _tts = null;
     _loadedModelId = null;
+    _loadedModelPath = null;
+    _loadedModel = null;
 
     final modelPath = await TtsModelManager().getModelPath(modelId);
     if (modelPath == null) {
@@ -165,6 +242,8 @@ class SherpaOnnxProvider extends TtsServiceProvider {
     AnxLog.info('SherpaOnnx: creating OfflineTts with config: ${config.model}');
     _tts = sherpa.OfflineTts(config);
     _loadedModelId = modelId;
+    _loadedModelPath = modelPath;
+    _loadedModel = model;
     AnxLog.info('SherpaOnnx: loaded model $modelId (sampleRate=${_tts!.sampleRate}, numSpeakers=${_tts!.numSpeakers})');
   }
 
@@ -180,15 +259,30 @@ class SherpaOnnxProvider extends TtsServiceProvider {
 
     await _ensureModel(modelId);
 
-    final audio = _tts!.generate(text: text, sid: speakerId, speed: rate);
+    AnxLog.info('SherpaOnnx: generating audio in background isolate (text=${text.length} chars, sid=$speakerId)');
 
-    if (audio.samples.isEmpty) {
+    // Run the blocking FFI generate() call in a background isolate
+    // so the UI thread stays responsive.
+    final wav = await Isolate.run(() => _generateInBackground({
+      'engine': _loadedModel!.engine,
+      'modelPath': _loadedModelPath!,
+      'files': _loadedModel!.files,
+      'text': text,
+      'sid': speakerId,
+      'speed': rate,
+    }));
+
+    if (wav.isEmpty) {
       throw Exception('TTS generated empty audio');
     }
 
-    // sherpa-onnx returns raw PCM samples (Float32). Encode as WAV.
-    final wav = _encodeWav(audio.samples, audio.sampleRate);
+    // Detect NaN marker from isolate (model produces invalid samples on this device)
+    if (wav.length == 4 && wav[0] == 78 && wav[1] == 65 && wav[2] == 78 && wav[3] == 83) {
+      AnxLog.severe('SherpaOnnx: model produced NaN/zero samples – this model may not work on iOS Simulator');
+      throw Exception('Model produced invalid audio (NaN). Try a different model (e.g. Piper) or test on a real device.');
+    }
 
+    AnxLog.info('SherpaOnnx: generated ${wav.length} bytes WAV');
     return wav;
   }
 
@@ -293,5 +387,7 @@ class SherpaOnnxProvider extends TtsServiceProvider {
     _tts?.free();
     _tts = null;
     _loadedModelId = null;
+    _loadedModelPath = null;
+    _loadedModel = null;
   }
 }
