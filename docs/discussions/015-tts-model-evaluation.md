@@ -36,6 +36,14 @@ Omnigram 需要在两个场景下选择 TTS 模型：
 | **Parler-TTS** | ~600M | ❌ 主要英文 | ⭐⭐⭐⭐ | ❌ 无 | ✅ 自然语言描述 | ❌ | 6GB+ | 中等 | ❌ 需自行包装 | Apache 2.0 | 4k+ |
 | **F5-TTS** | ~300M | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ✅ **最强克隆** | 一般 | ❌ | 6GB+ | 中等 | ⚠️ 社区有 | CC-BY-NC | 15k+ |
 | **Higgs Audio V2** | 3B | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ✅ | ✅ 多情感 | ✅ 多人 | 12GB+ | 中等 | ⚠️ 需自行包装 | Llama 衍生 | HF 热榜 |
+| **MiraTTS** | — | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ✅ 零样本 | 一般 | ❌ | 6GB+ | **极快**（batch 3000%） | ⚠️ 需自行包装 | Apache 2.0 | 新 |
+| **GLM-TTS** | — | ⭐⭐⭐⭐⭐ 智谱 | ⭐⭐⭐⭐ | ✅ 零样本 | 一般 | ❌ | 8GB+ | 200%+ | ⚠️ 需自行包装 | Apache 2.0 | 新 |
+| **VibeVoice 1.5B** | 1.5B | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ✅ 零样本 | ✅ seed/LoRA | ❌ | 6GB+ | **极快**（batch 1000%） | ⚠️ 需自行包装 | MIT→已撤源 | 微软 |
+
+> **新增说明（来源：[tts-audiobook-tool](https://github.com/zeropointnine/tts-audiobook-tool) 实测数据）：**
+> - **MiraTTS**：batch 模式 3000% 实时速度（GTX 3080 Ti），是所有模型中最快的。适合大批量有声书生成。
+> - **GLM-TTS**：智谱出品，中文质量预期较好，需要 CUDA（代码中硬编码了 CUDA 操作）。
+> - **VibeVoice 1.5B**：微软出品，支持 LoRA 微调声音，batch 模式 1000% 实时。⚠️ 微软已从 GitHub 撤源，需使用社区 fork。
 
 ### 2.2 CPU 场景（NAS 用户，无 GPU）
 
@@ -161,7 +169,51 @@ App 端核心需求：小模型、低延迟、离线可用、省电。
 
 ---
 
-## 六、待验证项（Phase 2 POC）
+## 六、有声书质量控制（tts-audiobook-tool 启发）
+
+> 来源：[tts-audiobook-tool](https://github.com/zeropointnine/tts-audiobook-tool) — 支持 9+ 模型的开源有声书生成工具，积累了大量实践经验。
+
+### 6.1 核心质量措施
+
+| 措施 | 说明 | Omnigram 实施优先级 |
+|------|------|-------------------|
+| **STT 纠错** | 用 Whisper 转写合成音频，与源文本对比 WER，超阈值自动重试并选最优结果 | P0（有声书质量的杀手级功能） |
+| **停顿控制 (Caesura)** | 段落间/句子间/短语间插入不同长度的静音，基于语义层级自动调整 | P1 |
+| **响度归一化 (LUFS)** | 最终章节文件级别 LUFS 归一化（非逐段落，否则音量跳变） | P1 |
+| **首尾裁切** | 裁掉合成音频首尾静音和杂音（某些模型短句末尾产生噪音） | P1 |
+| **重复短语检测** | 检测并拒绝重复词组的合成结果 | P2 |
+| **音乐幻觉检测** | 拒绝包含音乐/唱歌的合成结果（VibeVoice 等模型常见） | P2 |
+| **词语替换表** | 用户定义 TTS 易读错的词的替换规则 | P2 |
+| **分段策略多样化** | 支持段落/句子/短语/多句等分段方式，max_words 可配置（当前我们只有句子级） | P1 |
+
+### 6.2 文本-音频同步（Omnigram 差异化特性）
+
+tts-audiobook-tool 将文本+时间戳嵌入 FLAC/M4A 元数据，实现播放器文本高亮同步。
+
+**Omnigram 的独特优势**：我们同时拥有 EPUB 原文和有声书音频，可以实现：
+- 播放有声书时，在 EPUB 阅读页面实时高亮当前朗读的句子（类似 Kindle Whispersync）
+- 这是 Audiobookshelf 做不到的（它没有原文阅读器）
+
+**实现路径**：Whisper word-level timing → 映射到原文位置 → App 阅读器实时高亮
+
+### 6.3 推理速度参考（tts-audiobook-tool 实测，GTX 3080 Ti）
+
+| 模型 | 速度 | 备注 |
+|------|------|------|
+| MiraTTS | 3000% 实时 | batch=10，最快 |
+| VibeVoice 1.5B | 1000% 实时 | batch=10 |
+| Fish S1-mini | 500%+ 实时 | |
+| Chatterbox Turbo | 500%+ 实时 | |
+| Qwen3-TTS 1.7B | 300% 实时 | batch=5 |
+| GLM-TTS | 200%+ 实时 | |
+| Orpheus 3B / Higgs V2 | ~200% 实时 | |
+| IndexTTS-2 | ~90% 实时 | GTX 3080 Ti 较慢 |
+
+> **结论**：Qwen3-TTS 虽然不是最快，但 300% 实时速度足够有声书批量生成。如追求极致速度，MiraTTS 和 VibeVoice 值得关注。
+
+---
+
+## 七、待验证项（Phase 2 POC）
 
 在正式集成前需要实际验证的事项：
 
@@ -175,10 +227,13 @@ App 端核心需求：小模型、低延迟、离线可用、省电。
 | 6 | Kokoro q8 vs fp16 | 10 段文本 AB 对比，q8 自然度损失 ≤ 0.5 分 | P1 |
 | 7 | sherpa-onnx + Kokoro 手机端 | iPhone 13 / Pixel 6 上加载+合成正常，内存 < 500MB | P1 |
 | 8 | Qwen3-TTS 0.6B CPU 性能 | NAS CPU（如 N100）上合成 1000 字耗时 < 120 秒 | P2 |
+| 9 | Whisper STT 纠错 Sidecar | faster-whisper Docker 部署 + 合成结果 WER 校验流程跑通 | P1 |
+| 10 | 停顿控制 + 响度归一化 | ffmpeg 静音插入 + LUFS 归一化，AB 对比有无明显改善 | P1 |
+| 11 | MiraTTS batch 速度验证 | 确认 batch=10 是否真能达到 3000% 实时 | P2 |
 
 ---
 
-## 七、技术参考
+## 八、技术参考
 
 ### Server 端 Docker 镜像
 
@@ -214,3 +269,7 @@ App 端核心需求：小模型、低延迟、离线可用、省电。
 | Piper | [rhasspy/piper](https://github.com/rhasspy/piper) | MIT |
 | MeloTTS | [myshell-ai/MeloTTS](https://github.com/myshell-ai/MeloTTS) | MIT |
 | Parler-TTS | [huggingface/parler-tts](https://github.com/huggingface/parler-tts) | Apache 2.0 |
+| MiraTTS | [ysharma3501/MiraTTS](https://github.com/ysharma3501/MiraTTS) | Apache 2.0 |
+| GLM-TTS | [zai-org/GLM-TTS](https://github.com/zai-org/GLM-TTS) | Apache 2.0 |
+| VibeVoice | [vibevoice-community/VibeVoice](https://github.com/vibevoice-community/VibeVoice) | MIT（⚠️ 微软已撤源） |
+| Oute TTS | [edwko/OuteTTS](https://github.com/edwko/OuteTTS) | Apache 2.0 |

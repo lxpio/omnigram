@@ -286,6 +286,30 @@ DELETE /tts/audiobook/:book_id              删除已生成的有声书
 - 生成的 MP3 嵌入 ID3 标签（书名、作者、章节名、封面），导出到任何播放器都有完整元数据
 - 可与 Audiobookshelf 联动：Omnigram 生成有声书 → 导出 → Audiobookshelf 管理播放
 
+**质量控制（参考 [tts-audiobook-tool](https://github.com/zeropointnine/tts-audiobook-tool)）**
+
+开源 TTS 推理有不可避免的错误（丢词、重复、变调、音乐幻觉）。有声书场景需要专门的质量保障措施：
+
+| 措施 | 说明 | 实现阶段 |
+|------|------|---------|
+| **STT 纠错** | 用 Whisper 对合成音频做语音转文字，与源文本对比，WER 超阈值自动重试，选最优结果 | Phase 3 |
+| **停顿控制 (Caesura)** | 段落间、句子间、短语间插入不同长度的静音，基于语义层级自动调整，提升韵律自然度 | Phase 2+ |
+| **响度归一化 (LUFS)** | 在最终章节文件级别做 LUFS 响度归一化，而非逐段落归一化（否则会引入不自然的音量跳变） | Phase 2+ |
+| **首尾噪音裁切** | 裁掉合成音频首尾的静音和杂音（某些模型在短句末尾会产生噪音） | Phase 2+ |
+| **重复短语检测** | 检测并拒绝包含重复词组的合成结果（常见于 Chatterbox/Oute 等模型） | Phase 3 |
+| **词语替换表** | 允许用户定义 TTS 易读错的词的替换规则（如人名、专有名词） | Phase 3 |
+
+> **Whisper Sidecar：** STT 纠错需要在 Server 端同时运行 Whisper 模型（约 2-4GB 额外 VRAM）。可作为第二个 Sidecar 容器部署（`faster-whisper-server`），或在低 VRAM 环境下降级使用 `whisper-turbo`（节省 ~1GB）或完全禁用。
+
+**文本-音频同步高亮（差异化特性）**
+
+Omnigram 同时拥有电子书原文和有声书音频，这是 Audiobookshelf 做不到的。结合 Whisper 的 word-level timing 数据，可以实现：
+- 播放有声书时，在 EPUB 阅读页面上实时高亮当前朗读的句子/短语
+- 类似 Kindle + Audible 的「Whispersync」功能
+- 时间戳嵌入音频元数据（FLAC/M4A），也可单独存储为 JSON
+
+> **实现路径：** Phase 3+ 探索。依赖 STT word-level timing → 映射到原文位置 → App 阅读器实时高亮。
+
 > **详细设计：** 有声书章节级生成的完整架构设计（任务队列、持久化、断点续传、并发控制、文本提取、分片策略、App 端播放器 UX）将在 015 文档中展开。
 
 ---
