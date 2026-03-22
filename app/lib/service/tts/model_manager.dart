@@ -230,6 +230,7 @@ class TtsModelManager {
   /// Delete a downloaded model and its files.
   Future<void> deleteModel(String modelId) async {
     cancelDownload(modelId);
+    _cleanup(modelId);
     final dir = Directory('${(await _modelsDir).path}/$modelId');
     if (await dir.exists()) {
       await dir.delete(recursive: true);

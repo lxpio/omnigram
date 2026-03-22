@@ -67,8 +67,7 @@ class OnlineTts extends BaseTts {
 
   // ============ TtsStateNotifier ============
   @override
-  final ValueNotifier<TtsStateEnum> ttsStateNotifier =
-      ValueNotifier<TtsStateEnum>(TtsStateEnum.stopped);
+  final ValueNotifier<TtsStateEnum> ttsStateNotifier = ValueNotifier<TtsStateEnum>(TtsStateEnum.stopped);
 
   @override
   void updateTtsState(TtsStateEnum newState) {
@@ -119,8 +118,7 @@ class OnlineTts extends BaseTts {
 
   // ============ Initialization ============
   @override
-  Future<void> init(Function getCurrentText, Function getNextText,
-      Function getPrevText) async {
+  Future<void> init(Function getCurrentText, Function getNextText, Function getPrevText) async {
     getHereFunction = getCurrentText;
     getNextTextFunction = getNextText;
     getPrevTextFunction = getPrevText;
@@ -176,8 +174,7 @@ class OnlineTts extends BaseTts {
       segment.isSilent = false;
       segment.fetchVersion = _audioFetchVersion; // Mark with current version
     }
-    AnxLog.info(
-        'Cleared pending audio buffer - will re-fetch with new settings (version: $_audioFetchVersion)');
+    AnxLog.info('Cleared pending audio buffer - will re-fetch with new settings (version: $_audioFetchVersion)');
   }
 
   // ============ Producer: Prefetcher Loop ============
@@ -189,17 +186,14 @@ class OnlineTts extends BaseTts {
     try {
       while (!_shouldStop) {
         // Check for segments that need audio re-fetch (after settings change)
-        final segmentsNeedingAudio =
-            _buffer.where((s) => !s.isReady && !s.isSilent).toList();
+        final segmentsNeedingAudio = _buffer.where((s) => !s.isReady && !s.isSilent).toList();
 
         if (segmentsNeedingAudio.isNotEmpty) {
           // Re-fetch audio for segments that were cleared
           for (var i = 0; i < segmentsNeedingAudio.length; i += _batchSize) {
             if (_shouldStop) break;
-            final batch =
-                segmentsNeedingAudio.skip(i).take(_batchSize).toList();
-            final futures =
-                batch.map((segment) => _fetchAudioForSegment(segment));
+            final batch = segmentsNeedingAudio.skip(i).take(_batchSize).toList();
+            final futures = batch.map((segment) => _fetchAudioForSegment(segment));
             await Future.wait(futures);
           }
         }
@@ -236,8 +230,7 @@ class OnlineTts extends BaseTts {
         for (var i = 0; i < newSegments.length; i += _batchSize) {
           if (_shouldStop) break;
           final batch = newSegments.skip(i).take(_batchSize).toList();
-          final futures =
-              batch.map((segment) => _fetchAudioForSegment(segment));
+          final futures = batch.map((segment) => _fetchAudioForSegment(segment));
           await Future.wait(futures);
         }
       }
@@ -293,18 +286,14 @@ class OnlineTts extends BaseTts {
 
       try {
         final bytes = await backend
-            .speak(
-              segment.sentence.text,
-              null,
-              rate,
-              pitch,
-            )
+            .speak(segment.sentence.text, null, rate, pitch)
             .timeout(Duration(seconds: _fetchTimeoutSeconds));
 
         // Check if version is still valid (settings haven't changed during fetch)
         if (segment.fetchVersion != targetVersion) {
           AnxLog.info(
-              'Audio fetch completed but version changed - discarding (segment version: ${segment.fetchVersion}, target: $targetVersion)');
+            'Audio fetch completed but version changed - discarding (segment version: ${segment.fetchVersion}, target: $targetVersion)',
+          );
           return;
         }
 
@@ -316,7 +305,8 @@ class OnlineTts extends BaseTts {
         return; // Success, exit retry loop
       } on TimeoutException {
         AnxLog.severe(
-            'Fetch timeout (attempt ${attempt + 1}/$_maxRetries): "${segment.sentence.text.substring(0, segment.sentence.text.length.clamp(0, 20))}..."');
+          'Fetch timeout (attempt ${attempt + 1}/$_maxRetries): "${segment.sentence.text.substring(0, segment.sentence.text.length.clamp(0, 20))}..."',
+        );
         if (attempt == _maxRetries) {
           // Check version before marking as silent
           if (segment.fetchVersion == targetVersion) {
@@ -378,7 +368,7 @@ class OnlineTts extends BaseTts {
 
         // Play audio
         _playbackCompleter = Completer<void>();
-        final source = BytesSource(segment.audio!, mimeType: 'audio/mp3');
+        final source = BytesSource(segment.audio!, mimeType: backend.audioMimeType);
 
         try {
           await audioPlayer.play(source);
@@ -485,7 +475,7 @@ class OnlineTts extends BaseTts {
 
     final bytes = await backend.speak(content, voice, rate, pitch);
     if (bytes.isNotEmpty) {
-      final source = BytesSource(bytes, mimeType: 'audio/mp3');
+      final source = BytesSource(bytes, mimeType: backend.audioMimeType);
       await audioPlayer.play(source);
     }
   }

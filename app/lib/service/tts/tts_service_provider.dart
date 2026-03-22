@@ -33,10 +33,12 @@ abstract class TtsServiceProvider extends ServiceProvider<dynamic> {
   /// Generate speech audio from text.
   /// Only required for online TTS services.
   /// System TTS doesn't use this method.
-  Future<Uint8List> speak(
-      String text, String? voice, double rate, double pitch) async {
+  Future<Uint8List> speak(String text, String? voice, double rate, double pitch) async {
     throw UnimplementedError('speak() not implemented for $service');
   }
+
+  /// MIME type of audio returned by [speak]. Default is MP3.
+  String get audioMimeType => 'audio/mp3';
 
   /// Get available voices for this TTS service.
   /// Returns empty list for system TTS (handled separately).
@@ -47,8 +49,7 @@ abstract class TtsServiceProvider extends ServiceProvider<dynamic> {
   /// Convert voice data from API response to TtsVoice model.
   /// Only needed for online TTS services.
   TtsVoice convertVoiceModel(dynamic voiceData) {
-    throw UnimplementedError(
-        'convertVoiceModel() not implemented for $service');
+    throw UnimplementedError('convertVoiceModel() not implemented for $service');
   }
 
   /// Get the currently selected voice for this service.
