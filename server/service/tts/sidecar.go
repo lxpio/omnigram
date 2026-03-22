@@ -14,6 +14,7 @@ import (
 type SidecarProvider struct {
 	name    string
 	baseURL string
+	apiKey  string // optional, for authenticated APIs (e.g., OpenAI)
 	client  *http.Client
 }
 
@@ -22,6 +23,18 @@ func NewSidecarProvider(name, baseURL string, timeout time.Duration) *SidecarPro
 	return &SidecarProvider{
 		name:    name,
 		baseURL: baseURL,
+		client: &http.Client{
+			Timeout: timeout,
+		},
+	}
+}
+
+// NewSidecarProviderWithAuth creates a provider with API key authentication.
+func NewSidecarProviderWithAuth(name, baseURL, apiKey string, timeout time.Duration) *SidecarProvider {
+	return &SidecarProvider{
+		name:    name,
+		baseURL: baseURL,
+		apiKey:  apiKey,
 		client: &http.Client{
 			Timeout: timeout,
 		},
@@ -49,6 +62,9 @@ func (p *SidecarProvider) Synthesize(ctx context.Context, text string, opts Synt
 		return nil, fmt.Errorf("create request: %w", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
+	if p.apiKey != "" {
+		req.Header.Set("Authorization", "Bearer "+p.apiKey)
+	}
 
 	resp, err := p.client.Do(req)
 	if err != nil {
