@@ -884,5 +884,9 @@
     "aiModelSwitchTitle": "切换模型",
     "aiModelEnterManually": "输入模型名称",
     "aiModelOrSelectBelow": "或从列表中选择：",
-    "aiChatFontSize": "字体大小"
+    "aiChatFontSize": "字体大小",
+    "reading": "阅读",
+    "bookshelf": "书架",
+    "insights": "洞察",
+    "settings": "设置"
 }
