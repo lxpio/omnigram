@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:archive/archive.dart';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -193,7 +194,16 @@ class TtsModelManager {
           }
         }
 
-        // Mark complete.
+        // Extract tar.bz2 archive
+        _emit(model.id, ModelStatus.downloading, downloaded: downloadedBytes, total: totalBytes);
+        try {
+          await _extractTarBz2(tempFile, dir, model.archiveDir);
+        } catch (e) {
+          lastError = 'Extraction failed: $e';
+          continue; // try next mirror
+        }
+
+        // Mark complete and clean up temp file.
         await _completeMarker(dir).writeAsString(DateTime.now().toIso8601String());
         await tempFile.delete().catchError((_) => tempFile);
 
@@ -255,5 +265,37 @@ class TtsModelManager {
         error: error,
       ),
     );
+  }
+
+  /// Extract a .tar.bz2 archive into [destDir], stripping the top-level
+  /// [archiveDir] prefix so model files land directly in [destDir].
+  Future<void> _extractTarBz2(File archiveFile, Directory destDir, String archiveDir) async {
+    final bytes = await archiveFile.readAsBytes();
+
+    // Decompress bzip2 → tar
+    final tarBytes = BZip2Decoder().decodeBytes(bytes);
+
+    // Decode tar entries
+    final archive = TarDecoder().decodeBytes(tarBytes);
+
+    for (final file in archive) {
+      var name = file.name;
+
+      // Strip the top-level archive directory prefix
+      if (archiveDir.isNotEmpty && name.startsWith('$archiveDir/')) {
+        name = name.substring(archiveDir.length + 1);
+      }
+      if (name.isEmpty) continue;
+
+      final outPath = '${destDir.path}/$name';
+
+      if (file.isFile) {
+        final outFile = File(outPath);
+        await outFile.parent.create(recursive: true);
+        await outFile.writeAsBytes(file.content as List<int>);
+      } else {
+        await Directory(outPath).create(recursive: true);
+      }
+    }
   }
 }

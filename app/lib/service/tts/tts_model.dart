@@ -9,6 +9,8 @@ class TtsModel {
   final List<String> downloadUrls;
   final String sha256;
   final Map<String, String> files;
+  /// Top-level directory name inside the tar.bz2 archive.
+  final String archiveDir;
 
   /// Human-readable size string, e.g. "15 MB", "1.2 GB".
   String get sizeDisplay {
@@ -28,6 +30,7 @@ class TtsModel {
     this.downloadUrls = const [],
     this.sha256 = '',
     this.files = const {},
+    this.archiveDir = '',
   });
 }
 
@@ -36,148 +39,100 @@ const String _mirrorBase = 'https://hf-mirror.com/csukuangfj/sherpa-onnx-models/
 const String _hfBase = 'https://huggingface.co/csukuangfj/sherpa-onnx-models/resolve/main';
 
 /// Built-in curated model list.
-/// Phase 2 focuses on Piper + Kokoro models compatible with sherpa-onnx.
+/// Uses int8 quantised models for mobile (smaller download, faster inference).
 const List<TtsModel> builtInModels = [
   // ---------------------------------------------------------------------------
-  // Piper models (small, fast, real-time)
+  // Piper models (int8 quantised, ~20 MB, real-time on mobile)
   // ---------------------------------------------------------------------------
   TtsModel(
-    id: 'piper-en-us-amy-medium',
-    name: 'Amy',
+    id: 'piper-en-us-amy-low-int8',
+    name: 'Amy (EN)',
     engine: 'piper',
     language: 'en-US',
-    sizeBytes: 63 * 1024 * 1024,
-    description: 'English (US) female voice – medium quality',
+    sizeBytes: 20 * 1024 * 1024,
+    description: 'English (US) female – compact int8',
+    archiveDir: 'vits-piper-en_US-amy-low-int8',
     downloadUrls: [
-      '$_ghBase/vits-piper-en_US-amy-medium.tar.bz2',
-      '$_mirrorBase/vits-piper-en_US-amy-medium.tar.bz2',
-      '$_hfBase/vits-piper-en_US-amy-medium.tar.bz2',
+      '$_ghBase/vits-piper-en_US-amy-low-int8.tar.bz2',
+      '$_mirrorBase/vits-piper-en_US-amy-low-int8.tar.bz2',
+      '$_hfBase/vits-piper-en_US-amy-low-int8.tar.bz2',
     ],
-    sha256: 'placeholder',
-    files: {'model': 'en_US-amy-medium.onnx', 'tokens': 'tokens.txt', 'dataDir': 'espeak-ng-data'},
+    files: {'model': 'en_US-amy-low.onnx', 'tokens': 'tokens.txt', 'dataDir': 'espeak-ng-data'},
   ),
   TtsModel(
     id: 'piper-en-us-lessac-medium',
-    name: 'Lessac',
+    name: 'Lessac (EN)',
     engine: 'piper',
     language: 'en-US',
-    sizeBytes: 63 * 1024 * 1024,
-    description: 'English (US) male voice – medium quality',
+    sizeBytes: 64 * 1024 * 1024,
+    description: 'English (US) male – medium quality',
+    archiveDir: 'vits-piper-en_US-lessac-medium',
     downloadUrls: [
       '$_ghBase/vits-piper-en_US-lessac-medium.tar.bz2',
       '$_mirrorBase/vits-piper-en_US-lessac-medium.tar.bz2',
       '$_hfBase/vits-piper-en_US-lessac-medium.tar.bz2',
     ],
-    sha256: 'placeholder',
     files: {'model': 'en_US-lessac-medium.onnx', 'tokens': 'tokens.txt', 'dataDir': 'espeak-ng-data'},
   ),
   TtsModel(
     id: 'piper-zh-cn-huayan-medium',
-    name: 'Huayan (花妍)',
+    name: 'Huayan 花妍 (ZH)',
     engine: 'piper',
     language: 'zh-CN',
-    sizeBytes: 63 * 1024 * 1024,
-    description: 'Chinese (Mandarin) female voice – medium quality',
+    sizeBytes: 64 * 1024 * 1024,
+    description: 'Chinese (Mandarin) female – medium quality',
+    archiveDir: 'vits-piper-zh_CN-huayan-medium',
     downloadUrls: [
       '$_ghBase/vits-piper-zh_CN-huayan-medium.tar.bz2',
       '$_mirrorBase/vits-piper-zh_CN-huayan-medium.tar.bz2',
       '$_hfBase/vits-piper-zh_CN-huayan-medium.tar.bz2',
     ],
-    sha256: 'placeholder',
     files: {'model': 'zh_CN-huayan-medium.onnx', 'tokens': 'tokens.txt', 'dataDir': 'espeak-ng-data'},
-  ),
-  TtsModel(
-    id: 'piper-de-de-thorsten-medium',
-    name: 'Thorsten',
-    engine: 'piper',
-    language: 'de-DE',
-    sizeBytes: 63 * 1024 * 1024,
-    description: 'German male voice – medium quality',
-    downloadUrls: [
-      '$_ghBase/vits-piper-de_DE-thorsten-medium.tar.bz2',
-      '$_mirrorBase/vits-piper-de_DE-thorsten-medium.tar.bz2',
-      '$_hfBase/vits-piper-de_DE-thorsten-medium.tar.bz2',
-    ],
-    sha256: 'placeholder',
-    files: {'model': 'de_DE-thorsten-medium.onnx', 'tokens': 'tokens.txt', 'dataDir': 'espeak-ng-data'},
-  ),
-  TtsModel(
-    id: 'piper-fr-fr-siwis-medium',
-    name: 'Siwis',
-    engine: 'piper',
-    language: 'fr-FR',
-    sizeBytes: 63 * 1024 * 1024,
-    description: 'French female voice – medium quality',
-    downloadUrls: [
-      '$_ghBase/vits-piper-fr_FR-siwis-medium.tar.bz2',
-      '$_mirrorBase/vits-piper-fr_FR-siwis-medium.tar.bz2',
-      '$_hfBase/vits-piper-fr_FR-siwis-medium.tar.bz2',
-    ],
-    sha256: 'placeholder',
-    files: {'model': 'fr_FR-siwis-medium.onnx', 'tokens': 'tokens.txt', 'dataDir': 'espeak-ng-data'},
-  ),
-  TtsModel(
-    id: 'piper-ja-jp-kokoro-medium',
-    name: 'Kokoro (JA)',
-    engine: 'piper',
-    language: 'ja-JP',
-    sizeBytes: 63 * 1024 * 1024,
-    description: 'Japanese female voice – medium quality',
-    downloadUrls: [
-      '$_ghBase/vits-piper-ja_JP-kokoro-medium.tar.bz2',
-      '$_mirrorBase/vits-piper-ja_JP-kokoro-medium.tar.bz2',
-      '$_hfBase/vits-piper-ja_JP-kokoro-medium.tar.bz2',
-    ],
-    sha256: 'placeholder',
-    files: {'model': 'ja_JP-kokoro-medium.onnx', 'tokens': 'tokens.txt', 'dataDir': 'espeak-ng-data'},
-  ),
-  TtsModel(
-    id: 'piper-es-es-carlfm-medium',
-    name: 'Carlfm',
-    engine: 'piper',
-    language: 'es-ES',
-    sizeBytes: 63 * 1024 * 1024,
-    description: 'Spanish male voice – medium quality',
-    downloadUrls: [
-      '$_ghBase/vits-piper-es_ES-carlfm-medium.tar.bz2',
-      '$_mirrorBase/vits-piper-es_ES-carlfm-medium.tar.bz2',
-      '$_hfBase/vits-piper-es_ES-carlfm-medium.tar.bz2',
-    ],
-    sha256: 'placeholder',
-    files: {'model': 'es_ES-carlfm-medium.onnx', 'tokens': 'tokens.txt', 'dataDir': 'espeak-ng-data'},
   ),
 
   // ---------------------------------------------------------------------------
-  // Kokoro models (high quality, larger)
+  // Kokoro models (high quality, multi-language)
   // ---------------------------------------------------------------------------
   TtsModel(
-    id: 'kokoro-v1-q8',
-    name: 'Kokoro v1 (Q8)',
+    id: 'kokoro-int8-multi-lang-v1_0',
+    name: 'Kokoro v1.0 (Multi-lang, INT8)',
     engine: 'kokoro',
     language: 'multi',
-    sizeBytes: 80 * 1024 * 1024,
-    description: 'Multi-language high-quality voice – quantised int8',
+    sizeBytes: 126 * 1024 * 1024,
+    description: 'Multi-language high-quality – quantised int8 (EN/ZH/JA/KO/FR/DE/ES)',
+    archiveDir: 'kokoro-int8-multi-lang-v1_0',
     downloadUrls: [
-      '$_ghBase/kokoro-v1-q8.tar.bz2',
-      '$_mirrorBase/kokoro-v1-q8.tar.bz2',
-      '$_hfBase/kokoro-v1-q8.tar.bz2',
+      '$_ghBase/kokoro-int8-multi-lang-v1_0.tar.bz2',
+      '$_mirrorBase/kokoro-int8-multi-lang-v1_0.tar.bz2',
+      '$_hfBase/kokoro-int8-multi-lang-v1_0.tar.bz2',
     ],
-    sha256: 'placeholder',
-    files: {'model': 'model.onnx', 'tokens': 'tokens.txt', 'voices': 'voices.bin'},
+    files: {
+      'model': 'model.int8.onnx',
+      'tokens': 'tokens.txt',
+      'voices': 'voices.bin',
+      'dictDir': 'dict',
+      'lexicon': 'lexicon-us-en.txt,lexicon-zh.txt',
+    },
   ),
   TtsModel(
-    id: 'kokoro-v1-fp16',
-    name: 'Kokoro v1 (FP16)',
+    id: 'kokoro-multi-lang-v1_0',
+    name: 'Kokoro v1.0 (Multi-lang, FP32)',
     engine: 'kokoro',
     language: 'multi',
-    sizeBytes: 300 * 1024 * 1024,
-    description: 'Multi-language high-quality voice – float16',
+    sizeBytes: 333 * 1024 * 1024,
+    description: 'Multi-language highest quality – full precision (EN/ZH/JA/KO/FR/DE/ES)',
+    archiveDir: 'kokoro-multi-lang-v1_0',
     downloadUrls: [
-      '$_ghBase/kokoro-v1-fp16.tar.bz2',
-      '$_mirrorBase/kokoro-v1-fp16.tar.bz2',
-      '$_hfBase/kokoro-v1-fp16.tar.bz2',
+      '$_ghBase/kokoro-multi-lang-v1_0.tar.bz2',
+      '$_mirrorBase/kokoro-multi-lang-v1_0.tar.bz2',
+      '$_hfBase/kokoro-multi-lang-v1_0.tar.bz2',
     ],
-    sha256: 'placeholder',
-    files: {'model': 'model.onnx', 'tokens': 'tokens.txt', 'voices': 'voices.bin'},
+    files: {
+      'model': 'model.onnx',
+      'tokens': 'tokens.txt',
+      'voices': 'voices.bin',
+      'dictDir': 'dict',
+      'lexicon': 'lexicon-us-en.txt,lexicon-zh.txt',
+    },
   ),
 ];

@@ -93,12 +93,21 @@ class SherpaOnnxProvider extends TtsServiceProvider {
         ),
       );
     } else if (model.engine == 'kokoro') {
+      // Build comma-separated lexicon paths (relative filenames → absolute)
+      final lexiconFiles = (model.files['lexicon'] ?? '')
+          .split(',')
+          .where((s) => s.trim().isNotEmpty)
+          .map((s) => '$modelPath/${s.trim()}')
+          .join(',');
+
       config = sherpa.OfflineTtsConfig(
         model: sherpa.OfflineTtsModelConfig(
           kokoro: sherpa.OfflineTtsKokoroModelConfig(
             model: '$modelPath/${model.files['model']}',
             tokens: '$modelPath/${model.files['tokens']}',
             voices: '$modelPath/${model.files['voices']}',
+            dictDir: model.files['dictDir'] != null ? '$modelPath/${model.files['dictDir']}' : '',
+            lexicon: lexiconFiles,
           ),
         ),
       );
