@@ -38,7 +38,9 @@
 │  │              │    │              │                   │
 │  │ TTSManager   │    │ Kokoro       │ ← CPU/GPU 均可    │
 │  │  ├ Primary   │    │   或         │                   │
-│  │  └ Fallback  │    │ IndexTTS-2   │ ← GPU（待评估）    │
+│  │  └ Fallback  │    │ Qwen3-TTS   │ ← GPU 中文首选    │
+│  │              │    │   或         │                   │
+│  │              │    │ Chatterbox   │ ← GPU 轻量首选    │
 │  │              │    │              │                   │
 │  │ EdgeTTS      │    └──────────────┘                   │
 │  │ (内置fallback)│                                      │
@@ -70,12 +72,14 @@
 
 | 场景 | 引擎 | Docker 镜像 | 硬件 | 说明 |
 |------|------|------------|------|------|
-| **A. 默认推荐** | **Kokoro** | `ghcr.io/remsky/kokoro-fastapi` | CPU 即可，GPU 加速 | 82M 参数，CPU/GPU 双模式，OpenAI 兼容 API |
-| **B. 最高质量有声书** | **IndexTTS-2** | ⚠️ 待评估（需 POC 验证） | GPU 8GB+ | 精确时长控制 + 情感表达，Apache 2.0 |
-| **C. 零成本 fallback** | **Edge TTS** | 无需容器 | 无 | Go 直接调用，⚠️ 非官方 API，无 SLA，可能被限流 |
-| **D. 高质量候选** | **Parler-TTS / Orpheus / Dia** | 待评估 | GPU | 与 IndexTTS-2 做 A/B 评估后择优 |
+| **A. 默认推荐（CPU/GPU）** | **Kokoro** | `ghcr.io/remsky/kokoro-fastapi` | CPU 即可，GPU 加速 | 82M 参数，CPU/GPU 双模式，OpenAI 兼容 API |
+| **B. GPU 有声书（中文为主）** | **Qwen3-TTS 1.7B** | [现成 Docker + OpenAI API](https://github.com/groxaxo/Qwen3-TTS-Openai-Fastapi) | GPU 6GB+ | 🥇 中文最强（含方言）、10 语言、97ms 延迟、Apache 2.0 |
+| **C. GPU 有声书（轻量/英文为主）** | **Chatterbox Turbo** | 社区 Docker | GPU 4GB+ | 🥈 盲测胜 ElevenLabs、350M 极轻量、23 语言、MIT |
+| **D. 全能型备选** | **Orpheus 3B** | [生产级 Docker](https://github.com/blak-code-tech/orpheus-tts) | GPU 8GB+ | 🥉 中英文都好、情感标签、Docker 成熟 |
+| **E. 零成本 fallback** | **Edge TTS** | 无需容器 | 无 | Go 直接调用，⚠️ 非官方 API，无 SLA，可能被限流 |
+| **F. 后备** | **IndexTTS-2** | ⚠️ 需自行包装 | GPU 8GB+ | 质量好但无现成 Docker/API 镜像，待生态成熟 |
 
-> **注意：** IndexTTS-2 目前没有现成的 OpenAI 兼容 API Docker 镜像，需自行包装 FastAPI + Dockerfile。在 Phase 2 启动前必须完成 POC 验证。Phase 1 的 GPU 用户先用 Kokoro GPU 模式（Kokoro-FastAPI 同时支持 CPU 和 GPU）。
+> **选型依据：** 详见 [015-tts-model-evaluation.md](015-tts-model-evaluation.md)。Qwen3-TTS 加权总分 4.55（中文30%权重满分），Chatterbox 4.40（仅需 4GB VRAM）。Parler-TTS（不支持中文）和 Dia（仅英文）已淘汰。Phase 1 的 GPU 用户先用 Kokoro GPU 模式（Kokoro-FastAPI 同时支持 CPU 和 GPU）。
 
 ### App 端引擎选型（用户按需下载）
 
@@ -453,8 +457,9 @@ Phase 1（v0.1）：
 Phase 2（v0.2）：
 ├── Server: 有声书章节级生成任务队列（详见 015 文档）
 │   └── 含 EPUB 章节文本提取、长文本分片、ID3 标签嵌入
-├── Server: IndexTTS-2 POC 评估（验证 Docker 镜像 + OpenAI 兼容 API）
-│   ├── 同时评估 Parler-TTS / Orpheus / Dia 作为候选
+├── Server: Qwen3-TTS / Chatterbox POC 评估
+│   ├── Qwen3-TTS Docker 部署验证（docker compose up 一键启动 + /v1/audio/speech）
+│   ├── Chatterbox 4GB GPU 验证（OOM 风险排查）
 │   └── 评估标准：中英文各 10 段 MOS 评分、单章耗时、镜像大小、API 兼容性、许可证
 ├── App: sherpa-onnx 集成 + 模型管理器（试听、智能推荐、断点续传）
 ├── App: Piper（精选模型）+ Kokoro 模型下载
@@ -463,7 +468,8 @@ Phase 2（v0.2）：
 └── App: flutter_secure_storage 存储 API Key
 
 Phase 3（v0.3）：
-├── Server: 最高质量引擎上线（IndexTTS-2 或 POC 胜出的候选）
+├── Server: 最高质量引擎上线（Qwen3-TTS 或 Chatterbox，POC 验证后）
+├── Server: Orpheus 3B 备选集成
 ├── Server: OpenAI TTS 代理
 ├── App: 商业 API 直连（OpenAI/ElevenLabs/Azure）
 ├── App: MeloTTS 模型（sherpa-onnx 兼容性验证通过后）
