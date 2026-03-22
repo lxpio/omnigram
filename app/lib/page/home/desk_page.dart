@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:omnigram/models/book.dart';
 import 'package:omnigram/page/reader/immersive_reader.dart';
 import 'package:omnigram/providers/desk_provider.dart';
+import 'package:omnigram/service/ai/ai_availability.dart';
+import 'package:omnigram/service/ai/ambient_tasks.dart';
 import 'package:omnigram/widgets/desk/greeting_header.dart';
 import 'package:omnigram/widgets/desk/hero_book_card.dart';
 import 'package:omnigram/widgets/desk/also_reading_shelf.dart';
@@ -10,8 +12,16 @@ import 'package:omnigram/widgets/common/empty_state.dart';
 import 'package:omnigram/theme/omnigram_theme.dart';
 import 'package:omnigram/theme/typography.dart';
 
-class DeskPage extends ConsumerWidget {
+class DeskPage extends ConsumerStatefulWidget {
   const DeskPage({super.key});
+
+  @override
+  ConsumerState<DeskPage> createState() => _DeskPageState();
+}
+
+class _DeskPageState extends ConsumerState<DeskPage> {
+  String? _memoryText;
+  int? _lastHeroBookId;
 
   void _openReader(BuildContext context, Book book) {
     Navigator.push(
@@ -22,8 +32,23 @@ class DeskPage extends ConsumerWidget {
     );
   }
 
+  void _fetchMemoryBridge(Book book) async {
+    if (!AiAvailability.isAvailable(ref)) return;
+
+    final text = await AmbientTasks.memoryBridge(
+      ref: ref,
+      bookId: book.id,
+      bookTitle: book.title,
+      lastPosition: book.lastReadPosition,
+      progress: book.readingPercentage,
+    );
+    if (text != null && mounted) {
+      setState(() => _memoryText = text);
+    }
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final deskAsync = ref.watch(deskDataProvider);
 
     return SafeArea(
@@ -39,6 +64,16 @@ class DeskPage extends ConsumerWidget {
             );
           }
 
+          // Fetch memory bridge when hero book changes
+          final heroBook = desk.currentBook!;
+          if (heroBook.id != _lastHeroBookId) {
+            _lastHeroBookId = heroBook.id;
+            _memoryText = null;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _fetchMemoryBridge(heroBook);
+            });
+          }
+
           return ListView(
             padding: const EdgeInsets.all(
                 OmnigramTheme.pageHorizontalPadding),
@@ -47,9 +82,10 @@ class DeskPage extends ConsumerWidget {
               const GreetingHeader(),
               const SizedBox(height: 24),
               HeroBookCard(
-                book: desk.currentBook!,
+                book: heroBook,
                 onContinueReading: () =>
-                    _openReader(context, desk.currentBook!),
+                    _openReader(context, heroBook),
+                memoryText: _memoryText,
               ),
               const SizedBox(height: 24),
               AlsoReadingShelf(
