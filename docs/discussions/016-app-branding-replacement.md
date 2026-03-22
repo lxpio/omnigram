@@ -1,7 +1,7 @@
 # 016 - App 品牌替换计划（Anx Reader → Omnigram）
 
 > 创建日期：2026-03-22
-> 状态：📋 待执行
+> 状态：✅ 已完成（2026-03-22 执行）
 > 范围：将 Fork 自 Anx Reader 的 App 中所有品牌元素替换为 Omnigram
 > 前置：009-fork-anx-reader-plan.md（Fork 决策），assets/img/（Omnigram 品牌资产）
 
