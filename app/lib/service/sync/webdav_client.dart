@@ -72,7 +72,7 @@ class WebdavClient extends SyncClientBase {
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       localTestFile = io.File('${tempDir.path}/webdav_test_$timestamp.txt');
 
-      final testContent = 'Anx Reader WebDAV Test\n'
+      final testContent = 'Omnigram WebDAV Test\n'
           'Test Time: ${DateTime.now()}\n'
           'Platform: ${AnxPlatform.type.name}\n'
           'Timestamp: $timestamp\n';

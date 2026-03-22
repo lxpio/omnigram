@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "Anx-logo.png",
+      "filename" : "omnigram-logo.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -13,7 +13,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "Anx-logo-dark.png",
+      "filename" : "omnigram-logo-dark.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -25,7 +25,7 @@
           "value" : "tinted"
         }
       ],
-      "filename" : "Anx-logo-tined.png",
+      "filename" : "omnigram-logo-tinted.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

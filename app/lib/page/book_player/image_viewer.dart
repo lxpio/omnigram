@@ -115,7 +115,7 @@ class _ImageViewerState extends State<ImageViewer> {
                             final path = await saveB64ImageToPath(
                               widget.image,
                               (await getAnxTempDir()).path,
-                              "AnxReader_${widget.bookName}",
+                              "Omnigram_${widget.bookName}",
                             );
 
                             await shareFile(filePath: path);

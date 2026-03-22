@@ -3,26 +3,12 @@
 <br>
 
 <p align="center">
-  <img src="./docs/images/Anx-logo.jpg" alt="Anx-logo" width="100" />
+  <img src="./docs/images/Anx-logo.jpg" alt="Omnigram" width="100" />
 </p>
-<h1 align="center">Anx Reader</h1>
-<p align="center"><a href="https://trendshift.io/repositories/10329" target="_blank"><img src="https://trendshift.io/api/badge/repositories/10329" alt="Anxcye%2Fanx-reader | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a></p>
+<h1 align="center">Omnigram</h1>
+<p align="center"><em>На основе <a href="https://github.com/Anxcye/anx-reader">Anx Reader</a> (MIT Licensed)</em></p>
 
-<p align="center">
-  <a href="https://github.com/Anxcye/anx-reader#platform-support"><img src="https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20iOS%20%7C%20Android-lightgrey" alt="Платформы"></a>
-  <a href="https://github.com/Anxcye/anx-reader#supported-formats"><img src="https://img.shields.io/badge/formats-epub%20%7C%20fb2%20%7C%20mobi%20%7C%20txt%20%7C%20azw3%20%7C%20pdf-brightgreen" alt="Поддерживаемые форматы"></a>
-</p>
-
-<p align="center">
-  <a href="https://github.com/Anxcye/anx-reader/releases/latest"><img src="https://img.shields.io/github/v/release/anxcye/anx-reader" alt="Последний релиз"></a>
-  <a href="https://github.com/Anxcye/anx-reader/releases"><img src="https://img.shields.io/github/v/release/anxcye/anx-reader?include_prereleases" alt="Предрелиз"></a>
-  <a href="https://github.com/Anxcye/anx-reader/blob/main/LICENSE"><img src="https://img.shields.io/github/license/anxcye/anx-reader" alt="Лицензия" ></a>
-  <a href="https://github.com/Anxcye/anx-reader/releases"><img src="https://img.shields.io/github/downloads/anxcye/anx-reader/total" alt="Скачивания"></a>
-  <a href="https://hellogithub.com/repository/819a2b3050204451bed552a8812114e5" target="_blank"><img src="https://abroad.hellogithub.com/v1/widgets/recommend.svg?rid=819a2b3050204451bed552a8812114e5&claim_uid=WBA1XOQirm2GRqs&theme=small" alt="Рекомендуем｜HelloGitHub"/></a>
-  <a href="https://github.com/anxcye/anx-reader/stargazers"><img src="https://img.shields.io/github/stars/anxcye/anx-reader" alt="звёзды"></a>
-</p>
-
-Anx Reader — продуманная читалка электронных книг для любителей чтения. Оснащена мощными возможностями искусственного интеллекта и поддерживает различные форматы электронных книг, делая чтение умнее и сосредоточеннее. Благодаря современному дизайну интерфейса мы стремимся подарить вам чистое удовольствие от чтения.
+Omnigram — продуманная читалка электронных книг для любителей чтения. Оснащена мощными возможностями искусственного интеллекта и поддерживает различные форматы электронных книг, делая чтение умнее и сосредоточеннее. Благодаря современному дизайну интерфейса мы стремимся подарить вам чистое удовольствие от чтения.
 
 ![](./docs/images/main.jpg)
 
@@ -104,12 +90,12 @@ Anx Reader — продуманная читалка электронных кн
 | ![](./docs/images/mobile7.png) | ![](./docs/images/mobile8.png) | ![](./docs/images/mobile9.png) |
 
 ## Пожертвования  
-Если вам нравится Anx Reader, пожалуйста, рассмотрите возможность поддержки проекта пожертвованиями. Ваша помощь поможет поддерживать и развивать проект.
+Если вам нравится Omnigram, пожалуйста, рассмотрите возможность поддержки проекта пожертвованиями. Ваша помощь поможет поддерживать и развивать проект.
 
 ❤️ [Пожертвовать](https://anxcye.com/home/7)
 
 ## Сборка  
-Хотите собрать Anx Reader из исходников? Пожалуйста, выполните следующие шаги:  
+Хотите собрать Omnigram из исходников? Пожалуйста, выполните следующие шаги:  
 - Установите [Flutter](https://flutter.dev).  
 - Клонируйте репозиторий и перейдите в каталог проекта.  
 - Выполните `flutter pub get`.  
@@ -122,8 +108,8 @@ Anx Reader — продуманная читалка электронных кн
 ## Политика подписания кода  
 - Коммитеры и рецензенты: [Команда участников](https://github.com/anxcye/anx-reader/graphs/contributors)  
 - Утверждающие: [Владельцы](https://github.com/anxcye)  
-- [Политика конфиденциальности](https://anx.anxcye.com/privacy.html)  
-- [Условия использования](https://anx.anxcye.com/terms.html)
+- [Политика конфиденциальности](https://omnigram.lxpio.com/privacy)
+- [Условия использования](https://omnigram.lxpio.com/terms)
 
 ### Спонсоры  
 | ![signpath](https://signpath.org/assets/favicon-50x50.png) | Бесплатное подписание кода на Windows предоставлено [SignPath.io](https://about.signpath.io/), сертификат выдан [SignPath Foundation](https://signpath.org/) |
@@ -132,7 +118,7 @@ Anx Reader — продуманная читалка электронных кн
 ## Лицензия  
 Этот проект лицензирован под [MIT License](./LICENSE).
 
-Начиная с версии 1.1.4, лицензия проекта Anx Reader была изменена с MIT License на GNU General Public License версии 3 (GPLv3).
+Начиная с версии 1.1.4, лицензия проекта Anx Reader (upstream) была изменена с MIT License на GNU General Public License версии 3 (GPLv3).
 
 После версии 1.2.6 функция выделения и подсветки была переписана, и лицензия была изменена с GPL-3.0 на MIT License. Все участники согласны с этим изменением (#116).
 

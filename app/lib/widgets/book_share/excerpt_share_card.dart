@@ -86,10 +86,10 @@ class ExcerptShareCard extends StatelessWidget {
     }
   }
 
-  Widget _getAnxReaderLogo({double fontSize = 12, Color? color}) {
+  Widget _getOmnigramLogo({double fontSize = 12, Color? color}) {
     color ??= textColor;
     return Text(
-      'Anx Reader',
+      'Omnigram',
       style: TextStyle(
         fontSize: fontSize,
         fontWeight: FontWeight.w100,
@@ -279,7 +279,7 @@ class ExcerptShareCard extends StatelessWidget {
                   ],
                 ),
               ),
-              _getAnxReaderLogo(),
+              _getOmnigramLogo(),
             ],
           ),
         ],
@@ -347,7 +347,7 @@ class ExcerptShareCard extends StatelessWidget {
               Row(
                 children: [
                   Spacer(),
-                  _getAnxReaderLogo(),
+                  _getOmnigramLogo(),
                 ],
               ),
             ],
@@ -396,7 +396,7 @@ class ExcerptShareCard extends StatelessWidget {
                 Row(
                   children: [
                     const Spacer(),
-                    _getAnxReaderLogo(
+                    _getOmnigramLogo(
                       fontSize: 16,
                       color: backgroundImage != null ? Colors.white : null,
                     ),
@@ -455,7 +455,7 @@ class ExcerptShareCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 16),
-              _getAnxReaderLogo(),
+              _getOmnigramLogo(),
             ],
           ),
         ],

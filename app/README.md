@@ -3,26 +3,17 @@
 <br>
 
 <p align="center">
-  <img src="./docs/images/Anx-logo.jpg" alt="Anx-logo" width="100" />
+  <img src="./docs/images/Anx-logo.jpg" alt="Omnigram" width="100" />
 </p>
-<h1 align="center">Anx Reader</h1>
-<p align="center"><a href="https://trendshift.io/repositories/10329" target="_blank"><img src="https://trendshift.io/api/badge/repositories/10329" alt="Anxcye%2Fanx-reader | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a></p>
+<h1 align="center">Omnigram</h1>
+<p align="center"><em>Forked from <a href="https://github.com/Anxcye/anx-reader">Anx Reader</a> (MIT Licensed)</em></p>
 
 <p align="center">
-  <a href="https://github.com/Anxcye/anx-reader#platform-support"><img src="https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20iOS%20%7C%20Android-lightgrey" alt="Platforms"></a>
-  <a href="https://github.com/Anxcye/anx-reader#supported-formats"><img src="https://img.shields.io/badge/formats-epub%20%7C%20fb2%20%7C%20mobi%20%7C%20txt%20%7C%20azw3%20%7C%20pdf-brightgreen" alt="Supported Formats"></a>
+  <a href="https://github.com/lxpio/omnigram#platform-support"><img src="https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20iOS%20%7C%20Android-lightgrey" alt="Platforms"></a>
+  <a href="https://github.com/lxpio/omnigram#supported-formats"><img src="https://img.shields.io/badge/formats-epub%20%7C%20fb2%20%7C%20mobi%20%7C%20txt%20%7C%20azw3%20%7C%20pdf-brightgreen" alt="Supported Formats"></a>
 </p>
 
-<p align="center">
-  <a href="https://github.com/Anxcye/anx-reader/releases/latest"><img src="https://img.shields.io/github/v/release/anxcye/anx-reader" alt="Latest Release"></a>
-  <a href="https://github.com/Anxcye/anx-reader/releases"><img src="https://img.shields.io/github/v/release/anxcye/anx-reader?include_prereleases" alt="Pre-release"></a>
-  <a href="https://github.com/Anxcye/anx-reader/blob/main/LICENSE"><img src="https://img.shields.io/github/license/anxcye/anx-reader" alt="License" ></a>
-  <a href="https://github.com/Anxcye/anx-reader/releases"><img src="https://img.shields.io/github/downloads/anxcye/anx-reader/total" alt="Downloads"></a>
-  <a href="https://hellogithub.com/repository/819a2b3050204451bed552a8812114e5" target="_blank"><img src="https://abroad.hellogithub.com/v1/widgets/recommend.svg?rid=819a2b3050204451bed552a8812114e5&claim_uid=WBA1XOQirm2GRqs&theme=small" alt="Featured｜HelloGitHub"/></a>
-  <a href="https://github.com/anxcye/anx-reader/stargazers"><img src="https://img.shields.io/github/stars/anxcye/anx-reader" alt="stars"></a>
-</p>
-
-Anx Reader, a thoughtfully crafted e-book reader for book lovers. Featuring powerful AI capabilities and supporting various e-book formats, it makes reading smarter and more focused. With its modern interface design, we're committed to delivering pure reading pleasure.
+Omnigram, a thoughtfully crafted e-book reader for book lovers. Featuring powerful AI capabilities and supporting various e-book formats, it makes reading smarter and more focused. With its modern interface design, we're committed to delivering pure reading pleasure.
 
 
 ![](./docs/images/main.jpg)
@@ -122,12 +113,12 @@ QQ Group：1042905699
 | ![](./docs/images/mobile7.png) | ![](./docs/images/mobile8.png) | ![](./docs/images/mobile9.png) |
 
 ## Donations
-If you like Anx Reader, please consider supporting the project by donating. Your donation will help me maintain and improve the project.
+If you like Omnigram, please consider supporting the project by donating. Your donation will help me maintain and improve the project.
 
 ❤️ [Donate](https://anxcye.com/home/7)
 
 ## Building
-Want to build Anx Reader from source? Please follow these steps:
+Want to build Omnigram from source? Please follow these steps:
 - Install [Flutter](https://flutter.dev).
 - Clone and enter the project directory.
 - Run `flutter pub get`.
@@ -141,8 +132,8 @@ You may encounter Flutter version incompatibility issues. Please refer to the [F
 ## Code signing policy
 - Committers and reviewers: [Members team](https://github.com/anxcye/anx-reader/graphs/contributors)
 - Approvers: [Owners](https://github.com/anxcye)
-- [Privacy Policy](https://anx.anxcye.com/privacy.html)
-- [Terms of Service](https://anx.anxcye.com/terms.html)
+- [Privacy Policy](https://omnigram.lxpio.com/privacy)
+- [Terms of Service](https://omnigram.lxpio.com/terms)
 
 ### Sponsors
 | ![signpath](https://signpath.org/assets/favicon-50x50.png) | Free code signing on Windows provided by [SignPath.io](https://about.signpath.io/),certficate by [SignPath Foundation](https://signpath.org/) |
@@ -152,7 +143,7 @@ You may encounter Flutter version incompatibility issues. Please refer to the [F
 ## License
 This project is licensed under the [MIT License](./LICENSE).
 
-Starting from version 1.1.4, the open source license for the Anx Reader project has been changed from the MIT License to the GNU General Public License version 3 (GPLv3).
+Starting from version 1.1.4, the open source license for the Anx Reader (upstream) project has been changed from the MIT License to the GNU General Public License version 3 (GPLv3).
 
 After version 1.2.6, the selection and highlight feature has been rewritten, and the open source license has been changed from the GPL-3.0 License to the MIT License. All contributors agree to this change(#116).
 
