@@ -1,0 +1,4 @@
+{"type":"click","text":"A\n    \n      内联融合 (Inline)\n      AI 直接嵌入阅读内容流中。选中文字 → 浮窗释义；生僻概念 → 行内出现小图标点击展开；翻译 → 双语段落自然交替。完全不离开阅读上下文。","choice":"inline","id":null,"timestamp":1774170584056}
+{"type":"click","text":"B\n    \n      页边批注 (Margin Notes)\n      像学者在书页边写批注一样。AI 的解释、关联、补充出现在页边空白处，灰色小字，不打断正文。类似纸质书的\"旁批\"传统。","choice":"margin","id":null,"timestamp":1774170584852}
+{"type":"click","text":"C\n    \n      上下文条 (Context Bar)\n      阅读页顶部或底部有一条薄薄的智能条。翻到新章节 → 显示\"前情提要\"；遇到人物 → 显示\"上次出现在第X章\"；读到引用 → 显示原文出处。像 GPS 导航的提示条。","choice":"contextbar","id":null,"timestamp":1774170585723}
+{"type":"click","text":"D\n    \n      手势召唤 (Gesture Summon)\n      平时完全干净的阅读界面。需要时，特定手势（如三指下滑、长按空白处）召唤 AI 面板，用完自动消失。像 iPhone 的控制中心，需要才出现。","choice":"gesture","id":null,"timestamp":1774170586696}

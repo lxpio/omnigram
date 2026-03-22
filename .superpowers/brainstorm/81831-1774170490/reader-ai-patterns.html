@@ -1,0 +1,40 @@
+<h2>阅读器中的 AI 集成模式</h2>
+<p class="subtitle">用户在读书时，AI 应该怎样"隐形"地出现？选择你最认同的模式（可多选）</p>
+
+<div class="options" data-multiselect>
+  <div class="option" data-choice="inline" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>内联融合 (Inline)</h3>
+      <p>AI 直接嵌入阅读内容流中。选中文字 → 浮窗释义；生僻概念 → 行内出现小图标点击展开；翻译 → 双语段落自然交替。<strong>完全不离开阅读上下文。</strong></p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="margin" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>页边批注 (Margin Notes)</h3>
+      <p>像学者在书页边写批注一样。AI 的解释、关联、补充出现在页边空白处，灰色小字，不打断正文。<strong>类似纸质书的"旁批"传统。</strong></p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="contextbar" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>上下文条 (Context Bar)</h3>
+      <p>阅读页顶部或底部有一条薄薄的智能条。翻到新章节 → 显示"前情提要"；遇到人物 → 显示"上次出现在第X章"；读到引用 → 显示原文出处。<strong>像 GPS 导航的提示条。</strong></p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="gesture" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>手势召唤 (Gesture Summon)</h3>
+      <p>平时完全干净的阅读界面。需要时，特定手势（如三指下滑、长按空白处）召唤 AI 面板，用完自动消失。<strong>像 iPhone 的控制中心，需要才出现。</strong></p>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: 2rem; padding: 1rem; border-radius: 8px; background: rgba(128,128,128,0.1);">
+  <p style="margin: 0; font-size: 0.9rem; color: #888;">这些模式不互斥 — 你可以组合使用。关键是：<strong>哪些是默认开启的，哪些是用户主动触发的？</strong></p>
+</div>
