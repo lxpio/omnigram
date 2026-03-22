@@ -280,6 +280,8 @@ class OnlineTts extends BaseTts {
     // Capture the version at the start of fetching
     final targetVersion = segment.fetchVersion;
 
+    AnxLog.info('TTS fetch: text="${segment.sentence.text.substring(0, segment.sentence.text.length.clamp(0, 30))}"');
+
     for (var attempt = 0; attempt <= _maxRetries; attempt++) {
       if (_shouldStop) return;
       if (segment.isReady) return;
