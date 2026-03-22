@@ -34,8 +34,8 @@ platform :ios do
 
 
     # get_certificates
-    # get_provisioning_profile(app_identifier: "com.lxpio.omnigram")
-    # get_provisioning_profile(app_identifier: "com.lxpio.omnigram.shareExtension")
+    # get_provisioning_profile(app_identifier: "com.lxpio.omnigram.v2")
+    # get_provisioning_profile(app_identifier: "com.lxpio.omnigram.v2.shareExtension")
   
     if is_ci
       create_keychain(
@@ -86,8 +86,8 @@ platform :ios do
       export_options: {
         teamID: "28W956D5K8",
         provisioningProfiles: {
-          "com.lxpio.omnigram" => "match AppStore com.lxpio.omnigram",
-          "com.lxpio.omnigram.shareExtension" => "match AppStore com.lxpio.omnigram.shareExtension"
+          "com.lxpio.omnigram.v2" => "match AppStore com.lxpio.omnigram.v2",
+          "com.lxpio.omnigram.v2.shareExtension" => "match AppStore com.lxpio.omnigram.v2.shareExtension"
         }
       }
     )
