@@ -65,6 +65,8 @@ dependencies:
   share_plus: ^12.0.1
   device_info_plus: ^12.3.0
   flutter_riverpod: ^2.5.1
+  flutter_secure_storage: ^9.2.4
+  sherpa_onnx: ^1.10.42
   riverpod_annotation: ^2.3.5
   chinese_font_library: ^1.2.0
   flex_color_scheme: ^8.3.0
