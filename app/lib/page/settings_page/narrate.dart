@@ -25,8 +25,7 @@ class NarrateSettings extends ConsumerStatefulWidget {
   ConsumerState<NarrateSettings> createState() => _NarrateSettingsState();
 }
 
-class _NarrateSettingsState extends ConsumerState<NarrateSettings>
-    with SingleTickerProviderStateMixin {
+class _NarrateSettingsState extends ConsumerState<NarrateSettings> with SingleTickerProviderStateMixin {
   String? selectedVoiceModel;
   Map<String, List<TtsVoice>> groupedVoices = {};
   Set<String> expandedGroups = {};
@@ -44,8 +43,7 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
   final Map<String, bool> _modelLoadingStates = {};
   bool _mainTestLoading = false;
 
-  Future<void> _testSpeak(String text, String? voiceShortName,
-      {bool isMainButton = false}) async {
+  Future<void> _testSpeak(String text, String? voiceShortName, {bool isMainButton = false}) async {
     if (isMainButton) {
       if (_mainTestLoading) return;
       setState(() {
@@ -90,12 +88,7 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
               ],
             ),
             content: Text(e.toString()),
-            actions: [
-              TextButton(
-                onPressed: () => SmartDialog.dismiss(),
-                child: Text(L10n.of(dialogContext).commonOk),
-              ),
-            ],
+            actions: [TextButton(onPressed: () => SmartDialog.dismiss(), child: Text(L10n.of(dialogContext).commonOk))],
           ),
         );
       }
@@ -116,14 +109,10 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
   void initState() {
     super.initState();
 
-    _highlightAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1500),
-    );
+    _highlightAnimationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500));
 
     final serviceId = Prefs().ttsService;
-    selectedVoiceModel =
-        tts_svc.getTtsService(serviceId).provider.getSelectedVoice();
+    selectedVoiceModel = tts_svc.getTtsService(serviceId).provider.getSelectedVoice();
     _testTextController.text = "Hello, this is a test.";
   }
 
@@ -131,17 +120,17 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _highlightAnimation = ColorTween(
-      begin: Theme.of(context).colorScheme.primaryContainer.withAlpha(100),
-      end: Colors.transparent,
-    ).animate(_highlightAnimationController)
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          setState(() {
-            _highlightedModel = null;
-          });
-        }
-      });
+    _highlightAnimation =
+        ColorTween(
+          begin: Theme.of(context).colorScheme.primaryContainer.withAlpha(100),
+          end: Colors.transparent,
+        ).animate(_highlightAnimationController)..addStatusListener((status) {
+          if (status == AnimationStatus.completed) {
+            setState(() {
+              _highlightedModel = null;
+            });
+          }
+        });
   }
 
   @override
@@ -288,9 +277,7 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
     final provider = tts_svc.getTtsService(serviceId).provider;
     final hasVoiceField = provider.getConfig().containsKey('voice');
     if (hasVoiceField) {
-      ref
-          .read(onlineTtsConfigProvider(serviceId).notifier)
-          .updateConfig('voice', shortName);
+      ref.read(onlineTtsConfigProvider(serviceId).notifier).updateConfig('voice', shortName);
     }
     setState(() {
       selectedVoiceModel = shortName;
@@ -349,21 +336,21 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
           title: Text(L10n.of(context).settingsNarrateTtsService),
           tiles: [
             SettingsTile.switchTile(
-                title: Text(L10n.of(context).allowMixing),
-                description: Text(L10n.of(context).enableMixTip),
-                initialValue: Prefs().allowMixWithOtherAudio,
-                onToggle: (value) {
-                  Prefs().allowMixWithOtherAudio = value;
-                  setState(() {});
-                }),
+              title: Text(L10n.of(context).allowMixing),
+              description: Text(L10n.of(context).enableMixTip),
+              initialValue: Prefs().allowMixWithOtherAudio,
+              onToggle: (value) {
+                Prefs().allowMixWithOtherAudio = value;
+                setState(() {});
+              },
+            ),
           ],
         ),
         SettingsSection(
           title: Text(L10n.of(context).ttsType),
           tiles: [
             CustomSettingsTile(child: _buildServiceSelection(ttsServiceId)),
-            if (ttsServiceId != 'system')
-              CustomSettingsTile(child: _buildConfigSection(ttsServiceId)),
+            if (ttsServiceId != 'system') CustomSettingsTile(child: _buildConfigSection(ttsServiceId)),
           ],
         ),
 
@@ -375,33 +362,24 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: _showVoiceList
-                    ? Column(
-                        children: [..._buildVoiceListContent()],
-                      )
+                    ? Column(children: [..._buildVoiceListContent()])
                     : Center(
                         child: AnxButton(
                           onPressed: () async {
                             setState(() {
                               _showVoiceList = true;
                             });
-                            final voices =
-                                await ref.refresh(ttsVoicesProvider.future);
-                            if (selectedVoiceModel == null &&
-                                voices.isNotEmpty) {
-                              final currentLocale =
-                                  Localizations.localeOf(context);
-                              final currentLangCode =
-                                  currentLocale.languageCode;
+                            final voices = await ref.refresh(ttsVoicesProvider.future);
+                            if (selectedVoiceModel == null && voices.isNotEmpty) {
+                              final currentLocale = Localizations.localeOf(context);
+                              final currentLangCode = currentLocale.languageCode;
 
                               // Try to find a voice matching current language
                               TtsVoice? match = voices.firstWhere(
-                                (v) => v.locale
-                                    .toLowerCase()
-                                    .startsWith(currentLangCode.toLowerCase()),
+                                (v) => v.locale.toLowerCase().startsWith(currentLangCode.toLowerCase()),
                                 orElse: () => voices.firstWhere(
                                   // Fallback to English
-                                  (v) =>
-                                      v.locale.toLowerCase().startsWith('en'),
+                                  (v) => v.locale.toLowerCase().startsWith('en'),
                                   // Fallback to first available
                                   orElse: () => voices.first,
                                 ),
@@ -410,14 +388,13 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
                               _selectVoiceModel(match.shortName);
                             }
                           },
-                          child: Text(
-                              L10n.of(context).settingsNarrateGetVoiceList),
+                          child: Text(L10n.of(context).settingsNarrateGetVoiceList),
                         ),
                       ),
               ),
-            )
+            ),
           ],
-        )
+        ),
       ],
     );
   }
@@ -432,18 +409,13 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
           border: OutlineInputBorder(),
         ),
         items: [
-          DropdownMenuItem(
-              value: 'system',
-              child: Text(L10n.of(context).settingsNarrateSystemTts)),
-          DropdownMenuItem(
-              value: 'aliyun',
-              child: Text(L10n.of(context).settingsNarrateAliyunTts)),
-          DropdownMenuItem(
-              value: 'azure',
-              child: Text(L10n.of(context).settingsNarrateAzureTts)),
-          DropdownMenuItem(
-              value: 'openai',
-              child: Text(L10n.of(context).settingsNarrateOpenAiTts)),
+          DropdownMenuItem(value: 'system', child: Text(L10n.of(context).settingsNarrateSystemTts)),
+          DropdownMenuItem(value: 'edge', child: Text('Edge TTS')),
+          DropdownMenuItem(value: 'server', child: Text('Omnigram Server')),
+          DropdownMenuItem(value: 'sherpaOnnx', child: Text('On-Device (sherpa-onnx)')),
+          DropdownMenuItem(value: 'aliyun', child: Text(L10n.of(context).settingsNarrateAliyunTts)),
+          DropdownMenuItem(value: 'azure', child: Text(L10n.of(context).settingsNarrateAzureTts)),
+          DropdownMenuItem(value: 'openai', child: Text(L10n.of(context).settingsNarrateOpenAiTts)),
         ],
         onChanged: (value) async {
           if (value != null && value != currentServiceId) {
@@ -454,8 +426,7 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
             _showVoiceList = false;
 
             // Sync selected voice model for the new service
-            selectedVoiceModel =
-                tts_svc.getTtsService(value).provider.getSelectedVoice();
+            selectedVoiceModel = tts_svc.getTtsService(value).provider.getSelectedVoice();
 
             setState(() {});
           }
@@ -482,9 +453,7 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
         onConfigChanged: (newConfig) {
           // Update config for each changed field
           for (var entry in newConfig.entries) {
-            ref
-                .read(onlineTtsConfigProvider(serviceId).notifier)
-                .updateConfig(entry.key, entry.value);
+            ref.read(onlineTtsConfigProvider(serviceId).notifier).updateConfig(entry.key, entry.value);
           }
         },
       ),
@@ -497,9 +466,7 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
     return voicesAsync.when(
       data: (voices) {
         if (voices.isEmpty) {
-          return [
-            Center(child: Text(L10n.of(context).settingsNarrateNoVoicesFound))
-          ];
+          return [Center(child: Text(L10n.of(context).settingsNarrateNoVoicesFound))];
         }
 
         _groupVoicesByLanguage(voices);
@@ -519,9 +486,7 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
                     isLoading: _mainTestLoading,
                     icon: Icon(Icons.play_arrow),
                     label: Text(L10n.of(context).commonTest),
-                    onPressed: () => _testSpeak(
-                        _testTextController.text, selectedVoiceModel,
-                        isMainButton: true),
+                    onPressed: () => _testSpeak(_testTextController.text, selectedVoiceModel, isMainButton: true),
                   ),
                 ),
               ),
@@ -554,24 +519,16 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
                   children: [
                     Text(
                       L10n.of(context).settingsNarrateVoiceModelCurrentModel,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey),
                     ),
-                    Icon(
-                      _getGenderIcon(_getCurrentModelGender()),
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                    Icon(_getGenderIcon(_getCurrentModelGender()), color: Theme.of(context).colorScheme.primary),
                   ],
                 ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
                     CircleAvatar(
-                      backgroundColor:
-                          Theme.of(context).colorScheme.primaryContainer,
+                      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                       radius: 24,
                       child: Icon(
                         _getGenderIcon(_getCurrentModelGender()),
@@ -586,19 +543,10 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
                         children: [
                           Text(
                             _getCurrentModelDisplayName(),
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
-                          Text(
-                            _getCurrentModelLanguageName(),
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                          ),
+                          Text(_getCurrentModelLanguageName(), style: TextStyle(fontSize: 14, color: Colors.grey[600])),
                         ],
                       ),
                     ),
@@ -610,16 +558,9 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
                   children: [
                     Text(
                       L10n.of(context).settingsNarrateVoiceModelClickToView,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                      style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.primary),
                     ),
-                    Icon(
-                      Icons.arrow_downward,
-                      size: 16,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                    Icon(Icons.arrow_downward, size: 16, color: Theme.of(context).colorScheme.primary),
                   ],
                 ),
               ],
@@ -648,8 +589,7 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
       List<TtsVoice> voicesInLanguage = language.value;
 
       // Assign key for auto-scroll
-      final GlobalKey key =
-          _languageKeys.putIfAbsent(languageName, () => GlobalKey());
+      final GlobalKey key = _languageKeys.putIfAbsent(languageName, () => GlobalKey());
 
       voiceModelList.add(
         Column(
@@ -667,9 +607,7 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
                   ),
                 ),
                 trailing: Icon(
-                  expandedGroups.contains(languageName)
-                      ? Icons.keyboard_arrow_up
-                      : Icons.keyboard_arrow_down,
+                  expandedGroups.contains(languageName) ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 onTap: () => _toggleGroup(languageName),
@@ -687,8 +625,8 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
                 String localizationedGender = gender.toLowerCase() == 'female'
                     ? L10n.of(context).settingsNarrateVoiceModelFemale
                     : gender.toLowerCase() == 'male'
-                        ? L10n.of(context).settingsNarrateVoiceModelMale
-                        : gender;
+                    ? L10n.of(context).settingsNarrateVoiceModelMale
+                    : gender;
 
                 final description = voice.description;
                 final subtitle = description.isNotEmpty
@@ -699,33 +637,21 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
                   animation: _highlightAnimation,
                   builder: (context, child) {
                     return Container(
-                      color: isHighlighted
-                          ? _highlightAnimation.value
-                          : Colors.transparent,
+                      color: isHighlighted ? _highlightAnimation.value : Colors.transparent,
                       child: child,
                     );
                   },
                   child: ExpansionTile(
                     leading: CircleAvatar(
-                      backgroundColor:
-                          Theme.of(context).colorScheme.primaryContainer,
-                      child: Icon(
-                        _getGenderIcon(gender),
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
-                      ),
+                      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                      child: Icon(_getGenderIcon(gender), color: Theme.of(context).colorScheme.onPrimaryContainer),
                     ),
                     title: Text(
                       displayName,
-                      style: TextStyle(
-                        fontWeight:
-                            isSelected ? FontWeight.bold : FontWeight.normal,
-                      ),
+                      style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
                     ),
                     subtitle: Text(subtitle),
-                    trailing: isSelected
-                        ? Icon(Icons.check,
-                            color: Theme.of(context).primaryColor)
-                        : null,
+                    trailing: isSelected ? Icon(Icons.check, color: Theme.of(context).primaryColor) : null,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -735,29 +661,23 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings>
                             isLoading: _modelLoadingStates[shortName] ?? false,
                             icon: Icon(Icons.play_arrow),
                             label: Text(L10n.of(context).commonTest),
-                            onPressed: () =>
-                                _testSpeak(_testTextController.text, shortName),
+                            onPressed: () => _testSpeak(_testTextController.text, shortName),
                           ),
                           AnxButton(
                             type: AnxButtonType.outlined,
-                            child:
-                                Text(L10n.of(context).settingsNarrateUseVoice),
+                            child: Text(L10n.of(context).settingsNarrateUseVoice),
                             onPressed: () {
                               _selectVoiceModel(shortName);
                             },
-                          )
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 );
               }),
             if (language != sortedEntries.last)
-              Divider(
-                height: 1,
-                thickness: 4,
-                color: Theme.of(context).colorScheme.surface,
-              ),
+              Divider(height: 1, thickness: 4, color: Theme.of(context).colorScheme.surface),
           ],
         ),
       );
