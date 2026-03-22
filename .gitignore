@@ -50,3 +50,6 @@ app.*.map.json
 lib/models/objectbox.g.dart
 
 /android/key.properies.superpowers/
+
+# Private discussions (potential blog content, not open-sourced)
+docs/discussions/
