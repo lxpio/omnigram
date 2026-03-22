@@ -32,3 +32,37 @@ services:
       timeout: 10s
       retries: 3
       start_period: 60s  # Model loading takes 30-60s
+
+  # ── Alternative GPU engines (uncomment ONE to replace Kokoro above) ──
+  #
+  # Qwen3-TTS 1.7B — Best Chinese quality, 10 languages, OpenAI-compatible API
+  # Requires GPU with 6GB+ VRAM. See: https://github.com/groxaxo/Qwen3-TTS-Openai-Fastapi
+  # tts:
+  #   image: groxaxo/qwen3-tts-openai:latest
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - capabilities: [gpu]
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8880/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 120s  # Large model loading
+  #
+  # Chatterbox Turbo — Lightweight GPU (4GB VRAM), 23 languages, MIT license
+  # See: https://github.com/resemble-ai/chatterbox
+  # tts:
+  #   image: resemble-ai/chatterbox:latest
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - capabilities: [gpu]
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8880/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 90s
