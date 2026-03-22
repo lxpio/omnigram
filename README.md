@@ -17,63 +17,80 @@
 </div>
 </br>
 
-![docker action](https://github.com/lxpio/omnigram/actions/workflows/docker.yaml/badge.svg) 
+![docker action](https://github.com/lxpio/omnigram/actions/workflows/docker.yaml/badge.svg)
 ![build app](https://github.com/lxpio/omnigram/actions/workflows/build_app.yaml/badge.svg)
 
 ## About Omnigram
 
 > **Jellyfin for videos. Immich for photos. Omnigram for books.**
 
-Omnigram is an **AI-native, self-hosted book library management and reading service**. Deploy it on your NAS or homeserver with Docker, and turn your ebook collection into an intelligent, searchable, listenable personal library.
+Omnigram is an **AI-native, self-hosted book library and reading service**. Deploy it on your NAS or homeserver with Docker, and your ebook collection becomes an intelligent, personal reading experience — not just a file manager.
 
-Built with a Go backend and Flutter multi-platform client, Omnigram combines book management, AI-powered reading assistance, and TTS audiobook generation into a single, self-hosted solution — something no existing tool provides.
+**The core idea: AI is air, not a button.** There is no "AI tab" in Omnigram. Instead, AI is woven into every surface — your bookshelf organizes itself, your reader remembers where you left off and what you were thinking, and your notes connect across books into a knowledge network. You never "use AI." You just read, and the experience is transformed.
 
 ### Why Omnigram?
 
-- 📚 **Calibre-Web** manages books but has no AI, no TTS, and an aging UI
-- 🎧 **Audiobookshelf** plays existing audiobooks but can't generate them from ebooks
-- 📖 **Anx Reader** is a great reader app but has no server — single-device only
-- 💸 **Readwise Reader** is powerful but costs $8.99/mo and isn't self-hostable
+| Tool | What it does | What it doesn't |
+|------|-------------|----------------|
+| **Calibre-Web** | Manages books | No AI, no TTS, aging UI |
+| **Audiobookshelf** | Plays audiobooks | Can't generate them from ebooks |
+| **Anx Reader** | Great reader app | No server, single-device only |
+| **Readwise Reader** | AI-powered reading | $8.99/mo, not self-hostable |
 
-**Omnigram fills the gap: self-hosted + AI + reading — all in one.**
+**Omnigram fills the gap: self-hosted + ambient AI + reading — all in one.**
+
+## Design Philosophy
+
+Omnigram is built on five principles:
+
+1. **Ambient over explicit** — AI works silently in the background. No chat tabs, no AI buttons
+2. **Companion over tool** — AI is a reading partner with configurable personality, not a Q&A bot
+3. **Insight over statistics** — AI tells you what you learned, not how many pages you read
+4. **Privacy as freedom** — A hidden private library lets you read anything without concern
+5. **New experience, proven foundation** — Fresh design language on top of battle-tested reading engine
 
 ## Features
 
-### Available Now (App — Anx Reader Fork)
-- [x] Multi-format ebook reading (EPUB, MOBI, AZW3, FB2, TXT, PDF)
-- [x] iOS, Android, macOS, Windows native client
-- [x] AI conversational assistant (local LLM integration)
-- [x] TTS text-to-speech with customizable voices
-- [x] Reading notes, highlights, and bookmarks
-- [x] AI-powered mind map generation
-- [x] Full-book translation with bilingual side-by-side reading
-- [x] Reading statistics heatmap
-- [x] WebDAV sync (client-side)
+### Reading Experience
+- Multi-format ebook reading (EPUB, MOBI, AZW3, FB2, TXT)
+- iOS, Android, macOS, Windows native client
+- Four-tab navigation: **Reading Desk** | **Library** | **Insights** | **Settings**
+- Reading Desk — open the app, see what you're reading, continue in one tap
+- Full-screen immersive reader with customizable typography
+- Reading notes, highlights, and bookmarks
+- TTS text-to-speech with customizable voices
 
-### Available Now (Server)
-- [x] Self-hosted book library with directory scanning
-- [x] Multi-format metadata extraction (EPUB)
-- [x] Multi-user management with session auth
-- [x] Book search, favorites, reading progress sync
-- [x] Docker one-click deployment (SQLite/PostgreSQL/MySQL)
-- [x] Server-side TTS via Sidecar (Kokoro / Edge TTS, OpenAI-compatible API)
+### AI-Powered (Ambient)
+- AI reading companion with configurable personality (TARS model — adjust proactivity, style, depth, warmth)
+- Context bar — chapter recaps fade in automatically when you turn pages
+- Inline glossary — select a word, see AI-generated definitions without leaving the page
+- Margin notes — AI surfaces cross-book connections in the page margin
+- Smart bookshelf — auto-tagging, summaries, and reading time estimates on import
+- Semantic search — search your library by meaning, not just keywords
+- Knowledge network — notes organized by concept across all your books
+- Reading narrative — AI tells the story of your reading journey, not just charts
 
-### Roadmap
-- [ ] 🔒 Server security hardening (in progress)
-- [ ] 📚 Book metadata editing & management API
-- [ ] 🌐 **Web UI** — Beautiful book library browser with dark mode
-- [ ] 📂 WebDAV server (sync with Anx Reader / KOReader)
-- [ ] 📖 OPDS catalog protocol
-- [ ] 🏷️ Tags, shelves, and library organization
-- [ ] 📝 Notes & highlights cross-device sync
-- [ ] 🤖 AI metadata auto-completion on import (LLM/Ollama)
-- [ ] 🔍 Full-text semantic search across entire library
-- [ ] 📊 AI book summarization & chapter insights
-- [ ] 🧠 AI-powered cross-book knowledge linking
-- [ ] 🎧 High-quality multi-voice TTS audiobook generation (server-side)
-- [ ] 📖 Web reader (foliate-js, in-browser reading)
-- [ ] 📥 Calibre database import tool
-- [ ] 🐧 Linux desktop client
+### Server
+- Self-hosted book library with directory scanning
+- Multi-format metadata extraction
+- Multi-user management with session auth
+- Book search, favorites, reading progress sync across devices
+- Docker one-click deployment (SQLite / PostgreSQL / MySQL)
+- Server-side TTS via sidecar (Kokoro / Edge TTS, OpenAI-compatible API)
+- OPDS catalog protocol
+
+### Privacy
+- Hidden private library — completely isolated second space with biometric access
+- Zero trace in main interface — private books never appear in bookshelf, search, or insights
+- Full AI experience inside private space — privacy protects against others' eyes, not your reading experience
+- Encrypted local storage with platform keystore
+
+### Data Portability
+- Export notes/highlights as Markdown, JSON, or CSV
+- Export knowledge network for Obsidian/Logseq
+- Import highlights from Kindle, Apple Books, Readwise
+- Full library export as portable archive
+- OPDS catalog for interoperability
 
 ## Omnigram Infrastructure
 
@@ -93,7 +110,6 @@ email: admin
 password: 123456
 ```
 
-
 ## For Dev
 
 ### Build
@@ -104,7 +120,8 @@ password: 123456
 git clone https://github.com/lxpio/omnigram.git
 cd omnigram/app
 flutter pub get
-flutter pub run build_runner build
+flutter gen-l10n
+dart run build_runner build --delete-conflicting-outputs
 flutter build apk  # or: flutter build ios / macos / windows
 ```
 
@@ -118,7 +135,6 @@ make
 # Docker build
 make docker
 ```
-
 
 ### TTS Service
 
@@ -142,20 +158,21 @@ Edge TTS is also available as a zero-deployment fallback (no additional containe
 | Component | Technology |
 |-----------|-----------|
 | **Server** | Go 1.23 + Gin + GORM + BadgerDB |
-| **Client** | Flutter 3.41 + Riverpod (Anx Reader fork) |
-| **TTS** | Kokoro / Edge TTS (OpenAI-compatible Sidecar) / langchain_dart (client) |
+| **Client** | Flutter 3.41 + Riverpod v2 |
+| **AI** | langchain_dart (multi-model: OpenAI, Claude, Gemini, Ollama, DeepSeek) |
+| **TTS** | Kokoro / Edge TTS (OpenAI-compatible Sidecar) / sherpa-onnx (on-device) |
 | **Database** | SQLite / PostgreSQL / MySQL |
 | **Deployment** | Docker / Docker Compose |
 
 ## Acknowledgments
 
-Omnigram's client app is based on [Anx Reader](https://github.com/Anxcye/anx-reader) (MIT License). We are deeply grateful for their excellent work on the reading experience.
+Omnigram's client reading engine builds on [Anx Reader](https://github.com/Anxcye/anx-reader) (MIT License). We are deeply grateful for their excellent work.
 
 Key libraries and dependencies:
 
-- [Anx Reader](https://github.com/Anxcye/anx-reader) — Client app foundation
+- [Anx Reader](https://github.com/Anxcye/anx-reader) — Reading engine foundation
 - [foliate-js](https://github.com/nickthecook/foliate-js) — Ebook rendering engine
-- [riverpod](https://riverpod.dev/) — State management
+- [Riverpod](https://riverpod.dev/) — State management
 - [langchain_dart](https://github.com/davidmigloz/langchain_dart) — AI integration
 - [Kokoro-FastAPI](https://github.com/remsky/Kokoro-FastAPI) — TTS engine (Sidecar)
 
