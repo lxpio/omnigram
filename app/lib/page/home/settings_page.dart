@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:omnigram/theme/typography.dart';
 import 'package:omnigram/theme/omnigram_theme.dart';
 import 'package:omnigram/widgets/common/omnigram_card.dart';
+import 'package:omnigram/page/settings_page/companion_settings_page.dart';
 import 'package:omnigram/page/settings_page/reading.dart';
 import 'package:omnigram/page/settings_page/sync.dart';
 import 'package:omnigram/page/settings_page/more_settings_page.dart';
@@ -32,11 +33,11 @@ class SettingsPage extends ConsumerWidget {
             icon: Icons.smart_toy_outlined,
             title: '阅读伴侣',
             subtitle: '性格 · 声音 · 行为偏好',
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('阅读伴侣配置将在下个版本推出')),
-              );
-            },
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const CompanionSettingsPage(),
+                )),
           ),
           const SizedBox(height: 12),
           _SettingsSection(
