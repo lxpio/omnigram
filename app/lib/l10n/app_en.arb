@@ -890,5 +890,9 @@
   "aiChatFontSize": "Font Size",
   "aiModelSwitchTitle": "Switch Model",
   "aiModelEnterManually": "Enter model name",
-  "aiModelOrSelectBelow": "Or select from list:"
+  "aiModelOrSelectBelow": "Or select from list:",
+  "reading": "Reading",
+  "bookshelf": "Bookshelf",
+  "insights": "Insights",
+  "settings": "Settings"
 }

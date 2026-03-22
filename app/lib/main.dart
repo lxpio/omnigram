@@ -7,6 +7,8 @@ import 'package:omnigram/enums/sync_trigger.dart';
 import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/models/window_info.dart';
 import 'package:omnigram/page/home_page.dart';
+import 'package:omnigram/page/omnigram_home.dart';
+import 'package:omnigram/theme/omnigram_theme.dart';
 import 'package:omnigram/page/migration_page.dart';
 import 'package:omnigram/service/book_player/book_player_server.dart';
 import 'package:omnigram/service/tts/tts_handler.dart';
@@ -198,12 +200,12 @@ class _MyAppState extends ConsumerState<MyApp>
             supportedLocales: L10n.supportedLocales,
             title: 'Omnigram',
             themeMode: prefsNotifier.themeMode,
-            theme: colorSchema(prefsNotifier, context, Brightness.light),
-            darkTheme: colorSchema(prefsNotifier, context, Brightness.dark),
+            theme: OmnigramTheme.light(),
+            darkTheme: OmnigramTheme.dark(),
             home: _needsMigration
                 ? _MigrationWrapper(
                     migrationCheckResult: _migrationCheckResult!)
-                : const HomePage(),
+                : const OmnigramHome(),
           );
         },
       ),
