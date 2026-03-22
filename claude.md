@@ -5,28 +5,74 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 
 ## Project Overview
 
-Omnigram is an **AI-native, self-hosted book library management and reading service**. Deploy on NAS/homeserver via Docker. Go backend + Flutter client (forked from Anx Reader).
+Omnigram is an **AI-native, self-hosted book library and reading service**. Deploy on NAS/homeserver via Docker. Go backend + Flutter client.
 
 **Positioning:** Jellyfin for videos, Immich for photos, **Omnigram for books**.
+
+**Core philosophy:** "AI is air, not a button" — AI is ambient, woven into every surface (bookshelf, reader, insights). There is no AI tab or chat-first interface. The reading experience is transformed without the user ever "opening AI."
+
+## Key Design Documents
+
+| Document | Purpose |
+|----------|---------|
+| `docs/superpowers/specs/2026-03-22-ambient-ai-reading-design.md` | **Active design spec** — the definitive reference for all UI/UX decisions |
+| `docs/discussions/011-ambient-ai-reading-brainstorm.md` | Brainstorm record with decision rationale |
+| `docs/superpowers/specs/2026-03-22-ambient-ai-reading-review.md` | External review of the design spec |
+| `docs/superpowers/plans/2026-03-22-sprint1-foundation-and-core-reading.md` | Sprint 1 implementation plan |
+| `docs/discussions/005-ai-era-ebook-demand.md` | Strategic analysis: AI era ebook demand |
 
 ## Repository Structure
 
 ```
 omnigram/
 ├── server/          # Go backend (Gin + GORM)
-├── app/             # Flutter client (forked from Anx Reader, MIT)
+├── app/             # Flutter client
 │   ├── lib/         # Dart source code
+│   │   ├── theme/       # NEW: Omnigram design system (colors, typography, theme)
+│   │   ├── page/        # Screen pages
+│   │   │   ├── home/        # Tab pages (desk, library, insights, settings)
+│   │   │   ├── reader/      # Immersive reader
+│   │   │   └── omnigram_home.dart  # 4-tab navigation shell
+│   │   ├── widgets/     # Reusable UI components
+│   │   │   ├── desk/        # Reading desk widgets
+│   │   │   ├── library/     # Bookshelf widgets
+│   │   │   ├── insights/    # Insights widgets
+│   │   │   ├── reader/      # Reader chrome widgets
+│   │   │   └── common/      # Base design components
+│   │   ├── models/      # Data models (with freezed)
+│   │   ├── providers/   # Riverpod state management
+│   │   ├── dao/         # sqflite database access
+│   │   ├── service/     # Business logic
+│   │   ├── config/      # Shared preferences, settings
+│   │   └── l10n/        # Localization (16 languages)
 │   ├── android/     # Android platform (com.lxpio.omnigram)
 │   ├── ios/         # iOS platform
 │   ├── macos/       # macOS platform
 │   └── windows/     # Windows platform
 ├── assets/img/      # Project logos, icons, favicons
 ├── docs/            # Documentation
-│   ├── discussions/ # Strategic analysis documents (10 docs)
-│   └── omnigram.openapi.spec.yaml  # Server API spec (reference)
-├── fishtts/         # Fish Audio TTS Docker service
+│   ├── discussions/     # Strategic analysis documents
+│   └── superpowers/     # Design specs and implementation plans
+├── fishtts/         # Fish Audio TTS Docker service (legacy)
 └── Makefile         # Root-level build orchestration
 ```
+
+## App Navigation Architecture
+
+**Four tabs** (Reading Desk is default):
+
+```
+📖 阅读 (Reading Desk)  |  📚 书架 (Library)  |  💡 洞察 (Insights)  |  ⚙ 设置 (Settings)
+```
+
+- **Reading Desk** — "The Desk": current book hero card, also-reading shelf, daily summary
+- **Library** — "The Library": books grouped by topic, semantic search, import
+- **Insights** — "The Second Brain": reading narrative, knowledge network, cross-book connections
+- **Settings** — Reading identity, companion config (TARS panel), reading experience, sync, advanced
+
+**Full-screen reader** is NOT a sub-page of any tab — it's an independent immersive experience.
+
+**AI Chat** is demoted to Settings > Advanced > AI Chat (Debug). Not a primary interface.
 
 ## Tech Stack
 
@@ -37,8 +83,8 @@ omnigram/
 | State Mgmt  | Riverpod v2 (with code gen)  |
 | Local DB    | sqflite                       |
 | Server DB   | SQLite / PostgreSQL           |
-| TTS         | Fish Audio (Docker/gRPC)      |
-| AI          | langchain_dart (multi-model)  |
+| TTS         | Kokoro / Edge TTS (sidecar) + sherpa-onnx (on-device) |
+| AI          | langchain_dart (OpenAI, Claude, Gemini, Ollama, DeepSeek) |
 | Deployment  | Docker / Docker Compose       |
 | CI/CD       | GitHub Actions                |
 
@@ -89,8 +135,10 @@ make app-build-apk  # Build APK
 
 ### App (`app/lib/`)
 
-- **Forked from:** [Anx Reader](https://github.com/Anxcye/anx-reader) (MIT license)
-- **State:** `providers/` — Riverpod providers
+- **Reading engine** builds on [Anx Reader](https://github.com/Anxcye/anx-reader) (MIT license) — EPUB rendering, data models, providers, DAO layer are reused
+- **UI layer** is being rewritten with Omnigram's own design language (see design spec)
+- **Package name:** `omnigram` (not `anx_reader`)
+- **State:** `providers/` — Riverpod providers (code-generated with `@riverpod`)
 - **UI:** `page/` — screens and pages
 - **Models:** `models/` — data models (with freezed)
 - **Services:** `service/` — business logic
@@ -98,6 +146,8 @@ make app-build-apk  # Build APK
 - **DAO:** `dao/` — sqflite database access
 - **Config:** `config/` — shared preferences, settings
 - **Localization:** Flutter gen-l10n (ARB files in `l10n/`)
+- **EPUB engine:** InAppWebView + foliate-js (`assets/foliate-js/`)
+- **Design system:** `theme/` — colors, typography, theme tokens
 
 ### Server API
 
@@ -115,7 +165,21 @@ API covers 9 tag categories: Auth, User, Admin, Reader, Sync, System, TTS, AI, O
 - **Build orchestration:** Makefiles at project root and `server/`
 - **Code generation:** Riverpod providers, freezed models, json_serializable, l10n
 - **Versioning:** Git tags (`v*.*.*`) trigger CI release pipelines
-- **License:** App is MIT (Anx Reader fork); Server is MIT
+- **License:** MIT
+- **Flutter API notes:**
+  - Use `.withValues(alpha: 0.5)` not `.withOpacity()` (deprecated in Flutter 3.10+)
+  - Package imports: `package:omnigram/...`
+  - L10n import: `package:omnigram/l10n/generated/L10n.dart`
+
+### App Design Principles
+
+When building or modifying app UI, follow these principles from the design spec:
+
+1. **AI features have no dedicated entry point** — they are embedded in existing surfaces
+2. **Every AI feature must have a non-AI fallback** — app works fully without AI configured (see spec §10.3)
+3. **UI style:** soft rounded cards, pastel backgrounds (pink/green/lavender), warm typography, generous padding (see spec §9)
+4. **Empty states** adapt to companion personality (warm vs. concise variants)
+5. **Reader AI has 4 layers:** context bar (auto), inline glossary (auto), margin notes (auto, max 3/chapter), companion panel (manual)
 
 ### Server API Documentation (Required)
 
@@ -150,7 +214,11 @@ func handlerName(c *gin.Context) {
 | `docker.yaml`     | Push tag `v*.*.*` / release | Build server Docker images (arm64/amd64) |
 | `build_app.yaml`  | Push/PR on main            | Build & sign Flutter APK             |
 
-## Known Issues (from code audit)
+## Implementation Status
 
-See `docs/discussions/008-code-quality-audit.md` for the full audit report.
-Top priorities: server security fixes (P0), app-server integration (Phase 2).
+### Sprint 1 (In Progress): Foundation + Core Reading
+New 4-tab navigation, design system, Reading Desk, Library, Insights skeleton, Settings framework.
+Plan: `docs/superpowers/plans/2026-03-22-sprint1-foundation-and-core-reading.md`
+
+### Sprint 2-5 (Planned): AI Pipeline → Ambient AI → Deep AI → Advanced
+See design spec §11 for the full 5-layer dependency chain and sprint targets.

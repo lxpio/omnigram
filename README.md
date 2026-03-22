@@ -24,30 +24,64 @@
 
 > **Jellyfin for videos. Immich for photos. Omnigram for books.**
 
-Omnigram is an **AI-native, self-hosted book library and reading service**. Deploy it on your NAS or homeserver with Docker, and your ebook collection becomes an intelligent, personal reading experience — not just a file manager.
+Omnigram is an **AI-native, self-hosted book library and reading service**. Deploy it on your NAS or homeserver, and your ebook collection becomes an intelligent, personal reading experience — not just a pile of files.
 
-**The core idea: AI is air, not a button.** There is no "AI tab" in Omnigram. Instead, AI is woven into every surface — your bookshelf organizes itself, your reader remembers where you left off and what you were thinking, and your notes connect across books into a knowledge network. You never "use AI." You just read, and the experience is transformed.
+### Origin
 
-### Why Omnigram?
+I'm a tech enthusiast with a NAS full of PDFs and EPUBs. Over time, files became messy, searching became painful, and the books I'd read faded from memory. No existing tool solves both "library management" and "AI-enhanced reading" — so Omnigram was born.
 
-| Tool | What it does | What it doesn't |
-|------|-------------|----------------|
-| **Calibre-Web** | Manages books | No AI, no TTS, aging UI |
-| **Audiobookshelf** | Plays audiobooks | Can't generate them from ebooks |
-| **Anx Reader** | Great reader app | No server, single-device only |
-| **Readwise Reader** | AI-powered reading | $8.99/mo, not self-hostable |
+### The Gap
 
-**Omnigram fills the gap: self-hosted + ambient AI + reading — all in one.**
+```
+                    Server (NAS/Self-hosted)       No Server (Client only)
+                 ┌──────────────────────┬──────────────────────┐
+   AI-capable    │                      │  Anx Reader          │
+                 │    ❌ EMPTY!         │  Readwise (SaaS)     │
+                 │                      │                      │
+                 ├──────────────────────┼──────────────────────┤
+   No AI         │  Calibre-Web         │  KOReader            │
+                 │  Kavita              │  Foliate             │
+                 │  Audiobookshelf      │                      │
+                 └──────────────────────┴──────────────────────┘
+```
+
+**"Self-hosted + AI + Reading" = zero competition. That's where Omnigram lives.**
+
+---
 
 ## Design Philosophy
 
-Omnigram is built on five principles:
+### AI is Air, Not a Button
 
-1. **Ambient over explicit** — AI works silently in the background. No chat tabs, no AI buttons
-2. **Companion over tool** — AI is a reading partner with configurable personality, not a Q&A bot
-3. **Insight over statistics** — AI tells you what you learned, not how many pages you read
-4. **Privacy as freedom** — A hidden private library lets you read anything without concern
-5. **New experience, proven foundation** — Fresh design language on top of battle-tested reading engine
+This is the fundamental difference between Omnigram and every competitor.
+
+Most "AI readers" slap a ChatGPT dialog next to the book viewer. That's not AI reading — that's reading + chatting.
+
+Omnigram's AI is **invisible**:
+- Turn to a new chapter, a context bar fades in with a recap — you didn't press anything
+- Select a word, a tooltip appears with a definition — you didn't "open AI"
+- Your bookshelf groups by topic automatically, imported books get tags and summaries
+- Your notes aren't scattered highlights — they're a knowledge network organized by concept
+
+**You're not "using AI." You're reading — and the experience itself has changed.**
+
+### Companion, Not Tool
+
+Reading has always been a solitary activity. AI can change that.
+
+Omnigram's AI is a reading companion with configurable personality — like TARS from *Interstellar*, you can adjust its proactivity, style, depth, and warmth. It can be a silent assistant, a Socratic mentor, or a friend reading alongside you.
+
+### Insight, Not Statistics
+
+Traditional reading apps give you bar charts and heatmaps — "you read 300 pages this month." So what?
+
+Omnigram's Insights page tells the story of your reading journey: what domains you've been exploring, which books connect to each other, where your reading is heading. Not data — **self-awareness**.
+
+### Privacy as Freedom
+
+Some books you'd rather keep private. Omnigram has a fully isolated "hidden library" — zero trace in the main interface, biometric entry, complete AI experience inside. Privacy protects against others' eyes, not your own reading experience.
+
+---
 
 ## Features
 
@@ -82,7 +116,7 @@ Omnigram is built on five principles:
 ### Privacy
 - Hidden private library — completely isolated second space with biometric access
 - Zero trace in main interface — private books never appear in bookshelf, search, or insights
-- Full AI experience inside private space — privacy protects against others' eyes, not your reading experience
+- Full AI experience inside private space
 - Encrypted local storage with platform keystore
 
 ### Data Portability
@@ -92,7 +126,17 @@ Omnigram is built on five principles:
 - Full library export as portable archive
 - OPDS catalog for interoperability
 
-## Omnigram Infrastructure
+---
+
+## An Analogy
+
+If Calibre-Web is a library bookshelf — you come find a book, you read it yourself — then Omnigram gives you a personal librarian.
+
+They remember what you've read, what you like, where you left off. Occasionally they'll say, "You might like this one — it connects to that book you read last month." They don't talk much, but when you need them, they know everything.
+
+---
+
+## Architecture
 
 ![base_struct](assets/img/struct.svg)
 
@@ -105,7 +149,7 @@ You can find the official documentation (including installation manuals) at <htt
 For the mobile app, you can use https://omnigram-demo.lxpio.com:9443 for the Server Endpoint URL
 
 ```
-The credential
+Credentials:
 email: admin
 password: 123456
 ```
@@ -114,7 +158,7 @@ password: 123456
 
 ### Build
 
-#### For Omnigram App (Flutter)
+#### Omnigram App (Flutter)
 
 ```bash
 git clone https://github.com/lxpio/omnigram.git
@@ -125,7 +169,7 @@ dart run build_runner build --delete-conflicting-outputs
 flutter build apk  # or: flutter build ios / macos / windows
 ```
 
-#### For Omnigram Server (Go)
+#### Omnigram Server (Go)
 
 ```bash
 git clone https://github.com/lxpio/omnigram.git
@@ -159,14 +203,14 @@ Edge TTS is also available as a zero-deployment fallback (no additional containe
 |-----------|-----------|
 | **Server** | Go 1.23 + Gin + GORM + BadgerDB |
 | **Client** | Flutter 3.41 + Riverpod v2 |
-| **AI** | langchain_dart (multi-model: OpenAI, Claude, Gemini, Ollama, DeepSeek) |
-| **TTS** | Kokoro / Edge TTS (OpenAI-compatible Sidecar) / sherpa-onnx (on-device) |
+| **AI** | langchain_dart (OpenAI, Claude, Gemini, Ollama, DeepSeek) |
+| **TTS** | Kokoro / Edge TTS (server sidecar) + sherpa-onnx (on-device) |
 | **Database** | SQLite / PostgreSQL / MySQL |
 | **Deployment** | Docker / Docker Compose |
 
 ## Acknowledgments
 
-Omnigram's client reading engine builds on [Anx Reader](https://github.com/Anxcye/anx-reader) (MIT License). We are deeply grateful for their excellent work.
+Omnigram's reading engine builds on [Anx Reader](https://github.com/Anxcye/anx-reader) (MIT License). We are deeply grateful for their excellent work.
 
 Key libraries and dependencies:
 
