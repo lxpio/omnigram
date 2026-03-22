@@ -8,8 +8,9 @@ import 'package:omnigram/widgets/common/omnigram_card.dart';
 class HeroBookCard extends StatelessWidget {
   final Book book;
   final VoidCallback onContinueReading;
+  final String? memoryText;
 
-  const HeroBookCard({super.key, required this.book, required this.onContinueReading});
+  const HeroBookCard({super.key, required this.book, required this.onContinueReading, this.memoryText});
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +66,18 @@ class HeroBookCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text('$progress% 已读', style: OmnigramTypography.caption(context)),
+                if (memoryText != null) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    memoryText!,
+                    style: OmnigramTypography.caption(context).copyWith(
+                      fontStyle: FontStyle.italic,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
                 const SizedBox(height: 16),
                 FilledButton(onPressed: onContinueReading, child: const Text('继续阅读')),
               ],
