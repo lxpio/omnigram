@@ -100,7 +100,7 @@ func initReaderData() error {
 	return db.Transaction(func(tx *gorm.DB) error {
 
 		//auotoMigrate
-		if err := tx.AutoMigrate(&Book{}, &BookTagShip{}, &FavBook{}, &ReadProgress{}, &Shelf{}, &ShelfBook{}, &Annotation{}, &ReadingSession{}, &AudiobookTask{}, &ChapterTask{}, &AiResult{}, &CompanionChat{}, &MarginNote{}); err != nil {
+		if err := tx.AutoMigrate(&Book{}, &BookTagShip{}, &FavBook{}, &ReadProgress{}, &Shelf{}, &ShelfBook{}, &Annotation{}, &ReadingSession{}, &AudiobookTask{}, &ChapterTask{}, &AiResult{}, &CompanionChat{}, &MarginNote{}, &ConceptTag{}, &ConceptEdge{}); err != nil {
 
 			return err
 		}

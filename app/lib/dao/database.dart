@@ -13,7 +13,7 @@ import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 // Current app database version
-const int currentDbVersion = 10;
+const int currentDbVersion = 11;
 
 const createBookSQL = '''
 CREATE TABLE tb_books (
@@ -150,6 +150,30 @@ CREATE TABLE tb_margin_notes (
 
 const createMarginNoteIndexSQL =
     'CREATE INDEX IF NOT EXISTS idx_margin_note_book_chapter ON tb_margin_notes(book_id, chapter)';
+
+const createConceptTagSQL = '''
+CREATE TABLE IF NOT EXISTS tb_concept_tags (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  book_id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  source TEXT,
+  note_id INTEGER,
+  create_time TEXT DEFAULT CURRENT_TIMESTAMP,
+  synced INTEGER DEFAULT 0
+)
+''';
+
+const createConceptEdgeSQL = '''
+CREATE TABLE IF NOT EXISTS tb_concept_edges (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  source_tag_id INTEGER NOT NULL,
+  target_tag_id INTEGER NOT NULL,
+  weight REAL DEFAULT 1.0,
+  reason TEXT,
+  create_time TEXT DEFAULT CURRENT_TIMESTAMP,
+  synced INTEGER DEFAULT 0
+)
+''';
 
 class DBHelper {
   static final DBHelper _instance = DBHelper._internal();
@@ -383,6 +407,8 @@ class DBHelper {
         await db.execute(createCompanionChatIndexSQL);
         await db.execute(createMarginNoteSQL);
         await db.execute(createMarginNoteIndexSQL);
+        await db.execute(createConceptTagSQL);
+        await db.execute(createConceptEdgeSQL);
         continue case1;
       case1:
       case 1:
@@ -499,6 +525,12 @@ class DBHelper {
         // Create margin notes table for cross-book AI connections
         await db.execute(createMarginNoteSQL);
         await db.execute(createMarginNoteIndexSQL);
+        continue case10;
+      case10:
+      case 10:
+        // Create concept tags and edges tables for knowledge graph
+        await db.execute(createConceptTagSQL);
+        await db.execute(createConceptEdgeSQL);
     }
 
     if (oldVersion != 0) {

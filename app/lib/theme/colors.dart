@@ -30,6 +30,10 @@ class OmnigramColors {
   // AI accent
   static const Color accentLavender = Color(0xFF7E57C2);
 
+  // Knowledge graph accent
+  static const Color cardMint = Color(0xFFE0F2F1);
+  static const Color accentMint = Color(0xFF26A69A);
+
   /// Returns a pastel color for a given index (cycles through palette)
   static Color pastelAt(int index) {
     const pastels = [cardPink, cardGreen, cardLavender, cardPeach, cardBlue];
