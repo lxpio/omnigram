@@ -8,13 +8,38 @@ services:
       - ./books:/docs
       - ./data:/metadata        # ⚠️ Persistent data — do NOT delete on upgrade/migration
     environment:
+      # Database
+      DB_DRIVER: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: omnigram
+      DB_PASSWORD: omnigram
+      DB_NAME: omnigram
+      # TTS
       TTS_PROVIDER: kokoro                    # kokoro | edge | openai
       TTS_SIDECAR_URL: http://tts:8880        # Sidecar container address
       TTS_TIMEOUT: 120s                       # Synthesis timeout
       # TTS_OPENAI_API_KEY: sk-xxx            # Only if using OpenAI TTS proxy
     depends_on:
+      db:
+        condition: service_healthy
       tts:
         condition: service_healthy
+
+  # PostgreSQL + pgvector (vector similarity search)
+  db:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: omnigram
+      POSTGRES_PASSWORD: omnigram
+      POSTGRES_DB: omnigram
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U omnigram"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Kokoro TTS Sidecar (CPU/GPU, default choice)
   # Image size: CPU ~5GB, GPU ~8-12GB — first pull may take a while
@@ -66,3 +91,6 @@ services:
   #     timeout: 10s
   #     retries: 3
   #     start_period: 90s
+
+volumes:
+  pgdata:

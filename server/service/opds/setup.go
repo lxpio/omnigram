@@ -11,13 +11,12 @@ import (
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/middleware"
 	"github.com/lxpio/omnigram/server/schema"
-	"github.com/lxpio/omnigram/server/service/webdav"
 	"github.com/lxpio/omnigram/server/store"
 )
 
 // Setup registers OPDS routes
 func Setup(router *gin.Engine) {
-	opds := router.Group("/opds", webdav.BasicAuthMiddleware())
+	opds := router.Group("/opds", middleware.BasicAuthMiddleware())
 
 	opds.GET("", catalogHandler)
 	opds.GET("/new", newBooksHandler)

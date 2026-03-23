@@ -12,8 +12,6 @@ const (
 	DRPostgres Driver = "postgres"
 	// DRMySQL driver name for mysql
 	DRMySQL Driver = "mysql"
-	// DRSqlite driver name for mysql
-	DRSQLite Driver = "sqlite3"
 )
 
 // Opt PG 数据库配置

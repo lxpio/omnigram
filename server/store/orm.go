@@ -10,7 +10,6 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -92,8 +91,6 @@ func (opt *Opt) DSN() gorm.Dialector {
 		return opt.PGDSN()
 	case opt.Driver == `mysql`:
 		return opt.MySQLDSN()
-	case opt.Driver == `sqlite3`:
-		return opt.SQLiteDSN()
 	}
 
 	log.F(`unknown driver: ` + opt.Driver)
@@ -135,15 +132,6 @@ func (opt *Opt) MySQLDSN() gorm.Dialector {
 	return mysql.Open(dsn)
 }
 
-// SQLiteDSN  返回 sqlite 数据库连接字符
-func (opt *Opt) SQLiteDSN() gorm.Dialector {
-
-	return sqlite.Open(opt.Host)
-}
-
 func (opt *Opt) String() string {
-	if opt.Driver == conf.DRSQLite {
-		return "driver=" + string(opt.Driver) + " path=" + opt.Host
-	}
 	return "driver=" + string(opt.Driver) + " host=" + opt.Host + " port=" + strconv.Itoa(opt.Port) + " user=" + opt.User + " dbname=" + opt.DBName + " password=xxxxxx sslmode=" + opt.SSLMode
 }
