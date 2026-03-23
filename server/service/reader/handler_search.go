@@ -8,30 +8,18 @@ import (
 	"github.com/lxpio/omnigram/server/schema"
 )
 
-// sanitizeFTS5Query 清理 FTS5 查询输入，防止查询崩溃
-func sanitizeFTS5Query(q string) string {
-	replacer := strings.NewReplacer(
-		`"`, ``, `*`, ``, `(`, ``, `)`, ``,
-		`:`, ``, `^`, ``,
-	)
-	q = replacer.Replace(q)
+// sanitizeSearchQuery cleans search input for PG tsvector plainto_tsquery
+func sanitizeSearchQuery(q string) string {
 	q = strings.TrimSpace(q)
 	if q == "" {
 		return ""
 	}
-	words := strings.Fields(q)
-	result := make([]string, 0, len(words))
-	for _, w := range words {
-		upper := strings.ToUpper(w)
-		if upper == "AND" || upper == "OR" || upper == "NOT" || upper == "NEAR" {
-			continue
-		}
-		result = append(result, `"`+w+`"`)
-	}
-	if len(result) == 0 {
-		return ""
-	}
-	return strings.Join(result, " ")
+	// Remove special characters that could cause issues
+	replacer := strings.NewReplacer(
+		`"`, ``, `'`, ``, `(`, ``, `)`, ``,
+		`:`, ``, `^`, ``, `!`, ``, `&`, ``, `|`, ``,
+	)
+	return replacer.Replace(q)
 }
 
 // enhancedSearchHandle GET /reader/search
@@ -83,11 +71,11 @@ func enhancedSearchHandle(c *gin.Context) {
 
 	query := orm.Model(&schema.Book{})
 
-	// FTS5 search
+	// PG tsvector full-text search
 	if q != "" {
-		sanitized := sanitizeFTS5Query(q)
+		sanitized := sanitizeSearchQuery(q)
 		if sanitized != "" {
-			query = query.Where("id IN (SELECT book_id FROM books_fts WHERE books_fts MATCH ?)", sanitized)
+			query = query.Where("search_vector @@ plainto_tsquery('simple', ?)", sanitized)
 		}
 	}
 

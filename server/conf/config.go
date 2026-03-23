@@ -69,12 +69,13 @@ func InitConfig(path string) error {
 
 	if cf.DBOption == nil {
 		cf.DBOption = &Opt{
-			Driver:   "sqlite3",
-			Host:     filepath.Join(cf.MetaDataPath, "db"),
-			LogLevel: cf.LogLevel,
+			Driver: DRPostgres,
+			Host:   "localhost",
+			Port:   5432,
+			User:   "omnigram",
+			DBName: "omnigram",
+			Passwd: "omnigram",
 		}
-
-		err = os.Mkdir(cf.DBOption.Host, 0755)
 	}
 	cf.DBOption.LogLevel = cf.LogLevel
 

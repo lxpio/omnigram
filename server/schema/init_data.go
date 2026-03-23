@@ -105,38 +105,48 @@ func initReaderData() error {
 			return err
 		}
 
-		// Create FTS5 virtual table
-		if err := tx.Exec(`CREATE VIRTUAL TABLE IF NOT EXISTS books_fts USING fts5(
-			book_id,
-			title,
-			author,
-			description,
-			tags,
-			publisher,
-			content='books',
-			content_rowid='rowid',
-			tokenize='unicode61'
-		)`).Error; err != nil {
-			log.E("FTS5 virtual table creation failed (FTS5 may not be available): ", err)
+		// Enable pgvector extension
+		if err := tx.Exec(`CREATE EXTENSION IF NOT EXISTS vector`).Error; err != nil {
+			log.E("pgvector extension not available: ", err)
 		}
 
-		// Sync triggers
-		tx.Exec(`CREATE TRIGGER IF NOT EXISTS books_fts_ai AFTER INSERT ON books BEGIN
-			INSERT INTO books_fts(book_id, title, author, description, tags, publisher)
-			VALUES (new.id, new.title, new.author, new.description, new.tags, new.publisher);
-		END`)
+		// Add tsvector column for full-text search (PG native)
+		tx.Exec(`DO $$ BEGIN
+			IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='books' AND column_name='search_vector') THEN
+				ALTER TABLE books ADD COLUMN search_vector tsvector;
+			END IF;
+		END $$`)
 
-		tx.Exec(`CREATE TRIGGER IF NOT EXISTS books_fts_au AFTER UPDATE ON books BEGIN
-			INSERT INTO books_fts(books_fts, book_id, title, author, description, tags, publisher)
-			VALUES ('delete', old.id, old.title, old.author, old.description, old.tags, old.publisher);
-			INSERT INTO books_fts(book_id, title, author, description, tags, publisher)
-			VALUES (new.id, new.title, new.author, new.description, new.tags, new.publisher);
-		END`)
+		// Create GIN index for tsvector
+		tx.Exec(`CREATE INDEX IF NOT EXISTS idx_books_search_vector ON books USING GIN(search_vector)`)
 
-		tx.Exec(`CREATE TRIGGER IF NOT EXISTS books_fts_ad AFTER DELETE ON books BEGIN
-			INSERT INTO books_fts(books_fts, book_id, title, author, description, tags, publisher)
-			VALUES ('delete', old.id, old.title, old.author, old.description, old.tags, old.publisher);
-		END`)
+		// Create trigger to auto-update tsvector on insert/update
+		tx.Exec(`CREATE OR REPLACE FUNCTION books_search_vector_update() RETURNS trigger AS $$
+		BEGIN
+			NEW.search_vector := to_tsvector('simple',
+				coalesce(NEW.title, '') || ' ' ||
+				coalesce(NEW.author, '') || ' ' ||
+				coalesce(NEW.description, '') || ' ' ||
+				coalesce(NEW.tags, '') || ' ' ||
+				coalesce(NEW.publisher, '')
+			);
+			RETURN NEW;
+		END
+		$$ LANGUAGE plpgsql`)
+
+		tx.Exec(`DROP TRIGGER IF EXISTS books_search_vector_trigger ON books`)
+		tx.Exec(`CREATE TRIGGER books_search_vector_trigger
+			BEFORE INSERT OR UPDATE ON books
+			FOR EACH ROW EXECUTE FUNCTION books_search_vector_update()`)
+
+		// Backfill existing rows
+		tx.Exec(`UPDATE books SET search_vector = to_tsvector('simple',
+			coalesce(title, '') || ' ' ||
+			coalesce(author, '') || ' ' ||
+			coalesce(description, '') || ' ' ||
+			coalesce(tags, '') || ' ' ||
+			coalesce(publisher, '')
+		) WHERE search_vector IS NULL`)
 
 		log.I(`初始化书籍表成功。`)
 
