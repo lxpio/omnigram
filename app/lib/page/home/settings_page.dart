@@ -5,8 +5,10 @@ import 'package:omnigram/theme/omnigram_theme.dart';
 import 'package:omnigram/widgets/common/omnigram_card.dart';
 import 'package:omnigram/page/settings_page/companion_settings_page.dart';
 import 'package:omnigram/page/settings_page/reading.dart';
+import 'package:omnigram/page/settings_page/server_connection_page.dart';
 import 'package:omnigram/page/settings_page/sync.dart';
 import 'package:omnigram/page/settings_page/more_settings_page.dart';
+import 'package:omnigram/providers/server_connection_provider.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -20,6 +22,8 @@ class SettingsPage extends ConsumerWidget {
           const SizedBox(height: 16),
           Text('设置', style: OmnigramTypography.displayLarge(context)),
           const SizedBox(height: 24),
+          _ServerConnectionSection(),
+          const SizedBox(height: 12),
           _SettingsSection(
             icon: Icons.person_outline,
             title: '阅读身份',
@@ -81,6 +85,61 @@ class SettingsPage extends ConsumerWidget {
               // TODO: about page
             },
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ServerConnectionSection extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final connectionState = ref.watch(serverConnectionProvider);
+    final isConnected = connectionState.isConnected;
+
+    return OmnigramCard(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const ServerConnectionPage()),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            isConnected ? Icons.cloud_done : Icons.cloud_off_outlined,
+            size: 28,
+            color: isConnected
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.outline,
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Omnigram 服务器',
+                    style: OmnigramTypography.titleMedium(context)),
+                const SizedBox(height: 2),
+                Text(
+                  isConnected
+                      ? '已连接 · ${connectionState.user?.name ?? ""}'
+                      : '未连接 · 点击设置',
+                  style: OmnigramTypography.caption(context),
+                ),
+              ],
+            ),
+          ),
+          if (isConnected)
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                shape: BoxShape.circle,
+              ),
+            ),
+          const SizedBox(width: 8),
+          Icon(Icons.chevron_right,
+              color: Theme.of(context).colorScheme.outlineVariant),
         ],
       ),
     );

@@ -242,24 +242,11 @@ Client 需要同时支持两种模式：
 
 ---
 
-## 5. 待确认问题
+## 5. 设计决策（已确认）
 
-> 以下问题需要创始人确认后再开工
-
-### Q1: 离线优先还是在线优先？
-- **A) Immich 模式（在线优先）**：Server 是 truth，Client 是缓存。离线可读已缓存书，新功能需在线。
-- **B) 离线优先**：Client 本地数据完整可独立运行，Server 是同步备份。
-- **推荐 A**：与 "自部署服务" 定位一致（用户有自己的 Server）。
-
-### Q2: 无 Server 的纯本地模式是否保留？
-- 当前 Anx Reader 是纯本地 App，不需要 Server。
-- 改为 Server 架构后，是否仍支持"不连 Server 也能用"？
-- **推荐：保留纯本地模式**，但 AI 功能受限（只能用 Client 端 AI Provider）。
-
-### Q3: 冲突解决策略
-- 手机和平板同时修改同一条注释，谁赢？
-- **推荐：Last-write-wins（按 timestamp），与 Immich 一致**。
-
-### Q4: Phase 1 先做哪些接口？
-- Server 已有 ~30 个 REST 接口，全部对接太多。
-- **推荐先做最小集**：`/sync/delta`（书元数据）+ `/sync/annotations`（注释）+ `/reader/books/:id/progress`（进度）。
+| 决策点 | 选择 | 理由 |
+|--------|------|------|
+| 同步模式 | **Immich 模式（在线优先）** | Server 是 source of truth，Client 是缓存层 |
+| 纯本地模式 | **保留** | 不连 Server 也能用，AI 只用 Client 端 Provider |
+| 冲突解决 | **Last-write-wins（timestamp）** | 简单可靠，与 Immich 一致 |
+| 接口范围 | **全量对接** | 一次性对接 Server 所有 ~30 个 REST 接口 |
