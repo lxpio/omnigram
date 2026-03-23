@@ -1,5 +1,6 @@
 {
   "ar": [
+    "readingPageCompanion",
     "settingsAiProviderReasoningEffort",
     "settingsAiProviderReasoningEffortHelp",
     "settingsAiProviderReasoningEffortAuto",
@@ -13,6 +14,7 @@
   ],
 
   "de": [
+    "readingPageCompanion",
     "settingsAiProviderReasoningEffort",
     "settingsAiProviderReasoningEffortHelp",
     "settingsAiProviderReasoningEffortAuto",
@@ -26,6 +28,7 @@
   ],
 
   "es": [
+    "readingPageCompanion",
     "settingsAiProviderReasoningEffort",
     "settingsAiProviderReasoningEffortHelp",
     "settingsAiProviderReasoningEffortAuto",
@@ -39,6 +42,7 @@
   ],
 
   "fr": [
+    "readingPageCompanion",
     "settingsAiProviderReasoningEffort",
     "settingsAiProviderReasoningEffortHelp",
     "settingsAiProviderReasoningEffortAuto",
@@ -52,6 +56,7 @@
   ],
 
   "it": [
+    "readingPageCompanion",
     "settingsAiProviderReasoningEffort",
     "settingsAiProviderReasoningEffortHelp",
     "settingsAiProviderReasoningEffortAuto",
@@ -65,6 +70,7 @@
   ],
 
   "ja": [
+    "readingPageCompanion",
     "settingsAiProviderReasoningEffort",
     "settingsAiProviderReasoningEffortHelp",
     "settingsAiProviderReasoningEffortAuto",
@@ -78,6 +84,7 @@
   ],
 
   "ko": [
+    "readingPageCompanion",
     "settingsAiProviderReasoningEffort",
     "settingsAiProviderReasoningEffortHelp",
     "settingsAiProviderReasoningEffortAuto",
@@ -91,6 +98,7 @@
   ],
 
   "pt": [
+    "readingPageCompanion",
     "settingsAiProviderReasoningEffort",
     "settingsAiProviderReasoningEffortHelp",
     "settingsAiProviderReasoningEffortAuto",
@@ -104,6 +112,7 @@
   ],
 
   "ro": [
+    "readingPageCompanion",
     "settingsAiProviderReasoningEffort",
     "settingsAiProviderReasoningEffortHelp",
     "settingsAiProviderReasoningEffortAuto",
@@ -117,6 +126,7 @@
   ],
 
   "ru": [
+    "readingPageCompanion",
     "settingsAiProviderReasoningEffort",
     "settingsAiProviderReasoningEffortHelp",
     "settingsAiProviderReasoningEffortAuto",
@@ -130,6 +140,7 @@
   ],
 
   "tr": [
+    "readingPageCompanion",
     "settingsAiProviderReasoningEffort",
     "settingsAiProviderReasoningEffortHelp",
     "settingsAiProviderReasoningEffortAuto",
@@ -152,6 +163,7 @@
   ],
 
   "zh_CN": [
+    "readingPageCompanion",
     "reading",
     "bookshelf",
     "insights",
@@ -159,6 +171,7 @@
   ],
 
   "zh_LZH": [
+    "readingPageCompanion",
     "settingsAiProviderReasoningEffort",
     "settingsAiProviderReasoningEffortHelp",
     "settingsAiProviderReasoningEffortAuto",
@@ -172,6 +185,7 @@
   ],
 
   "zh_TW": [
+    "readingPageCompanion",
     "settingsAiProviderReasoningEffort",
     "settingsAiProviderReasoningEffortHelp",
     "settingsAiProviderReasoningEffortAuto",
