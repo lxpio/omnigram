@@ -525,7 +525,8 @@ Future<void> saveBook(
       updateTime: DateTime.now());
 
   book.id = await bookDao.insertBook(book);
-  AnxToast.show(L10n.of(navigatorKey.currentContext!).serviceImportSuccess);
+  final ctx = navigatorKey.currentContext;
+  AnxToast.show(ctx != null ? L10n.of(ctx).serviceImportSuccess : 'Import success');
   await headlessInAppWebView?.dispose();
   headlessInAppWebView = null;
   return;
