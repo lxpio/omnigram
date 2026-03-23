@@ -42,12 +42,15 @@ jobs:
 
     steps:
       - name: Send build start notification
-        if: ${{ secrets.NOTIFICATION_URL != '' }}
         shell: bash
+        env:
+          NOTIFICATION_URL: ${{ secrets.NOTIFICATION_URL }}
         run: |
-          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          BASE_NOTIFICATION_URL="${{ secrets.NOTIFICATION_URL }}/Omnigram%20Action"
-          curl -s "$BASE_NOTIFICATION_URL/Build%20Started?url=$RUN_URL&level=timeSensitive&icon=https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" || echo "Notification failed, continuing..."
+          if [ -n "$NOTIFICATION_URL" ]; then
+            RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            BASE_NOTIFICATION_URL="${NOTIFICATION_URL}/Omnigram%20Action"
+            curl -s "$BASE_NOTIFICATION_URL/Build%20Started?url=$RUN_URL&level=timeSensitive&icon=https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" || echo "Notification failed, continuing..."
+          fi
 
       - name: Checkout repository
         uses: actions/checkout@v4

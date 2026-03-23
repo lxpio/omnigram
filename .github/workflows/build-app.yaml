@@ -69,6 +69,18 @@ jobs:
   #     MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
   #     APP_BUNDLE_ID: ${{ secrets.APP_BUNDLE_ID }}
 
+  robo-test:
+    needs: [setup, build-android]
+    uses: ./.github/workflows/test-robo.yaml
+    with:
+      flutter_version: ${{ needs.setup.outputs.flutter_version }}
+    secrets:
+      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+      KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+
   # build-playstore:
   #   needs: setup
   #   uses: ./.github/workflows/_archived/build-playstore.yaml

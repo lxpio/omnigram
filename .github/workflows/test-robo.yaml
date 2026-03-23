@@ -1,0 +1,107 @@
+name: Firebase Robo Test
+
+on:
+  # Run after Android build in release pipeline
+  workflow_call:
+    inputs:
+      flutter_version:
+        required: true
+        type: string
+    secrets:
+      GCP_SA_KEY:
+        required: true
+      KEYSTORE_BASE64:
+        required: true
+      KEYSTORE_PASSWORD:
+        required: true
+      KEY_PASSWORD:
+        required: true
+      KEY_ALIAS:
+        required: true
+
+  # Also run on push to main or manual trigger
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'app/lib/**'
+      - 'app/pubspec.yaml'
+
+jobs:
+  robo-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ inputs.flutter_version || '3.35.3' }}
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Get dependencies & codegen
+        run: |
+          flutter pub get
+          flutter gen-l10n
+          dart run build_runner build --delete-conflicting-outputs
+
+      - name: Setup Android signing
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=keystore.jks" >> android/key.properties
+
+      - name: Build debug APK
+        run: flutter build apk --debug
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Run Firebase Robo Test
+        run: |
+          gcloud firebase test android run \
+            --type robo \
+            --app build/app/outputs/flutter-apk/app-debug.apk \
+            --device model=MediumPhone.arm,version=35,locale=zh_CN,orientation=portrait \
+            --device model=MediumPhone.arm,version=33,locale=en_US,orientation=portrait \
+            --timeout 300s \
+            --robo-directives ignore:ignore \
+            --results-bucket gs://${{ vars.GCP_PROJECT_ID }}-robo-results \
+            --results-dir "robo-${{ github.run_id }}" \
+            --no-record-video \
+            --num-flaky-test-attempts 0 \
+            --client-details matrixLabel="omnigram-robo-${{ github.sha }}"
+
+      - name: Download test results
+        if: always()
+        run: |
+          mkdir -p robo-results
+          gsutil -m cp -r "gs://${{ vars.GCP_PROJECT_ID }}-robo-results/robo-${{ github.run_id }}/**" robo-results/ || true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: robo-test-results
+          path: app/robo-results/
+          retention-days: 14

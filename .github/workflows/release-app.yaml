@@ -55,7 +55,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Send build completion notification
-        if: ${{ secrets.NOTIFICATION_URL != '' }}
+        if: ${{ env.BASE_NOTIFICATION_URL != '/Omnigram%20Action' }}
         shell: bash
         run: |
           RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
@@ -66,6 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BASE_NOTIFICATION_URL: ${{ secrets.NOTIFICATION_URL }}/Omnigram%20Action
+      HAS_TELEGRAM: ${{ secrets.TELEGRAM_TOKEN != '' }}
     steps:
       - name: Checkout tagged source
         uses: actions/checkout@v4
@@ -94,7 +95,7 @@ jobs:
           prerelease: ${{ inputs.is_beta == 'true' }}
 
       - name: Format changelog for Telegram
-        if: ${{ secrets.TELEGRAM_TOKEN != '' && (inputs.is_beta == 'true' || (inputs.is_beta != 'true' && inputs.is_alpha != 'true')) }}
+        if: ${{ env.HAS_TELEGRAM == 'true' && (inputs.is_beta == 'true' || (inputs.is_beta != 'true' && inputs.is_alpha != 'true')) }}
         id: format_changelog
         shell: bash
         run: |
@@ -115,7 +116,7 @@ jobs:
           } >> $GITHUB_OUTPUT
 
       - name: Send beta message
-        if: ${{ secrets.TELEGRAM_TOKEN != '' && inputs.is_beta == 'true' }}
+        if: ${{ env.HAS_TELEGRAM == 'true' && inputs.is_beta == 'true' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
@@ -134,7 +135,7 @@ jobs:
             📥 **Download:** https://github.com/${{ github.repository }}/releases/tag/${{ inputs.tag }}
 
       - name: Send release message
-        if: ${{ secrets.TELEGRAM_TOKEN != '' && inputs.is_beta != 'true' && inputs.is_alpha != 'true' }}
+        if: ${{ env.HAS_TELEGRAM == 'true' && inputs.is_beta != 'true' && inputs.is_alpha != 'true' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
@@ -151,7 +152,7 @@ jobs:
             📥 **Download:** https://github.com/${{ github.repository }}/releases/tag/${{ inputs.tag }}
 
       - name: Send build completion notification
-        if: ${{ secrets.NOTIFICATION_URL != '' }}
+        if: ${{ env.BASE_NOTIFICATION_URL != '/Omnigram%20Action' }}
         shell: bash
         run: |
           RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
