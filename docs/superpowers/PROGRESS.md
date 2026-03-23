@@ -15,6 +15,7 @@
 | Layer 2 | AI 管道 | ✅ 完成 | Sprint 2 |
 | Layer 3 | 隐形 AI（Ambient AI） | ✅ 完成 | Sprint 2/3 |
 | Layer 3.5 | Server-Client 同步架构 | ✅ 完成 | Sprint 3.5 |
+| Layer 4.0 | 架构迁移（PG + 去 WebDAV + AI 缓存） | ✅ 完成 | Sprint 4 Phase 0 |
 | Layer 4 | 深度 AI | ❌ 未开始 | Sprint 4 |
 | Layer 5 | 高级体验 | ❌ 未开始 | Sprint 5 |
 
@@ -141,8 +142,36 @@
 
 | 功能 | 原因 |
 |------|------|
-| AI 缓存持久化（sqflite） | 需要 AI 功能更成熟后统一设计表结构 |
-| WebDAV 降级为兼容模式 UI | 需要更多 UX 设计，当前两套同步可并存 |
+| ~~AI 缓存持久化（sqflite）~~ | ✅ Sprint 4 Phase 0 完成 |
+| ~~WebDAV 降级为兼容模式 UI~~ | ✅ Sprint 4 Phase 0：完全移除 WebDAV |
+
+---
+
+## Layer 4 Phase 0 — 架构迁移 ✅
+
+> Sprint 4 Phase 0 · 全部完成
+> **设计决策文档：** `docs/superpowers/specs/2026-03-23-sprint4-design-decisions.md`
+
+| 功能 | 状态 | 关键文件 | 提交 |
+|------|------|----------|------|
+| **Server: PG + pgvector 统一** | ✅ | | `b0561db` |
+| ├─ 移除 SQLite driver（保留 Calibre 导入） | ✅ | `store/store.go`, `store/orm.go`, `conf/db_opts.go` | |
+| ├─ FTS5 → PG tsvector + GIN 索引 | ✅ | `schema/init_data.go` | |
+| ├─ FTS5 搜索 → tsvector 搜索 | ✅ | `service/reader/handler_search.go` | |
+| ├─ pgvector 扩展初始化 | ✅ | `schema/init_data.go` | |
+| └─ docker-compose PG 容器 | ✅ | `docker-compose.yml` | |
+| **Server: 完全移除 WebDAV** | ✅ | | `b0561db` |
+| ├─ 删除 webdav 包 | ✅ | ~~`service/webdav/`~~ | |
+| └─ BasicAuth 迁移到 middleware | ✅ | `middleware/basic_auth.go` | |
+| **Client: 完全移除 WebDAV** | ✅ | | `0a62e53` |
+| ├─ 删除 9 个 WebDAV 相关文件 | ✅ | | |
+| ├─ 清理 14 个文件中的 WebDAV 引用 | ✅ | | |
+| └─ 移除 webdav_client 依赖 | ✅ | `pubspec.yaml` | |
+| **AI 缓存持久化** | ✅ | | `d7ab94c` |
+| ├─ Client: sqflite ai_cache 表（DB v8） | ✅ | `dao/ai_cache.dart`, `dao/database.dart` | |
+| ├─ Client: AmbientAiPipeline 双层缓存 | ✅ | `service/ai/ambient_ai_pipeline.dart` | |
+| ├─ Server: AiResult schema + AutoMigrate | ✅ | `schema/ai_result.go`, `schema/init_data.go` | |
+| └─ Server: AI cache CRUD endpoints | ✅ | `service/reader/handler_ai.go`, `setup.go` | |
 
 ---
 
@@ -192,7 +221,7 @@
 |------|-------------|------|------|
 | ~~**🔴 Server-Client REST API 同步**~~ | §10.7 | ✅ | Sprint 3.5 完成：全量 API 客户端 + 双向增量同步 |
 | ~~**🔴 AI 处理去重**~~ | §4.4 | ✅ | Server 连接时跳过 Client AI，改用 Server 结果 |
-| **🟡 AI 缓存持久化** | §10.6 | ❌ | context bar/memory bridge 缓存重启消失（Sprint 4） |
+| ~~**🟡 AI 缓存持久化**~~ | §10.6 | ✅ | Sprint 4 Phase 0 完成：Client sqflite + Server PG 双层缓存 |
 | ~~**🟡 伴侣人格同步**~~ | §10.7 | ✅ | Sprint 3.5：双向同步（SharedPrefs + Server） |
 | Onboarding 流程 | §10.8 | ❌ | 渐进式引导，首次使用零 AI |
 | 多设备同步 | §10.7 | ❌ | 数据架构已定义，实现待排期 |
@@ -216,14 +245,17 @@
 
 | 组件 | 状态 | 备注 |
 |------|------|------|
+| Server (Go) | ✅ | PG + pgvector 统一，WebDAV 已移除 |
+| Server Docker | ✅ | docker-compose: pgvector/pgvector:pg17 |
 | Android 构建 | ✅ | AGP 8.9.1, Gradle 8.11.1, compileSdk 36 |
 | iOS 构建 | ⚠️ | 缺少签名证书（pre-existing） |
 | macOS 构建 | ⚠️ | 缺少签名证书（pre-existing） |
 | Release APK | ⚠️ | 缺少 keystore 配置 |
 | Debug APK | ✅ | 正常构建 |
-| Flutter Analyze | ✅ | 67 个 info（均为 pre-existing deprecation warnings） |
+| Flutter Analyze | ✅ | 0 errors, warnings 仅 unused elements |
 | Codegen (build_runner) | ✅ | freezed + riverpod + json_serializable |
 | L10n | ✅ | 16 语言，含新增 key |
+| 数据库版本 | v8 | 新增 tb_ai_cache 表 |
 
 ---
 
@@ -243,6 +275,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-03-23 | Sprint 4 Phase 0 完成。Server PG+pgvector 迁移、WebDAV 完全移除（Client+Server）、AI 缓存持久化（sqflite+PG 双层） |
 | 2026-03-23 | Sprint 3.5 完成。Server-Client 同步架构就绪：全量 API 客户端、双向增量同步、Server 新端点、伴侣同步、AI 去重 |
 | 2026-03-23 | Sprint 3 完成。Layer 3 全部主要功能就绪（Inline Glossary, 书架 AI 推荐, 洞察 AI 叙事） |
 | 2026-03-22 | 初始创建。Sprint 1 全部完成，Sprint 2 全部完成 |
