@@ -97,6 +97,27 @@ class AmbientTasks {
     );
   }
 
+  /// Generate reading recommendation based on library
+  static Future<String?> recommendation({
+    required WidgetRef ref,
+    required List<String> recentTitles,
+  }) {
+    if (recentTitles.isEmpty) return Future.value(null);
+    final titles = recentTitles.take(5).join(', ');
+    final prompt =
+        'The reader\'s recent books include: $titles. '
+        'Based on their reading interests, write ONE sentence (under 30 words) '
+        'suggesting what kind of book they might enjoy next. '
+        'Be warm and specific. Do not recommend a specific title.';
+
+    return AmbientAiPipeline.execute(
+      type: AmbientTaskType.recommendation,
+      prompt: prompt,
+      ref: ref,
+      cacheParams: {'recommendation': titles},
+    );
+  }
+
   /// Generate one-line summary for a book
   static Future<String?> summary({
     required WidgetRef ref,

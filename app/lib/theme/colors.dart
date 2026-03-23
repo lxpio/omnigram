@@ -27,6 +27,9 @@ class OmnigramColors {
   static const Color accent = Color(0xFF2E7D32);
   static const Color accentLight = Color(0xFF66BB6A);
 
+  // AI accent
+  static const Color accentLavender = Color(0xFF7E57C2);
+
   /// Returns a pastel color for a given index (cycles through palette)
   static Color pastelAt(int index) {
     const pastels = [cardPink, cardGreen, cardLavender, cardPeach, cardBlue];

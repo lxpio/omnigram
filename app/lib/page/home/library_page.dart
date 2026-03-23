@@ -6,6 +6,7 @@ import 'package:omnigram/models/book.dart';
 import 'package:omnigram/page/reader/immersive_reader.dart';
 import 'package:omnigram/providers/book_list.dart';
 import 'package:omnigram/service/book.dart';
+import 'package:omnigram/widgets/library/ai_recommendation_card.dart';
 import 'package:omnigram/widgets/library/book_grid_item.dart';
 import 'package:omnigram/widgets/library/topic_section.dart';
 import 'package:omnigram/widgets/common/empty_state.dart';
@@ -59,6 +60,11 @@ class LibraryPage extends ConsumerWidget {
                   },
                 ),
                 const SizedBox(height: 24),
+                AiRecommendationCard(
+                  recentBookTitles:
+                      allBooks.map((b) => b.title).toList(),
+                ),
+                const SizedBox(height: 16),
                 TopicSection(
                   title: '最近添加',
                   count: recent.length,
