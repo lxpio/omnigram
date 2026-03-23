@@ -14,6 +14,7 @@
 | Layer 1 | 核心阅读闭环 | ✅ 完成 | Sprint 1 |
 | Layer 2 | AI 管道 | ✅ 完成 | Sprint 2 |
 | Layer 3 | 隐形 AI（Ambient AI） | ✅ 完成 | Sprint 2/3 |
+| Layer 3.5 | Server-Client 同步架构 | ✅ 完成 | Sprint 3.5 |
 | Layer 4 | 深度 AI | ❌ 未开始 | Sprint 4 |
 | Layer 5 | 高级体验 | ❌ 未开始 | Sprint 5 |
 
@@ -104,6 +105,47 @@
 
 ---
 
+## Layer 3.5 — Server-Client 同步架构 ✅
+
+> Sprint 3.5 · 全部完成
+
+| 功能 | 状态 | 关键文件 | 提交 |
+|------|------|----------|------|
+| **Phase 1: API Client 基础** | ✅ | | |
+| ├─ Server 数据模型（freezed） | ✅ | `models/server/server_*.dart` (8 files) | `b6b2098` |
+| ├─ OmnigramApi HTTP 客户端（Dio） | ✅ | `service/api/omnigram_api.dart` | `b6b2098` |
+| ├─ Auth API | ✅ | `service/api/auth_api.dart` | `b6b2098` |
+| ├─ Server 连接 Provider | ✅ | `providers/server_connection_provider.dart` | `b6b2098` |
+| └─ Server 连接设置 UI | ✅ | `page/settings_page/server_connection_page.dart` | `b6b2098` |
+| **Phase 2: 全部 Service APIs** | ✅ | | |
+| ├─ Book API（CRUD/搜索/上传/下载） | ✅ | `service/api/book_api.dart` | `b6b2098` |
+| ├─ Annotation API（CRUD/批量同步） | ✅ | `service/api/annotation_api.dart` | `b6b2098` |
+| ├─ Progress API（进度/会话） | ✅ | `service/api/progress_api.dart` | `b6b2098` |
+| ├─ Shelf/Tag API | ✅ | `service/api/shelf_api.dart` | `b6b2098` |
+| ├─ Sync API + Stats API | ✅ | `service/api/sync_api.dart` | `b6b2098` |
+| ├─ System/Admin API | ✅ | `service/api/system_api.dart` | `b6b2098` |
+| └─ TTS API | ✅ | `service/api/tts_api.dart` | `b6b2098` |
+| **Phase 3: 同步引擎** | ✅ | | |
+| ├─ SyncManager 双向增量同步 | ✅ | `service/sync/sync_manager.dart` | `037eeae` |
+| └─ SyncStatusIndicator UI | ✅ | `widgets/common/sync_status_indicator.dart` | `037eeae` |
+| **Phase 4: Server 新端点（Go）** | ✅ | | |
+| ├─ GET/PUT /user/companion | ✅ | `server/service/user/handler_companion.go` | `368ff32` |
+| ├─ GET /reader/books/:id/ai | ✅ | `server/service/reader/handler_ai.go` | `368ff32` |
+| └─ CompanionProfile schema | ✅ | `server/schema/companion_profile.go` | `368ff32` |
+| **Phase 5: Client 集成** | ✅ | | |
+| ├─ 启动时自动同步 + 定时同步 | ✅ | `main.dart` | `0347391` |
+| ├─ 伴侣人格双向同步 | ✅ | `providers/companion_provider.dart` | `0347391` |
+| └─ PostImport AI 服务端优先 | ✅ | `service/ai/post_import_ai.dart` | `0347391` |
+
+### 延期到 Sprint 4 的任务
+
+| 功能 | 原因 |
+|------|------|
+| AI 缓存持久化（sqflite） | 需要 AI 功能更成熟后统一设计表结构 |
+| WebDAV 降级为兼容模式 UI | 需要更多 UX 设计，当前两套同步可并存 |
+
+---
+
 ## Layer 4 — 深度 AI ❌
 
 > Sprint 4 · 未开始
@@ -148,10 +190,10 @@
 
 | 功能 | 设计文档章节 | 状态 | 备注 |
 |------|-------------|------|------|
-| **🔴 Server-Client REST API 同步** | §10.7 | ❌ | Client 只用 WebDAV 搬 DB，未接入 Server REST API |
-| **🔴 AI 处理去重** | §4.4 | ❌ | Server 上传时已跑 AI，Client 又跑一遍 |
-| **🟡 AI 缓存持久化** | §10.6 | ❌ | context bar/memory bridge 缓存重启消失 |
-| **🟡 伴侣人格同步** | §10.7 | ❌ | 只存 SharedPrefs，换设备丢失 |
+| ~~**🔴 Server-Client REST API 同步**~~ | §10.7 | ✅ | Sprint 3.5 完成：全量 API 客户端 + 双向增量同步 |
+| ~~**🔴 AI 处理去重**~~ | §4.4 | ✅ | Server 连接时跳过 Client AI，改用 Server 结果 |
+| **🟡 AI 缓存持久化** | §10.6 | ❌ | context bar/memory bridge 缓存重启消失（Sprint 4） |
+| ~~**🟡 伴侣人格同步**~~ | §10.7 | ✅ | Sprint 3.5：双向同步（SharedPrefs + Server） |
 | Onboarding 流程 | §10.8 | ❌ | 渐进式引导，首次使用零 AI |
 | 多设备同步 | §10.7 | ❌ | 数据架构已定义，实现待排期 |
 | 数据导出/迁移 | §10.9 | ❌ | Markdown/JSON/CSV 导出 |
@@ -201,5 +243,6 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-03-23 | Sprint 3.5 完成。Server-Client 同步架构就绪：全量 API 客户端、双向增量同步、Server 新端点、伴侣同步、AI 去重 |
 | 2026-03-23 | Sprint 3 完成。Layer 3 全部主要功能就绪（Inline Glossary, 书架 AI 推荐, 洞察 AI 叙事） |
 | 2026-03-22 | 初始创建。Sprint 1 全部完成，Sprint 2 全部完成 |
