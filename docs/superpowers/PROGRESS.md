@@ -3,6 +3,7 @@
 > **最后更新：2026-03-23**
 > **参考设计：** `docs/superpowers/specs/2026-03-22-ambient-ai-reading-design.md`
 > **审核报告：** `docs/superpowers/specs/2026-03-22-ambient-ai-reading-review.md`
+> **已知问题：** `docs/superpowers/KNOWN_ISSUES.md`
 
 ---
 

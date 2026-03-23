@@ -2,6 +2,10 @@ name: API Smoke Test
 
 on:
   workflow_call:
+    inputs:
+      flutter_version:
+        required: false
+        type: string
     secrets:
       GCP_SA_KEY:
         required: false
@@ -11,6 +15,9 @@ on:
     branches: [main]
     paths:
       - 'server/**'
+      - 'app/lib/service/api/**'
+      - 'app/lib/models/server/**'
+      - 'app/integration_test/**'
       - 'docker-compose.yml'
 
 jobs:
@@ -90,6 +97,24 @@ jobs:
             --retry 2 \
             --retry-interval 3000 \
             server/test/api/smoke.hurl
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ inputs.flutter_version || '3.35.3' }}
+
+      - name: Run Dart API integration tests
+        working-directory: app
+        env:
+          OMNIGRAM_TEST_URL: http://localhost:8080
+          OMNIGRAM_TEST_USER: testadmin
+          OMNIGRAM_TEST_PASS: testpass123
+        run: |
+          flutter pub get
+          flutter gen-l10n
+          dart run build_runner build --delete-conflicting-outputs
+          dart test integration_test/api_integration_test.dart --reporter expanded
 
       - name: Run schemathesis fuzz (optional)
         if: always()
