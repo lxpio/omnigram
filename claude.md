@@ -236,9 +236,10 @@ func handlerName(c *gin.Context) {
 ### Completed
 - **Sprint 1:** Foundation + Core Reading (Layer 0 + 1) — new 4-tab UI, design system, all pages
 - **Sprint 2:** AI Pipeline (Layer 2) — TARS personality, ambient pipeline, context bar, memory bridge, post-import AI, degradation
+- **Sprint 3:** Ambient AI (Layer 3) — inline glossary, bookshelf AI recommendation, insights AI narrative
 
 ### In Progress
-- **Sprint 3:** Ambient AI (Layer 3) — inline glossary, bookshelf AI, insights AI narrative
+- **Sprint 4:** Deep AI (Layer 4) — companion panel, margin notes, semantic search, TTS, knowledge network
 
 ### Planned
 - **Sprint 4:** Deep AI (Layer 4) — companion panel, margin notes, semantic search, TTS, knowledge network
