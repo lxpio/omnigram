@@ -1,0 +1,21 @@
+{
+  "id": "chatcmpl-test-001",
+  "object": "chat.completion",
+  "created": 1711180800,
+  "model": "gpt-4o-mini",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"summary\":\"A sweeping epic of love and war set during the French invasion of Russia in 1812, following the intertwined lives of several aristocratic families.\",\"tags\":[\"classic\",\"historical fiction\",\"russian literature\",\"war\",\"romance\"],\"language\":\"en\",\"category\":\"Literary Fiction\"}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 120,
+    "completion_tokens": 85,
+    "total_tokens": 205
+  }
+}

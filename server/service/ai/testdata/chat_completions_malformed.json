@@ -1,0 +1,16 @@
+{
+  "id": "chatcmpl-test-002",
+  "object": "chat.completion",
+  "created": 1711180800,
+  "model": "gpt-4o-mini",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Sorry, I cannot determine the book details from the given information."
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}

@@ -8,7 +8,6 @@ import (
 	"io"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/lxpio/omnigram/server/conf"
 	"github.com/lxpio/omnigram/server/log"
@@ -38,8 +37,7 @@ func GenerateEmbedding(ctx context.Context, text string) ([]float32, error) {
 		req.Header.Set("Authorization", "Bearer "+opts.APIKey)
 	}
 
-	client := &http.Client{Timeout: 30 * time.Second}
-	resp, err := client.Do(req)
+	resp, err := getHTTPClient().Do(req)
 	if err != nil {
 		return nil, err
 	}

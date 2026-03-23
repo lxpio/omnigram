@@ -156,6 +156,73 @@ Server API 测试不需要额外 secrets — 在 CI 中自建临时环境。
 
 ---
 
+## AI 服务测试策略
+
+> 版本：v0.1 — 2026-03-23
+
+### 问题
+
+AI 写测试验证 AI 写的代码有同源偏差，但 AI API 调用成本高、耗时长，不能每次 CI 都真实调用。
+
+### 方案：Fixture 回放（VCR 模式）
+
+```
+录制（一次性）                    回放（每次 CI）
+    真实 AI API                     本地 httptest 服务器
+        ↓                              ↓
+    保存响应 JSON                   读取 testdata/*.json
+    → testdata/                     → 零成本，毫秒级完成
+```
+
+**实现：** 用 Go `httptest.NewServer` 搭本地 HTTP 服务器，根据请求路径返回 `testdata/` 下的 fixture 文件。通过 `ai.HTTPClient` 变量注入测试 HTTP client。
+
+**文件结构：**
+```
+server/service/ai/
+├── provider.go              # EnhanceMetadata（chat/completions）
+├── embedding.go             # GenerateEmbedding（embeddings）
+├── ai_test.go               # 测试用例（11 个）
+└── testdata/
+    ├── chat_completions.json           # 正常响应 fixture
+    ├── chat_completions_malformed.json # AI 返回非 JSON
+    ├── embeddings.json                 # 正常 embedding fixture
+    └── embeddings_empty.json           # 空 embedding 响应
+```
+
+### 三层测试策略
+
+| 层级 | 方式 | 验证什么 | 成本 | 频率 |
+|------|------|---------|------|------|
+| L1 契约测试 | Fixture + 结构断言 | 响应解析、字段存在、值范围 | 零 | 每次 CI |
+| L2 错误处理 | httptest 返回 429/500 | 限流、超时、畸形响应 | 零 | 每次 CI |
+| L3 真实调用 | 重新录制 fixtures | AI 服务可用、API 未 breaking change | 一次 API 调用 | 每周/手动 |
+
+### 当前覆盖（v0.1）
+
+- `EnhanceMetadata`: 正常解析、畸形响应、AI 禁用、500 错误、429 限流
+- `GenerateEmbedding`: 正常解析、空响应、AI 禁用、无 model、500 错误
+- `FormatVector`: 空/单/多元素 pgvector 格式化
+
+### 维护要求
+
+后端 AI 功能变更时需同步更新：
+1. `testdata/*.json` — 如果请求/响应结构变了，重新录制
+2. `ai_test.go` — 如果新增了 AI 调用函数，补测试
+3. 如果切换了 AI provider（如 OpenAI → Claude），fixture 格式可能不同
+
+### 如何重新录制 fixtures
+
+```bash
+# 临时指向真实 AI API，跑一次获取响应
+curl -s https://api.openai.com/v1/chat/completions \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"gpt-4o-mini","messages":[{"role":"system","content":"You are a librarian. Respond with valid JSON only."},{"role":"user","content":"Given this book:\nTitle: War and Peace\nAuthor: Leo Tolstoy\nDescription: Epic novel\n\nReturn JSON with: {\"summary\":\"...\",\"tags\":[...],\"language\":\"...\",\"category\":\"...\"}"}],"temperature":0.3,"max_tokens":500}' \
+  | jq . > server/service/ai/testdata/chat_completions.json
+```
+
+---
+
 ## 核心原则
 
 1. **外部视角优先** — 用爬虫和 HTTP 请求验证，而非 AI 写逻辑断言验证 AI 写的逻辑
