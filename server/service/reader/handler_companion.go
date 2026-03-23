@@ -2,8 +2,10 @@ package reader
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lxpio/omnigram/server/middleware"
 	"github.com/lxpio/omnigram/server/schema"
 )
 
@@ -22,14 +24,17 @@ import (
 // @Router /reader/books/{book_id}/companion/chat [get]
 func listCompanionChatHandle(c *gin.Context) {
 	bookID := c.Param("book_id")
-	userID := c.GetInt64("user_id")
+	userID := c.GetInt64(middleware.XUserIDTag)
 
 	var chats []schema.CompanionChat
 	query := orm.Where("user_id = ? AND book_id = ?", userID, bookID).Order("ctime ASC")
 
-	if limit := c.DefaultQuery("limit", "50"); limit != "" {
-		query = query.Limit(50)
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "50"))
+	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
+	if limit < 1 || limit > 200 {
+		limit = 50
 	}
+	query = query.Limit(limit).Offset(offset)
 
 	if err := query.Find(&chats).Error; err != nil {
 		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
@@ -51,7 +56,7 @@ func listCompanionChatHandle(c *gin.Context) {
 // @Router /reader/books/{book_id}/companion/chat [post]
 func addCompanionChatHandle(c *gin.Context) {
 	bookID := c.Param("book_id")
-	userID := c.GetInt64("user_id")
+	userID := c.GetInt64(middleware.XUserIDTag)
 
 	var messages []schema.CompanionChat
 	if err := c.ShouldBindJSON(&messages); err != nil {
@@ -86,7 +91,7 @@ func addCompanionChatHandle(c *gin.Context) {
 // @Router /reader/books/{book_id}/margin-notes [get]
 func listMarginNotesHandle(c *gin.Context) {
 	bookID := c.Param("book_id")
-	userID := c.GetInt64("user_id")
+	userID := c.GetInt64(middleware.XUserIDTag)
 
 	query := orm.Where("user_id = ? AND book_id = ?", userID, bookID)
 
@@ -117,7 +122,7 @@ func listMarginNotesHandle(c *gin.Context) {
 // @Router /reader/books/{book_id}/margin-notes [post]
 func syncMarginNotesHandle(c *gin.Context) {
 	bookID := c.Param("book_id")
-	userID := c.GetInt64("user_id")
+	userID := c.GetInt64(middleware.XUserIDTag)
 
 	var notes []schema.MarginNote
 	if err := c.ShouldBindJSON(&notes); err != nil {
@@ -129,7 +134,9 @@ func syncMarginNotesHandle(c *gin.Context) {
 	for _, note := range notes {
 		note.UserID = userID
 		note.BookID = bookID
-		orm.Create(&note)
+		if err := orm.Create(&note).Error; err != nil {
+			continue
+		}
 		synced++
 	}
 
@@ -149,7 +156,7 @@ func syncMarginNotesHandle(c *gin.Context) {
 // @Router /reader/margin-notes/{note_id} [patch]
 func updateMarginNoteFeedbackHandle(c *gin.Context) {
 	noteID := c.Param("note_id")
-	userID := c.GetInt64("user_id")
+	userID := c.GetInt64(middleware.XUserIDTag)
 
 	var note schema.MarginNote
 	if err := orm.Where("id = ? AND user_id = ?", noteID, userID).First(&note).Error; err != nil {
