@@ -21,6 +21,17 @@ type CompletionResult struct {
 	Category    string   `json:"category,omitempty"`
 }
 
+// HTTPClient is the HTTP client used for AI API calls.
+// Override in tests to intercept requests (e.g., VCR recording/replay).
+var HTTPClient *http.Client
+
+func getHTTPClient() *http.Client {
+	if HTTPClient != nil {
+		return HTTPClient
+	}
+	return &http.Client{Timeout: 30 * time.Second}
+}
+
 func EnhanceMetadata(ctx context.Context, title, author, description string) (*CompletionResult, error) {
 	opts := conf.GetConfig().AIOptions
 	if !opts.Enabled {
@@ -56,8 +67,7 @@ Only fill fields that can be reasonably inferred. Return valid JSON only.`, titl
 		req.Header.Set("Authorization", "Bearer "+opts.APIKey)
 	}
 
-	client := &http.Client{Timeout: 30 * time.Second}
-	resp, err := client.Do(req)
+	resp, err := getHTTPClient().Do(req)
 	if err != nil {
 		return nil, err
 	}

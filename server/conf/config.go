@@ -150,3 +150,10 @@ type TTSOptions struct {
 func GetConfig() *Config {
 	return gconfig
 }
+
+// InitTestConfig initializes a minimal default config for testing.
+// Call this in TestMain when tests don't need a real config file.
+func InitTestConfig() *Config {
+	gconfig = defaultConfig("")
+	return gconfig
+}

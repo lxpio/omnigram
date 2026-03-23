@@ -4,6 +4,7 @@ build
 *.bin
 *.log
 testdata
+!service/ai/testdata/
 .DS_Store
 apidoc
 *.wav
