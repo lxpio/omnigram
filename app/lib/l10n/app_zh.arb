@@ -53,6 +53,7 @@
   "readingPageCopiedCharacters": "{count, plural, zero{没有内容可复制} other{已复制 {count} 个字符}}",
   "readingPageErrorCopyingContent": "复制内容出错",
   "readingPageBookmark": "添加书签",
+  "readingPageCompanion": "阅读伴侣",
   "readingPageBookDetails": "书籍详情",
   "readingPageStyle": "样式",
   "readingPageOther": "其他",

@@ -28,6 +28,7 @@ import 'package:omnigram/widgets/reading_page/tts_widget.dart';
 import 'package:omnigram/widgets/reading_page/style_widget.dart';
 import 'package:omnigram/widgets/reading_page/toc_widget.dart';
 import 'package:omnigram/widgets/common/axis_flex.dart';
+import 'package:omnigram/widgets/reader/companion_panel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -595,6 +596,30 @@ class ReadingPageState extends ConsumerState<ReadingPage> with WidgetsBindingObs
     }
   }
 
+  /// Show the companion panel as a bottom sheet.
+  void showCompanionPanel() {
+    showOrHideAppBarAndBottomBar(false);
+    showModalBottomSheet(
+      context: navigatorKey.currentContext!,
+      isScrollControlled: true,
+      showDragHandle: true,
+      clipBehavior: Clip.hardEdge,
+      useSafeArea: true,
+      builder: (context) => PointerInterceptor(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.75,
+          child: CompanionPanel(
+            bookId: _book.id,
+            bookTitle: _book.title,
+            currentChapter: epubPlayerKey.currentState?.chapterTitle,
+            currentCfi: epubPlayerKey.currentState?.cfi,
+            chapterContent: null, // Populated on demand via chapter content API
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var aiButton = IconButton(
@@ -657,6 +682,12 @@ class ReadingPageState extends ConsumerState<ReadingPage> with WidgetsBindingObs
                     },
                   ),
                   actions: [
+                    if (EnvVar.enableAIFeature)
+                      IconButton(
+                        tooltip: L10n.of(context).readingPageCompanion,
+                        icon: const Icon(Icons.chat_bubble_outline),
+                        onPressed: showCompanionPanel,
+                      ),
                     if (EnvVar.enableAIFeature) aiButton,
                     IconButton(
                       icon: const Icon(Icons.copy),

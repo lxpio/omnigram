@@ -53,6 +53,7 @@
   "readingPageCopiedCharacters": "{count, plural, zero{No content to copy} one{Copied 1 character} other{Copied {count} characters} }",
   "readingPageErrorCopyingContent": "Error copying content",
   "readingPageBookmark": "Bookmark this page",
+  "readingPageCompanion": "Reading Companion",
   "readingPageBookDetails": "Book details",
   "readingPageStyle": "Style",
   "readingPageOther": "Other",
