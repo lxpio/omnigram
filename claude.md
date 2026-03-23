@@ -16,6 +16,7 @@ Omnigram is an **AI-native, self-hosted book library and reading service**. Depl
 | Document | Purpose |
 |----------|---------|
 | `docs/superpowers/PROGRESS.md` | **📊 实施进度索引** — 开工前必读，完工后必更新 |
+| `docs/superpowers/KNOWN_ISSUES.md` | **⚠️ 已知问题** — 开工前检查，避免重复踩坑 |
 | `docs/superpowers/specs/2026-03-22-ambient-ai-reading-design.md` | **Active design spec** — the definitive reference for all UI/UX decisions |
 | `docs/discussions/011-ambient-ai-reading-brainstorm.md` | Brainstorm record with decision rationale |
 | `docs/superpowers/specs/2026-03-22-ambient-ai-reading-review.md` | External review of the design spec |
@@ -29,6 +30,7 @@ Omnigram is an **AI-native, self-hosted book library and reading service**. Depl
 1. Whether the feature is already implemented (avoid duplicate work)
 2. What layer/sprint it belongs to
 3. Whether its dependencies are complete
+4. Check `docs/superpowers/KNOWN_ISSUES.md` for related known issues that may affect the work
 
 **After completing any feature**, update `docs/superpowers/PROGRESS.md`:
 1. Change status from ❌ to ✅
