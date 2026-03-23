@@ -13,7 +13,7 @@ import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 // Current app database version
-const int currentDbVersion = 7;
+const int currentDbVersion = 8;
 
 const createBookSQL = '''
 CREATE TABLE tb_books (
@@ -96,6 +96,23 @@ CREATE TABLE tb_groups (
   FOREIGN KEY (parent_id) REFERENCES tb_groups(id)
 )
 ''';
+
+const createAiCacheSQL = '''
+CREATE TABLE tb_ai_cache (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  type TEXT NOT NULL,
+  book_id INTEGER,
+  cache_key TEXT NOT NULL,
+  content TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  expires_at TEXT,
+  synced INTEGER DEFAULT 0
+)
+''';
+
+const createAiCacheIndexSQL =
+    'CREATE UNIQUE INDEX IF NOT EXISTS idx_ai_cache_type_key ON tb_ai_cache(type, cache_key)';
 
 class DBHelper {
   static final DBHelper _instance = DBHelper._internal();
@@ -323,6 +340,8 @@ class DBHelper {
         await db.execute(createReadingTimeSQL);
         await db.execute(primaryTheme1);
         await db.execute(primaryTheme2);
+        await db.execute(createAiCacheSQL);
+        await db.execute(createAiCacheIndexSQL);
         continue case1;
       case1:
       case 1:
@@ -421,6 +440,12 @@ class DBHelper {
             [groupId],
           );
         }
+        continue case7;
+      case7:
+      case 7:
+        // Create AI cache table for persistent ambient AI results
+        await db.execute(createAiCacheSQL);
+        await db.execute(createAiCacheIndexSQL);
     }
 
     if (oldVersion != 0) {

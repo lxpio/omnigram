@@ -77,6 +77,11 @@ func Setup(router *gin.Engine) {
 
 	// AI results
 	book.GET("/books/:book_id/ai", getBookAiHandle)
+	book.GET("/books/:book_id/ai/cache", listAiCacheHandle)
+	book.PUT("/books/:book_id/ai/cache", upsertAiCacheHandle)
+
+	// AI cache bulk sync
+	router.POST("/ai/cache/sync", oauthMD, syncAiCacheHandle)
 
 	// Enhanced search
 	book.GET("/search", enhancedSearchHandle)
