@@ -19,6 +19,8 @@ import 'package:omnigram/utils/get_path/get_base_path.dart';
 import 'package:omnigram/utils/log/common.dart';
 import 'package:omnigram/utils/window_position_validator.dart';
 import 'package:omnigram/providers/sync.dart';
+import 'package:omnigram/providers/server_connection_provider.dart';
+import 'package:omnigram/service/sync/sync_manager.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -99,6 +101,15 @@ class _MyAppState extends ConsumerState<MyApp>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     windowManager.addListener(this);
+
+    // Trigger server sync on app launch
+    Future.microtask(() {
+      final connection = ref.read(serverConnectionProvider);
+      if (connection.isConnected) {
+        ref.read(syncManagerProvider.notifier).sync();
+        ref.read(syncManagerProvider.notifier).startAutoSync();
+      }
+    });
   }
 
   @override
