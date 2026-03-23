@@ -36,7 +36,7 @@ func initUserData() error {
 
 	return db.Transaction(func(tx *gorm.DB) error {
 
-		if err = tx.AutoMigrate(&User{}, &APIToken{}, &Session{}); err != nil {
+		if err = tx.AutoMigrate(&User{}, &APIToken{}, &Session{}, &CompanionProfile{}); err != nil {
 			return err
 		}
 
