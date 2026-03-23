@@ -11,6 +11,7 @@ abstract class CompanionPersonality with _$CompanionPersonality {
     @Default(50) int style,
     @Default(50) int depth,
     @Default(50) int warmth,
+    @Default('') String voice,
   }) = _CompanionPersonality;
 
   factory CompanionPersonality.fromJson(Map<String, dynamic> json) => _$CompanionPersonalityFromJson(json);
