@@ -83,6 +83,15 @@ func Setup(router *gin.Engine) {
 	// AI cache bulk sync
 	router.POST("/ai/cache/sync", oauthMD, syncAiCacheHandle)
 
+	// Companion chat
+	book.GET("/books/:book_id/companion/chat", listCompanionChatHandle)
+	book.POST("/books/:book_id/companion/chat", addCompanionChatHandle)
+
+	// Margin notes
+	book.GET("/books/:book_id/margin-notes", listMarginNotesHandle)
+	book.POST("/books/:book_id/margin-notes", syncMarginNotesHandle)
+	router.PATCH("/margin-notes/:note_id", oauthMD, updateMarginNoteFeedbackHandle)
+
 	// Enhanced search
 	book.GET("/search", enhancedSearchHandle)
 

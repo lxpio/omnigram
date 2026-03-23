@@ -13,7 +13,7 @@ import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 // Current app database version
-const int currentDbVersion = 8;
+const int currentDbVersion = 10;
 
 const createBookSQL = '''
 CREATE TABLE tb_books (
@@ -113,6 +113,43 @@ CREATE TABLE tb_ai_cache (
 
 const createAiCacheIndexSQL =
     'CREATE UNIQUE INDEX IF NOT EXISTS idx_ai_cache_type_key ON tb_ai_cache(type, cache_key)';
+
+const createCompanionChatSQL = '''
+CREATE TABLE tb_companion_chat (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  book_id INTEGER NOT NULL,
+  role TEXT NOT NULL,
+  content TEXT NOT NULL,
+  chapter TEXT,
+  cfi TEXT,
+  created_at TEXT NOT NULL,
+  synced INTEGER DEFAULT 0
+)
+''';
+
+const createCompanionChatIndexSQL =
+    'CREATE INDEX IF NOT EXISTS idx_companion_chat_book ON tb_companion_chat(book_id, created_at)';
+
+const createMarginNoteSQL = '''
+CREATE TABLE tb_margin_notes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  book_id INTEGER NOT NULL,
+  chapter TEXT NOT NULL,
+  cfi TEXT,
+  content TEXT NOT NULL,
+  related_book_id INTEGER,
+  related_book_title TEXT,
+  related_highlight TEXT,
+  confidence REAL DEFAULT 0.5,
+  dismissed INTEGER DEFAULT 0,
+  helpful INTEGER DEFAULT 0,
+  created_at TEXT NOT NULL,
+  synced INTEGER DEFAULT 0
+)
+''';
+
+const createMarginNoteIndexSQL =
+    'CREATE INDEX IF NOT EXISTS idx_margin_note_book_chapter ON tb_margin_notes(book_id, chapter)';
 
 class DBHelper {
   static final DBHelper _instance = DBHelper._internal();
@@ -342,6 +379,10 @@ class DBHelper {
         await db.execute(primaryTheme2);
         await db.execute(createAiCacheSQL);
         await db.execute(createAiCacheIndexSQL);
+        await db.execute(createCompanionChatSQL);
+        await db.execute(createCompanionChatIndexSQL);
+        await db.execute(createMarginNoteSQL);
+        await db.execute(createMarginNoteIndexSQL);
         continue case1;
       case1:
       case 1:
@@ -446,6 +487,18 @@ class DBHelper {
         // Create AI cache table for persistent ambient AI results
         await db.execute(createAiCacheSQL);
         await db.execute(createAiCacheIndexSQL);
+        continue case8;
+      case8:
+      case 8:
+        // Create companion chat history table
+        await db.execute(createCompanionChatSQL);
+        await db.execute(createCompanionChatIndexSQL);
+        continue case9;
+      case9:
+      case 9:
+        // Create margin notes table for cross-book AI connections
+        await db.execute(createMarginNoteSQL);
+        await db.execute(createMarginNoteIndexSQL);
     }
 
     if (oldVersion != 0) {
