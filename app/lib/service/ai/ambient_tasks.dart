@@ -76,6 +76,27 @@ class AmbientTasks {
     );
   }
 
+  /// Generate inline glossary explanation for selected text
+  static Future<String?> glossary({
+    required WidgetRef ref,
+    required String selectedText,
+    String? contextText,
+  }) {
+    final context = contextText != null ? ' Context: "$contextText"' : '';
+    final prompt =
+        'The reader selected this text: "$selectedText".$context\n\n'
+        'Provide a brief, clear explanation (under 40 words). '
+        'If it\'s a term, define it. If it\'s a passage, explain its meaning. '
+        'Be concise and helpful. Do not use markdown formatting.';
+
+    return AmbientAiPipeline.execute(
+      type: AmbientTaskType.glossary,
+      prompt: prompt,
+      ref: ref,
+      cacheParams: {'glossary': selectedText},
+    );
+  }
+
   /// Generate one-line summary for a book
   static Future<String?> summary({
     required WidgetRef ref,

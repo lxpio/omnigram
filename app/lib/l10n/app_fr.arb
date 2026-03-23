@@ -96,6 +96,7 @@
   "contextMenuUnderline": "Souligner",
   "contextMenuShare": "Partager",
   "contextMenuNarrate": "Narrer",
+  "contextMenuExplain": "Expliquer",
   "readingPageFullScreen": "Plein Écran",
   "readingPageScreenTimeout": "Délai d'Expiration de l'Écran",
   "readingPagePageTurningMethod": "Méthode de Changement de Page",

@@ -96,6 +96,7 @@
   "contextMenuUnderline": "밑줄",
   "contextMenuShare": "공유",
   "contextMenuNarrate": "낭독",
+  "contextMenuExplain": "설명",
   "readingPageFullScreen": "전체 화면",
   "readingPageScreenTimeout": "화면 타임아웃",
   "readingPagePageTurningMethod": "페이지 넘김 방법",
