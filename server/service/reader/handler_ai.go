@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lxpio/omnigram/server/middleware"
 	"github.com/lxpio/omnigram/server/schema"
 	"github.com/lxpio/omnigram/server/utils"
 )
@@ -61,7 +62,7 @@ func getBookAiHandle(c *gin.Context) {
 // @Router /reader/books/{book_id}/ai/cache [get]
 func listAiCacheHandle(c *gin.Context) {
 	bookID := c.Param("book_id")
-	userID := c.GetInt64("user_id")
+	userID := c.GetInt64(middleware.XUserIDTag)
 
 	var results []schema.AiResult
 	if err := orm.Where("user_id = ? AND book_id = ?", userID, bookID).Find(&results).Error; err != nil {
@@ -84,7 +85,7 @@ func listAiCacheHandle(c *gin.Context) {
 // @Router /reader/books/{book_id}/ai/cache [put]
 func upsertAiCacheHandle(c *gin.Context) {
 	bookID := c.Param("book_id")
-	userID := c.GetInt64("user_id")
+	userID := c.GetInt64(middleware.XUserIDTag)
 
 	var req schema.AiResult
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -101,11 +102,17 @@ func upsertAiCacheHandle(c *gin.Context) {
 	if result.Error == nil {
 		// Update existing
 		existing.Content = req.Content
-		orm.Save(&existing)
+		if err := orm.Save(&existing).Error; err != nil {
+			schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+			return
+		}
 		schema.Success(c, existing)
 	} else {
 		// Create new
-		orm.Create(&req)
+		if err := orm.Create(&req).Error; err != nil {
+			schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+			return
+		}
 		schema.Success(c, req)
 	}
 }
@@ -121,7 +128,7 @@ func upsertAiCacheHandle(c *gin.Context) {
 // @Failure 400 {object} schema.ErrorResponse
 // @Router /reader/ai/cache/sync [post]
 func syncAiCacheHandle(c *gin.Context) {
-	userID := c.GetInt64("user_id")
+	userID := c.GetInt64(middleware.XUserIDTag)
 
 	var entries []schema.AiResult
 	if err := c.ShouldBindJSON(&entries); err != nil {
@@ -137,11 +144,15 @@ func syncAiCacheHandle(c *gin.Context) {
 		if result.Error == nil {
 			if entry.UTime > existing.UTime {
 				existing.Content = entry.Content
-				orm.Save(&existing)
+				if err := orm.Save(&existing).Error; err != nil {
+					continue
+				}
 				synced++
 			}
 		} else {
-			orm.Create(&entry)
+			if err := orm.Create(&entry).Error; err != nil {
+				continue
+			}
 			synced++
 		}
 	}

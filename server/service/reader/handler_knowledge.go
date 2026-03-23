@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lxpio/omnigram/server/middleware"
 	"github.com/lxpio/omnigram/server/schema"
 	"github.com/lxpio/omnigram/server/store"
 )
@@ -18,7 +19,7 @@ import (
 // @Failure 500 {object} schema.ErrorResponse
 // @Router /reader/knowledge [get]
 func GetKnowledgeGraph(c *gin.Context) {
-	userID := c.GetInt64("userID")
+	userID := c.GetInt64(middleware.XUserIDTag)
 	bookID := c.Query("book_id")
 
 	db := store.FileStore()
@@ -58,7 +59,7 @@ func GetKnowledgeGraph(c *gin.Context) {
 // @Failure 400 {object} schema.ErrorResponse
 // @Router /reader/knowledge/tags [post]
 func SyncConceptTags(c *gin.Context) {
-	userID := c.GetInt64("userID")
+	userID := c.GetInt64(middleware.XUserIDTag)
 
 	var tags []schema.ConceptTag
 	if err := c.ShouldBindJSON(&tags); err != nil {
@@ -89,7 +90,7 @@ func SyncConceptTags(c *gin.Context) {
 // @Failure 400 {object} schema.ErrorResponse
 // @Router /reader/knowledge/edges [post]
 func SyncConceptEdges(c *gin.Context) {
-	userID := c.GetInt64("userID")
+	userID := c.GetInt64(middleware.XUserIDTag)
 
 	var edges []schema.ConceptEdge
 	if err := c.ShouldBindJSON(&edges); err != nil {

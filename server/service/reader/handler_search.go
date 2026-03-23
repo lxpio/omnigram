@@ -1,13 +1,13 @@
 package reader
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lxpio/omnigram/server/schema"
 	"github.com/lxpio/omnigram/server/service/ai"
+	"gorm.io/gorm"
 )
 
 // sanitizeSearchQuery cleans search input for PG tsvector plainto_tsquery
@@ -82,7 +82,7 @@ func enhancedSearchHandle(c *gin.Context) {
 		if err == nil && embedding != nil {
 			vecStr := ai.FormatVector(embedding)
 			query = query.Where("embedding IS NOT NULL").
-				Order(fmt.Sprintf("embedding <=> '%s'", vecStr))
+				Order(gorm.Expr("embedding <=> ?", vecStr))
 			usedMode = "semantic"
 		} else {
 			// Fallback to tsvector on embedding failure
