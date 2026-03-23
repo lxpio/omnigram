@@ -1,0 +1,126 @@
+name: API Smoke Test
+
+on:
+  workflow_call:
+    secrets:
+      GCP_SA_KEY:
+        required: false
+
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'server/**'
+      - 'docker-compose.yml'
+
+jobs:
+  api-smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install hurl
+        run: |
+          VERSION=6.1.1
+          curl -fsSL "https://github.com/Orange-OpenSource/hurl/releases/download/${VERSION}/hurl_${VERSION}_amd64.deb" -o hurl.deb
+          sudo dpkg -i hurl.deb
+
+      - name: Create test docker-compose
+        run: |
+          cat > docker-compose.test.yml << 'YAML'
+          version: '3'
+          services:
+            omnigram-server:
+              build:
+                context: server
+                dockerfile: Dockerfile
+              ports:
+                - "8080:80"
+              environment:
+                DB_DRIVER: postgres
+                DB_HOST: db
+                DB_PORT: 5432
+                DB_USER: omnigram
+                DB_PASSWORD: omnigram
+                DB_NAME: omnigram
+                TTS_PROVIDER: edge
+                INIT_ADMIN: "true"
+                INIT_ADMIN_USER: testadmin
+                INIT_ADMIN_PASS: testpass123
+              depends_on:
+                db:
+                  condition: service_healthy
+
+            db:
+              image: pgvector/pgvector:pg17
+              environment:
+                POSTGRES_USER: omnigram
+                POSTGRES_PASSWORD: omnigram
+                POSTGRES_DB: omnigram
+              healthcheck:
+                test: ["CMD-SHELL", "pg_isready -U omnigram"]
+                interval: 5s
+                timeout: 3s
+                retries: 10
+          YAML
+
+      - name: Start services
+        run: |
+          docker compose -f docker-compose.test.yml up -d --build
+          # Wait for server to be ready
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8080/healthz > /dev/null 2>&1; then
+              echo "Server is ready"
+              break
+            fi
+            echo "Waiting for server... ($i/30)"
+            sleep 2
+          done
+
+      - name: Run smoke tests
+        run: |
+          hurl --test \
+            --variable host=http://localhost:8080 \
+            --variable username=testadmin \
+            --variable password=testpass123 \
+            --report-html server/test/results/ \
+            --retry 2 \
+            --retry-interval 3000 \
+            server/test/api/smoke.hurl
+
+      - name: Run schemathesis fuzz (optional)
+        if: always()
+        continue-on-error: true
+        run: |
+          pip install schemathesis
+          schemathesis run \
+            http://localhost:8080/swagger/doc.json \
+            --checks all \
+            --base-url http://localhost:8080 \
+            --header "Authorization: Bearer $(curl -s http://localhost:8080/auth/login -H 'Content-Type: application/json' -d '{"username":"testadmin","password":"testpass123"}' | jq -r '.token')" \
+            --max-response-time 5000 \
+            --hypothesis-max-examples 50 \
+            --report \
+            || true
+
+      - name: Collect logs on failure
+        if: failure()
+        run: |
+          docker compose -f docker-compose.test.yml logs > server-logs.txt 2>&1
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-test-results
+          path: |
+            server/test/results/
+            server-logs.txt
+          retention-days: 14
+
+      - name: Cleanup
+        if: always()
+        run: docker compose -f docker-compose.test.yml down -v

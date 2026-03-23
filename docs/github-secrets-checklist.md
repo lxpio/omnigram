@@ -1,6 +1,6 @@
 # GitHub Secrets & Variables 配置清单
 
-> 更新日期：2026-03-21
+> 更新日期：2026-03-23
 > 配置位置：GitHub → Settings → Secrets and variables → Actions
 
 ---
@@ -34,6 +34,22 @@
 ---
 
 ## 二、按需配置（特定平台启用时）
+
+### Firebase Robo Test（自动化 UI 测试）
+
+| Secret 名称 | 用途 | 获取方式 | 使用文件 |
+|-------------|------|---------|---------|
+| `GCP_SA_KEY` | GCP Service Account JSON 密钥 | GCP Console → IAM → Service Accounts → Keys → JSON | `test-robo.yaml` |
+
+| Variable 名称 | 用途 | 格式 | 使用文件 |
+|---------------|------|------|---------|
+| `GCP_PROJECT_ID` | GCP 项目 ID | 明文（如 `omnigram-ci`） | `test-robo.yaml` |
+
+> **注意：** `GCP_PROJECT_ID` 是 **Variable**（非 Secret），在 Settings → Secrets and variables → Actions → Variables tab 下添加。
+>
+> Service Account 需要两个角色：`Firebase Test Lab Admin` + `Storage Object Admin`。
+>
+> 需提前创建 GCS 存储桶：`{GCP_PROJECT_ID}-robo-results`。
 
 ### Windows 代码签名（SignPath）
 
@@ -87,6 +103,10 @@
 ├── NOTIFICATION_URL       ← 构建通知 webhook
 ├── TELEGRAM_TO            ← Telegram 通知
 └── TELEGRAM_TOKEN         ← Telegram 通知
+
+按需（Robo Test）：
+├── GCP_SA_KEY             ← GCP 服务账号密钥（Secret）
+└── GCP_PROJECT_ID         ← GCP 项目 ID（Variable）
 
 按需（Windows 签名）：
 └── SIGNPATH_API_TOKEN     ← Windows 代码签名
