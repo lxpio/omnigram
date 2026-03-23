@@ -1,20 +1,14 @@
 import 'package:omnigram/dao/base_dao.dart';
 import 'package:omnigram/dao/book.dart';
-import 'package:omnigram/enums/sync_direction.dart';
-import 'package:omnigram/enums/sync_trigger.dart';
 import 'package:omnigram/models/book.dart';
 import 'package:omnigram/models/reading_time.dart';
-import 'package:omnigram/providers/sync.dart';
 
 class ReadingTimeDao extends BaseDao {
   ReadingTimeDao();
 
   static const String table = 'tb_reading_time';
 
-  Future<void> insertReadingTime(
-    ReadingTime readingTime, {
-    DateTime? startedAt,
-  }) async {
+  Future<void> insertReadingTime(ReadingTime readingTime, {DateTime? startedAt}) async {
     final db = await database;
     final resolvedDay = _resolveDayString(readingTime, startedAt);
 
@@ -38,28 +32,17 @@ class ReadingTimeDao extends BaseDao {
           whereArgs: [existing.first['id']],
         );
       } else {
-        await txn.insert(
-          table,
-          {
-            'book_id': readingTime.bookId,
-            'date': resolvedDay,
-            'reading_time': readingTime.readingTime,
-          },
-        );
+        await txn.insert(table, {
+          'book_id': readingTime.bookId,
+          'date': resolvedDay,
+          'reading_time': readingTime.readingTime,
+        });
       }
     });
   }
 
-  Future<void> insertReadingSession({
-    required int bookId,
-    required int readingTime,
-    DateTime? startedAt,
-  }) async {
-    final session = ReadingTime(
-      bookId: bookId,
-      readingTime: readingTime,
-      date: startedAt?.toIso8601String(),
-    );
+  Future<void> insertReadingSession({required int bookId, required int readingTime, DateTime? startedAt}) async {
+    final session = ReadingTime(bookId: bookId, readingTime: readingTime, date: startedAt?.toIso8601String());
 
     await insertReadingTime(session, startedAt: startedAt);
   }
@@ -82,15 +65,10 @@ class ReadingTimeDao extends BaseDao {
     return _dayKey(DateTime.now());
   }
 
-  String _dayKey(DateTime dateTime) =>
-      dateTime.toIso8601String().substring(0, 10);
+  String _dayKey(DateTime dateTime) => dateTime.toIso8601String().substring(0, 10);
 
   Future<List<ReadingTime>> selectAllReadingTime() async {
-    return queryList(
-      table,
-      mapper: ReadingTime.fromDb,
-      orderBy: 'datetime(date) DESC, id DESC',
-    );
+    return queryList(table, mapper: ReadingTime.fromDb, orderBy: 'datetime(date) DESC, id DESC');
   }
 
   Future<int> selectTotalReadingTime() async {
@@ -135,17 +113,11 @@ class ReadingTimeDao extends BaseDao {
       WHERE DATE(date) BETWEEN DATE(?) AND DATE(?) 
       GROUP BY day
       ''',
-      arguments: [
-        start.toIso8601String().substring(0, 10),
-        end.toIso8601String().substring(0, 10),
-      ],
+      arguments: [start.toIso8601String().substring(0, 10), end.toIso8601String().substring(0, 10)],
       mapper: (row) => row,
     );
 
-    final totals = {
-      for (final row in rows)
-        row['day'] as String: row['total_sum'] as int? ?? 0,
-    };
+    final totals = {for (final row in rows) row['day'] as String: row['total_sum'] as int? ?? 0};
 
     return List<int>.generate(7, (index) {
       final day = start.add(Duration(days: index));
@@ -165,17 +137,11 @@ class ReadingTimeDao extends BaseDao {
       WHERE DATE(date) BETWEEN DATE(?) AND DATE(?) 
       GROUP BY day
       ''',
-      arguments: [
-        firstDay.toIso8601String().substring(0, 10),
-        lastDay.toIso8601String().substring(0, 10),
-      ],
+      arguments: [firstDay.toIso8601String().substring(0, 10), lastDay.toIso8601String().substring(0, 10)],
       mapper: (row) => row,
     );
 
-    final totals = {
-      for (final row in rows)
-        row['day'] as String: row['total_sum'] as int? ?? 0,
-    };
+    final totals = {for (final row in rows) row['day'] as String: row['total_sum'] as int? ?? 0};
 
     final daysInMonth = lastDay.day;
     return List<int>.generate(daysInMonth, (index) {
@@ -196,22 +162,14 @@ class ReadingTimeDao extends BaseDao {
       WHERE DATE(date) BETWEEN DATE(?) AND DATE(?) 
       GROUP BY month
       ''',
-      arguments: [
-        yearStart.toIso8601String().substring(0, 10),
-        yearEnd.toIso8601String().substring(0, 10),
-      ],
+      arguments: [yearStart.toIso8601String().substring(0, 10), yearEnd.toIso8601String().substring(0, 10)],
       mapper: (row) => row,
     );
 
-    final totals = {
-      for (final row in rows)
-        row['month'] as String: row['total_sum'] as int? ?? 0,
-    };
+    final totals = {for (final row in rows) row['month'] as String: row['total_sum'] as int? ?? 0};
 
     return List<int>.generate(12, (index) {
-      final monthKey = DateTime(dateTime.year, index + 1, 1)
-          .toIso8601String()
-          .substring(0, 7);
+      final monthKey = DateTime(dateTime.year, index + 1, 1).toIso8601String().substring(0, 7);
       return totals[monthKey] ?? 0;
     });
   }
@@ -226,12 +184,7 @@ class ReadingTimeDao extends BaseDao {
     );
   }
 
-  Future<List<ReadingTime>> queryReadingHistory({
-    int? bookId,
-    DateTime? from,
-    DateTime? to,
-    int? limit,
-  }) async {
+  Future<List<ReadingTime>> queryReadingHistory({int? bookId, DateTime? from, DateTime? to, int? limit}) async {
     final where = <String>[];
     final whereArgs = <Object?>[];
 
@@ -266,8 +219,7 @@ class ReadingTimeDao extends BaseDao {
   }
 
   Future<List<Map<int, int>>> selectThisWeekBooks() async {
-    final monday =
-        DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
+    final monday = DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
     final rows = await rawQueryList(
       '''
       SELECT book_id, SUM(reading_time) AS total_sum 
@@ -277,9 +229,7 @@ class ReadingTimeDao extends BaseDao {
       ORDER BY total_sum DESC
       ''',
       arguments: [monday.toIso8601String().substring(0, 10)],
-      mapper: (row) => {
-        (row['book_id'] as int?) ?? 0: row['total_sum'] as int? ?? 0,
-      },
+      mapper: (row) => {(row['book_id'] as int?) ?? 0: row['total_sum'] as int? ?? 0},
     );
     return rows;
   }
@@ -301,58 +251,43 @@ class ReadingTimeDao extends BaseDao {
     return _attachBooks(rows);
   }
 
-  Future<List<Map<Book, int>>> selectBookReadingTimeOfWeek(
-      DateTime date) async {
+  Future<List<Map<Book, int>>> selectBookReadingTimeOfWeek(DateTime date) async {
     final start = date.subtract(Duration(days: date.weekday - 1));
     final end = start.add(const Duration(days: 6));
     final rows = await _aggregateByBook(
       where: 'DATE(date) BETWEEN DATE(?) AND DATE(?)',
-      whereArgs: [
-        start.toIso8601String().substring(0, 10),
-        end.toIso8601String().substring(0, 10),
-      ],
+      whereArgs: [start.toIso8601String().substring(0, 10), end.toIso8601String().substring(0, 10)],
     );
     return _attachBooks(rows);
   }
 
-  Future<List<Map<Book, int>>> selectBookReadingTimeOfMonth(
-      DateTime date) async {
+  Future<List<Map<Book, int>>> selectBookReadingTimeOfMonth(DateTime date) async {
     final start = DateTime(date.year, date.month, 1);
     final end = DateTime(date.year, date.month + 1, 0);
     final rows = await _aggregateByBook(
       where: 'DATE(date) BETWEEN DATE(?) AND DATE(?)',
-      whereArgs: [
-        start.toIso8601String().substring(0, 10),
-        end.toIso8601String().substring(0, 10),
-      ],
+      whereArgs: [start.toIso8601String().substring(0, 10), end.toIso8601String().substring(0, 10)],
     );
     return _attachBooks(rows);
   }
 
-  Future<List<Map<Book, int>>> selectBookReadingTimeOfYear(
-      DateTime date) async {
+  Future<List<Map<Book, int>>> selectBookReadingTimeOfYear(DateTime date) async {
     final start = DateTime(date.year, 1, 1);
     final end = DateTime(date.year, 12, 31);
     final rows = await _aggregateByBook(
       where: 'DATE(date) BETWEEN DATE(?) AND DATE(?)',
-      whereArgs: [
-        start.toIso8601String().substring(0, 10),
-        end.toIso8601String().substring(0, 10),
-      ],
+      whereArgs: [start.toIso8601String().substring(0, 10), end.toIso8601String().substring(0, 10)],
     );
     return _attachBooks(rows);
   }
 
   Future<Map<DateTime, int>> selectAllReadingTimeGroupByDay() async {
-    final rows = await rawQueryList(
-      '''
+    final rows = await rawQueryList('''
       SELECT DATE(date) AS day, SUM(reading_time) AS total_time 
       FROM $table 
       GROUP BY day 
       ORDER BY day ASC
-      ''',
-      mapper: (row) => row,
-    );
+      ''', mapper: (row) => row);
 
     final result = <DateTime, int>{};
     for (final row in rows) {
@@ -368,54 +303,34 @@ class ReadingTimeDao extends BaseDao {
   }
 
   Future<Map<String, dynamic>?> selectLatestReadingRecord() async {
-    return await rawQuerySingle(
-      '''
+    return await rawQuerySingle('''
       SELECT book_id, date, reading_time 
       FROM $table 
       ORDER BY datetime(date) DESC, id DESC 
       LIMIT 1
-      ''',
-      mapper: (row) => row,
-    );
+      ''', mapper: (row) => row);
   }
 
   Future<void> deleteReadingTimeByBookId(List<int> bookIds) async {
     if (bookIds.isEmpty) return;
 
     final placeholders = List.filled(bookIds.length, '?').join(',');
-    await delete(
-      table,
-      where: 'book_id IN ($placeholders)',
-      whereArgs: bookIds,
-    );
-
-    Sync().syncData(SyncDirection.both, null, trigger: SyncTrigger.auto);
+    await delete(table, where: 'book_id IN ($placeholders)', whereArgs: bookIds);
   }
 
-  Future<List<Map<String, dynamic>>> _aggregateByBook({
-    String? where,
-    List<Object?>? whereArgs,
-  }) async {
+  Future<List<Map<String, dynamic>>> _aggregateByBook({String? where, List<Object?>? whereArgs}) async {
     final db = await database;
-    return db.rawQuery(
-      '''
+    return db.rawQuery('''
       SELECT book_id, SUM(reading_time) AS total_time 
       FROM $table 
       ${where != null ? 'WHERE $where' : ''} 
       GROUP BY book_id 
       ORDER BY total_time DESC
-      ''',
-      whereArgs,
-    );
+      ''', whereArgs);
   }
 
-  Future<List<Map<Book, int>>> _attachBooks(
-      List<Map<String, dynamic>> rows) async {
-    final ids = rows
-        .map((row) => row['book_id'] as int?)
-        .whereType<int>()
-        .toSet()
-        .toList();
+  Future<List<Map<Book, int>>> _attachBooks(List<Map<String, dynamic>> rows) async {
+    final ids = rows.map((row) => row['book_id'] as int?).whereType<int>().toSet().toList();
     if (ids.isEmpty) {
       return const [];
     }
@@ -434,10 +349,7 @@ class ReadingTimeDao extends BaseDao {
     return result;
   }
 
-  Future<List<Map<String, dynamic>>> selectBookDailyReadingTime({
-    required int bookId,
-    required int days,
-  }) async {
+  Future<List<Map<String, dynamic>>> selectBookDailyReadingTime({required int bookId, required int days}) async {
     final startDate = DateTime.now().subtract(Duration(days: days - 1));
 
     return rawQueryList(
@@ -448,19 +360,12 @@ class ReadingTimeDao extends BaseDao {
       GROUP BY day
       ORDER BY day ASC
       ''',
-      arguments: [
-        bookId,
-        startDate.toIso8601String().substring(0, 10),
-      ],
-      mapper: (row) => {
-        'day': row['day'] as String,
-        'total_time': row['total_time'] as int? ?? 0,
-      },
+      arguments: [bookId, startDate.toIso8601String().substring(0, 10)],
+      mapper: (row) => {'day': row['day'] as String, 'total_time': row['total_time'] as int? ?? 0},
     );
   }
 
-  Future<Map<DateTime, int>> selectDailyReadingTimeSince(
-      DateTime startDate) async {
+  Future<Map<DateTime, int>> selectDailyReadingTimeSince(DateTime startDate) async {
     final rows = await rawQueryList(
       '''
       SELECT DATE(date) as day, SUM(reading_time) as total_time

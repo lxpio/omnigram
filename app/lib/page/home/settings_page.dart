@@ -58,7 +58,7 @@ class SettingsPage extends ConsumerWidget {
           _SettingsSection(
             icon: Icons.sync,
             title: '同步与存储',
-            subtitle: 'WebDAV · 导入导出 · 缓存',
+            subtitle: '导入导出 · 缓存',
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(

@@ -1,26 +1,19 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:url_launcher/url_launcher.dart';
-
 import 'package:omnigram/dao/database.dart';
-import 'package:omnigram/enums/sync_protocol.dart';
 import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/main.dart';
 import 'package:omnigram/providers/sync.dart';
-import 'package:omnigram/service/sync/sync_client_factory.dart';
 import 'package:omnigram/utils/platform_utils.dart';
 import 'package:omnigram/utils/save_file_to_download.dart';
 import 'package:omnigram/utils/get_path/get_temp_dir.dart';
 import 'package:omnigram/utils/get_path/databases_path.dart';
 import 'package:omnigram/utils/get_path/get_base_path.dart';
 import 'package:omnigram/utils/log/common.dart';
-import 'package:omnigram/utils/sync_test_helper.dart';
 import 'package:omnigram/utils/toast/common.dart';
 import 'package:omnigram/config/shared_preference_provider.dart';
-import 'package:omnigram/utils/webdav/test_webdav.dart';
 import 'package:omnigram/widgets/settings/settings_title.dart';
-import 'package:omnigram/widgets/settings/webdav_switch.dart';
 import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -47,81 +40,8 @@ class _SyncSettingState extends ConsumerState<SyncSetting> {
     return settingsSections(
       sections: [
         SettingsSection(
-          title: Text(L10n.of(context).settingsSyncWebdav),
+          title: Text(L10n.of(context).restoreBackup),
           tiles: [
-            webdavSwitch(context, setState, ref),
-            SettingsTile.navigation(
-              title: Text(L10n.of(context).settingsSyncWebdav),
-              leading: const Icon(Icons.cloud),
-              value: Text(Prefs().getSyncInfo(SyncProtocol.webdav)['url'] ?? 'Not set'),
-              // enabled: Prefs().webdavStatus,
-              onPressed: (context) async {
-                showWebdavDialog(context);
-              },
-            ),
-            CustomSettingsTile(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(40, 0, 20, 10),
-                child: GestureDetector(
-                  onTap: () async {
-                    if (!await launchUrl(
-                      Uri.parse('https://anx.anxcye.com/docs/sync/webdav'),
-                      mode: LaunchMode.externalApplication,
-                    )) {
-                      AnxToast.show(L10n.of(context).commonFailed);
-                    }
-                  },
-                  child: Text(
-                    L10n.of(context).settingsNarrateClickForHelp,
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      decoration: TextDecoration.underline,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SettingsTile.navigation(
-              title: Text(L10n.of(context).settingsSyncWebdavSyncNow),
-              leading: const Icon(Icons.sync_alt),
-              // value: Text(Prefs().syncDirection),
-              enabled: Prefs().webdavStatus,
-              onPressed: (context) {
-                chooseDirection(ref);
-              },
-            ),
-            SettingsTile.switchTile(
-              title: Text(L10n.of(context).webdavOnlyWifi),
-              leading: const Icon(Icons.wifi),
-              initialValue: Prefs().onlySyncWhenWifi,
-              onToggle: (bool value) {
-                setState(() {
-                  Prefs().onlySyncWhenWifi = value;
-                });
-              },
-            ),
-            SettingsTile.switchTile(
-              title: Text(L10n.of(context).settingsSyncCompletedToast),
-              leading: const Icon(Icons.notifications),
-              initialValue: Prefs().syncCompletedToast,
-              onToggle: (bool value) {
-                setState(() {
-                  Prefs().syncCompletedToast = value;
-                });
-              },
-            ),
-            SettingsTile.switchTile(
-              title: Text(L10n.of(context).settingsSyncAutoSync),
-              leading: const Icon(Icons.sync),
-              initialValue: Prefs().autoSync,
-              enabled: Prefs().webdavStatus,
-              onToggle: (bool value) {
-                setState(() {
-                  Prefs().autoSync = value;
-                });
-              },
-            ),
             SettingsTile.navigation(
               title: Text(L10n.of(context).restoreBackup),
               leading: const Icon(Icons.restore),
@@ -179,11 +99,6 @@ class _SyncSettingState extends ConsumerState<SyncSetting> {
     final file = File(zipPath);
     SmartDialog.dismiss();
     if (await file.exists()) {
-      // SaveFileDialogParams params = SaveFileDialogParams(
-      //   sourceFilePath: file.path,
-      //   mimeTypesFilter: ['application/zip'],
-      // );
-      // final filePath = await FlutterFileDialog.saveFile(params: params);
       String fileName = 'Omnigram-Backup-${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}-v3.zip';
 
       String? filePath = await saveFileToDownload(
@@ -296,8 +211,6 @@ Future<String> createZipFile(Map<String, dynamic> params) async {
     getFontDir(path: docPath),
     getBgimgDir(path: docPath),
     if (!AnxPlatform.isOhos) await getAnxDataBasesDir(),
-    // await getAnxSharedPrefsDir(),
-    // await getAnxShredPrefsFile(),
     prefsBackupFile,
   ];
 
@@ -369,67 +282,4 @@ Future<bool> _restorePrefsFromBackup(String extractPath) async {
     AnxLog.info('importData: failed to restore prefs backup: $e');
   }
   return false;
-}
-
-void showWebdavDialog(BuildContext context) {
-  final title = L10n.of(context).settingsSyncWebdav;
-  // final prefs = Prefs().saveWebdavInfo;
-  final webdavInfo = Prefs().getSyncInfo(SyncProtocol.webdav);
-  final webdavUrlController = TextEditingController(text: webdavInfo['url']);
-  final webdavUsernameController = TextEditingController(text: webdavInfo['username']);
-  final webdavPasswordController = TextEditingController(text: webdavInfo['password']);
-  Widget buildTextField(String labelText, TextEditingController controller) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: TextField(
-        obscureText: labelText == L10n.of(context).settingsSyncWebdavPassword ? true : false,
-        controller: controller,
-        decoration: InputDecoration(border: const OutlineInputBorder(), labelText: labelText),
-      ),
-    );
-  }
-
-  showDialog(
-    context: context,
-    builder: (context) {
-      return SimpleDialog(
-        title: Text(title),
-        contentPadding: const EdgeInsets.all(20),
-        children: [
-          buildTextField(L10n.of(context).settingsSyncWebdavUrl, webdavUrlController),
-          buildTextField(L10n.of(context).settingsSyncWebdavUsername, webdavUsernameController),
-          buildTextField(L10n.of(context).settingsSyncWebdavPassword, webdavPasswordController),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton.icon(
-                onPressed: () => SyncTestHelper.handleFullTestConnection(
-                  context,
-                  protocol: SyncProtocol.webdav,
-                  config: {
-                    'url': webdavUrlController.text.trim(),
-                    'username': webdavUsernameController.text,
-                    'password': webdavPasswordController.text,
-                  },
-                ),
-                icon: const Icon(Icons.wifi_find),
-                label: Text(L10n.of(context).settingsSyncWebdavTestConnection),
-              ),
-              TextButton(
-                onPressed: () {
-                  webdavInfo['url'] = webdavUrlController.text.trim();
-                  webdavInfo['username'] = webdavUsernameController.text;
-                  webdavInfo['password'] = webdavPasswordController.text;
-                  Prefs().setSyncInfo(SyncProtocol.webdav, webdavInfo);
-                  SyncClientFactory.initializeCurrentClient();
-                  Navigator.pop(context);
-                },
-                child: Text(L10n.of(context).commonSave),
-              ),
-            ],
-          ),
-        ],
-      );
-    },
-  );
 }
