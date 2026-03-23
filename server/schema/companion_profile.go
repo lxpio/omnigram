@@ -11,6 +11,7 @@ type CompanionProfile struct {
 	Style       int    `json:"style" gorm:"default:50;comment:风格 0(严谨)到100(幽默)"`
 	Depth       int    `json:"depth" gorm:"default:50;comment:深度 0(简洁)到100(详细)"`
 	Warmth      int    `json:"warmth" gorm:"default:50;comment:温度 0(理性)到100(感性)"`
+	Voice       string `json:"voice" gorm:"type:varchar(200);comment:关联的TTS声音ID"`
 	PresetName  string `json:"preset_name" gorm:"type:varchar(50);comment:预设模板名"`
 	CTime       int64  `json:"ctime" gorm:"column:ctime;autoCreateTime:milli;comment:创建时间"`
 	UTime       int64  `json:"utime" gorm:"column:utime;autoUpdateTime:milli;comment:更新时间"`

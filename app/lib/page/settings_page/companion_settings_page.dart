@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:omnigram/models/companion_personality.dart';
 import 'package:omnigram/providers/companion_provider.dart';
+import 'package:omnigram/providers/tts_providers.dart';
 import 'package:omnigram/service/ai/companion_prompt.dart';
 import 'package:omnigram/theme/colors.dart';
 import 'package:omnigram/theme/typography.dart';
@@ -96,6 +97,15 @@ class _CompanionSettingsPageState extends ConsumerState<CompanionSettingsPage> {
           ),
           const SizedBox(height: 24),
 
+          // Voice selector
+          Text('朗读声音', style: OmnigramTypography.titleMedium(context)),
+          const SizedBox(height: 8),
+          _VoiceSelector(
+            currentVoice: personality.voice,
+            onChanged: notifier.updateVoice,
+          ),
+          const SizedBox(height: 24),
+
           // Presets
           Text('预设性格', style: OmnigramTypography.titleMedium(context)),
           const SizedBox(height: 12),
@@ -177,5 +187,40 @@ class _PresetChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ActionChip(label: Text(label), onPressed: onTap);
+  }
+}
+
+class _VoiceSelector extends ConsumerWidget {
+  final String currentVoice;
+  final ValueChanged<String> onChanged;
+  const _VoiceSelector({required this.currentVoice, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final voicesAsync = ref.watch(ttsVoicesProvider);
+    return voicesAsync.when(
+      data: (voices) {
+        if (voices.isEmpty) {
+          return Text('未配置 TTS 服务', style: OmnigramTypography.caption(context));
+        }
+        return DropdownButtonFormField<String>(
+          value: voices.any((v) => v.shortName == currentVoice) ? currentVoice : null,
+          decoration: const InputDecoration(
+            hintText: '选择伴侣朗读声音',
+            border: OutlineInputBorder(),
+          ),
+          items: [
+            const DropdownMenuItem(value: '', child: Text('不关联声音')),
+            ...voices.map((v) => DropdownMenuItem(
+              value: v.shortName,
+              child: Text(v.name),
+            )),
+          ],
+          onChanged: (v) => onChanged(v ?? ''),
+        );
+      },
+      loading: () => const LinearProgressIndicator(),
+      error: (_, __) => Text('加载声音列表失败', style: OmnigramTypography.caption(context)),
+    );
   }
 }

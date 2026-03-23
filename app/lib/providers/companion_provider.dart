@@ -40,6 +40,7 @@ class Companion extends _$Companion {
   void updateStyle(int v) => update(state.copyWith(style: v));
   void updateDepth(int v) => update(state.copyWith(depth: v));
   void updateWarmth(int v) => update(state.copyWith(warmth: v));
+  void updateVoice(String v) => update(state.copyWith(voice: v));
 
   void applyPreset(CompanionPersonality preset) => update(preset.copyWith(name: state.name));
 
@@ -67,6 +68,7 @@ class Companion extends _$Companion {
         style: response['style'] as int? ?? state.style,
         depth: response['depth'] as int? ?? state.depth,
         warmth: response['warmth'] as int? ?? state.warmth,
+        voice: response['voice'] as String? ?? state.voice,
       );
 
       state = serverPersonality;
@@ -91,6 +93,7 @@ class Companion extends _$Companion {
         'style': p.style,
         'depth': p.depth,
         'warmth': p.warmth,
+        'voice': p.voice,
       });
     } catch (e) {
       debugPrint('[Companion] Server push failed: $e');
