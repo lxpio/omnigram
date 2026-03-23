@@ -75,6 +75,9 @@ func Setup(router *gin.Engine) {
 	// Annotation sync
 	router.POST("/sync/annotations", oauthMD, syncAnnotationsHandle)
 
+	// AI results
+	book.GET("/books/:book_id/ai", getBookAiHandle)
+
 	// Enhanced search
 	book.GET("/search", enhancedSearchHandle)
 

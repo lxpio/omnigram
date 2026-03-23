@@ -48,6 +48,8 @@ func Setup(router *gin.Engine) {
 	router.POST(`/auth/accounts/:user_id/reset`, oauthMD, resetPasswordHandle)
 
 	router.GET("/user/userinfo", oauthMD, getUserInfoHandle) //获取用户信息
+	router.GET("/user/companion", oauthMD, getCompanionHandle)
+	router.PUT("/user/companion", oauthMD, updateCompanionHandle)
 
 	router.POST(`/admin/accounts`, oauthMD, adminMD, createAccountHandle)            //创建用户
 	router.GET(`/admin/accounts`, oauthMD, adminMD, listAccountHandle)               //获取用户列表
