@@ -84,8 +84,8 @@ class BookApi {
   }
 
   /// Enhanced search.
-  Future<List<ServerBook>> search(String query) async {
-    return _api.getList('/reader/search', queryParameters: {'q': query}, fromJson: ServerBook.fromJson);
+  Future<List<ServerBook>> search(String query, {String mode = 'text'}) async {
+    return _api.getList('/reader/search', queryParameters: {'q': query, 'mode': mode}, fromJson: ServerBook.fromJson);
   }
 
   /// Get book statistics.
