@@ -13,37 +13,41 @@ class AnxToast {
   }
 
   static void show(String message, {Icon? icon, int duration = 2000}) {
-    Widget toast = FilledContainer(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          icon ?? const Icon(Icons.info_outline),
-          const SizedBox(
-            width: 12.0,
-          ),
-          Flexible(
-            child: Text(
-              message,
-              // wrap
-              style: TextStyle(
-                color: Theme.of(navigatorKey.currentContext!)
-                    .colorScheme
-                    .onSurface,
+    final context = navigatorKey.currentContext;
+    if (context == null) {
+      debugPrint('AnxToast: context is null, skipping toast: $message');
+      return;
+    }
+
+    try {
+      Widget toast = FilledContainer(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            icon ?? const Icon(Icons.info_outline),
+            const SizedBox(width: 12.0),
+            Flexible(
+              child: Text(
+                message,
+                // wrap
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
 
-    // close previous toast
-    fToast.removeQueuedCustomToasts();
+      // close previous toast
+      fToast.removeQueuedCustomToasts();
 
-    fToast.showToast(
-      child: toast,
-      gravity: ToastGravity.BOTTOM,
-      toastDuration: Duration(milliseconds: duration),
-    );
+      fToast.showToast(
+        child: toast,
+        gravity: ToastGravity.BOTTOM,
+        toastDuration: Duration(milliseconds: duration),
+      );
+    } catch (e) {
+      debugPrint('AnxToast: failed to show toast: $e');
+    }
   }
 }
