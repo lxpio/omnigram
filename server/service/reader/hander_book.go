@@ -150,6 +150,13 @@ func bookUploadHandle(c *gin.Context) {
 				}
 			}
 		}
+
+		// Generate embedding for semantic search
+		if ai.IsEmbeddingAvailable() {
+			if err := ai.GenerateBookEmbedding(context.Background(), orm, book.ID, book.Title, book.Author, book.Description); err != nil {
+				log.E("Failed to generate book embedding: ", err)
+			}
+		}
 	}()
 
 	c.JSON(http.StatusOK, utils.SUCCESS)

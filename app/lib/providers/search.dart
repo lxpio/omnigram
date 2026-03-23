@@ -9,8 +9,10 @@ final searchRepositoryProvider = Provider<SearchRepository>((ref) {
 
 final searchQueryProvider = StateProvider.autoDispose<String>((ref) => '');
 
-final searchResultProvider =
-    FutureProvider.autoDispose<SearchResultData>((ref) async {
+/// Search mode: 'text' (tsvector) or 'semantic' (pgvector).
+final searchModeProvider = StateProvider<String>((ref) => 'text');
+
+final searchResultProvider = FutureProvider.autoDispose<SearchResultData>((ref) async {
   final query = ref.watch(searchQueryProvider);
   final repository = ref.watch(searchRepositoryProvider);
   final trimmed = query.trim();
@@ -21,16 +23,8 @@ final searchResultProvider =
 
   final result = await repository.search(trimmed);
   final noteGroups = result.noteGroups
-      .map(
-        (entry) => SearchNoteGroup(
-          book: entry.book,
-          notes: entry.notes,
-        ),
-      )
+      .map((entry) => SearchNoteGroup(book: entry.book, notes: entry.notes))
       .toList(growable: false);
 
-  return SearchResultData(
-    books: result.books,
-    noteGroups: noteGroups,
-  );
+  return SearchResultData(books: result.books, noteGroups: noteGroups);
 });

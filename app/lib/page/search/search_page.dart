@@ -64,33 +64,53 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   Widget build(BuildContext context) {
     final query = ref.watch(searchQueryProvider);
     final asyncResult = ref.watch(searchResultProvider);
+    final searchMode = ref.watch(searchModeProvider);
 
     var appBar = AppBar(
       forceMaterialTransparency: true,
       titleSpacing: 0,
       title: Padding(
         padding: const EdgeInsets.only(right: 8.0),
-        child: TextField(
-          controller: _controller,
-          focusNode: _focusNode,
-          decoration: InputDecoration(
-            hintText: L10n.of(context).searchBooksOrNotes,
-            prefixIcon: const Icon(Icons.search),
-            suffixIcon: _controller.text.isEmpty
-                ? null
-                : IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: _clearQuery,
-                  ),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(32)),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-          ),
-          textInputAction: TextInputAction.search,
-          onChanged: _onQueryChanged,
-          onSubmitted: (value) {
-            _debounce?.cancel();
-            ref.read(searchQueryProvider.notifier).state = value;
-          },
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _controller,
+                focusNode: _focusNode,
+                decoration: InputDecoration(
+                  hintText: L10n.of(context).searchBooksOrNotes,
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: _controller.text.isEmpty
+                      ? null
+                      : IconButton(icon: const Icon(Icons.clear), onPressed: _clearQuery),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(32)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                ),
+                textInputAction: TextInputAction.search,
+                onChanged: _onQueryChanged,
+                onSubmitted: (value) {
+                  _debounce?.cancel();
+                  ref.read(searchQueryProvider.notifier).state = value;
+                },
+              ),
+            ),
+            const SizedBox(width: 4),
+            IconButton(
+              tooltip: searchMode == 'semantic' ? 'Semantic search' : 'Text search',
+              icon: Icon(
+                searchMode == 'semantic' ? Icons.auto_awesome : Icons.text_fields,
+                color: searchMode == 'semantic' ? Theme.of(context).colorScheme.primary : null,
+              ),
+              onPressed: () {
+                final newMode = searchMode == 'text' ? 'semantic' : 'text';
+                ref.read(searchModeProvider.notifier).state = newMode;
+                // Re-trigger search with new mode
+                if (_controller.text.trim().isNotEmpty) {
+                  ref.read(searchQueryProvider.notifier).state = _controller.text;
+                }
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -100,11 +120,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       body: asyncResult.when(
         data: (result) {
           if (query.trim().isEmpty) {
-            return Center(
-              child: Text(
-                L10n.of(context).startTypingToSearch,
-              ),
-            );
+            return Center(child: Text(L10n.of(context).startTypingToSearch));
           }
           return SingleChildScrollView(
             child: Padding(
@@ -113,13 +129,15 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 spacing: 24,
                 children: [
                   _SearchResult(
-                      title: L10n.of(context).books,
-                      empty: result.books.isEmpty,
-                      child: _SearchBookResult(books: result.books)),
+                    title: L10n.of(context).books,
+                    empty: result.books.isEmpty,
+                    child: _SearchBookResult(books: result.books),
+                  ),
                   _SearchResult(
-                      title: L10n.of(context).notes,
-                      empty: result.noteGroups.isEmpty,
-                      child: _SearchNoteResult(group: result.noteGroups)),
+                    title: L10n.of(context).notes,
+                    empty: result.noteGroups.isEmpty,
+                    child: _SearchNoteResult(group: result.noteGroups),
+                  ),
                 ],
               ),
             ),
@@ -135,11 +153,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 }
 
 class _SearchResult extends ConsumerWidget {
-  const _SearchResult({
-    required this.title,
-    required this.child,
-    required this.empty,
-  });
+  const _SearchResult({required this.title, required this.child, required this.empty});
 
   final String title;
   final Widget child;
@@ -150,24 +164,13 @@ class _SearchResult extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: Theme.of(context)
-              .textTheme
-              .titleLarge!
-              .copyWith(fontWeight: FontWeight.bold),
-        ),
+        Text(title, style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold)),
         const SizedBox(height: 6),
         FilledContainer(
           width: double.infinity,
           padding: const EdgeInsets.all(12.0),
           child: empty
-              ? Center(
-                  child: Text(
-                    L10n.of(context).nothingHere,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                )
+              ? Center(child: Text(L10n.of(context).nothingHere, style: Theme.of(context).textTheme.bodyMedium))
               : child,
         ),
       ],
@@ -218,39 +221,40 @@ class _SearchNoteResult extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(spacing: 18, children: [
-      ...group.map((item) => Column(
+    return Column(
+      spacing: 18,
+      children: [
+        ...group.map(
+          (item) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                item.book.title,
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
+              Text(item.book.title, style: Theme.of(context).textTheme.titleSmall),
               SizedBox(height: 4),
               FilledContainer(
-                  radius: 16,
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  child: Column(
-                    children: [
-                      ...item.notes.map(
-                        (note) => Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: BookNoteTile(
-                            backgroundColor:
-                                Theme.of(context).scaffoldBackgroundColor,
-                            note: note,
-                            margin: EdgeInsets.zero,
-                            onTap: () {
-                              pushToReadingPage(ref, context, item.book,
-                                  cfi: note.cfi);
-                            },
-                          ),
+                radius: 16,
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Column(
+                  children: [
+                    ...item.notes.map(
+                      (note) => Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: BookNoteTile(
+                          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                          note: note,
+                          margin: EdgeInsets.zero,
+                          onTap: () {
+                            pushToReadingPage(ref, context, item.book, cfi: note.cfi);
+                          },
                         ),
                       ),
-                    ],
-                  )),
+                    ),
+                  ],
+                ),
+              ),
             ],
-          ))
-    ]);
+          ),
+        ),
+      ],
+    );
   }
 }

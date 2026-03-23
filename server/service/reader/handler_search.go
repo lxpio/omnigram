@@ -1,11 +1,13 @@
 package reader
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lxpio/omnigram/server/schema"
+	"github.com/lxpio/omnigram/server/service/ai"
 )
 
 // sanitizeSearchQuery cleans search input for PG tsvector plainto_tsquery
@@ -24,11 +26,12 @@ func sanitizeSearchQuery(q string) string {
 
 // enhancedSearchHandle GET /reader/search
 // @Summary Enhanced search
-// @Description Search books with advanced filters and pagination
+// @Description Search books with advanced filters and pagination. Supports text (tsvector) and semantic (pgvector) modes.
 // @Tags Reader
 // @Produce json
 // @Security BearerAuth
 // @Param q query string false "Search query"
+// @Param mode query string false "Search mode (text, semantic)" default(text)
 // @Param format query string false "File format filter (epub, pdf, mobi)"
 // @Param language query string false "Language filter"
 // @Param tag query string false "Tag filter"
@@ -37,10 +40,11 @@ func sanitizeSearchQuery(q string) string {
 // @Param order query string false "Sort order (asc, desc)" default(desc)
 // @Param page query int false "Page number" default(1)
 // @Param page_size query int false "Page size (1-100)" default(20)
-// @Success 200 {object} object{data=[]schema.Book,total=int,page=int,page_size=int}
+// @Success 200 {object} object{data=[]schema.Book,total=int,page=int,page_size=int,mode=string}
 // @Router /reader/search [get]
 func enhancedSearchHandle(c *gin.Context) {
 	q := c.Query("q")
+	mode := c.DefaultQuery("mode", "text")
 	format := c.Query("format")
 	language := c.Query("language")
 	tag := c.Query("tag")
@@ -70,9 +74,25 @@ func enhancedSearchHandle(c *gin.Context) {
 	}
 
 	query := orm.Model(&schema.Book{})
+	usedMode := "text"
 
-	// PG tsvector full-text search
-	if q != "" {
+	// Semantic search via pgvector
+	if q != "" && mode == "semantic" && ai.IsEmbeddingAvailable() {
+		embedding, err := ai.GenerateEmbedding(c.Request.Context(), q)
+		if err == nil && embedding != nil {
+			vecStr := ai.FormatVector(embedding)
+			query = query.Where("embedding IS NOT NULL").
+				Order(fmt.Sprintf("embedding <=> '%s'", vecStr))
+			usedMode = "semantic"
+		} else {
+			// Fallback to tsvector on embedding failure
+			sanitized := sanitizeSearchQuery(q)
+			if sanitized != "" {
+				query = query.Where("search_vector @@ plainto_tsquery('simple', ?)", sanitized)
+			}
+		}
+	} else if q != "" {
+		// PG tsvector full-text search
 		sanitized := sanitizeSearchQuery(q)
 		if sanitized != "" {
 			query = query.Where("search_vector @@ plainto_tsquery('simple', ?)", sanitized)
@@ -100,8 +120,10 @@ func enhancedSearchHandle(c *gin.Context) {
 	query.Count(&total)
 
 	var books []schema.Book
-	query.Order(sortCol + " " + order).
-		Offset((page - 1) * pageSize).
+	if usedMode != "semantic" {
+		query = query.Order(sortCol + " " + order)
+	}
+	query.Offset((page - 1) * pageSize).
 		Limit(pageSize).
 		Find(&books)
 
@@ -110,5 +132,6 @@ func enhancedSearchHandle(c *gin.Context) {
 		"total":     total,
 		"page":      page,
 		"page_size": pageSize,
+		"mode":      usedMode,
 	})
 }
