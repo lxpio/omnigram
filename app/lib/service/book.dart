@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:omnigram/dao/book.dart';
 import 'package:omnigram/dao/theme.dart';
-import 'package:omnigram/enums/sync_direction.dart';
-import 'package:omnigram/enums/sync_trigger.dart';
 import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/main.dart';
 import 'package:omnigram/models/book.dart';
@@ -12,7 +10,6 @@ import 'package:omnigram/page/home_page.dart';
 import 'package:omnigram/providers/ai_chat.dart';
 import 'package:omnigram/providers/chapter_content_bridge.dart';
 import 'package:omnigram/providers/current_reading.dart';
-import 'package:omnigram/providers/sync.dart';
 import 'package:omnigram/providers/book_list.dart';
 import 'package:omnigram/providers/toc_search.dart';
 import 'package:omnigram/service/ai/post_import_ai.dart';
@@ -388,9 +385,6 @@ void _showImportDialog(
                       setState(() {
                         finished = true;
                       });
-                      ref.read(syncProvider.notifier).syncData(
-                          SyncDirection.upload, ref,
-                          trigger: SyncTrigger.auto);
                     },
                     child: Text(finished
                         ? L10n.of(context).commonOk
@@ -430,7 +424,7 @@ Future<void> pushToReadingPage(
   }
 
   if (!File(book.fileFullPath).existsSync()) {
-    ref.read(syncProvider.notifier).downloadBook(book);
+    AnxToast.show(L10n.of(context).bookDeleted);
     return;
   }
 

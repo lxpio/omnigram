@@ -1,7 +1,6 @@
 import 'package:omnigram/page/settings_page/more_settings_page.dart';
 import 'package:omnigram/widgets/settings/about.dart';
 import 'package:omnigram/widgets/settings/theme_mode.dart';
-import 'package:omnigram/widgets/settings/webdav_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -47,8 +46,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ),
               const Divider(),
               const Padding(padding: EdgeInsets.fromLTRB(20, 8, 10, 8), child: ChangeThemeMode()),
-              const Divider(),
-              Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: webdavSwitch(context, setState, ref)),
               const Divider(),
               const MoreSettings(),
               const About(),

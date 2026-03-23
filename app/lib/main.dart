@@ -2,8 +2,6 @@ import 'package:omnigram/utils/platform_utils.dart';
 
 import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/dao/database.dart';
-import 'package:omnigram/enums/sync_direction.dart';
-import 'package:omnigram/enums/sync_trigger.dart';
 import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/models/window_info.dart';
 import 'package:omnigram/page/home_page.dart';
@@ -18,7 +16,6 @@ import 'package:omnigram/utils/error/common.dart';
 import 'package:omnigram/utils/get_path/get_base_path.dart';
 import 'package:omnigram/utils/log/common.dart';
 import 'package:omnigram/utils/window_position_validator.dart';
-import 'package:omnigram/providers/sync.dart';
 import 'package:omnigram/providers/server_connection_provider.dart';
 import 'package:omnigram/service/sync/sync_manager.dart';
 import 'package:audio_service/audio_service.dart';
@@ -166,14 +163,7 @@ class _MyAppState extends ConsumerState<MyApp>
 
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.hidden) {
-      if (Prefs().webdavStatus) {
-        ref
-            .read(syncProvider.notifier)
-            .syncData(SyncDirection.both, ref, trigger: SyncTrigger.auto);
-      }
-    } else if (state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.resumed) {
       if (AnxPlatform.isIOS) {
         Server().start();
       }

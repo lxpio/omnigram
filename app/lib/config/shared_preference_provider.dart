@@ -12,7 +12,7 @@ import 'package:omnigram/enums/lang_list.dart';
 import 'package:omnigram/enums/reading_info.dart';
 import 'package:omnigram/enums/sort_field.dart';
 import 'package:omnigram/enums/sort_order.dart';
-import 'package:omnigram/enums/sync_protocol.dart';
+
 import 'package:omnigram/enums/translation_mode.dart';
 import 'package:omnigram/enums/writing_mode.dart';
 import 'package:omnigram/enums/text_alignment.dart';
@@ -229,57 +229,6 @@ class Prefs extends ChangeNotifier {
     String? beginDateStr = prefs.getString('beginDate');
     if (beginDateStr == null) return null;
     return DateTime.parse(beginDateStr);
-  }
-
-  // void saveWebdavInfo(Map webdavInfo) {
-  //   prefs.setString('webdavInfo', jsonEncode(webdavInfo));
-  //   notifyListeners();
-  // }
-
-  // Map get webdavInfo {
-  //   String? webdavInfoJson = prefs.getString('webdavInfo');
-  //   if (webdavInfoJson == null) {
-  //     return {};
-  //   }
-  //   return jsonDecode(webdavInfoJson);
-  // }
-
-  // Sync protocol selection
-  String? get syncProtocol {
-    return prefs.getString('syncProtocol');
-  }
-
-  set syncProtocol(String? protocol) {
-    if (protocol != null) {
-      prefs.setString('syncProtocol', protocol);
-    } else {
-      prefs.remove('syncProtocol');
-    }
-    notifyListeners();
-  }
-
-  Map<String, dynamic> getSyncInfo(SyncProtocol protocol) {
-    String? syncInfoJson = prefs.getString('${protocol.name}Info');
-    if (syncInfoJson == null) return {};
-    return Map<String, dynamic>.from(jsonDecode(syncInfoJson));
-  }
-
-  setSyncInfo(SyncProtocol protocol, Map<String, dynamic>? info) {
-    if (info != null) {
-      prefs.setString('${protocol.name}Info', jsonEncode(info));
-    } else {
-      prefs.remove('${protocol.name}Info');
-    }
-    notifyListeners();
-  }
-
-  void saveWebdavStatus(bool status) {
-    prefs.setBool('webdavStatus', status);
-    notifyListeners();
-  }
-
-  bool get webdavStatus {
-    return prefs.getBool('webdavStatus') ?? false;
   }
 
   void saveClearLogWhenStart(bool status) {
@@ -1061,15 +1010,6 @@ class Prefs extends ChangeNotifier {
     return prefs.getBool('openBookAnimation') ?? true;
   }
 
-  set onlySyncWhenWifi(bool status) {
-    prefs.setBool('onlySyncWhenWifi', status);
-    notifyListeners();
-  }
-
-  bool get onlySyncWhenWifi {
-    return prefs.getBool('onlySyncWhenWifi') ?? false;
-  }
-
   set useBookStyles(bool status) {
     prefs.setBool('useBookStyles', status);
     notifyListeners();
@@ -1104,24 +1044,6 @@ class Prefs extends ChangeNotifier {
   set bottomNavigatorShowAI(bool status) {
     prefs.setBool('bottomNavigatorShowAI', status);
     notifyListeners();
-  }
-
-  set syncCompletedToast(bool status) {
-    prefs.setBool('syncCompletedToast', status);
-    notifyListeners();
-  }
-
-  bool get syncCompletedToast {
-    return prefs.getBool('syncCompletedToast') ?? true;
-  }
-
-  set autoSync(bool status) {
-    prefs.setBool('autoSync', status);
-    notifyListeners();
-  }
-
-  bool get autoSync {
-    return prefs.getBool('autoSync') ?? true;
   }
 
   set readingInfo(ReadingInfoModel info) {

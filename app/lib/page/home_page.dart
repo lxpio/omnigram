@@ -1,8 +1,6 @@
 import 'dart:ui';
 
 import 'package:omnigram/dao/database.dart';
-import 'package:omnigram/enums/sync_direction.dart';
-import 'package:omnigram/enums/sync_trigger.dart';
 import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/page/home_page/ai_page.dart';
 import 'package:omnigram/service/initialization_check.dart';
@@ -18,7 +16,6 @@ import 'package:omnigram/utils/get_path/get_temp_dir.dart';
 import 'package:omnigram/utils/load_default_font.dart';
 import 'package:omnigram/utils/log/common.dart';
 import 'package:omnigram/utils/platform_utils.dart';
-import 'package:omnigram/providers/sync.dart';
 import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/utils/toast/common.dart';
 import 'package:omnigram/widgets/ai/ai_chat_stream.dart';
@@ -104,10 +101,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     AnxToast.init(context);
     checkUpdate(false);
     InitializationCheck.check();
-    if (Prefs().webdavStatus) {
-      await Sync().init();
-      await Sync().syncData(SyncDirection.both, ref, trigger: SyncTrigger.auto);
-    }
     loadDefaultFont();
 
     if (AnxPlatform.isWindows) {
