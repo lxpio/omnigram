@@ -118,6 +118,33 @@ class AmbientTasks {
     );
   }
 
+  /// Generate AI reading narrative for insights page
+  static Future<String?> readingNarrative({
+    required WidgetRef ref,
+    required List<String> bookTitles,
+    required int totalMinutes,
+    required int totalNotes,
+    required String timePeriod,
+  }) {
+    if (bookTitles.isEmpty) return Future.value(null);
+
+    final titles = bookTitles.join(', ');
+    final hours = totalMinutes ~/ 60;
+    final prompt =
+        'The reader has read these books during $timePeriod: $titles. '
+        'They spent about $hours hours reading and made $totalNotes notes. '
+        'Write a 2-3 sentence narrative summary (under 60 words) of their reading journey. '
+        'Comment on themes, patterns, or progression in their reading. '
+        'Be warm and insightful. Do not list the books — weave them into a story.';
+
+    return AmbientAiPipeline.execute(
+      type: AmbientTaskType.narrative,
+      prompt: prompt,
+      ref: ref,
+      cacheParams: {'narrative': timePeriod, 'books': titles},
+    );
+  }
+
   /// Generate one-line summary for a book
   static Future<String?> summary({
     required WidgetRef ref,
