@@ -1,6 +1,6 @@
 # Omnigram 实施进度索引
 
-> **最后更新：2026-03-22**
+> **最后更新：2026-03-23**
 > **参考设计：** `docs/superpowers/specs/2026-03-22-ambient-ai-reading-design.md`
 > **审核报告：** `docs/superpowers/specs/2026-03-22-ambient-ai-reading-review.md`
 
@@ -13,7 +13,7 @@
 | Layer 0 | 地基（设计系统 + 导航） | ✅ 完成 | Sprint 1 |
 | Layer 1 | 核心阅读闭环 | ✅ 完成 | Sprint 1 |
 | Layer 2 | AI 管道 | ✅ 完成 | Sprint 2 |
-| Layer 3 | 隐形 AI（Ambient AI） | 🔶 部分完成 | Sprint 2/3 |
+| Layer 3 | 隐形 AI（Ambient AI） | ✅ 完成 | Sprint 2/3 |
 | Layer 4 | 深度 AI | ❌ 未开始 | Sprint 4 |
 | Layer 5 | 高级体验 | ❌ 未开始 | Sprint 5 |
 
@@ -92,15 +92,15 @@
 | **书籍导入 AI 处理** | §4.4 Phase 2 | ✅ | `service/ai/post_import_ai.dart` | `d4f355e` |
 | ├─ 自动标签 | §4.3 | ✅ | AmbientTasks.autoTag() | `d4f355e` |
 | └─ 一句话摘要 | §4.3 | ✅ | AmbientTasks.summary() | `d4f355e` |
-| **阅读器 AI Layer 2：Inline Glossary** | §5.1 | ❌ | | |
-| ├─ 选词自动浮现释义 | §5.1 | ❌ | | |
+| **阅读器 AI Layer 2：Inline Glossary** | §5.1 | ✅ | `widgets/reader/glossary_tooltip.dart` | `12e449f` |
+| ├─ 选词自动浮现释义 | §5.1 | ✅ | `widgets/context_menu/excerpt_menu.dart` (Explain 按钮) | `12e449f` |
 | └─ 自动检测难词 | §5.1 | ❌ | | |
-| **书架 AI 功能** | §4.3 | ❌ | | |
-| ├─ AI 推荐卡 | §4.2 | ❌ | | |
+| **书架 AI 功能** | §4.3 | ✅ | | |
+| ├─ AI 推荐卡 | §4.2 | ✅ | `widgets/library/ai_recommendation_card.dart` | `e4bdf3f` |
 | ├─ 智能分组（主题聚合） | §4.3 | ❌ | | |
 | └─ 语义搜索 | §4.2 | ❌ | | |
-| **洞察 Layer 1 升级：AI 叙事** | §6.1 | ❌ | | |
-| └─ AI 生成阅读旅程叙述 | §6.1 | ❌ | | |
+| **洞察 Layer 1 升级：AI 叙事** | §6.1 | ✅ | `widgets/insights/ai_narrative_card.dart` | `d6c2fc2` |
+| └─ AI 生成阅读旅程叙述 | §6.1 | ✅ | `page/home/insights_page.dart` | `d6c2fc2` |
 
 ---
 
@@ -195,4 +195,5 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-03-23 | Sprint 3 完成。Layer 3 全部主要功能就绪（Inline Glossary, 书架 AI 推荐, 洞察 AI 叙事） |
 | 2026-03-22 | 初始创建。Sprint 1 全部完成，Sprint 2 全部完成 |
