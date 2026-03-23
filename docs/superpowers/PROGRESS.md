@@ -16,7 +16,7 @@
 | Layer 3 | 隐形 AI（Ambient AI） | ✅ 完成 | Sprint 2/3 |
 | Layer 3.5 | Server-Client 同步架构 | ✅ 完成 | Sprint 3.5 |
 | Layer 4.0 | 架构迁移（PG + 去 WebDAV + AI 缓存） | ✅ 完成 | Sprint 4 Phase 0 |
-| Layer 4 | 深度 AI | ❌ 未开始 | Sprint 4 |
+| Layer 4.1 | 深度 AI（伴侣面板 + 边注 + 知识网络 + 语义搜索） | ✅ 完成 | Sprint 4 Phase 1 |
 | Layer 5 | 高级体验 | ❌ 未开始 | Sprint 5 |
 
 ---
@@ -100,7 +100,7 @@
 | **书架 AI 功能** | §4.3 | ✅ | | |
 | ├─ AI 推荐卡 | §4.2 | ✅ | `widgets/library/ai_recommendation_card.dart` | `e4bdf3f` |
 | ├─ 智能分组（主题聚合） | §4.3 | ❌ | | |
-| └─ 语义搜索 | §4.2 | ❌ | | |
+| └─ 语义搜索 | §4.2 | ✅ | Sprint 4 完成 |
 | **洞察 Layer 1 升级：AI 叙事** | §6.1 | ✅ | `widgets/insights/ai_narrative_card.dart` | `d6c2fc2` |
 | └─ AI 生成阅读旅程叙述 | §6.1 | ✅ | `page/home/insights_page.dart` | `d6c2fc2` |
 
@@ -175,25 +175,42 @@
 
 ---
 
-## Layer 4 — 深度 AI ❌
+## Layer 4 Phase 1 — 深度 AI ✅
 
-> Sprint 4 · 未开始
+> Sprint 4 Phase 1 · 全部完成
 
 | 功能 | 设计文档章节 | 状态 | 关键文件 | 提交 |
 |------|-------------|------|----------|------|
-| **阅读器 AI Layer 4：Companion Panel** | §5.1 | ❌ | | |
-| └─ 底部滑出双向对话面板 | §5.1 | ❌ | | |
-| **阅读器 AI Layer 3：Margin Notes** | §5.1 | ❌ | | |
-| ├─ 跨书关联页边批注 | §5.1 | ❌ | | |
-| ├─ 每章最多 3 条 | §5.1 | ❌ | | |
-| └─ 置信度过滤 + 用户反馈 | 审核建议 #3 | ❌ | | |
-| **语义搜索** | §4.2 | ❌ | | |
-| └─ 嵌入向量管道 | §10.2 | ❌ | | |
-| **TTS 集成（伴侣声音）** | §5.3 | ❌ | | |
-| └─ 伴侣风格的语音朗读 | §5.3 | ❌ | | |
-| **知识网络（洞察 Layer 2）** | §6.1 Layer 2 | ❌ | | |
-| ├─ 概念节点 + 笔记关联 | §6.1 | ❌ | | |
-| └─ Tag-based 聚合方案 | 审核建议 #2 | ❌ | | |
+| **阅读器 AI Layer 4：Companion Panel** | §5.1 | ✅ | | `d151bbb` |
+| ├─ 底部滑出双向对话面板 | §5.1 | ✅ | `widgets/reader/companion_panel.dart` | |
+| ├─ CompanionChatDao 聊天持久化 | §5.1 | ✅ | `dao/companion_chat.dart` | |
+| ├─ DB v9: tb_companion_chat | §5.1 | ✅ | `dao/database.dart` | |
+| ├─ Server companion chat endpoints | §5.1 | ✅ | `server/service/reader/handler_companion.go` | |
+| └─ 集成到 reading_page 工具栏 | §5.1 | ✅ | `page/reading_page.dart` | |
+| **阅读器 AI Layer 3：Margin Notes** | §5.1 | ✅ | | `d151bbb` |
+| ├─ 跨书关联页边批注 | §5.1 | ✅ | `widgets/reader/margin_notes_overlay.dart` | |
+| ├─ 每章最多 3 条 | §5.1 | ✅ | | |
+| ├─ 置信度过滤 + 用户反馈 | 审核建议 #3 | ✅ | `dao/margin_note.dart` | |
+| ├─ DB v10: tb_margin_notes | §5.1 | ✅ | `dao/database.dart` | |
+| └─ Server margin notes endpoints | §5.1 | ✅ | `server/service/reader/handler_companion.go` | |
+| **TTS 伴侣声音关联** | §5.3 | ✅ | | `161034c` |
+| ├─ CompanionPersonality 添加 voice 字段 | §5.3 | ✅ | `models/companion_personality.dart` | |
+| ├─ 伴侣设置页声音选择器 | §5.3 | ✅ | `page/settings_page/companion_settings_page.dart` | |
+| └─ Server CompanionProfile Voice 字段 | §5.3 | ✅ | `server/schema/companion_profile.go` | |
+| **知识网络（洞察 Layer 2）** | §6.1 Layer 2 | ✅ | | `22d299d` |
+| ├─ ConceptTag + ConceptEdge 数据模型 | §6.1 | ✅ | `dao/concept_tag.dart`, `server/schema/concept.go` | |
+| ├─ AI 概念提取管道 | §6.1 | ✅ | `service/ai/concept_extractor.dart` | |
+| ├─ AI 叙事驱动的动态图可视化 | §6.1 | ✅ | `widgets/insights/knowledge_graph_card.dart` | |
+| ├─ DB v11: tb_concept_tags + tb_concept_edges | §6.1 | ✅ | `dao/database.dart` | |
+| ├─ Server knowledge graph endpoints | §6.1 | ✅ | `server/service/reader/handler_knowledge.go` | |
+| └─ 集成到洞察页 | §6.1 | ✅ | `page/home/insights_page.dart` | |
+| **语义搜索（pgvector）** | §4.2 | ✅ | | `5c21095` |
+| ├─ Server embedding 生成服务 | §10.2 | ✅ | `server/service/ai/embedding.go` | |
+| ├─ embedding vector(1536) + HNSW 索引 | §10.2 | ✅ | `server/schema/init_data.go` | |
+| ├─ 搜索处理器 mode 参数（text/semantic） | §4.2 | ✅ | `server/service/reader/handler_search.go` | |
+| ├─ 导入时自动生成 embedding | §4.4 | ✅ | `server/service/reader/hander_book.go` | |
+| ├─ Client 搜索模式切换 UI | §4.2 | ✅ | `page/search/search_page.dart` | |
+| └─ EmbeddingModel 配置 | §10.6 | ✅ | `server/conf/config.go` | |
 
 ---
 
@@ -255,7 +272,7 @@
 | Flutter Analyze | ✅ | 0 errors, warnings 仅 unused elements |
 | Codegen (build_runner) | ✅ | freezed + riverpod + json_serializable |
 | L10n | ✅ | 16 语言，含新增 key |
-| 数据库版本 | v8 | 新增 tb_ai_cache 表 |
+| 数据库版本 | v11 | 新增 tb_ai_cache(v8), tb_companion_chat(v9), tb_margin_notes(v10), tb_concept_tags+edges(v11) |
 
 ---
 
@@ -275,6 +292,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-03-23 | Sprint 4 Phase 1 完成。Companion Panel、Margin Notes、TTS 声音关联、知识网络（AI 叙事+图可视化）、语义搜索（pgvector embedding） |
 | 2026-03-23 | Sprint 4 Phase 0 完成。Server PG+pgvector 迁移、WebDAV 完全移除（Client+Server）、AI 缓存持久化（sqflite+PG 双层） |
 | 2026-03-23 | Sprint 3.5 完成。Server-Client 同步架构就绪：全量 API 客户端、双向增量同步、Server 新端点、伴侣同步、AI 去重 |
 | 2026-03-23 | Sprint 3 完成。Layer 3 全部主要功能就绪（Inline Glossary, 书架 AI 推荐, 洞察 AI 叙事） |
