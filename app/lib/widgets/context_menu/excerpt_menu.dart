@@ -24,6 +24,7 @@ class ExcerptMenu extends StatefulWidget {
   final bool footnote;
   final BoxDecoration decoration;
   final Function() toggleTranslationMenu;
+  final Function() toggleGlossaryMenu;
   final void Function({bool? show}) toggleReaderNoteMenu;
   final Future<void> Function(int noteId) openReaderNoteMenu;
   final void Function(int noteId) onNoteCreated;
@@ -39,6 +40,7 @@ class ExcerptMenu extends StatefulWidget {
     required this.footnote,
     required this.decoration,
     required this.toggleTranslationMenu,
+    required this.toggleGlossaryMenu,
     required this.toggleReaderNoteMenu,
     required this.openReaderNoteMenu,
     required this.onNoteCreated,
@@ -296,6 +298,14 @@ class ExcerptMenuState extends State<ExcerptMenu> {
             icon: const Icon(Icons.translate),
             text: L10n.of(context).contextMenuTranslate,
           ),
+          // AI explain / glossary
+          if (EnvVar.enableAIFeature)
+            IconAndText(
+              compact: true,
+              onTap: widget.toggleGlossaryMenu,
+              icon: const Icon(Icons.auto_awesome),
+              text: L10n.of(context).contextMenuExplain,
+            ),
           // narrate
           IconAndText(
             compact: true,

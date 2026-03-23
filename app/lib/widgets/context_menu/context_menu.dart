@@ -6,6 +6,7 @@ import 'package:omnigram/widgets/common/axis_flex.dart';
 import 'package:omnigram/widgets/context_menu/excerpt_menu.dart';
 import 'package:omnigram/widgets/context_menu/reader_note_menu.dart';
 import 'package:omnigram/widgets/context_menu/translation_menu.dart';
+import 'package:omnigram/widgets/reader/glossary_tooltip.dart';
 import 'package:flutter/material.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
@@ -294,6 +295,7 @@ class _ContextMenuOverlayState extends State<_ContextMenuOverlay>
   late bool _reverse;
   late bool _showTranslationMenu;
   bool _showReaderNoteMenu = false;
+  bool _showGlossaryMenu = false;
   bool _waitingForFirstMeasurement = true;
   late BoxConstraints _menuConstraints;
   late double _bottomInset;
@@ -425,6 +427,15 @@ class _ContextMenuOverlayState extends State<_ContextMenuOverlay>
   void _toggleTranslationMenu() {
     setState(() {
       _showTranslationMenu = !_showTranslationMenu;
+      if (_showTranslationMenu) _showGlossaryMenu = false;
+    });
+    _scheduleRecalculate();
+  }
+
+  void _toggleGlossaryMenu() {
+    setState(() {
+      _showGlossaryMenu = !_showGlossaryMenu;
+      if (_showGlossaryMenu) _showTranslationMenu = false;
     });
     _scheduleRecalculate();
   }
@@ -515,6 +526,7 @@ class _ContextMenuOverlayState extends State<_ContextMenuOverlay>
                                   footnote: widget.footnote,
                                   decoration: widget.decoration,
                                   toggleTranslationMenu: _toggleTranslationMenu,
+                                  toggleGlossaryMenu: _toggleGlossaryMenu,
                                   toggleReaderNoteMenu: _toggleReaderNoteMenu,
                                   openReaderNoteMenu: _openReaderNoteMenu,
                                   onNoteCreated: _handleNoteCreated,
@@ -552,6 +564,21 @@ class _ContextMenuOverlayState extends State<_ContextMenuOverlay>
                                 decoration: widget.decoration,
                                 axis: widget.axis,
                                 contextText: widget.contextText,
+                              ),
+                            ],
+                          ),
+                        ],
+                        if (_showGlossaryMenu) ...[
+                          const SizedBox.square(dimension: 10),
+                          AxisFlex(
+                            axis: widget.axis,
+                            children: [
+                              GlossaryTooltip(
+                                content: widget.annoContent,
+                                decoration: widget.decoration,
+                                axis: widget.axis,
+                                contextText: widget.contextText,
+                                onClose: _toggleGlossaryMenu,
                               ),
                             ],
                           ),
