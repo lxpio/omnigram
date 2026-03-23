@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:omnigram/dao/book.dart';
 import 'package:omnigram/dao/book_note.dart';
 import 'package:omnigram/dao/reading_time.dart';
+import 'package:omnigram/models/book.dart';
 import 'package:omnigram/models/book_note.dart';
+import 'package:omnigram/widgets/insights/ai_narrative_card.dart';
 import 'package:omnigram/widgets/insights/reading_summary_card.dart';
 import 'package:omnigram/widgets/insights/notes_list.dart';
 import 'package:omnigram/widgets/insights/time_period_selector.dart';
@@ -35,6 +37,20 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
             onChanged: (p) => setState(() => _period = p),
           ),
           const SizedBox(height: 24),
+          FutureBuilder<_NarrativeData>(
+            future: _loadNarrativeData(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) return const SizedBox.shrink();
+              final data = snapshot.data!;
+              return AiNarrativeCard(
+                bookTitles: data.bookTitles,
+                totalMinutes: data.totalMinutes,
+                totalNotes: data.totalNotes,
+                timePeriod: _timePeriodLabel(_period),
+              );
+            },
+          ),
+          const SizedBox(height: 16),
           FutureBuilder<Map<String, int>>(
             future: _loadStats(),
             builder: (context, snapshot) {
@@ -64,6 +80,55 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
           ),
         ],
       ),
+    );
+  }
+
+  static String _timePeriodLabel(TimePeriod p) {
+    switch (p) {
+      case TimePeriod.thisMonth:
+        return 'this month';
+      case TimePeriod.lastMonth:
+        return 'last month';
+      case TimePeriod.thisYear:
+        return 'this year';
+      case TimePeriod.allTime:
+        return 'all time';
+    }
+  }
+
+  Future<_NarrativeData> _loadNarrativeData() async {
+    final readingTimeDao = ReadingTimeDao();
+    final bookNoteDao = BookNoteDao();
+
+    List<Map<Book, int>> bookReadingTimes;
+    final now = DateTime.now();
+
+    switch (_period) {
+      case TimePeriod.thisMonth:
+        bookReadingTimes =
+            await readingTimeDao.selectBookReadingTimeOfMonth(now);
+      case TimePeriod.lastMonth:
+        final lastMonth = DateTime(now.year, now.month - 1, 1);
+        bookReadingTimes =
+            await readingTimeDao.selectBookReadingTimeOfMonth(lastMonth);
+      case TimePeriod.thisYear:
+        bookReadingTimes =
+            await readingTimeDao.selectBookReadingTimeOfYear(now);
+      case TimePeriod.allTime:
+        bookReadingTimes =
+            await readingTimeDao.selectBookReadingTimeOfAll();
+    }
+
+    final titles =
+        bookReadingTimes.map((m) => m.keys.first.title).toList();
+    final totalSeconds =
+        bookReadingTimes.fold<int>(0, (sum, m) => sum + m.values.first);
+    final noteStats = await bookNoteDao.selectNumberOfNotesAndBooks();
+
+    return _NarrativeData(
+      bookTitles: titles,
+      totalMinutes: totalSeconds ~/ 60,
+      totalNotes: noteStats['numberOfNotes'] ?? 0,
     );
   }
 
@@ -99,4 +164,16 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
     }
     return grouped;
   }
+}
+
+class _NarrativeData {
+  final List<String> bookTitles;
+  final int totalMinutes;
+  final int totalNotes;
+
+  const _NarrativeData({
+    required this.bookTitles,
+    required this.totalMinutes,
+    required this.totalNotes,
+  });
 }

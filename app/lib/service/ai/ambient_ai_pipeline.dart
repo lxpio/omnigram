@@ -6,7 +6,7 @@ import 'package:omnigram/providers/companion_provider.dart';
 import 'package:omnigram/service/ai/companion_prompt.dart';
 import 'package:omnigram/service/ai/index.dart';
 
-enum AmbientTaskType { contextBar, memoryBridge, autoTag, summary, glossary, recommendation }
+enum AmbientTaskType { contextBar, memoryBridge, autoTag, summary, glossary, recommendation, narrative }
 
 class AmbientAiResult {
   final String content;
