@@ -106,6 +106,11 @@ func Setup(router *gin.Engine) {
 	book.POST("/books/batch/tag", batchTagHandle)
 	book.POST("/books/batch/shelf", batchShelfHandle)
 
+	// Knowledge network
+	book.GET("/knowledge", GetKnowledgeGraph)
+	book.POST("/knowledge/tags", SyncConceptTags)
+	book.POST("/knowledge/edges", SyncConceptEdges)
+
 	// router.GET("/books/:book_id/delete", BookDelete)
 	// router.GET("/books/:book_id/edit", BookEdit)
 

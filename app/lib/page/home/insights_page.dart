@@ -6,6 +6,7 @@ import 'package:omnigram/dao/reading_time.dart';
 import 'package:omnigram/models/book.dart';
 import 'package:omnigram/models/book_note.dart';
 import 'package:omnigram/widgets/insights/ai_narrative_card.dart';
+import 'package:omnigram/widgets/insights/knowledge_graph_card.dart';
 import 'package:omnigram/widgets/insights/reading_summary_card.dart';
 import 'package:omnigram/widgets/insights/notes_list.dart';
 import 'package:omnigram/widgets/insights/time_period_selector.dart';
@@ -50,6 +51,8 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
               );
             },
           ),
+          const SizedBox(height: 16),
+          const KnowledgeGraphCard(),
           const SizedBox(height: 16),
           FutureBuilder<Map<String, int>>(
             future: _loadStats(),

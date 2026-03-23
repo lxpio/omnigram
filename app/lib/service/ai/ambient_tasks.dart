@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:omnigram/dao/concept_tag.dart';
 import 'package:omnigram/service/ai/ambient_ai_pipeline.dart';
+import 'package:omnigram/service/ai/concept_extractor.dart';
 
 /// Convenience methods for specific ambient AI tasks.
 class AmbientTasks {
@@ -165,5 +167,24 @@ class AmbientTasks {
       ref: ref,
       cacheParams: {'bookId': bookId},
     );
+  }
+
+  /// Extract concept tags from a book's notes and persist them.
+  /// Returns the number of new concepts extracted.
+  static Future<int> extractConcepts({
+    required WidgetRef ref,
+    required int bookId,
+    required String bookTitle,
+  }) async {
+    final tags = await ConceptExtractor.extractFromNotes(
+      ref: ref,
+      bookId: bookId,
+      bookTitle: bookTitle,
+    );
+    if (tags.isEmpty) return 0;
+
+    final dao = ConceptTagDao();
+    await dao.insertBatch(tags);
+    return tags.length;
   }
 }
