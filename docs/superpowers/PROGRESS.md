@@ -148,6 +148,10 @@
 
 | 功能 | 设计文档章节 | 状态 | 备注 |
 |------|-------------|------|------|
+| **🔴 Server-Client REST API 同步** | §10.7 | ❌ | Client 只用 WebDAV 搬 DB，未接入 Server REST API |
+| **🔴 AI 处理去重** | §4.4 | ❌ | Server 上传时已跑 AI，Client 又跑一遍 |
+| **🟡 AI 缓存持久化** | §10.6 | ❌ | context bar/memory bridge 缓存重启消失 |
+| **🟡 伴侣人格同步** | §10.7 | ❌ | 只存 SharedPrefs，换设备丢失 |
 | Onboarding 流程 | §10.8 | ❌ | 渐进式引导，首次使用零 AI |
 | 多设备同步 | §10.7 | ❌ | 数据架构已定义，实现待排期 |
 | 数据导出/迁移 | §10.9 | ❌ | Markdown/JSON/CSV 导出 |
@@ -159,6 +163,8 @@
 | 伴侣行为开关（5 个 toggle） | §7.2 | ❌ | 章节回顾/难词标注/跨书提醒等 |
 | 伴侣名称自定义 | §7.2 | ❌ | |
 | OPDS 目录 | §10.9 | ✅ ¹ | 服务端已有 |
+
+> **架构修正文档：** `docs/superpowers/specs/2026-03-23-sync-architecture.md`
 
 ¹ 服务端 OPDS 已实现（`server/service/opds/`），客户端集成未完成。
 
