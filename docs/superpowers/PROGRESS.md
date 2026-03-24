@@ -1,9 +1,10 @@
 # Omnigram 实施进度索引
 
-> **最后更新：2026-03-23**
+> **最后更新：2026-03-24**
 > **参考设计：** `docs/superpowers/specs/2026-03-22-ambient-ai-reading-design.md`
 > **审核报告：** `docs/superpowers/specs/2026-03-22-ambient-ai-reading-review.md`
 > **已知问题：** `docs/superpowers/KNOWN_ISSUES.md`
+> **测试策略：** `docs/testing-strategy.md`
 
 ---
 
@@ -259,6 +260,54 @@
 
 ---
 
+## 测试状态
+
+> **测试策略文档：** `docs/testing-strategy.md`
+
+### App 端测试
+
+| 层级 | 工具 | 优先级 | 状态 | 备注 |
+|------|------|--------|------|------|
+| L1 静态分析 | `flutter analyze` | P0 | ✅ 已用 | 0 errors，每次提交前运行 |
+| L2 自动爬虫 | Firebase Robo Test | P0 | ❌ 未搭建 | 需要 GCP 配置 + CI workflow |
+| L3 视觉回归 | Golden Test | P1 | ❌ 未搭建 | 关键页面截图 diff，零 golden 文件 |
+| L4 E2E 流程 | Maestro | P2 | ❌ 未搭建 | 备选方案 |
+
+### Server 端测试
+
+| 层级 | 工具 | 优先级 | 状态 | 备注 |
+|------|------|--------|------|------|
+| L1 静态分析 | `go vet` / `staticcheck` | P0 | ⚠️ 部分 | go build 通过，staticcheck 未接入 CI |
+| L2 数据层 | `go test ./schema/...` | P0 | ❌ 未搭建 | 无 schema 测试 |
+| L3 Swagger Fuzz | Schemathesis | P0 | ❌ 未搭建 | 需要先完善 swagger 文档 |
+| L4 API 冒烟 | Hurl | P0 | ❌ 未搭建 | 声明式 API 测试 |
+
+### AI 服务测试
+
+| 层级 | 方式 | 状态 | 备注 |
+|------|------|------|------|
+| L1 契约测试 | Fixture + 结构断言 | ❌ 未搭建 | testdata/*.json 未创建 |
+| L2 错误处理 | httptest 返回 429/500 | ❌ 未搭建 | |
+| L3 真实调用 | 重新录制 fixtures | ❌ 未搭建 | 每周/手动 |
+
+### App ↔ Server 集成测试
+
+| 层级 | 工具 | 状态 | 备注 |
+|------|------|------|------|
+| L1 API Client 集成 | Dart `integration_test` | ❌ 未搭建 | 文档定义了覆盖范围，代码未写 |
+| L2 全链路 E2E | Maestro + Docker | ❌ 未搭建 | P2 备选 |
+
+### CI Workflows
+
+| 文件 | 用途 | 状态 | 备注 |
+|------|------|------|------|
+| `.github/workflows/test-robo.yaml` | App Robo Test | ❌ 未创建 | |
+| `.github/workflows/test-api.yaml` | Server + 集成测试 | ❌ 未创建 | |
+| `.github/workflows/docker.yaml` | Docker 镜像构建 | ✅ 已有 | tag push 触发 |
+| `.github/workflows/build_app.yaml` | Flutter APK 构建 | ✅ 已有 | push/PR 触发 |
+
+---
+
 ## 基础设施状态
 
 | 组件 | 状态 | 备注 |
@@ -266,8 +315,8 @@
 | Server (Go) | ✅ | PG + pgvector 统一，WebDAV 已移除 |
 | Server Docker | ✅ | docker-compose: pgvector/pgvector:pg17 |
 | Android 构建 | ✅ | AGP 8.9.1, Gradle 8.11.1, compileSdk 36 |
-| iOS 构建 | ⚠️ | 缺少签名证书（pre-existing） |
-| macOS 构建 | ⚠️ | 缺少签名证书（pre-existing） |
+| iOS 构建 | ✅ | Debug 真机运行正常（2026-03-23 验证） |
+| macOS 构建 | ⚠️ | 未验证 |
 | Release APK | ⚠️ | 缺少 keystore 配置 |
 | Debug APK | ✅ | 正常构建 |
 | Flutter Analyze | ✅ | 0 errors, warnings 仅 unused elements |
@@ -293,6 +342,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-03-24 | 新增测试状态跟踪章节。更新 iOS 构建状态为已验证。修复导入卡住 bug（AnxToast null context） |
 | 2026-03-23 | Sprint 4 Phase 1 完成。Companion Panel、Margin Notes、TTS 声音关联、知识网络（AI 叙事+图可视化）、语义搜索（pgvector embedding） |
 | 2026-03-23 | Sprint 4 Phase 0 完成。Server PG+pgvector 迁移、WebDAV 完全移除（Client+Server）、AI 缓存持久化（sqflite+PG 双层） |
 | 2026-03-23 | Sprint 3.5 完成。Server-Client 同步架构就绪：全量 API 客户端、双向增量同步、Server 新端点、伴侣同步、AI 去重 |
