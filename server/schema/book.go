@@ -951,9 +951,15 @@ func (m *Book) Save(ctx context.Context) error {
 	}
 
 	//存储封面图片数据
-	if err := kv.Put(ctx, GetCoverBucket(m.Identifier), m.CoverKey(), m.GetCoverData()); err != nil {
+	coverKey := m.CoverKey()
+	if err := kv.Put(ctx, GetCoverBucket(m.Identifier), coverKey, m.GetCoverData()); err != nil {
 		log.E(`存储封面失败,`, m.Path, `失败：`, err.Error())
-		// return err
+	}
+
+	// Update cover_url to full KV key so frontend can construct correct URL
+	if m.CoverURL != "" && m.CoverURL != coverKey {
+		m.CoverURL = coverKey
+		db.Model(m).Update("cover_url", coverKey)
 	}
 	return nil
 }
