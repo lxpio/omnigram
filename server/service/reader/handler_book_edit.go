@@ -1,14 +1,13 @@
 package reader
 
 import (
-	"context"
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/schema"
-	"github.com/lxpio/omnigram/server/store"
 	"gorm.io/gorm"
 )
 
@@ -146,7 +145,9 @@ func deleteBookHandle(c *gin.Context) {
 	}
 
 	// 删除封面
-	store.GetKV().Delete(context.TODO(), schema.GetCoverBucket(book.Identifier), book.CoverURL)
+	if coverFile := schema.CoverFilePath(book.Identifier); coverFile != "" {
+		os.Remove(coverFile)
+	}
 
 	schema.Success(c, gin.H{"id": bookID, "deleted": true})
 }
@@ -199,20 +200,25 @@ func uploadCoverHandle(c *gin.Context) {
 		return
 	}
 
-	kv := store.GetKV()
-	bucket := schema.GetCoverBucket(book.Identifier)
-
-	if err := kv.CreateBucket(context.TODO(), bucket); err != nil {
-		log.E("create cover bucket failed: ", err)
+	coverFile := schema.CoverFilePath(book.Identifier)
+	if coverFile == "" {
+		schema.Error(c, 500, "STORAGE_ERROR", "invalid identifier")
+		return
 	}
 
-	coverKey := book.CoverKey()
-	if err := kv.Put(context.TODO(), bucket, coverKey, data); err != nil {
+	coverDir := filepath.Dir(coverFile)
+	if err := os.MkdirAll(coverDir, 0755); err != nil {
+		schema.Error(c, 500, "STORAGE_ERROR", err.Error())
+		return
+	}
+
+	if err := os.WriteFile(coverFile, data, 0644); err != nil {
 		schema.Error(c, 500, "STORAGE_ERROR", err.Error())
 		return
 	}
 
 	// 更新封面 URL
+	coverKey := book.Identifier + ".jpg"
 	if book.CoverURL != coverKey {
 		orm.Model(book).Update("cover_url", coverKey)
 	}
