@@ -116,6 +116,10 @@ func (c *Config) MetaPath() string {
 	return filepath.Join(c.MetaDataPath, `meta`)
 }
 
+func (c *Config) CoverPath() string {
+	return filepath.Join(c.MetaDataPath, `covers`)
+}
+
 func (c *Config) Save() error {
 
 	// Convert struct to YAML

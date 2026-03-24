@@ -94,6 +94,7 @@ func initReaderData() error {
 	//初始化上传文件目录
 	os.MkdirAll(filepath.Join(cf.EpubOptions.DataPath, `upload`), 0755)
 	os.MkdirAll(cf.MetaPath(), 0755)
+	os.MkdirAll(cf.CoverPath(), 0755)
 
 	db := store.FileStore()
 

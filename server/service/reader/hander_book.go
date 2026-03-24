@@ -3,6 +3,7 @@ package reader
 import (
 	"context"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -10,7 +11,6 @@ import (
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/schema"
 	"github.com/lxpio/omnigram/server/service/ai"
-	"github.com/lxpio/omnigram/server/store"
 	"github.com/lxpio/omnigram/server/utils"
 )
 
@@ -27,27 +27,26 @@ func coverImageHandle(c *gin.Context) {
 
 	coverPath := strings.TrimPrefix(c.Param(`book_cover_path`), `/`)
 
-	ext := filepath.Ext(c.Param(`book_cover_path`))
-
-	if ext != ".png" && ext != ".jpeg" && ext != ".jpg" {
-		log.E(`图片路径ID为空：`, ext)
-		ext = "jpg"
-		c.JSON(404, utils.ErrReqArgs)
+	// Extract identifier from cover_url (e.g. "31cb1dea...jpg" → identifier)
+	identifier := strings.TrimSuffix(coverPath, filepath.Ext(coverPath))
+	if identifier == "" {
+		c.JSON(404, utils.ErrNoFound)
 		return
 	}
 
-	log.I(`获取图片内容`, coverPath)
+	filePath := schema.CoverFilePath(identifier)
+	if filePath == "" {
+		c.JSON(404, utils.ErrNoFound)
+		return
+	}
 
-	obj, err := store.GetKV().Get(context.TODO(), schema.GetCoverBucket(coverPath), coverPath)
-
-	if err != nil {
-		log.E(`获取图片内容失败`, err.Error())
+	if _, err := os.Stat(filePath); err != nil {
+		log.E(`封面文件不存在:`, filePath)
 		c.JSON(http.StatusNotFound, utils.ErrNoFound)
 		return
 	}
 
-	c.Data(200, "image/"+ext, obj)
-
+	c.File(filePath)
 }
 
 // @Summary Get book details

@@ -17,6 +17,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/lxpio/omnigram/server/conf"
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/store"
 	"github.com/lxpio/omnigram/server/utils"
@@ -932,44 +933,45 @@ func (m *Book) parseOPF(opf *epub.PackageDocument) {
 func (m *Book) Save(ctx context.Context) error {
 
 	db := store.FileStore()
-	//存储图书到数据库
-	//TODO 处理重复问题
 	if err := m.Create(db); err != nil {
 		log.E(`存储图书失败：`, err)
 		return errors.New(`文件：` + m.Path + ` 存储失败：` + err.Error())
 	}
 
-	kv := store.GetKV()
-
-	//创建bucket目录
-	if err := kv.CreateBucket(ctx, GetCoverBucket(m.Identifier)); err != nil {
-		log.E(`创建目录失败：`, err.Error())
-
-		//如果失败不在继续出来异常
+	// Save cover image to filesystem
+	coverData := m.GetCoverData()
+	if len(coverData) == 0 || m.CoverURL == "" {
 		return nil
-
 	}
 
-	//存储封面图片数据
-	coverKey := m.CoverKey()
-	if err := kv.Put(ctx, GetCoverBucket(m.Identifier), coverKey, m.GetCoverData()); err != nil {
+	coverFile := CoverFilePath(m.Identifier)
+	coverDir := filepath.Dir(coverFile)
+	if err := os.MkdirAll(coverDir, 0755); err != nil {
+		log.E(`创建封面目录失败：`, err.Error())
+		return nil
+	}
+
+	if err := os.WriteFile(coverFile, coverData, 0644); err != nil {
 		log.E(`存储封面失败,`, m.Path, `失败：`, err.Error())
+		return nil
 	}
 
-	// Update cover_url to full KV key so frontend can construct correct URL
-	if m.CoverURL != "" && m.CoverURL != coverKey {
-		m.CoverURL = coverKey
-		db.Model(m).Update("cover_url", coverKey)
+	// Update cover_url to identifier-based path
+	coverURL := m.Identifier + ".jpg"
+	if m.CoverURL != coverURL {
+		m.CoverURL = coverURL
+		db.Model(m).Update("cover_url", coverURL)
 	}
 	return nil
 }
 
-func GetCoverBucket(input string) string {
-	return input[0:2]
-}
-
-func (m *Book) CoverKey() string {
-	return filepath.Join(m.Identifier + replacePath(m.CoverURL))
+// CoverFilePath returns the filesystem path for a book's cover image.
+// Layout: {metadata_path}/covers/{id[0:2]}/{identifier}.jpg
+func CoverFilePath(identifier string) string {
+	if len(identifier) < 2 {
+		return ""
+	}
+	return filepath.Join(conf.GetConfig().CoverPath(), identifier[0:2], identifier+".jpg")
 }
 
 func (m *Book) parseMeta(opf *epub.PackageDocument) {
