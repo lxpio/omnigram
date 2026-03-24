@@ -9,6 +9,6 @@ type AiResult struct {
 	ResultType string `json:"result_type" gorm:"uniqueIndex:idx_ai_result_unique,priority:2;type:varchar(50);not null;comment:contextBar,summary,autoTag,glossary,narrative,etc."`
 	CacheKey   string `json:"cache_key" gorm:"uniqueIndex:idx_ai_result_unique,priority:3;type:varchar(500);not null;comment:composite key matching client cache"`
 	Content    string `json:"content" gorm:"type:text;not null"`
-	CTime      int64  `json:"ctime" gorm:"autoCreateTime:milli"`
-	UTime      int64  `json:"utime" gorm:"autoUpdateTime:milli"`
+	CTime      int64  `json:"ctime" gorm:"column:ctime;autoCreateTime:milli"`
+	UTime      int64  `json:"utime" gorm:"column:utime;autoUpdateTime:milli"`
 }

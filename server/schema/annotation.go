@@ -21,6 +21,6 @@ type Annotation struct {
 	Position     string         `json:"position,omitempty" gorm:"type:varchar(500)"`
 	Color        string         `json:"color,omitempty" gorm:"type:varchar(20)"`
 	Type         AnnotationType `json:"type" gorm:"type:varchar(20);not null"`
-	CTime        int64          `json:"ctime" gorm:"autoCreateTime:milli"`
-	UTime        int64          `json:"utime" gorm:"autoUpdateTime:milli"`
+	CTime        int64          `json:"ctime" gorm:"column:ctime;autoCreateTime:milli"`
+	UTime        int64          `json:"utime" gorm:"column:utime;autoUpdateTime:milli"`
 }

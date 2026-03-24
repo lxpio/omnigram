@@ -8,8 +8,8 @@ type Shelf struct {
 	CoverURL    string `json:"cover_url,omitempty" gorm:"type:varchar(255)"`
 	SortOrder   int    `json:"sort_order" gorm:"default:0"`
 	BookCount   int    `json:"book_count" gorm:"-"`
-	CTime       int64  `json:"ctime" gorm:"autoCreateTime:milli"`
-	UTime       int64  `json:"utime" gorm:"autoUpdateTime:milli"`
+	CTime       int64  `json:"ctime" gorm:"column:ctime;autoCreateTime:milli"`
+	UTime       int64  `json:"utime" gorm:"column:utime;autoUpdateTime:milli"`
 }
 
 type ShelfBook struct {
@@ -17,5 +17,5 @@ type ShelfBook struct {
 	ShelfID   int64  `json:"shelf_id" gorm:"uniqueIndex:idx_shelf_book;not null"`
 	BookID    string `json:"book_id" gorm:"uniqueIndex:idx_shelf_book;type:char(24);not null"`
 	SortOrder int    `json:"sort_order" gorm:"default:0"`
-	CTime     int64  `json:"ctime" gorm:"autoCreateTime:milli"`
+	CTime     int64  `json:"ctime" gorm:"column:ctime;autoCreateTime:milli"`
 }
