@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../dao/book.dart';
 import '../../dao/book_note.dart';
@@ -35,6 +36,11 @@ class SyncState {
   }
 }
 
+/// Keys for persisting sync state.
+class _SyncKeys {
+  static const lastSyncTime = 'sync_last_sync_time_ms';
+}
+
 /// Bidirectional incremental sync manager.
 ///
 /// Uses timestamps to detect changes and syncs data between
@@ -46,8 +52,27 @@ class SyncManager extends _$SyncManager {
   @override
   SyncState build() {
     ref.onDispose(() => _autoSyncTimer?.cancel());
+    _restoreLastSyncTime();
     return const SyncState();
   }
+
+  /// Restore lastSyncTime from SharedPreferences.
+  Future<void> _restoreLastSyncTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    final ms = prefs.getInt(_SyncKeys.lastSyncTime);
+    if (ms != null && ms > 0) {
+      state = state.copyWith(lastSyncTime: DateTime.fromMillisecondsSinceEpoch(ms));
+    }
+  }
+
+  /// Persist lastSyncTime to SharedPreferences.
+  Future<void> _persistLastSyncTime(DateTime time) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_SyncKeys.lastSyncTime, time.millisecondsSinceEpoch);
+  }
+
+  /// Get the last sync timestamp in milliseconds (for server API).
+  int get _lastSyncTimeMs => state.lastSyncTime?.millisecondsSinceEpoch ?? 0;
 
   /// Perform full bidirectional sync.
   Future<void> sync() async {
@@ -80,6 +105,7 @@ class SyncManager extends _$SyncManager {
       await _pullProgress();
 
       final now = DateTime.now();
+      await _persistLastSyncTime(now);
       state = SyncState(status: SyncStatus.success, lastSyncTime: now, message: '同步完成', progress: 1.0);
 
       // Reset to idle after showing success
@@ -116,17 +142,22 @@ class SyncManager extends _$SyncManager {
     final bookApi = books.books;
     if (bookApi == null) return;
 
-    final localBooks = await BookDao().selectBooks(includeDeleted: false);
-    for (final book in localBooks) {
+    final bookDao = BookDao();
+    final dirtyBooks = await bookDao.selectDirtyBooks();
+    final pushedIds = <int>[];
+
+    for (final book in dirtyBooks) {
       try {
-        // Check if book exists on server by trying to get it
         final serverBookData = _localBookToServerFields(book);
         await bookApi.updateBook(book.id.toString(), serverBookData);
+        pushedIds.add(book.id);
       } catch (e) {
-        // Book doesn't exist on server — this is expected for local-only books
         debugPrint('[SyncManager] Push book ${book.id} skipped: $e');
       }
     }
+
+    // Clear dirty flags for successfully pushed books
+    await bookDao.clearDirtyFlags(pushedIds);
   }
 
   Future<void> _pushAnnotations() async {
@@ -134,7 +165,6 @@ class SyncManager extends _$SyncManager {
     final annotationApi = conn.annotations;
     if (annotationApi == null) return;
 
-    // Get all local notes
     final bookDao = BookDao();
     final books = await bookDao.selectBooks(includeDeleted: false);
 
@@ -170,20 +200,63 @@ class SyncManager extends _$SyncManager {
 
   Future<void> _pullBooks() async {
     final conn = ref.read(serverConnectionProvider.notifier);
+    final syncApi = conn.sync;
     final bookApi = conn.books;
-    if (bookApi == null) return;
+    if (syncApi == null || bookApi == null) return;
 
     try {
-      final serverBooks = await bookApi.listBooks();
-      final bookDao = BookDao();
+      List<ServerBook> serverBooks;
 
-      for (final serverBook in serverBooks) {
-        // Check if book exists locally
+      if (_lastSyncTimeMs > 0) {
+        // Incremental: use delta API
+        final delta = await syncApi.deltaSync({'utime': _lastSyncTimeMs, 'limit': 5000});
+
+        // Handle deleted books
+        final deleted = (delta['deleted'] as List?)?.cast<String>() ?? [];
+        if (deleted.isNotEmpty) {
+          final bookDao = BookDao();
+          for (final id in deleted) {
+            final bookId = int.tryParse(id) ?? 0;
+            if (bookId > 0) {
+              try {
+                final book = await bookDao.selectBookById(bookId);
+                book.isDeleted = true;
+                await bookDao.updateBook(book);
+              } catch (_) {}
+            }
+          }
+        }
+
+        // Check if server requests full sync
+        final needFullSync = delta['need_full_sync'] as bool? ?? false;
+        if (needFullSync) {
+          serverBooks = await bookApi.listBooks();
+        } else {
+          final upserted = (delta['upserted'] as List?) ?? [];
+          serverBooks = upserted.map((b) => ServerBook.fromJson(b as Map<String, dynamic>)).toList();
+        }
+      } else {
+        // First sync: full pull
+        serverBooks = await bookApi.listBooks();
+      }
+
+      final bookDao = BookDao();
+      final total = serverBooks.length;
+
+      for (var i = 0; i < total; i++) {
+        final serverBook = serverBooks[i];
+        // Update progress during pull
+        if (total > 0) {
+          final pullProgress = 0.5 + (i / total) * 0.25; // 0.50 → 0.75
+          state = state.copyWith(progress: pullProgress, message: '下载书籍 ${i + 1}/$total...');
+        }
+
         final bookId = int.tryParse(serverBook.id) ?? 0;
         try {
           final localBook = await bookDao.selectBookById(bookId);
           // Existing book — last-write-wins by timestamp
-          final serverTime = DateTime.fromMillisecondsSinceEpoch(serverBook.uTime * 1000);
+          // Server timestamps are now in milliseconds
+          final serverTime = DateTime.fromMillisecondsSinceEpoch(serverBook.uTime);
           if (serverTime.isAfter(localBook.updateTime)) {
             _updateLocalBookFromServer(localBook, serverBook);
             await bookDao.updateBook(localBook);
@@ -213,17 +286,15 @@ class SyncManager extends _$SyncManager {
           final serverAnnotations = await annotationApi.listAnnotations(book.id.toString());
 
           for (final sa in serverAnnotations) {
-            // Check if annotation exists locally by CFI
             final existingList = await BookNoteDao().selectBookNoteByCfiAndBookId(sa.cfi ?? '', book.id);
 
             if (existingList.isEmpty) {
-              // New from server
               final localNote = _serverAnnotationToLocal(sa, book.id);
               await BookNoteDao().save(localNote);
             } else {
-              // Last-write-wins
+              // Last-write-wins — annotation timestamps are already in milliseconds
               final existing = existingList.first;
-              final serverTime = DateTime.fromMillisecondsSinceEpoch(sa.uTime * 1000);
+              final serverTime = DateTime.fromMillisecondsSinceEpoch(sa.uTime);
               if (serverTime.isAfter(existing.updateTime)) {
                 existing.content = sa.content;
                 existing.color = sa.color ?? existing.color;
@@ -255,7 +326,10 @@ class SyncManager extends _$SyncManager {
         try {
           final serverProgress = await progressApi.getProgress(book.id.toString());
 
-          if (serverProgress.progress > book.readingPercentage) {
+          // Use timestamp comparison instead of progress value comparison
+          // to support reading regression (re-reading earlier chapters).
+          final serverUpdatedAt = DateTime.fromMillisecondsSinceEpoch(serverProgress.updatedAt);
+          if (serverUpdatedAt.isAfter(book.updateTime)) {
             book.readingPercentage = serverProgress.progress.toDouble();
             await bookDao.updateBook(book);
           }
@@ -286,8 +360,8 @@ class SyncManager extends _$SyncManager {
       isDeleted: false,
       description: sb.description,
       rating: sb.rating,
-      createTime: DateTime.fromMillisecondsSinceEpoch(sb.cTime * 1000),
-      updateTime: DateTime.fromMillisecondsSinceEpoch(sb.uTime * 1000),
+      createTime: DateTime.fromMillisecondsSinceEpoch(sb.cTime),
+      updateTime: DateTime.fromMillisecondsSinceEpoch(sb.uTime),
     );
   }
 
@@ -296,7 +370,7 @@ class SyncManager extends _$SyncManager {
     local.author = server.author;
     if (server.description != null) local.description = server.description;
     local.rating = server.rating;
-    local.updateTime = DateTime.fromMillisecondsSinceEpoch(server.uTime * 1000);
+    local.updateTime = DateTime.fromMillisecondsSinceEpoch(server.uTime);
   }
 
   BookNote _serverAnnotationToLocal(ServerAnnotation sa, int bookId) {
@@ -307,8 +381,8 @@ class SyncManager extends _$SyncManager {
       chapter: sa.chapter ?? '',
       type: sa.type,
       color: sa.color ?? 'FFF176',
-      createTime: DateTime.fromMillisecondsSinceEpoch(sa.cTime * 1000),
-      updateTime: DateTime.fromMillisecondsSinceEpoch(sa.uTime * 1000),
+      createTime: DateTime.fromMillisecondsSinceEpoch(sa.cTime),
+      updateTime: DateTime.fromMillisecondsSinceEpoch(sa.uTime),
     );
   }
 }

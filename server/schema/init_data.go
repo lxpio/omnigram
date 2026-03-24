@@ -111,6 +111,11 @@ func initReaderData() error {
 			return err
 		}
 
+		// Migrate book timestamps from seconds to milliseconds (one-time, idempotent).
+		// Books with ctime < 1e12 are still in seconds (before year 33658 in millis).
+		tx.Exec(`UPDATE books SET ctime = ctime * 1000 WHERE ctime > 0 AND ctime < 1000000000000`)
+		tx.Exec(`UPDATE books SET utime = utime * 1000 WHERE utime > 0 AND utime < 1000000000000`)
+
 		// Add tsvector column for full-text search (PG native)
 		tx.Exec(`DO $$ BEGIN
 			IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='books' AND column_name='search_vector') THEN

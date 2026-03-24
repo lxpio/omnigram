@@ -224,6 +224,7 @@ func syncAnnotationsHandle(c *gin.Context) {
 
 	// upsert client annotations — only allow upserting own annotations
 	synced := 0
+	var failedIndices []int
 	for i := range req.Annotations {
 		req.Annotations[i].UserID = userID
 		if req.DeviceID != "" {
@@ -242,6 +243,7 @@ func syncAnnotationsHandle(c *gin.Context) {
 			DoUpdates: clause.AssignmentColumns([]string{"content", "selected_text", "cfi", "page_number", "position", "color", "chapter", "utime"}),
 		}).Create(&req.Annotations[i]).Error; err != nil {
 			log.E("sync annotation upsert failed: ", err)
+			failedIndices = append(failedIndices, i)
 		} else {
 			synced++
 		}
@@ -252,9 +254,10 @@ func syncAnnotationsHandle(c *gin.Context) {
 	orm.Where("user_id = ? AND utime > ?", userID, req.LastSyncTime).Find(&serverAnnotations)
 
 	schema.Success(c, gin.H{
-		"annotations": serverAnnotations,
-		"synced":      synced,
-		"sync_time":   currentTimeMillis(),
+		"annotations":    serverAnnotations,
+		"synced":         synced,
+		"failed_indices": failedIndices,
+		"sync_time":      currentTimeMillis(),
 	})
 }
 

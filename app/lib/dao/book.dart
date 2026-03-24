@@ -18,12 +18,7 @@ class BookDao extends BaseDao {
 
   Future<void> updateBook(Book book) async {
     book.updateTime = DateTime.now();
-    await update(
-      table,
-      book.toMap(),
-      where: 'id = ?',
-      whereArgs: [book.id],
-    );
+    await update(table, book.toMap(), where: 'id = ?', whereArgs: [book.id]);
   }
 
   Future<List<Book>> selectBooks({bool includeDeleted = true}) {
@@ -40,12 +35,7 @@ class BookDao extends BaseDao {
   }
 
   Future<Book> selectBookById(int id) async {
-    final book = await querySingle(
-      table,
-      mapper: Book.fromDb,
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    final book = await querySingle(table, mapper: Book.fromDb, where: 'id = ?', whereArgs: [id]);
 
     if (book == null) {
       throw StateError('Book with id $id not found');
@@ -68,12 +58,7 @@ class BookDao extends BaseDao {
   }
 
   Future<Book?> getBookByMd5(String md5) {
-    return querySingle(
-      table,
-      mapper: Book.fromDb,
-      where: 'file_md5 = ?',
-      whereArgs: [md5],
-    );
+    return querySingle(table, mapper: Book.fromDb, where: 'file_md5 = ?', whereArgs: [md5]);
   }
 
   Future<List<Book>> searchBooks(String keyword) async {
@@ -107,10 +92,7 @@ class BookDao extends BaseDao {
   Future<void> updateBookMd5(int bookId, String md5) {
     return update(
       table,
-      {
-        'file_md5': md5,
-        'update_time': DateTime.now().toIso8601String(),
-      },
+      {'file_md5': md5, 'update_time': DateTime.now().toIso8601String()},
       where: 'id = ?',
       whereArgs: [bookId],
     );
@@ -122,6 +104,22 @@ class BookDao extends BaseDao {
       mapper: Book.fromDb,
       where: "is_deleted = 0 AND (file_md5 IS NULL OR file_md5 = '')",
       orderBy: 'update_time DESC',
+    );
+  }
+
+  /// Select books marked dirty for incremental sync push.
+  Future<List<Book>> selectDirtyBooks() {
+    return queryList(table, mapper: Book.fromDb, where: 'is_dirty = 1 AND is_deleted = 0');
+  }
+
+  /// Clear dirty flag for given book IDs after successful push.
+  Future<void> clearDirtyFlags(List<int> bookIds) async {
+    if (bookIds.isEmpty) return;
+    final placeholders = List.filled(bookIds.length, '?').join(',');
+    final db = await database;
+    await db.rawUpdate(
+      'UPDATE $table SET is_dirty = 0 WHERE id IN ($placeholders)',
+      bookIds,
     );
   }
 }

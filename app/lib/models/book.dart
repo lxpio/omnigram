@@ -13,24 +13,27 @@ class Book {
   double rating;
   int groupId;
   String? md5;
+  bool isDirty;
   DateTime createTime;
   DateTime updateTime;
 
-  Book(
-      {required this.id,
-      required this.title,
-      required this.coverPath,
-      required this.filePath,
-      required this.lastReadPosition,
-      required this.readingPercentage,
-      required this.author,
-      required this.isDeleted,
-      this.description,
-      required this.rating,
-      this.groupId = 0,
-      this.md5,
-      required this.createTime,
-      required this.updateTime});
+  Book({
+    required this.id,
+    required this.title,
+    required this.coverPath,
+    required this.filePath,
+    required this.lastReadPosition,
+    required this.readingPercentage,
+    required this.author,
+    required this.isDeleted,
+    this.description,
+    required this.rating,
+    this.groupId = 0,
+    this.md5,
+    this.isDirty = false,
+    required this.createTime,
+    required this.updateTime,
+  });
 
   factory Book.mock() {
     return Book(
@@ -69,6 +72,7 @@ class Book {
       'rating': rating,
       'group_id': groupId,
       'file_md5': md5,
+      'is_dirty': isDirty ? 1 : 0,
       'create_time': createTime.toIso8601String(),
       'update_time': updateTime.toIso8601String(),
     };
@@ -87,6 +91,7 @@ class Book {
     double? rating,
     int? groupId,
     String? md5,
+    bool? isDirty,
     DateTime? createTime,
     DateTime? updateTime,
   }) {
@@ -103,6 +108,7 @@ class Book {
       rating: rating ?? this.rating,
       groupId: groupId ?? this.groupId,
       md5: md5 ?? this.md5,
+      isDirty: isDirty ?? this.isDirty,
       createTime: createTime ?? this.createTime,
       updateTime: updateTime ?? this.updateTime,
     );
@@ -122,6 +128,7 @@ class Book {
       rating: (map['rating'] as num?)?.toDouble() ?? 0.0,
       groupId: map['group_id'] as int? ?? 0,
       md5: map['file_md5'] as String?,
+      isDirty: (map['is_dirty'] as int? ?? 0) == 1,
       createTime: DateTime.parse(map['create_time'] as String),
       updateTime: DateTime.parse(map['update_time'] as String),
     );

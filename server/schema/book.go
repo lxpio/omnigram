@@ -80,8 +80,8 @@ type Book struct {
 	ID    string `json:"id" gorm:"type:char(24);primaryKey;comment:ID"`
 	Size  int64  `json:"size" gorm:"comment:文件大小"`
 	Path  string `json:"-" gorm:"comment:文件路径"` //本地文件路径不返回到界面上
-	CTime int64  `json:"ctime" form:"ctime" gorm:"column:ctime;autoCreateTime;comment:创建时间"`
-	UTime int64  `json:"utime" gorm:"column:utime;autoUpdateTime;comment:更新时间"`
+	CTime int64  `json:"ctime" form:"ctime" gorm:"column:ctime;autoCreateTime:milli;comment:创建时间"`
+	UTime int64  `json:"utime" gorm:"column:utime;autoUpdateTime:milli;comment:更新时间"`
 
 	Title string `json:"title" gorm:"index:idx_book_title;type:varchar(200);comment:标题"`
 
