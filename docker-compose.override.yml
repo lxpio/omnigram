@@ -1,0 +1,42 @@
+# Local development/testing override
+# Docker Compose automatically merges this with docker-compose.yml
+# Usage: docker compose up (no extra flags needed)
+#
+# What this overrides:
+#   - Builds server from local source instead of pulling lxpio/omnigram-server:latest
+#   - Mounts testdata/ as the book library (/docs)
+#   - Sets known admin credentials for testing
+#   - Disables TTS dependency (not needed for scan/API testing)
+
+services:
+  omnigram-server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.test
+    image: omnigram-server:local
+    environment:
+      OMNI_USER: admin
+      OMNI_PASSWORD: admin123
+      # Disable TTS for basic testing
+      TTS_PROVIDER: ""
+      TTS_SIDECAR_URL: ""
+    volumes:
+      - ./testdata:/docs
+      - ./data:/metadata
+    depends_on:
+      db:
+        condition: service_healthy
+    # Remove TTS dependency
+    # (override the full depends_on to exclude tts)
+
+  # Use local postgres (pgvector not needed for basic testing)
+  db:
+    image: postgres:16-alpine
+
+  # Disable TTS service for testing
+  tts:
+    image: alpine:3.21
+    entrypoint: ["sh", "-c", "echo 'TTS disabled for testing' && sleep infinity"]
+    healthcheck:
+      test: ["CMD", "true"]
+      interval: 30s

@@ -97,17 +97,17 @@ func initReaderData() error {
 
 	db := store.FileStore()
 
-	return db.Transaction(func(tx *gorm.DB) error {
+	// Enable pgvector extension (outside transaction — failure should not block init)
+	if err := db.Exec(`CREATE EXTENSION IF NOT EXISTS vector`).Error; err != nil {
+		log.W("pgvector extension not available (semantic search disabled): ", err)
+	}
+
+	err := db.Transaction(func(tx *gorm.DB) error {
 
 		//auotoMigrate
 		if err := tx.AutoMigrate(&Book{}, &BookTagShip{}, &FavBook{}, &ReadProgress{}, &Shelf{}, &ShelfBook{}, &Annotation{}, &ReadingSession{}, &AudiobookTask{}, &ChapterTask{}, &AiResult{}, &CompanionChat{}, &MarginNote{}, &ConceptTag{}, &ConceptEdge{}); err != nil {
 
 			return err
-		}
-
-		// Enable pgvector extension
-		if err := tx.Exec(`CREATE EXTENSION IF NOT EXISTS vector`).Error; err != nil {
-			log.E("pgvector extension not available: ", err)
 		}
 
 		// Add tsvector column for full-text search (PG native)
@@ -148,20 +148,23 @@ func initReaderData() error {
 			coalesce(publisher, '')
 		) WHERE search_vector IS NULL`)
 
-		// Add embedding column for pgvector semantic search
-		tx.Exec(`DO $$ BEGIN
-			IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='books' AND column_name='embedding') THEN
-				ALTER TABLE books ADD COLUMN embedding vector(1536);
-			END IF;
-		END $$`)
-
-		// HNSW index for cosine similarity (works well for small-to-medium datasets)
-		tx.Exec(`CREATE INDEX IF NOT EXISTS idx_books_embedding ON books USING hnsw (embedding vector_cosine_ops)`)
-
 		log.I(`初始化书籍表成功。`)
 
 		return nil
 
 	})
 
+	if err != nil {
+		return err
+	}
+
+	// pgvector-dependent DDL (outside transaction — safe to fail if extension unavailable)
+	db.Exec(`DO $$ BEGIN
+		IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='books' AND column_name='embedding') THEN
+			ALTER TABLE books ADD COLUMN embedding vector(1536);
+		END IF;
+	END $$`)
+	db.Exec(`CREATE INDEX IF NOT EXISTS idx_books_embedding ON books USING hnsw (embedding vector_cosine_ops)`)
+
+	return nil
 }

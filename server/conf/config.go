@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/yaml.v2"
@@ -79,6 +80,9 @@ func InitConfig(path string) error {
 		}
 	}
 	cf.DBOption.LogLevel = cf.LogLevel
+
+	// Override config with environment variables (for Docker Compose / .env)
+	applyEnvOverrides(cf)
 
 	if cf.M4tOptions.RemoteAddr == `` {
 		cf.M4tOptions.RemoteAddr = `localhost:50051`
@@ -156,4 +160,65 @@ func GetConfig() *Config {
 func InitTestConfig() *Config {
 	gconfig = defaultConfig("")
 	return gconfig
+}
+
+// applyEnvOverrides overrides config fields with environment variables.
+// This allows Docker Compose / .env to configure the server without
+// modifying conf.yaml.
+func applyEnvOverrides(cf *Config) {
+	// Database options
+	if v := os.Getenv("DB_DRIVER"); v != "" {
+		cf.DBOption.Driver = Driver(v)
+	}
+	if v := os.Getenv("DB_HOST"); v != "" {
+		cf.DBOption.Host = v
+	}
+	if v := os.Getenv("DB_PORT"); v != "" {
+		if p, err := strconv.Atoi(v); err == nil {
+			cf.DBOption.Port = p
+		}
+	}
+	if v := os.Getenv("DB_USER"); v != "" {
+		cf.DBOption.User = v
+	}
+	if v := os.Getenv("DB_PASSWORD"); v != "" {
+		cf.DBOption.Passwd = v
+	}
+	if v := os.Getenv("DB_NAME"); v != "" {
+		cf.DBOption.DBName = v
+	}
+	if v := os.Getenv("DB_SSLMODE"); v != "" {
+		cf.DBOption.SSLMode = v
+	}
+
+	// TTS options
+	if v := os.Getenv("TTS_PROVIDER"); v != "" {
+		cf.TTSOptions.Provider = v
+	}
+	if v := os.Getenv("TTS_SIDECAR_URL"); v != "" {
+		cf.TTSOptions.SidecarURL = v
+	}
+	if v := os.Getenv("TTS_TIMEOUT"); v != "" {
+		cf.TTSOptions.Timeout = v
+	}
+	if v := os.Getenv("TTS_OPENAI_API_KEY"); v != "" {
+		cf.TTSOptions.APIKey = v
+	}
+
+	// AI options
+	if v := os.Getenv("AI_ENABLED"); v != "" {
+		cf.AIOptions.Enabled = v == "true" || v == "1"
+	}
+	if v := os.Getenv("AI_PROVIDER"); v != "" {
+		cf.AIOptions.Provider = v
+	}
+	if v := os.Getenv("AI_BASE_URL"); v != "" {
+		cf.AIOptions.BaseURL = v
+	}
+	if v := os.Getenv("AI_API_KEY"); v != "" {
+		cf.AIOptions.APIKey = v
+	}
+	if v := os.Getenv("AI_MODEL"); v != "" {
+		cf.AIOptions.Model = v
+	}
 }
