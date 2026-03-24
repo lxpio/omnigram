@@ -10,7 +10,7 @@ type CompanionChat struct {
 	Content  string `json:"content" gorm:"type:text;not null"`
 	Chapter  string `json:"chapter,omitempty" gorm:"type:varchar(200)"`
 	CFI      string `json:"cfi,omitempty" gorm:"type:varchar(500)"`
-	CTime    int64  `json:"ctime" gorm:"autoCreateTime:milli"`
+	CTime    int64  `json:"ctime" gorm:"column:ctime;autoCreateTime:milli"`
 }
 
 // MarginNote stores AI-generated cross-book connections displayed in reading margins.
@@ -27,6 +27,6 @@ type MarginNote struct {
 	Confidence       float64 `json:"confidence" gorm:"default:0.5"`
 	Dismissed        bool    `json:"dismissed" gorm:"default:false"`
 	Helpful          bool    `json:"helpful" gorm:"default:false"`
-	CTime            int64   `json:"ctime" gorm:"autoCreateTime:milli"`
-	UTime            int64   `json:"utime" gorm:"autoUpdateTime:milli"`
+	CTime            int64   `json:"ctime" gorm:"column:ctime;autoCreateTime:milli"`
+	UTime            int64   `json:"utime" gorm:"column:utime;autoUpdateTime:milli"`
 }
