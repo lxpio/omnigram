@@ -29,10 +29,6 @@ services:
     # Remove TTS dependency
     # (override the full depends_on to exclude tts)
 
-  # Use local postgres (pgvector not needed for basic testing)
-  db:
-    image: postgres:16-alpine
-
   # Disable TTS service for testing
   tts:
     image: alpine:3.21

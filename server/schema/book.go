@@ -1034,15 +1034,14 @@ func replacePath(path string) string {
 
 func GenBookID(now time.Time) string {
 
-	// 获取当前时间并格式化为字符串作为订单号的一部分
+	// 14 chars timestamp + 10 chars random = 24 chars total
 	currentTime := now.Format("20060102150405")
 
 	var randBytes [8]byte
 	rand.Read(randBytes[:])
-	milli := now.Nanosecond() + int(binary.LittleEndian.Uint64(randBytes[:])%10000000000)
+	randNum := binary.LittleEndian.Uint64(randBytes[:]) % 10000000000
 
-	// 构建订单号
-	id := fmt.Sprintf("%s%09d", currentTime, milli)
+	id := fmt.Sprintf("%s%010d", currentTime, randNum)
 
 	return id
 }
