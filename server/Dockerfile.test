@@ -1,0 +1,41 @@
+# Simplified Dockerfile for local testing
+# Skips web frontend build (uses pre-built dist/) to avoid network issues
+FROM --platform=$BUILDPLATFORM golang:1.26 AS gobuilder
+
+ARG TARGETOS
+ARG TARGETARCH
+
+COPY / /omnigram-server
+WORKDIR /omnigram-server
+
+ENV GOPROXY=https://goproxy.cn,direct
+
+RUN mkdir -p /build/data /build/conf /build/bin && \
+    cp /omnigram-server/conf/conf.yaml /build/conf/conf.yaml && \
+    CGO_ENABLED=1 GOOS=$TARGETOS GOARCH=$TARGETARCH go build \
+    -ldflags "-s -w -linkmode external -extldflags '-static'" \
+    -o /build/bin/omni-server github.com/lxpio/omnigram/server/cmd/omni-server
+
+FROM alpine:3.21
+LABEL description="omnigram-server (local test)"
+
+COPY --from=gobuilder /build/ ./
+COPY --from=gobuilder /omnigram-server/docker-entrypoint.sh ./
+COPY --from=gobuilder /omnigram-server/web/dist /web/dist
+
+RUN addgroup -g 1000 omnigram && adduser -u 1000 -G omnigram -s /bin/sh -D omnigram && \
+    mkdir -p /metadata && \
+    chmod +x /docker-entrypoint.sh && \
+    chown -R omnigram:omnigram /data /conf /bin /web /metadata /docker-entrypoint.sh
+
+ENV CONFIG_FILE=/conf/conf.yaml
+EXPOSE 80
+
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+    CMD wget -q --spider http://localhost:80/healthz || exit 1
+
+USER omnigram
+VOLUME [ "/docs" ]
+VOLUME [ "/metadata" ]
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["omni-server"]

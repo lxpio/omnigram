@@ -23,7 +23,7 @@ m4t_server
 chat_server
 apidoc
 web/node_modules
-web/dist
+# web/dist is needed for embed.go
 Dockerfile
 README.md
 *.rest
