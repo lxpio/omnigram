@@ -13,7 +13,7 @@ import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 // Current app database version
-const int currentDbVersion = 11;
+const int currentDbVersion = 12;
 
 const createBookSQL = '''
 CREATE TABLE tb_books (
@@ -111,8 +111,7 @@ CREATE TABLE tb_ai_cache (
 )
 ''';
 
-const createAiCacheIndexSQL =
-    'CREATE UNIQUE INDEX IF NOT EXISTS idx_ai_cache_type_key ON tb_ai_cache(type, cache_key)';
+const createAiCacheIndexSQL = 'CREATE UNIQUE INDEX IF NOT EXISTS idx_ai_cache_type_key ON tb_ai_cache(type, cache_key)';
 
 const createCompanionChatSQL = '''
 CREATE TABLE tb_companion_chat (
@@ -531,6 +530,11 @@ class DBHelper {
         // Create concept tags and edges tables for knowledge graph
         await db.execute(createConceptTagSQL);
         await db.execute(createConceptEdgeSQL);
+        continue case11;
+      case11:
+      case 11:
+        // Add is_dirty flag for incremental sync push
+        await db.execute('ALTER TABLE tb_books ADD COLUMN is_dirty INTEGER DEFAULT 0');
     }
 
     if (oldVersion != 0) {

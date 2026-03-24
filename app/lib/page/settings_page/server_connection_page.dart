@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/server_connection_provider.dart';
+import '../../service/sync/sync_manager.dart';
 import '../../theme/omnigram_theme.dart';
 import '../../theme/typography.dart';
 
@@ -247,6 +248,12 @@ class _ServerConnectionPageState extends ConsumerState<ServerConnectionPage> {
         _errorMessage = ref.read(serverConnectionProvider).errorMessage ?? '连接失败，请检查账号密码';
       }
     });
+
+    // Trigger sync after successful login
+    if (success) {
+      ref.read(syncManagerProvider.notifier).sync();
+      ref.read(syncManagerProvider.notifier).startAutoSync();
+    }
   }
 
   Future<void> _disconnect() async {

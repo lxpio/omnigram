@@ -1,3 +1,4 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -68,6 +69,7 @@ class ServerConnectionState {
 @Riverpod(keepAlive: true)
 class ServerConnection extends _$ServerConnection {
   OmnigramApi? _api;
+  static const _secureStorage = FlutterSecureStorage();
 
   @override
   ServerConnectionState build() {
@@ -93,7 +95,7 @@ class ServerConnection extends _$ServerConnection {
       // 1. Health check — verify it's an Omnigram Server
       final authApi = AuthApi(_api!);
       final health = await authApi.healthCheck();
-      if (health.status != 'ok') {
+      if (health.status != 'healthy') {
         state = state.copyWith(
           status: ServerConnectionStatus.error,
           errorMessage: 'Not an Omnigram server: ${health.error ?? "unknown"}',
@@ -184,8 +186,8 @@ class ServerConnection extends _$ServerConnection {
     if (!isConnected) return;
 
     final serverUrl = prefs.getString(_Keys.serverUrl);
-    final accessToken = prefs.getString(_Keys.accessToken);
-    final refreshToken = prefs.getString(_Keys.refreshToken);
+    final accessToken = await _secureStorage.read(key: _Keys.accessToken);
+    final refreshToken = await _secureStorage.read(key: _Keys.refreshToken);
     final account = prefs.getString(_Keys.account);
     final deviceId = prefs.getString(_Keys.deviceId);
 
@@ -216,8 +218,8 @@ class ServerConnection extends _$ServerConnection {
   }) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_Keys.serverUrl, serverUrl);
-    await prefs.setString(_Keys.accessToken, accessToken);
-    await prefs.setString(_Keys.refreshToken, refreshToken);
+    await _secureStorage.write(key: _Keys.accessToken, value: accessToken);
+    await _secureStorage.write(key: _Keys.refreshToken, value: refreshToken);
     await prefs.setString(_Keys.account, account);
     if (deviceId != null) await prefs.setString(_Keys.deviceId, deviceId);
     await prefs.setInt(_Keys.userId, userId);
@@ -227,10 +229,12 @@ class ServerConnection extends _$ServerConnection {
 
   Future<void> _clearCredentials() async {
     final prefs = await SharedPreferences.getInstance();
+    // Clear tokens from secure storage
+    await _secureStorage.delete(key: _Keys.accessToken);
+    await _secureStorage.delete(key: _Keys.refreshToken);
+    // Clear non-sensitive data from SharedPreferences
     for (final key in [
       _Keys.serverUrl,
-      _Keys.accessToken,
-      _Keys.refreshToken,
       _Keys.account,
       _Keys.deviceId,
       _Keys.userId,
