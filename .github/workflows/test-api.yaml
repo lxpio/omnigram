@@ -91,7 +91,7 @@ jobs:
         run: |
           hurl --test \
             --variable host=http://localhost:8080 \
-            --variable username=testadmin \
+            --variable account=testadmin \
             --variable password=testpass123 \
             --report-html server/test/results/ \
             --retry 2 \

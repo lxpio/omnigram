@@ -1,3 +1,9 @@
+// Package sys scan_test contains integration tests that require a running database
+// and a book library on disk. Skipped by default because SQLite was removed in
+// Sprint 4 Phase 0 (PG migration). Scanner testing is covered by Hurl smoke tests.
+
+//go:build integration
+
 package sys
 
 import (

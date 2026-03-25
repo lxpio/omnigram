@@ -1,3 +1,9 @@
+// Package schema_test contains integration tests that require a running database.
+// Skipped by default because SQLite was removed in Sprint 4 Phase 0 (PG migration).
+// DB-layer testing is covered by Hurl smoke tests (server/test/api/smoke.hurl).
+
+//go:build integration
+
 package schema_test
 
 import (

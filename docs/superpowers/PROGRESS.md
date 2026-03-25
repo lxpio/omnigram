@@ -1,6 +1,6 @@
 # Omnigram 实施进度索引
 
-> **最后更新：2026-03-24**
+> **最后更新：2026-03-25**
 > **参考设计：** `docs/superpowers/specs/2026-03-22-ambient-ai-reading-design.md`
 > **审核报告：** `docs/superpowers/specs/2026-03-22-ambient-ai-reading-review.md`
 > **已知问题：** `docs/superpowers/KNOWN_ISSUES.md`
@@ -347,8 +347,8 @@
 | ~~**🟡 AI 缓存持久化**~~ | §10.6 | ✅ | Sprint 4 Phase 0 完成：Client sqflite + Server PG 双层缓存 |
 | ~~**🟡 伴侣人格同步**~~ | §10.7 | ✅ | Sprint 3.5：双向同步（SharedPrefs + Server） |
 | Onboarding 流程 | §10.8 | ❌ | 渐进式引导，首次使用零 AI |
-| 多设备同步 | §10.7 | ❌ | 数据架构已定义，实现待排期。审核发现 M-1(时钟偏移) M-2(AI 数据未接入) |
-| 🔴 同步质量加固 | 审核报告 | ❌ | 22 项问题，详见 `specs/2026-03-24-sync-architecture-audit.md` |
+| 多设备同步 | §10.7 | ⚠️ 部分 | 数据架构已定义。M-1(时钟偏移) M-2(AI 数据同步) 已修复，完整多设备测试待验证 |
+| 🔴 同步质量加固 | 审核报告 | ✅ | 22 项全部关闭，详见 `specs/2026-03-24-sync-architecture-audit.md` |
 | 数据导出/迁移 | §10.9 | ❌ | Markdown/JSON/CSV 导出 |
 | 外部高亮导入（Kindle/Apple Books） | §10.9 | ❌ | |
 | 阅读器 Chrome 重写 | §5.2 | ❌ | 当前用 stub，完整 chrome 待实现 |
@@ -374,7 +374,7 @@
 | 层级 | 工具 | 优先级 | 状态 | 备注 |
 |------|------|--------|------|------|
 | L1 静态分析 | `flutter analyze` | P0 | ✅ 已用 | 0 errors，每次提交前运行 |
-| L2 自动爬虫 | Firebase Robo Test | P0 | ❌ 未搭建 | 需要 GCP 配置 + CI workflow |
+| L2 自动爬虫 | Firebase Robo Test | P0 | ⚠️ CI 已配置 | `test-robo.yaml` 已创建，需 GCP secrets |
 | L3 视觉回归 | Golden Test | P1 | ❌ 未搭建 | 关键页面截图 diff，零 golden 文件 |
 | L4 E2E 流程 | Maestro | P2 | ❌ 未搭建 | 备选方案 |
 
@@ -383,31 +383,31 @@
 | 层级 | 工具 | 优先级 | 状态 | 备注 |
 |------|------|--------|------|------|
 | L1 静态分析 | `go vet` / `staticcheck` | P0 | ⚠️ 部分 | go build 通过，staticcheck 未接入 CI |
-| L2 数据层 | `go test ./schema/...` | P0 | ❌ 未搭建 | 无 schema 测试 |
-| L3 Swagger Fuzz | Schemathesis | P0 | ❌ 未搭建 | 需要先完善 swagger 文档 |
-| L4 API 冒烟 | Hurl | P0 | ❌ 未搭建 | 声明式 API 测试 |
+| L2 数据层 | `go test ./schema/...` | P0 | ⚠️ 跳过 | DB 集成测试加 `integration` build tag，由 Hurl 覆盖 |
+| L3 Swagger Fuzz | Schemathesis | P0 | ⚠️ CI 已配置 | `test-api.yaml` 中 continue-on-error |
+| L4 API 冒烟 | Hurl | P0 | ✅ 已搭建 | 34 requests，覆盖 health/auth/books/tags/sync/system |
 
 ### AI 服务测试
 
 | 层级 | 方式 | 状态 | 备注 |
 |------|------|------|------|
-| L1 契约测试 | Fixture + 结构断言 | ❌ 未搭建 | testdata/*.json 未创建 |
-| L2 错误处理 | httptest 返回 429/500 | ❌ 未搭建 | |
+| L1 契约测试 | Fixture + 结构断言 | ✅ 已搭建 | 12 tests, 4 fixtures (`testdata/ai/`) |
+| L2 错误处理 | httptest 返回 429/500 | ✅ 已覆盖 | ai_test.go 含错误场景 |
 | L3 真实调用 | 重新录制 fixtures | ❌ 未搭建 | 每周/手动 |
 
 ### App ↔ Server 集成测试
 
 | 层级 | 工具 | 状态 | 备注 |
 |------|------|------|------|
-| L1 API Client 集成 | Dart `integration_test` | ❌ 未搭建 | 文档定义了覆盖范围，代码未写 |
+| L1 API Client 集成 | Dart `integration_test` | ✅ 已搭建 | 17 tests，覆盖 auth/books/sync/tags/shelves |
 | L2 全链路 E2E | Maestro + Docker | ❌ 未搭建 | P2 备选 |
 
 ### CI Workflows
 
 | 文件 | 用途 | 状态 | 备注 |
 |------|------|------|------|
-| `.github/workflows/test-robo.yaml` | App Robo Test | ❌ 未创建 | |
-| `.github/workflows/test-api.yaml` | Server + 集成测试 | ❌ 未创建 | |
+| `.github/workflows/test-robo.yaml` | App Robo Test | ✅ 已创建 | 需 GCP secrets |
+| `.github/workflows/test-api.yaml` | Server + 集成测试 | ✅ 已创建 | Hurl + Schemathesis + Dart 集成 |
 | `.github/workflows/docker.yaml` | Docker 镜像构建 | ✅ 已有 | tag push 触发 |
 | `.github/workflows/build_app.yaml` | Flutter APK 构建 | ✅ 已有 | push/PR 触发 |
 
@@ -427,7 +427,7 @@
 | Flutter Analyze | ✅ | 0 errors, warnings 仅 unused elements |
 | Codegen (build_runner) | ✅ | freezed + riverpod + json_serializable |
 | L10n | ✅ | 16 语言，含新增 key |
-| 数据库版本 | v11 | 新增 tb_ai_cache(v8), tb_companion_chat(v9), tb_margin_notes(v10), tb_concept_tags+edges(v11) |
+| 数据库版本 | v13 | 新增 tb_ai_cache(v8), tb_companion_chat(v9), tb_margin_notes(v10), tb_concept_tags+edges(v11), is_dirty(v12), tb_id_mapping(v13) |
 
 ---
 
@@ -447,6 +447,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-03-25 | **巩固：测试全绿 + 文档校正。** Go 测试：修复 conf/store 路径问题，schema/sys 加 `integration` build tag（`go test ./...` 全绿）。Dart 测试：补 main 方法（`flutter test test/` 全绿）。CI：修复 Hurl 变量名 username→account。PROGRESS.md：同步质量加固 ✅、测试状态表全面更新、DB 版本 v11→v13 |
 | 2026-03-24 | **Layer 3.5 同步架构全部完成** ✅：第二批修复 22 项外部审核缺口全部关闭。服务端：C-4 DoUpdates 元数据保留、S-2 Refresh token 轮换、S-3 速率限制、P-1 批量推送端点、M-1 server_time LWW、P-2 SSE 反压、R-2 SSE 断点续传、B-2 审计日志、D-2 版本协商。客户端：同步重试指数退避、U-2 错误分类、冲突日志通知、R-1 原子 checkpoint、M-2 AI 数据类型同步、P-3 标注 O(1) 批量比对、离线操作队列、书籍文件按需下载、分页拉取、D-1 ID 映射表(DB v13)、U-3 冲突解决页面、B-3 选择性同步设置、B-4 E2E 加密基础 |
 | 2026-03-24 | Layer 3.5 同步质量审计：补充外部审核发现 22 项（C-1~B-4），含 6 项 🔴 P0 + 13 项 🟡 P1 + 3 项 🟢 P2，关联审核报告 `specs/2026-03-24-sync-architecture-audit.md` |
 | 2026-03-24 | Layer 3.5 同步质量审计：标注实际为全量同步（非增量），补充 7 项同步缺口（P0~P2），修复 healthCheck 校验值不匹配、登录后未触发同步 |
