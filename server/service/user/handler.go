@@ -311,7 +311,7 @@ func refreshAccessTokenHandle(c *gin.Context) {
 
 	session := &schema.Session{
 		Session:      "",
-		RefreshToken: origin.RefreshToken,
+		RefreshToken: "", // Generate new refresh token (rotation)
 		UserID:       u.ID,
 		RemoteIP:     c.ClientIP(),
 		UserAgent:    c.GetHeader(`User-Agent`),

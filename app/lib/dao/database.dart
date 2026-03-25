@@ -13,7 +13,7 @@ import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 // Current app database version
-const int currentDbVersion = 12;
+const int currentDbVersion = 13;
 
 const createBookSQL = '''
 CREATE TABLE tb_books (
@@ -535,6 +535,21 @@ class DBHelper {
       case 11:
         // Add is_dirty flag for incremental sync push
         await db.execute('ALTER TABLE tb_books ADD COLUMN is_dirty INTEGER DEFAULT 0');
+        continue case12;
+      case12:
+      case 12:
+        // D-1: ID mapping table for local↔server ID resolution
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS tb_id_mapping (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            local_id TEXT NOT NULL,
+            server_id TEXT NOT NULL,
+            entity_type TEXT NOT NULL,
+            created_at INTEGER DEFAULT (strftime('%s','now') * 1000)
+          )
+        ''');
+        await db.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_id_mapping_local ON tb_id_mapping(local_id, entity_type)');
+        await db.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_id_mapping_server ON tb_id_mapping(server_id, entity_type)');
     }
 
     if (oldVersion != 0) {

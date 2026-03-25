@@ -62,6 +62,19 @@ class AiCacheDao extends BaseDao {
     final result = await rawQueryList<int>('SELECT COUNT(*) as cnt FROM $table', mapper: (row) => row['cnt'] as int);
     return result.firstOrNull ?? 0;
   }
+
+  /// Get unsynced entries for server push (M-2).
+  Future<List<AiCacheEntry>> getUnsynced() async {
+    return queryList(table, mapper: AiCacheEntry.fromRow, where: 'synced = 0');
+  }
+
+  /// Mark entries as synced after successful push (M-2).
+  Future<void> markSynced(List<int> ids) async {
+    if (ids.isEmpty) return;
+    final db = await database;
+    final placeholders = List.filled(ids.length, '?').join(',');
+    await db.rawUpdate('UPDATE $table SET synced = 1 WHERE id IN ($placeholders)', ids);
+  }
 }
 
 class AiCacheEntry {

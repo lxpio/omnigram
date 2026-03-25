@@ -325,14 +325,17 @@ func SyncFullBooks(store *gorm.DB, limit, until int64, fileType FileType) (<-cha
 	return bookChan, nil
 }
 
-// SyncDeltaBooks 模糊搜索书籍
+// SyncDeltaBooks 增量同步书籍
 func SyncDeltaBooks(store *gorm.DB, utime int64, fileType FileType) (interface{}, error) {
 
 	resp := struct {
 		Deleted      []string `json:"deleted"`
 		NeedFullSync bool     `json:"need_full_sync"`
 		Upserted     []Book   `json:"upserted"`
+		ServerTime   int64    `json:"server_time"`
 	}{}
+
+	resp.ServerTime = time.Now().UnixMilli()
 
 	tx := store.Model(Book{}).Where(`utime > ?`, utime)
 
@@ -369,7 +372,7 @@ func (book *Book) Create(store *gorm.DB) error {
 
 		if err := tx.Clauses(clause.OnConflict{
 			Columns:   []clause.Column{{Name: "identifier"}},
-			DoNothing: true,
+			DoUpdates: clause.AssignmentColumns([]string{"title", "sub_title", "language", "publisher", "description", "cover_url", "utime"}),
 		}).Create(book).Error; err != nil {
 			return err
 		}

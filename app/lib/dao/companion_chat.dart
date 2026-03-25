@@ -59,6 +59,19 @@ class CompanionChatDao extends BaseDao {
       mapper: (row) => row['book_id'] as int,
     );
   }
+
+  /// Get unsynced messages for server push (M-2).
+  Future<List<CompanionMessage>> getUnsynced() async {
+    return queryList(table, mapper: CompanionMessage.fromRow, where: 'synced = 0');
+  }
+
+  /// Mark messages as synced after successful push (M-2).
+  Future<void> markSynced(List<int> ids) async {
+    if (ids.isEmpty) return;
+    final db = await database;
+    final placeholders = List.filled(ids.length, '?').join(',');
+    await db.rawUpdate('UPDATE $table SET synced = 1 WHERE id IN ($placeholders)', ids);
+  }
 }
 
 /// Roles in a companion conversation.
