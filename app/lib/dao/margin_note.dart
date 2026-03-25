@@ -57,6 +57,19 @@ class MarginNoteDao extends BaseDao {
     );
     return result.firstOrNull ?? 0;
   }
+
+  /// Get unsynced margin notes for server push (M-2).
+  Future<List<MarginNote>> getUnsynced() async {
+    return queryList('tb_margin_notes', mapper: MarginNote.fromRow, where: 'synced = 0');
+  }
+
+  /// Mark margin notes as synced after successful push (M-2).
+  Future<void> markSynced(List<int> ids) async {
+    if (ids.isEmpty) return;
+    final db = await database;
+    final placeholders = List.filled(ids.length, '?').join(',');
+    await db.rawUpdate('UPDATE tb_margin_notes SET synced = 1 WHERE id IN ($placeholders)', ids);
+  }
 }
 
 /// A single margin note — AI-generated cross-book connection.

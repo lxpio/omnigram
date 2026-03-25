@@ -2,6 +2,7 @@ package reader
 
 import (
 	"context"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lxpio/omnigram/server/middleware"
@@ -47,9 +48,12 @@ func Setup(router *gin.Engine) {
 	router.GET("/img/covers/*book_cover_path", oauthMD, coverImageHandle)
 	// router.GET("/reader/books/:book_id/cover", oauthMD, coverImageByIDHandle)
 
-	router.POST("/sync/full", oauthMD, syncFullHandle) //同步全量数据
-
-	router.POST("/sync/delta", oauthMD, syncDeltaHandle) //同步增量数据
+	// Sync endpoints with rate limiting
+	syncLimiter := middleware.RateLimitMiddleware(middleware.NewRateLimiter(60*time.Second, 30))
+	router.POST("/sync/full", oauthMD, syncLimiter, syncFullHandle)
+	router.POST("/sync/delta", oauthMD, syncLimiter, syncDeltaHandle)
+	router.POST("/sync/books/batch", oauthMD, syncLimiter, batchPushBooksHandle)
+	router.GET("/sync/version", oauthMD, syncVersionHandle)
 
 	// Tags
 	book.GET("/tags", listTagsHandle)
@@ -73,7 +77,7 @@ func Setup(router *gin.Engine) {
 	book.DELETE("/books/:book_id/annotations/:annotation_id", deleteAnnotationHandle)
 
 	// Annotation sync
-	router.POST("/sync/annotations", oauthMD, syncAnnotationsHandle)
+	router.POST("/sync/annotations", oauthMD, syncLimiter, syncAnnotationsHandle)
 
 	// AI results
 	book.GET("/books/:book_id/ai", getBookAiHandle)

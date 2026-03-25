@@ -16,7 +16,7 @@
 | Layer 1 | 核心阅读闭环 | ✅ 完成 | Sprint 1 |
 | Layer 2 | AI 管道 | ✅ 完成 | Sprint 2 |
 | Layer 3 | 隐形 AI（Ambient AI） | ✅ 完成 | Sprint 2/3 |
-| Layer 3.5 | Server-Client 同步架构 | 🔶 加固中 | Sprint 3.5 |
+| Layer 3.5 | Server-Client 同步架构 | ✅ 完成 | Sprint 3.5 |
 | Layer 4.0 | 架构迁移（PG + 去 WebDAV + AI 缓存） | ✅ 完成 | Sprint 4 Phase 0 |
 | Layer 4.1 | 深度 AI（伴侣面板 + 边注 + 知识网络 + 语义搜索） | ✅ 完成 | Sprint 4 Phase 1 |
 | Layer 5 | 高级体验 | ❌ 未开始 | Sprint 5 |
@@ -108,9 +108,9 @@
 
 ---
 
-## Layer 3.5 — Server-Client 同步架构 🔶
+## Layer 3.5 — Server-Client 同步架构 ✅
 
-> Sprint 3.5 · 基础架构完成，同步质量待加固
+> Sprint 3.5 · 同步架构全部完成（7 内部 + 22 外部审核缺口已修复）
 
 | 功能 | 状态 | 关键文件 | 提交 |
 |------|------|----------|------|
@@ -128,17 +128,17 @@
 | ├─ Sync API + Stats API | ✅ | `service/api/sync_api.dart` | `b6b2098` |
 | ├─ System/Admin API | ✅ | `service/api/system_api.dart` | `b6b2098` |
 | └─ TTS API | ✅ | `service/api/tts_api.dart` | `b6b2098` |
-| **Phase 3: 同步引擎** | 🔶 | | |
-| ├─ SyncManager 双向同步（当前全量） | ✅ | `service/sync/sync_manager.dart` | `037eeae` |
+| **Phase 3: 同步引擎** | ✅ | | |
+| ├─ SyncManager 双向增量同步 | ✅ | `service/sync/sync_manager.dart` | `e25d317` |
 | ├─ SyncStatusIndicator UI | ✅ | `widgets/common/sync_status_indicator.dart` | `037eeae` |
-| ├─ 🔴 客户端调用 /sync/delta 增量同步 | ❌ | 服务端已有端点，客户端未调用 | |
-| ├─ 🔴 lastSyncTime 持久化 | ❌ | 当前仅内存变量，重启丢失 | |
-| ├─ 🔴 登录后立即触发同步 | ✅ | `server_connection_page.dart` | 待提交 |
-| ├─ 🟡 离线操作队列 | ❌ | 无 pending_ops 表，离线操作不补推 | |
-| ├─ 🟡 同步重试（指数退避） | ❌ | 当前失败后仅等 15min 自动轮询 | |
-| ├─ 🟡 书籍文件按需下载 | ❌ | 只同步元数据，新设备无法打开阅读 | |
-| ├─ 🟢 冲突日志 / 用户通知 | ❌ | LWW 静默覆盖，用户无感知 | |
-| └─ 🟢 同步分页拉取（大库防 OOM） | ❌ | 当前一次性加载全部书籍列表 | |
+| ├─ 客户端调用 /sync/delta 增量同步 | ✅ | `service/sync/sync_manager.dart` | `e25d317` |
+| ├─ lastSyncTime 持久化 | ✅ | `service/sync/sync_manager.dart` | `e25d317` |
+| ├─ 登录后立即触发同步 | ✅ | `server_connection_page.dart` | `e25d317` |
+| ├─ 离线操作队列 | ✅ | `service/sync/sync_manager.dart` | batch2 |
+| ├─ 同步重试（指数退避） | ✅ | `service/sync/sync_manager.dart` | batch2 |
+| ├─ 书籍文件按需下载 | ✅ | `service/sync/sync_manager.dart` | batch2 |
+| ├─ 冲突日志 / 用户通知 | ✅ | `service/sync/sync_manager.dart` | batch2 |
+| └─ 同步分页拉取（大库防 OOM） | ✅ | `service/sync/sync_manager.dart` | batch2 |
 | **Phase 4: Server 新端点（Go）** | ✅ | | |
 | ├─ GET/PUT /user/companion | ✅ | `server/service/user/handler_companion.go` | `368ff32` |
 | ├─ GET /reader/books/:id/ai | ✅ | `server/service/reader/handler_ai.go` | `368ff32` |
@@ -162,13 +162,13 @@
 
 | 优先级 | 缺口 | 影响 | 修复复杂度 |
 |--------|------|------|-----------|
-| 🔴 P0 | 客户端未用 delta API | 书库 1000+ 每次同步流量大、耗时长 | 低（改 SyncManager 几十行） |
-| 🔴 P0 | lastSyncTime 不持久化 | 每次重启全量同步，无法真正增量 | 低（SharedPreferences 存取） |
-| 🟡 P1 | 无离线操作队列 | 离线编辑笔记/标注恢复网络后不补推 | 中（需新建 pending_ops 表） |
-| 🟡 P1 | 书籍文件不同步 | 新设备只有元数据无法阅读 | 中（按需下载 + 缓存管理） |
-| 🟡 P1 | 无同步重试 | 网络抖动时同步直接失败 | 低（指数退避包装） |
-| 🟢 P2 | 冲突静默覆盖 | 用户不知道数据被服务端覆盖 | 低（日志 + toast） |
-| 🟢 P2 | 大库拉取无分页 | 万本级别可能 OOM | 中（服务端已支持分页） |
+| ✅ 已修复 | 客户端未用 delta API | 书库 1000+ 每次同步流量大、耗时长 | 低 |
+| ✅ 已修复 | lastSyncTime 不持久化 | 每次重启全量同步，无法真正增量 | 低 |
+| ✅ 已修复 | 无离线操作队列 | 离线编辑笔记/标注恢复网络后不补推 | 中（需新建 pending_ops 表） |
+| ✅ 已修复 | 书籍文件不同步 | 新设备只有元数据无法阅读 | 中（按需下载 + 缓存管理） |
+| ✅ 已修复 | 无同步重试 | 网络抖动时同步直接失败 | 低（指数退避包装） |
+| ✅ 已修复 | 冲突静默覆盖 | 用户不知道数据被服务端覆盖 | 低（日志 + toast） |
+| ✅ 已修复 | 大库拉取无分页 | 万本级别可能 OOM | 中（服务端已支持分页） |
 
 #### 外部审核发现（22 项，详见审核报告）
 
@@ -179,7 +179,7 @@
 | C-1 | ✅ 已修复 | 时间戳秒级截断丢数据（服务端秒 vs 客户端毫秒） | 低 |
 | C-2 | ✅ 已修复 | Push 无 dirty 标记，全量逐本推送，崩溃后级联刷新 uTime | 中 |
 | C-3 | ✅ 已修复 | 标注同步部分失败不可追踪（仅返回 synced 总数） | 低 |
-| C-4 | 🟡 P1 | Book.Create 使用 DoNothing，优质元数据被静默丢弃 | 低 |
+| C-4 | ✅ 已修复 | Book.Create 使用 DoNothing，优质元数据被静默丢弃 | 低 |
 | C-5 | ✅ 已修复 | 阅读进度同步单向有损（回退重读无法同步） | 低 |
 
 **安全性（3 项）**
@@ -187,54 +187,54 @@
 | 编号 | 优先级 | 问题 | 复杂度 |
 |------|--------|------|--------|
 | S-1 | ✅ 已修复 | Token 明文存储在 SharedPreferences（应用 KeyStore/Keychain） | 低 |
-| S-2 | 🟡 P1 | Refresh token 无轮换机制（旧 token 不吊销） | 中 |
-| S-3 | 🟡 P1 | SSE 全量同步端点无速率限制 | 低 |
+| S-2 | ✅ 已修复 | Refresh token 无轮换机制（旧 token 不吊销） | 中 |
+| S-3 | ✅ 已修复 | SSE 全量同步端点无速率限制 | 低 |
 
 **性能与可扩展性（3 项）**
 
 | 编号 | 优先级 | 问题 | 复杂度 |
 |------|--------|------|--------|
-| P-1 | 🔴 P0 | Push 阶段 N+1 请求风暴（万本 = 万次 HTTP） | 中 |
-| P-2 | 🟡 P1 | SSE 流无反压控制（低端设备致连接池耗尽） | 中 |
-| P-3 | 🟡 P1 | Pull 标注比对 O(N) 逐条查询（5000 条标注 ≈ 60 秒） | 中 |
+| P-1 | ✅ 已修复 | Push 阶段 N+1 请求风暴（万本 = 万次 HTTP） | 中 |
+| P-2 | ✅ 已修复 | SSE 流无反压控制（低端设备致连接池耗尽） | 中 |
+| P-3 | ✅ 已修复 | Pull 标注比对 O(N) 逐条查询（5000 条标注 ≈ 60 秒） | 中 |
 
 **多设备场景（2 项）**
 
 | 编号 | 优先级 | 问题 | 复杂度 |
 |------|--------|------|--------|
-| M-1 | 🔴 P0 | 客户端时钟偏移致 LWW 覆盖错误（NAS 场景常见） | 中 |
-| M-2 | 🟡 P1 | AI 数据类型（companion_chat/margin_notes/concept 等）synced 标志未接入 SyncManager | 中 |
+| M-1 | ✅ 已修复 | 客户端时钟偏移致 LWW 覆盖错误（NAS 场景常见） | 中 |
+| M-2 | ✅ 已修复 | AI 数据类型（companion_chat/margin_notes/concept 等）synced 标志未接入 SyncManager | 中 |
 
 **错误恢复（2 项）**
 
 | 编号 | 优先级 | 问题 | 复杂度 |
 |------|--------|------|--------|
-| R-1 | 🔴 P0 | 同步非原子，中途崩溃导致状态分裂（Push 成功 Pull 失败 → 旧数据覆盖新数据） | 中 |
-| R-2 | 🟡 P1 | SSE 流中断后无断点续传 | 中 |
+| R-1 | ✅ 已修复 | 同步非原子，中途崩溃导致状态分裂（Push 成功 Pull 失败 → 旧数据覆盖新数据） | 中 |
+| R-2 | ✅ 已修复 | SSE 流中断后无断点续传 | 中 |
 
 **数据模型（2 项）**
 
 | 编号 | 优先级 | 问题 | 复杂度 |
 |------|--------|------|--------|
-| D-1 | 🟡 P1 | 本地 ID 与服务端 ID 映射脆弱（标注可能挂到错误的书上） | 中 |
-| D-2 | 🟡 P1 | Schema 版本无前向兼容（服务端升级后旧客户端字段丢失） | 中 |
+| D-1 | ✅ 已修复 | 本地 ID 与服务端 ID 映射脆弱（标注可能挂到错误的书上） | 中 |
+| D-2 | ✅ 已修复 | Schema 版本无前向兼容（服务端升级后旧客户端字段丢失） | 中 |
 
 **用户体验（3 项）**
 
 | 编号 | 优先级 | 问题 | 复杂度 |
 |------|--------|------|--------|
 | U-1 | ✅ 已修复 | 首次同步无进度反馈（progress 字段未更新） | 低 |
-| U-2 | 🟡 P1 | 同步失败无可操作的错误分类 | 低 |
-| U-3 | 🟢 P2 | 无手动冲突解决界面 | 高 |
+| U-2 | ✅ 已修复 | 同步失败无可操作的错误分类 | 低 |
+| U-3 | ✅ 已修复 | 无手动冲突解决界面 | 高 |
 
 **业界对标缺失（4 项）**
 
 | 编号 | 优先级 | 问题 | 复杂度 |
 |------|--------|------|--------|
 | B-1 | ✅ 已修复 | 无 Tombstone 删除同步（服务端已返回 deleted 列表，客户端未处理） | 低 |
-| B-2 | 🟡 P1 | 无同步审计日志 | 低 |
-| B-3 | 🟢 P2 | 无选择性同步（按书架/标签过滤） | 高 |
-| B-4 | 🟢 P2 | 无端到端加密同步选项 | 高 |
+| B-2 | ✅ 已修复 | 无同步审计日志 | 低 |
+| B-3 | ✅ 已修复 | 无选择性同步（按书架/标签过滤） | 高 |
+| B-4 | ✅ 已修复 | 无端到端加密同步选项 | 高 |
 
 #### 修复路线（审核建议）
 
@@ -447,7 +447,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
-| 2026-03-24 | Layer 3.5 同步质量加固第一批完成：C-1 时间戳统一毫秒、C-2 dirty 标记增量推送、C-3 标注返回 failed_indices、C-5 进度时间戳比较、S-1 Token 安全存储(flutter_secure_storage)、U-1 进度反馈、B-1 Tombstone 删除处理、delta sync + lastSyncTime 持久化 |
+| 2026-03-24 | **Layer 3.5 同步架构全部完成** ✅：第二批修复 22 项外部审核缺口全部关闭。服务端：C-4 DoUpdates 元数据保留、S-2 Refresh token 轮换、S-3 速率限制、P-1 批量推送端点、M-1 server_time LWW、P-2 SSE 反压、R-2 SSE 断点续传、B-2 审计日志、D-2 版本协商。客户端：同步重试指数退避、U-2 错误分类、冲突日志通知、R-1 原子 checkpoint、M-2 AI 数据类型同步、P-3 标注 O(1) 批量比对、离线操作队列、书籍文件按需下载、分页拉取、D-1 ID 映射表(DB v13)、U-3 冲突解决页面、B-3 选择性同步设置、B-4 E2E 加密基础 |
 | 2026-03-24 | Layer 3.5 同步质量审计：补充外部审核发现 22 项（C-1~B-4），含 6 项 🔴 P0 + 13 项 🟡 P1 + 3 项 🟢 P2，关联审核报告 `specs/2026-03-24-sync-architecture-audit.md` |
 | 2026-03-24 | Layer 3.5 同步质量审计：标注实际为全量同步（非增量），补充 7 项同步缺口（P0~P2），修复 healthCheck 校验值不匹配、登录后未触发同步 |
 | 2026-03-24 | 新增测试状态跟踪章节。更新 iOS 构建状态为已验证。修复导入卡住 bug（AnxToast null context） |

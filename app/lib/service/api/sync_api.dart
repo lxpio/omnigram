@@ -19,6 +19,16 @@ class SyncApi {
   Future<void> syncAnnotations(List<Map<String, dynamic>> annotations) async {
     await _api.postVoid('/sync/annotations', data: annotations);
   }
+
+  /// Batch push book metadata (P-1: reduces N+1 HTTP calls).
+  Future<Map<String, dynamic>> batchPushBooks(List<Map<String, dynamic>> books) async {
+    return _api.post('/sync/books/batch', data: {'books': books}, fromJson: (data) => data as Map<String, dynamic>);
+  }
+
+  /// Get sync protocol version for compatibility check (D-2).
+  Future<Map<String, dynamic>> getSyncVersion() async {
+    return _api.get('/sync/version', fromJson: (data) => data as Map<String, dynamic>);
+  }
 }
 
 /// Reading statistics API.
