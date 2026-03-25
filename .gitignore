@@ -56,3 +56,4 @@ lib/models/objectbox.g.dart
 # Private discussions (potential blog content, not open-sourced)
 docs/discussions/
 data/
+server/conf/conf2.yaml

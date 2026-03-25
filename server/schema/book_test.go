@@ -1,3 +1,8 @@
+// Package schema_test contains integration tests that require a running PostgreSQL database.
+// Skipped by default. DB-layer testing is covered by Hurl smoke tests.
+
+//go:build integration
+
 package schema_test
 
 import (
