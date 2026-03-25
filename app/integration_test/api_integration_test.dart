@@ -24,8 +24,7 @@ import 'package:omnigram/service/api/system_api.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Read env with fallback.
-String env(String key, String fallback) =>
-    Platform.environment[key] ?? fallback;
+String env(String key, String fallback) => Platform.environment[key] ?? fallback;
 
 void main() {
   final baseUrl = env('OMNIGRAM_TEST_URL', 'http://localhost:8080');
@@ -77,10 +76,7 @@ void main() {
     test('invalid credentials returns error', () async {
       final freshApi = OmnigramApi(baseUrl: baseUrl);
       final freshAuth = AuthApi(freshApi);
-      expect(
-        () => freshAuth.login(account: 'nonexistent', password: 'wrong'),
-        throwsA(anything),
-      );
+      expect(() => freshAuth.login(account: 'nonexistent', password: 'wrong'), throwsA(anything));
     });
   });
 
@@ -163,10 +159,7 @@ void main() {
       await shelves.deleteShelf(shelf.id);
 
       // Verify deleted
-      expect(
-        () => shelves.getShelf(shelf.id),
-        throwsA(anything),
-      );
+      expect(() => shelves.getShelf(shelf.id), throwsA(anything));
     });
   });
 
@@ -180,13 +173,32 @@ void main() {
     });
 
     test('fullSync returns data', () async {
-      final result = await sync.fullSync({'last_sync_time': 0});
+      final result = await sync.fullSync({'limit': 10, 'until': 9999999999999});
       expect(result, isA<Map>());
     });
 
-    test('deltaSync returns data', () async {
-      final result = await sync.deltaSync({'last_sync_time': 0});
+    test('deltaSync returns data with server_time (M-1)', () async {
+      final result = await sync.deltaSync({'limit': 10, 'utime': 1});
       expect(result, isA<Map>());
+      expect(result['server_time'], isA<int>());
+      expect(result['server_time'], greaterThan(0));
+    });
+
+    test('getSyncVersion returns protocol info (D-2)', () async {
+      final result = await sync.getSyncVersion();
+      expect(result['version'], isNotNull);
+      expect(result['min_client_version'], isNotNull);
+      final features = result['features'] as List;
+      expect(features, contains('delta_sync'));
+      expect(features, contains('batch_push'));
+      expect(features, contains('server_time'));
+      expect(features, contains('tombstone_delete'));
+    });
+
+    test('batchPushBooks with empty list returns 0 synced (P-1)', () async {
+      final result = await sync.batchPushBooks([]);
+      expect(result['synced'], equals(0));
+      expect(result['server_time'], isA<int>());
     });
   });
 
@@ -241,17 +253,11 @@ void main() {
     test('unauthenticated request returns 401', () async {
       final noAuthApi = OmnigramApi(baseUrl: baseUrl);
       final noAuthBooks = BookApi(noAuthApi);
-      expect(
-        () => noAuthBooks.listBooks(),
-        throwsA(anything),
-      );
+      expect(() => noAuthBooks.listBooks(), throwsA(anything));
     });
 
     test('nonexistent endpoint returns 404', () async {
-      expect(
-        () => api.get('/nonexistent/path', fromJson: (d) => d),
-        throwsA(anything),
-      );
+      expect(() => api.get('/nonexistent/path', fromJson: (d) => d), throwsA(anything));
     });
   });
 }

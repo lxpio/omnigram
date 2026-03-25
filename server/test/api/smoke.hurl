@@ -143,12 +143,13 @@ HTTP 200
 # L4: Sync Endpoints
 # ============================================================
 
-# Full sync
+# Full sync (SSE stream)
 POST {{host}}/sync/full
 Authorization: Bearer {{token}}
 Content-Type: application/json
 {
-  "last_sync_time": 0
+  "limit": 10,
+  "until": 9999999999999
 }
 HTTP 200
 
@@ -157,9 +158,88 @@ POST {{host}}/sync/delta
 Authorization: Bearer {{token}}
 Content-Type: application/json
 {
-  "last_sync_time": 0
+  "limit": 10,
+  "utime": 1
 }
 HTTP 200
+
+# Delta sync - validate server_time field in response
+POST {{host}}/sync/delta
+Authorization: Bearer {{token}}
+Content-Type: application/json
+{
+  "limit": 10,
+  "utime": 1
+}
+HTTP 200
+[Asserts]
+jsonpath "$.server_time" isInteger
+
+# Sync version endpoint (D-2)
+GET {{host}}/sync/version
+Authorization: Bearer {{token}}
+HTTP 200
+[Asserts]
+jsonpath "$.version" isString
+jsonpath "$.min_client_version" isString
+jsonpath "$.features" isCollection
+jsonpath "$.features" contains "delta_sync"
+jsonpath "$.features" contains "batch_push"
+jsonpath "$.features" contains "server_time"
+jsonpath "$.features" contains "tombstone_delete"
+
+# Batch push books - empty array (P-1)
+POST {{host}}/sync/books/batch
+Authorization: Bearer {{token}}
+Content-Type: application/json
+{
+  "books": []
+}
+HTTP 200
+[Asserts]
+jsonpath "$.synced" == 0
+jsonpath "$.server_time" isInteger
+
+# Batch push books - malformed body (missing books field)
+POST {{host}}/sync/books/batch
+Authorization: Bearer {{token}}
+Content-Type: application/json
+{
+  "not_books": true
+}
+HTTP 200
+[Asserts]
+jsonpath "$.synced" == 0
+
+# Delta sync - missing required params returns error
+POST {{host}}/sync/delta
+Authorization: Bearer {{token}}
+Content-Type: application/json
+{}
+HTTP 200
+[Asserts]
+jsonpath "$.code" isInteger
+
+# Full sync - missing required params returns error
+POST {{host}}/sync/full
+Authorization: Bearer {{token}}
+Content-Type: application/json
+{}
+HTTP 200
+[Asserts]
+jsonpath "$.code" isInteger
+
+# Sync endpoints without auth return 401
+GET {{host}}/sync/version
+HTTP 401
+
+POST {{host}}/sync/delta
+Content-Type: application/json
+{
+  "limit": 10,
+  "utime": 1
+}
+HTTP 401
 
 # ============================================================
 # L5: System (Admin)
