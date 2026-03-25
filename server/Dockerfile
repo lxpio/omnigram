@@ -5,7 +5,7 @@ WORKDIR /web
 RUN npm ci && npm run build
 
 # stage 2: build golang backend
-FROM --platform=$BUILDPLATFORM golang:1.23.1-alpine3.20 as gobuilder
+FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS gobuilder
 
 ARG TARGETOS
 ARG TARGETARCH
