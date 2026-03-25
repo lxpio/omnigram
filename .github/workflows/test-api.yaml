@@ -102,7 +102,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: ${{ inputs.flutter_version || '3.41.5' }}
+          flutter-version: ${{ inputs.flutter_version || '3.41.4' }}
 
       - name: Run Dart API integration tests
         working-directory: app
