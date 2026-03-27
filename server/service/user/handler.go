@@ -14,6 +14,9 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+// sessionDuration is the default session/token lifetime (30 days).
+const sessionDuration = time.Hour * 24 * 30 / time.Millisecond
+
 // @Summary User login
 // @Description Login with account credentials, sets session cookie on success
 // @Tags Auth
@@ -63,7 +66,7 @@ func loginHandle(c *gin.Context) {
 		DeviceType:  c.GetHeader(`x-device-type`),
 		DistrictId:  0,
 		FromUrl:     "",
-		Duration:    time.Minute * 30 / time.Millisecond,
+		Duration:    sessionDuration,
 		UserInfo:    u,
 	}
 
@@ -243,7 +246,7 @@ func getAccessTokenHandle(c *gin.Context) {
 		DeviceType:  c.GetHeader(`x-device-type`),
 		DistrictId:  0,
 		FromUrl:     "",
-		Duration:    time.Minute * 30 / time.Millisecond,
+		Duration:    sessionDuration,
 		UserInfo:    u,
 	}
 
@@ -320,7 +323,7 @@ func refreshAccessTokenHandle(c *gin.Context) {
 		DeviceType:   c.GetHeader(`x-device-type`),
 		DistrictId:   0,
 		FromUrl:      "",
-		Duration:     time.Minute * 30 / time.Millisecond,
+		Duration:     sessionDuration,
 		UserInfo:     u,
 	}
 

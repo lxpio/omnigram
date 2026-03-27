@@ -75,11 +75,7 @@ Future<void> main() async {
     animationType: SmartAnimationType.centerFade_otherSlide,
   );
 
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends ConsumerStatefulWidget {
@@ -89,24 +85,16 @@ class MyApp extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _MyAppState();
 }
 
-class _MyAppState extends ConsumerState<MyApp>
-    with WidgetsBindingObserver, WindowListener {
+class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver, WindowListener {
   static const Locale _englishFallbackLocale = Locale('en');
+
+  bool _syncStarted = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     windowManager.addListener(this);
-
-    // Trigger server sync on app launch
-    Future.microtask(() {
-      final connection = ref.read(serverConnectionProvider);
-      if (connection.isConnected) {
-        ref.read(syncManagerProvider.notifier).sync();
-        ref.read(syncManagerProvider.notifier).startAutoSync();
-      }
-    });
   }
 
   @override
@@ -153,11 +141,12 @@ class _MyAppState extends ConsumerState<MyApp>
     final isMaximized = await windowManager.isMaximized();
 
     Prefs().windowInfo = WindowInfo(
-        x: windowOffset.dx,
-        y: windowOffset.dy,
-        width: windowSize.width,
-        height: windowSize.height,
-        isMaximized: isMaximized);
+      x: windowOffset.dx,
+      y: windowOffset.dy,
+      width: windowSize.width,
+      height: windowSize.height,
+      isMaximized: isMaximized,
+    );
     AnxLog.info('onWindowClose: Offset: $windowOffset, Size: $windowSize');
   }
 
@@ -172,12 +161,19 @@ class _MyAppState extends ConsumerState<MyApp>
 
   @override
   Widget build(BuildContext context) {
+    // Watch server connection — trigger sync when connection is restored
+    ref.listen<ServerConnectionState>(serverConnectionProvider, (prev, next) {
+      debugPrint('[Main] Connection state changed: ${prev?.status} → ${next.status}, syncStarted=$_syncStarted');
+      if (!_syncStarted && next.isConnected) {
+        _syncStarted = true;
+        debugPrint('[Main] Starting sync...');
+        ref.read(syncManagerProvider.notifier).sync();
+        ref.read(syncManagerProvider.notifier).startAutoSync();
+      }
+    });
+
     return provider.MultiProvider(
-      providers: [
-        provider.ChangeNotifierProvider(
-          create: (_) => Prefs(),
-        ),
-      ],
+      providers: [provider.ChangeNotifierProvider(create: (_) => Prefs())],
       child: provider.Consumer<Prefs>(
         builder: (context, prefsNotifier, child) {
           return MaterialApp(
@@ -189,10 +185,7 @@ class _MyAppState extends ConsumerState<MyApp>
               //   PointerDeviceKind.mouse,
               // },
             ),
-            navigatorObservers: [
-              FlutterSmartDialog.observer,
-              heroineController
-            ],
+            navigatorObservers: [FlutterSmartDialog.observer, heroineController],
             builder: FlutterSmartDialog.init(),
             navigatorKey: navigatorKey,
             locale: prefsNotifier.locale,
@@ -204,8 +197,7 @@ class _MyAppState extends ConsumerState<MyApp>
             theme: OmnigramTheme.light(),
             darkTheme: OmnigramTheme.dark(),
             home: _needsMigration
-                ? _MigrationWrapper(
-                    migrationCheckResult: _migrationCheckResult!)
+                ? _MigrationWrapper(migrationCheckResult: _migrationCheckResult!)
                 : const OmnigramHome(),
           );
         },
@@ -213,18 +205,12 @@ class _MyAppState extends ConsumerState<MyApp>
     );
   }
 
-  Locale _resolveLocale(
-    List<Locale>? preferredLocales,
-    Iterable<Locale> supportedLocales,
-  ) {
+  Locale _resolveLocale(List<Locale>? preferredLocales, Iterable<Locale> supportedLocales) {
     if (preferredLocales == null || preferredLocales.isEmpty) {
       return _englishFallbackLocale;
     }
 
-    final Locale resolvedLocale = basicLocaleListResolution(
-      preferredLocales,
-      supportedLocales,
-    );
+    final Locale resolvedLocale = basicLocaleListResolution(preferredLocales, supportedLocales);
 
     final bool hasMatch = preferredLocales.any((Locale preferredLocale) {
       return supportedLocales.any((Locale supportedLocale) {

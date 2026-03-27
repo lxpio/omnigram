@@ -181,28 +181,29 @@ class ServerConnection extends _$ServerConnection {
   }
 
   Future<void> _tryRestoreConnection() async {
-    final prefs = await SharedPreferences.getInstance();
-    final isConnected = prefs.getBool(_Keys.isConnected) ?? false;
-    if (!isConnected) return;
-
-    final serverUrl = prefs.getString(_Keys.serverUrl);
-    final accessToken = await _secureStorage.read(key: _Keys.accessToken);
-    final refreshToken = await _secureStorage.read(key: _Keys.refreshToken);
-    final account = prefs.getString(_Keys.account);
-    final deviceId = prefs.getString(_Keys.deviceId);
-
-    if (serverUrl == null || accessToken == null) return;
-
-    _api = OmnigramApi(baseUrl: serverUrl);
-    _api!.setAuth(accessToken: accessToken, refreshToken: refreshToken ?? '', account: account, deviceId: deviceId);
-
-    // Verify token is still valid
     try {
+      final prefs = await SharedPreferences.getInstance();
+      final isConnected = prefs.getBool(_Keys.isConnected) ?? false;
+      if (!isConnected) return;
+
+      final serverUrl = prefs.getString(_Keys.serverUrl);
+      final accessToken = await _secureStorage.read(key: _Keys.accessToken);
+      final refreshToken = await _secureStorage.read(key: _Keys.refreshToken);
+      final account = prefs.getString(_Keys.account);
+      final deviceId = prefs.getString(_Keys.deviceId);
+
+      if (serverUrl == null || accessToken == null) return;
+
+      _api = OmnigramApi(baseUrl: serverUrl);
+      _api!.setAuth(accessToken: accessToken, refreshToken: refreshToken ?? '', account: account, deviceId: deviceId);
+
+      // Verify token is still valid (short timeout for startup)
       final user = await AuthApi(_api!).getUserInfo();
       state = ServerConnectionState(status: ServerConnectionStatus.connected, serverUrl: serverUrl, user: user);
     } catch (_) {
-      // Token expired or server unreachable — stay disconnected
+      // Token expired, server unreachable, or secure storage error — stay disconnected
       _api = null;
+      await _clearCredentials();
       state = const ServerConnectionState();
     }
   }

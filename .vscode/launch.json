@@ -18,6 +18,14 @@
             "flutterMode": "debug"
         },
         {
+            "name": "app debug (no-dds, for TUN/VPN)",
+            "cwd": "app",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": ["--no-dds"]
+        },
+        {
             "name": "app (profile mode)",
             "cwd": "app",
             "request": "launch",

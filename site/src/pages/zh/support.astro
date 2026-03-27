@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+<BaseLayout title="支持与帮助" description="获取 Omnigram 使用帮助">
+  <div class="py-20 px-6">
+    <div class="max-w-3xl mx-auto prose prose-invert prose-slate">
+      <h1 class="text-3xl font-bold text-slate-100 mb-10">支持与帮助</h1>
+
+      <p class="text-slate-300 leading-relaxed">
+        Omnigram 是一个开源项目，通过以下渠道提供社区支持。
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">反馈问题</h2>
+      <p class="text-slate-300 leading-relaxed">
+        如果您发现了 Bug 或功能异常，请在 GitHub 提交 Issue：
+      </p>
+      <a href="https://github.com/lxpio/omnigram/issues/new" target="_blank"
+         class="inline-block mt-3 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition no-underline">
+        提交 Issue
+      </a>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">社区讨论</h2>
+      <p class="text-slate-300 leading-relaxed">
+        功能建议、使用交流、一般性问题：
+      </p>
+      <a href="https://github.com/lxpio/omnigram/discussions" target="_blank"
+         class="inline-block mt-3 px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-medium transition no-underline">
+        参与讨论
+      </a>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">使用文档</h2>
+      <p class="text-slate-300 leading-relaxed">
+        部署指南、配置帮助、使用说明：
+      </p>
+      <a href="/getting-started/quick-start"
+         class="inline-block mt-3 px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-medium transition no-underline">
+        查看文档
+      </a>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">邮件联系</h2>
+      <p class="text-slate-300 leading-relaxed">
+        安全漏洞报告或隐私相关咨询：
+      </p>
+      <p class="text-slate-300">
+        <a href="mailto:omnigram@lxpio.com" class="text-blue-400 hover:text-blue-300">omnigram@lxpio.com</a>
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">常见问题</h2>
+
+      <div class="space-y-6 mt-6">
+        <div>
+          <h3 class="text-lg font-medium text-slate-200">如何部署自己的服务器？</h3>
+          <p class="text-slate-400 mt-2">
+            参照<a href="/getting-started/installation" class="text-blue-400 hover:text-blue-300">安装指南</a>，
+            使用 Docker 一键部署。
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-medium text-slate-200">如何配置 AI 功能？</h3>
+          <p class="text-slate-400 mt-2">
+            在应用「设置」中填入 AI 提供商的 API Key（OpenAI、Claude、Ollama 等）。
+            AI 功能为可选项，不配置不影响正常使用。
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-medium text-slate-200">如何删除数据或注销账号？</h3>
+          <p class="text-slate-400 mt-2">
+            卸载应用即可清除本地数据。在「设置」中可注销账号，服务器端数据将一并删除。
+            详见<a href="/zh/privacy#data-deletion" class="text-blue-400 hover:text-blue-300">数据删除说明</a>。
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-medium text-slate-200">支持哪些电子书格式？</h3>
+          <p class="text-slate-400 mt-2">
+            主要支持 EPUB 格式，同时支持 PDF。
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-12 pt-8 border-t border-slate-700">
+        <p class="text-slate-500 text-sm">备案号：闽ICP备2025091402号-1A</p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

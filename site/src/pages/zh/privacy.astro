@@ -1,0 +1,220 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const lastUpdated = '2026-03-27';
+---
+<BaseLayout title="隐私政策" description="Omnigram 隐私政策">
+  <div class="py-20 px-6">
+    <div class="max-w-3xl mx-auto prose prose-invert prose-slate">
+      <h1 class="text-3xl font-bold text-slate-100 mb-2">隐私政策</h1>
+      <p class="text-slate-500 text-sm mb-10">更新日期：{lastUpdated}</p>
+
+      <p class="text-slate-300 leading-relaxed">
+        Omnigram（以下简称"我们"）是一款开源、自托管的电子书库与阅读应用。
+        本隐私政策依据《中华人民共和国个人信息保护法》《数据安全法》《网络安全法》等相关法律法规，
+        向您说明我们如何处理您在使用 Omnigram 移动应用及相关服务（以下简称"本服务"）时的信息。
+      </p>
+      <p class="text-slate-300 leading-relaxed mt-3">
+        <strong>请您在使用本服务前，仔细阅读并充分理解本隐私政策。</strong>
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">一、自托管架构说明</h2>
+      <p class="text-slate-300 leading-relaxed">
+        Omnigram 采用<strong>自托管</strong>架构设计。您的书库、阅读进度、批注及所有个人数据均存储在
+        您自行管理的服务器（NAS、家庭服务器或云服务器）上。
+        <strong>我们不运营任何中心化服务器来收集或存储您的数据。</strong>
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4" id="personal-info">二、个人信息收集清单</h2>
+      <p class="text-slate-300 leading-relaxed">
+        根据《个人信息保护法》要求，我们逐项列明信息收集情况：
+      </p>
+
+      <div class="overflow-x-auto mt-4">
+        <table class="min-w-full text-sm text-slate-300">
+          <thead>
+            <tr class="border-b border-slate-600">
+              <th class="text-left py-3 px-4 text-slate-200">信息类型</th>
+              <th class="text-left py-3 px-4 text-slate-200">收集方式</th>
+              <th class="text-left py-3 px-4 text-slate-200">使用目的</th>
+              <th class="text-left py-3 px-4 text-slate-200">存储位置</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-slate-700">
+              <td class="py-3 px-4">账号信息（用户名、密码）</td>
+              <td class="py-3 px-4">用户注册时主动提供</td>
+              <td class="py-3 px-4">身份认证、登录</td>
+              <td class="py-3 px-4">用户自有服务器</td>
+            </tr>
+            <tr class="border-b border-slate-700">
+              <td class="py-3 px-4">阅读进度与书签</td>
+              <td class="py-3 px-4">使用过程中自动产生</td>
+              <td class="py-3 px-4">阅读进度同步</td>
+              <td class="py-3 px-4">本地设备 + 用户自有服务器</td>
+            </tr>
+            <tr class="border-b border-slate-700">
+              <td class="py-3 px-4">批注与高亮</td>
+              <td class="py-3 px-4">用户主动创建</td>
+              <td class="py-3 px-4">阅读笔记功能</td>
+              <td class="py-3 px-4">本地设备 + 用户自有服务器</td>
+            </tr>
+            <tr class="border-b border-slate-700">
+              <td class="py-3 px-4">应用设置与偏好</td>
+              <td class="py-3 px-4">用户主动配置</td>
+              <td class="py-3 px-4">个性化体验</td>
+              <td class="py-3 px-4">本地设备</td>
+            </tr>
+            <tr class="border-b border-slate-700">
+              <td class="py-3 px-4">服务器连接凭证</td>
+              <td class="py-3 px-4">用户主动输入</td>
+              <td class="py-3 px-4">连接自有服务器</td>
+              <td class="py-3 px-4">本地设备（系统安全存储）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-medium text-slate-200 mt-6 mb-3">我们不收集的信息</h3>
+      <ul class="text-slate-300 space-y-2">
+        <li>设备唯一标识符（IMEI、OAID、Android ID 等）</li>
+        <li>精确地理位置信息</li>
+        <li>通讯录、短信、通话记录</li>
+        <li>使用行为分析数据或埋点数据</li>
+        <li>广告标识符</li>
+        <li>生物识别信息</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">三、设备权限使用说明</h2>
+      <div class="overflow-x-auto mt-4">
+        <table class="min-w-full text-sm text-slate-300">
+          <thead>
+            <tr class="border-b border-slate-600">
+              <th class="text-left py-3 px-4 text-slate-200">权限</th>
+              <th class="text-left py-3 px-4 text-slate-200">用途</th>
+              <th class="text-left py-3 px-4 text-slate-200">是否可拒绝</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-slate-700">
+              <td class="py-3 px-4">网络访问</td>
+              <td class="py-3 px-4">连接您的自托管服务器，同步数据</td>
+              <td class="py-3 px-4">拒绝后无法使用同步功能</td>
+            </tr>
+            <tr class="border-b border-slate-700">
+              <td class="py-3 px-4">存储/相册读取</td>
+              <td class="py-3 px-4">导入本地电子书文件</td>
+              <td class="py-3 px-4">可拒绝，仅影响本地导入</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4" id="sdk-list">四、第三方SDK目录</h2>
+      <p class="text-slate-300 leading-relaxed">
+        根据工业和信息化部相关规定，我们列明应用中集成的第三方SDK：
+      </p>
+      <div class="overflow-x-auto mt-4">
+        <table class="min-w-full text-sm text-slate-300">
+          <thead>
+            <tr class="border-b border-slate-600">
+              <th class="text-left py-3 px-4 text-slate-200">SDK名称</th>
+              <th class="text-left py-3 px-4 text-slate-200">提供方</th>
+              <th class="text-left py-3 px-4 text-slate-200">用途</th>
+              <th class="text-left py-3 px-4 text-slate-200">收集的信息</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-slate-700">
+              <td class="py-3 px-4">Flutter Engine</td>
+              <td class="py-3 px-4">Google</td>
+              <td class="py-3 px-4">应用运行框架</td>
+              <td class="py-3 px-4">无</td>
+            </tr>
+            <tr class="border-b border-slate-700">
+              <td class="py-3 px-4">sqflite</td>
+              <td class="py-3 px-4">开源社区</td>
+              <td class="py-3 px-4">本地数据库存储</td>
+              <td class="py-3 px-4">无（纯本地）</td>
+            </tr>
+            <tr class="border-b border-slate-700">
+              <td class="py-3 px-4">flutter_inappwebview</td>
+              <td class="py-3 px-4">开源社区</td>
+              <td class="py-3 px-4">电子书渲染</td>
+              <td class="py-3 px-4">无</td>
+            </tr>
+            <tr class="border-b border-slate-700">
+              <td class="py-3 px-4">sherpa-onnx</td>
+              <td class="py-3 px-4">开源社区</td>
+              <td class="py-3 px-4">本地语音合成（TTS）</td>
+              <td class="py-3 px-4">无（纯本地推理）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-slate-400 text-sm mt-3">
+        本应用不集成任何广告SDK、数据统计SDK或推送SDK。
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">五、AI 功能说明</h2>
+      <p class="text-slate-300 leading-relaxed">
+        AI 功能为可选功能，需要您自行配置 AI 服务提供商（如 OpenAI、Claude、Ollama 等），具体说明：
+      </p>
+      <ul class="text-slate-300 space-y-2 mt-3">
+        <li>您可自主选择 AI 提供商，包括完全本地化的方案（如 Ollama）</li>
+        <li>AI 处理由您的自托管服务器发起，应用不直接向第三方发送数据</li>
+        <li>发送至第三方 AI 服务的内容受该服务的隐私政策约束</li>
+        <li>不启用 AI 功能不影响应用的正常使用</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">六、未成年人保护</h2>
+      <p class="text-slate-300 leading-relaxed">
+        我们重视未成年人个人信息的保护。本服务主要面向成年用户。
+        如果您是未满14周岁的未成年人，请在监护人的陪同和指导下使用本服务。
+        我们不会主动收集未成年人的个人信息。由于 Omnigram 为自托管架构，
+        建议监护人对服务器配置和书库内容进行适当管理。
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4" id="data-deletion">七、个人信息的删除与账号注销</h2>
+      <p class="text-slate-300 leading-relaxed">
+        由于所有数据存储在您的设备和自有服务器上，您拥有完全的数据控制权：
+      </p>
+      <ul class="text-slate-300 space-y-2 mt-3">
+        <li><strong>删除应用数据：</strong>卸载应用即可清除所有本地数据，或在系统设置中清除应用数据</li>
+        <li><strong>删除服务器数据：</strong>在服务器管理面板中删除账号，或移除整个服务器实例</li>
+        <li><strong>删除特定内容：</strong>在应用内删除单本书籍、批注或阅读记录</li>
+        <li><strong>账号注销：</strong>在应用「设置」中可发起账号注销，注销后服务器将删除该账号的所有数据</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">八、数据安全</h2>
+      <p class="text-slate-300 leading-relaxed">
+        数据安全取决于您的自托管服务器配置，我们建议：
+      </p>
+      <ul class="text-slate-300 space-y-2 mt-3">
+        <li>使用 HTTPS 加密传输</li>
+        <li>定期更新服务器软件</li>
+        <li>使用强密码保护账号</li>
+        <li>敏感凭证存储于系统安全密钥库（Keystore / Keychain）</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">九、隐私政策的变更</h2>
+      <p class="text-slate-300 leading-relaxed">
+        我们可能会适时修订本隐私政策。变更后的政策将在本页面发布，并更新顶部日期。
+        如涉及重大变更，我们将通过应用内通知等合理方式告知您。
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">十、联系我们</h2>
+      <p class="text-slate-300 leading-relaxed">
+        如您对本隐私政策有任何疑问、意见或建议，可通过以下方式联系我们：
+      </p>
+      <ul class="text-slate-300 space-y-2 mt-3">
+        <li>邮箱：<a href="mailto:omnigram@lxpio.com" class="text-blue-400 hover:text-blue-300">omnigram@lxpio.com</a></li>
+        <li>GitHub：<a href="https://github.com/lxpio/omnigram/issues" class="text-blue-400 hover:text-blue-300">github.com/lxpio/omnigram/issues</a></li>
+      </ul>
+
+      <div class="mt-12 pt-8 border-t border-slate-700">
+        <p class="text-slate-500 text-sm">备案号：闽ICP备2025091402号-1A</p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
