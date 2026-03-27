@@ -8,7 +8,10 @@ class AnnotationApi {
 
   /// List annotations for a book.
   Future<List<ServerAnnotation>> listAnnotations(String bookId) async {
-    return _api.getList('/reader/books/$bookId/annotations', fromJson: ServerAnnotation.fromJson);
+    final response = await _api.dio.get('/reader/books/$bookId/annotations');
+    final data = response.data;
+    final list = (data is Map ? (data['data'] as List?) ?? [] : data as List?) ?? [];
+    return list.map((e) => ServerAnnotation.fromJson(e as Map<String, dynamic>)).toList();
   }
 
   /// Create an annotation.

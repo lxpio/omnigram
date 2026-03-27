@@ -8,27 +8,36 @@ class BookApi {
 
   // ── Book CRUD ───────────────────────────────────────────────────
 
-  /// List books with optional search params.
+  /// List all books with automatic pagination.
   Future<List<ServerBook>> listBooks({
     String? query,
     String? author,
     String? category,
     String? tag,
-    int? page,
-    int? pageSize,
   }) async {
-    return _api.getList(
-      '/reader/books',
-      queryParameters: {
-        if (query != null) 'q': query,
-        if (author != null) 'author': author,
-        if (category != null) 'category': category,
-        if (tag != null) 'tag': tag,
-        if (page != null) 'page': page,
-        if (pageSize != null) 'page_size': pageSize,
-      },
-      fromJson: ServerBook.fromJson,
-    );
+    const batchSize = 100;
+    final allBooks = <ServerBook>[];
+    var page = 1;
+
+    while (true) {
+      final result = await _api.get<Map<String, dynamic>>(
+        '/reader/books',
+        queryParameters: {
+          'page': page,
+          'page_size': batchSize,
+          if (query != null) 'q': query,
+          if (author != null) 'author': author,
+          if (category != null) 'category': category,
+          if (tag != null) 'tag': tag,
+        },
+        fromJson: (data) => data as Map<String, dynamic>,
+      );
+      final books = result['books'] as List? ?? [];
+      allBooks.addAll(books.map((e) => ServerBook.fromJson(e as Map<String, dynamic>)));
+      if (books.length < batchSize) break;
+      page++;
+    }
+    return allBooks;
   }
 
   /// Get a single book by ID.
@@ -52,8 +61,8 @@ class BookApi {
   }
 
   /// Download a book file to local path.
-  Future<void> downloadBook(String bookId, String savePath) async {
-    await _api.downloadFile('/reader/download/books/$bookId', savePath: savePath);
+  Future<void> downloadBook(String bookId, String savePath, {void Function(int, int)? onReceiveProgress}) async {
+    await _api.downloadFile('/reader/download/books/$bookId', savePath: savePath, onReceiveProgress: onReceiveProgress);
   }
 
   /// Upload/replace a book's cover.

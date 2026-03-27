@@ -1,0 +1,123 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const lastUpdated = '2026-03-27';
+---
+<BaseLayout title="Privacy Policy" description="Omnigram Privacy Policy">
+  <div class="py-20 px-6">
+    <div class="max-w-3xl mx-auto prose prose-invert prose-slate">
+      <h1 class="text-3xl font-bold text-slate-100 mb-2">Privacy Policy</h1>
+      <p class="text-slate-500 text-sm mb-10">Last updated: {lastUpdated}</p>
+
+      <p class="text-slate-300 leading-relaxed">
+        Omnigram ("we", "us", or "our") is an open-source, self-hosted book library and reading application.
+        This Privacy Policy explains how we handle information when you use the Omnigram mobile application
+        and related services (collectively, the "Service").
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">1. Self-Hosted Architecture</h2>
+      <p class="text-slate-300 leading-relaxed">
+        Omnigram is designed to be <strong>self-hosted</strong>. Your book library, reading progress, annotations,
+        and all personal data are stored on your own server (NAS, homeserver, or cloud instance) that you control.
+        We do not operate a central server that collects or stores your data.
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">2. Information We Collect</h2>
+      <h3 class="text-lg font-medium text-slate-200 mt-6 mb-3">2.1 Information Stored Locally</h3>
+      <p class="text-slate-300 leading-relaxed">The app stores the following data on your device and your self-hosted server:</p>
+      <ul class="text-slate-300 space-y-2 mt-3">
+        <li>Book files you import (EPUB, PDF, etc.)</li>
+        <li>Reading progress and bookmarks</li>
+        <li>Annotations and highlights</li>
+        <li>Reading statistics</li>
+        <li>App preferences and settings</li>
+        <li>Server connection credentials (stored securely in platform keystore)</li>
+      </ul>
+
+      <h3 class="text-lg font-medium text-slate-200 mt-6 mb-3">2.2 AI Features (Optional)</h3>
+      <p class="text-slate-300 leading-relaxed">
+        If you enable AI features, the app may send book excerpts and reading context to your configured
+        AI provider (e.g., OpenAI, Claude, Ollama). This is entirely under your control:
+      </p>
+      <ul class="text-slate-300 space-y-2 mt-3">
+        <li>You choose which AI provider to use (including fully local options like Ollama)</li>
+        <li>AI processing is initiated by your self-hosted server, not the app directly</li>
+        <li>No AI data is sent to Omnigram developers</li>
+      </ul>
+
+      <h3 class="text-lg font-medium text-slate-200 mt-6 mb-3">2.3 Information We Do NOT Collect</h3>
+      <p class="text-slate-300 leading-relaxed">We do not collect, store, or transmit:</p>
+      <ul class="text-slate-300 space-y-2 mt-3">
+        <li>Personal identification information</li>
+        <li>Usage analytics or telemetry</li>
+        <li>Advertising identifiers</li>
+        <li>Location data</li>
+        <li>Contact information</li>
+        <li>Your reading content or habits</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">3. Network Permissions</h2>
+      <p class="text-slate-300 leading-relaxed">
+        The app requires network access solely to communicate with your self-hosted Omnigram server.
+        The app does not contact any third-party servers unless you explicitly configure an external AI provider.
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">4. Storage Permissions</h2>
+      <p class="text-slate-300 leading-relaxed">
+        The app requests storage/photo library access to allow you to import book files from your device.
+        Files are only accessed when you explicitly choose to import them.
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">5. Third-Party Services</h2>
+      <p class="text-slate-300 leading-relaxed">
+        Omnigram does not include any third-party analytics, advertising, or tracking SDKs.
+        The only external connections are those you configure yourself (your server, your AI provider).
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">6. Children's Privacy</h2>
+      <p class="text-slate-300 leading-relaxed">
+        The Service is not directed to children under the age of 13. We do not knowingly collect
+        personal information from children. Since Omnigram is self-hosted, parental oversight
+        of the server configuration is recommended.
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4" id="data-deletion">7. Data Deletion</h2>
+      <p class="text-slate-300 leading-relaxed">
+        Since all data is stored on your own device and server, you have full control over your data:
+      </p>
+      <ul class="text-slate-300 space-y-2 mt-3">
+        <li><strong>App data:</strong> Uninstall the app to remove all locally stored data, or clear app data from your device settings</li>
+        <li><strong>Server data:</strong> Delete your account from the server admin panel, or remove the entire server instance</li>
+        <li><strong>Specific content:</strong> Delete individual books, annotations, or reading history from within the app</li>
+      </ul>
+      <p class="text-slate-300 leading-relaxed mt-3">
+        To request assistance with data deletion, contact us at the address below.
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">8. Security</h2>
+      <p class="text-slate-300 leading-relaxed">
+        The security of your data depends on your self-hosted server configuration. We recommend:
+      </p>
+      <ul class="text-slate-300 space-y-2 mt-3">
+        <li>Using HTTPS for server connections</li>
+        <li>Keeping your server software up to date</li>
+        <li>Using strong passwords for your Omnigram account</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">9. Changes to This Policy</h2>
+      <p class="text-slate-300 leading-relaxed">
+        We may update this Privacy Policy from time to time. Changes will be posted on this page
+        with an updated revision date. We encourage you to review this page periodically.
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">10. Contact Us</h2>
+      <p class="text-slate-300 leading-relaxed">
+        If you have questions about this Privacy Policy, please reach out:
+      </p>
+      <ul class="text-slate-300 space-y-2 mt-3">
+        <li>GitHub: <a href="https://github.com/lxpio/omnigram/issues" class="text-blue-400 hover:text-blue-300">github.com/lxpio/omnigram/issues</a></li>
+        <li>Email: <a href="mailto:omnigram@lxpio.com" class="text-blue-400 hover:text-blue-300">omnigram@lxpio.com</a></li>
+      </ul>
+    </div>
+  </div>
+</BaseLayout>

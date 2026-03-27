@@ -1,0 +1,95 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const lastUpdated = '2026-03-27';
+---
+<BaseLayout title="Terms of Service" description="Omnigram Terms of Service">
+  <div class="py-20 px-6">
+    <div class="max-w-3xl mx-auto prose prose-invert prose-slate">
+      <h1 class="text-3xl font-bold text-slate-100 mb-2">Terms of Service</h1>
+      <p class="text-slate-500 text-sm mb-10">Last updated: {lastUpdated}</p>
+
+      <p class="text-slate-300 leading-relaxed">
+        These Terms of Service ("Terms") govern your use of the Omnigram application and related services
+        ("Service") provided by the Omnigram project ("we", "us", or "our"). By using the Service,
+        you agree to these Terms.
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">1. Description of Service</h2>
+      <p class="text-slate-300 leading-relaxed">
+        Omnigram is an open-source, self-hosted book library and reading application.
+        The Service includes the Omnigram mobile/desktop application and the Omnigram server software.
+        You are responsible for hosting and maintaining your own server instance.
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">2. Open Source License</h2>
+      <p class="text-slate-300 leading-relaxed">
+        Omnigram is released under the <a href="https://opensource.org/licenses/MIT" class="text-blue-400 hover:text-blue-300">MIT License</a>.
+        You are free to use, modify, and distribute the software in accordance with the license terms.
+        The full license text is available in the
+        <a href="https://github.com/lxpio/omnigram" class="text-blue-400 hover:text-blue-300">source code repository</a>.
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">3. User Responsibilities</h2>
+      <p class="text-slate-300 leading-relaxed">By using the Service, you agree to:</p>
+      <ul class="text-slate-300 space-y-2 mt-3">
+        <li>Comply with all applicable laws and regulations</li>
+        <li>Ensure you have the right to store and read the content you import</li>
+        <li>Maintain the security of your self-hosted server</li>
+        <li>Not use the Service for any unlawful purpose</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">4. Content</h2>
+      <p class="text-slate-300 leading-relaxed">
+        You retain all rights to the content you import into Omnigram. We do not claim ownership
+        of your books, annotations, or any other content. Since data is stored on your own server,
+        you are solely responsible for your content and its legality.
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">5. AI Features</h2>
+      <p class="text-slate-300 leading-relaxed">
+        Omnigram's AI features are optional and require you to configure your own AI provider.
+        Your use of third-party AI services (OpenAI, Anthropic, Google, etc.) is governed by
+        their respective terms of service. We are not responsible for how third-party AI providers
+        handle the data you send to them.
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">6. Disclaimer of Warranties</h2>
+      <p class="text-slate-300 leading-relaxed">
+        THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND,
+        EITHER EXPRESS OR IMPLIED. WE DO NOT WARRANT THAT THE SERVICE WILL BE UNINTERRUPTED,
+        SECURE, OR ERROR-FREE. USE OF THE SERVICE IS AT YOUR OWN RISK.
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">7. Limitation of Liability</h2>
+      <p class="text-slate-300 leading-relaxed">
+        TO THE MAXIMUM EXTENT PERMITTED BY LAW, WE SHALL NOT BE LIABLE FOR ANY INDIRECT,
+        INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO
+        LOSS OF DATA, LOSS OF PROFITS, OR BUSINESS INTERRUPTION, ARISING FROM YOUR USE OF THE SERVICE.
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">8. Third-Party Services</h2>
+      <p class="text-slate-300 leading-relaxed">
+        The Service may integrate with third-party services (AI providers, WebDAV, OPDS).
+        We are not responsible for the availability, accuracy, or content of these external services.
+        Your use of third-party services is at your own risk and subject to their respective terms.
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">9. Changes to Terms</h2>
+      <p class="text-slate-300 leading-relaxed">
+        We reserve the right to modify these Terms at any time. Changes will be posted on this page
+        with an updated revision date. Continued use of the Service after changes constitutes
+        acceptance of the modified Terms.
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">10. Contact</h2>
+      <p class="text-slate-300 leading-relaxed">
+        For questions about these Terms, please contact us:
+      </p>
+      <ul class="text-slate-300 space-y-2 mt-3">
+        <li>GitHub: <a href="https://github.com/lxpio/omnigram/issues" class="text-blue-400 hover:text-blue-300">github.com/lxpio/omnigram/issues</a></li>
+        <li>Email: <a href="mailto:omnigram@lxpio.com" class="text-blue-400 hover:text-blue-300">omnigram@lxpio.com</a></li>
+      </ul>
+    </div>
+  </div>
+</BaseLayout>

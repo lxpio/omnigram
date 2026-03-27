@@ -150,8 +150,12 @@ class OmnigramApi {
     return _dio.post(path, data: formData);
   }
 
-  Future<Response> downloadFile(String path, {required String savePath}) async {
-    return _dio.download(path, savePath);
+  Future<Response> downloadFile(
+    String path, {
+    required String savePath,
+    void Function(int, int)? onReceiveProgress,
+  }) async {
+    return _dio.download(path, savePath, onReceiveProgress: onReceiveProgress);
   }
 
   /// Raw Dio access for streaming or special cases.

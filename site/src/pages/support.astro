@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Support" description="Get help with Omnigram">
+  <div class="py-20 px-6">
+    <div class="max-w-3xl mx-auto prose prose-invert prose-slate">
+      <h1 class="text-3xl font-bold text-slate-100 mb-10">Support</h1>
+
+      <p class="text-slate-300 leading-relaxed">
+        Omnigram is an open-source project. We offer community-based support through the following channels.
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">Report a Bug</h2>
+      <p class="text-slate-300 leading-relaxed">
+        If you've found a bug or something isn't working as expected, please open an issue on GitHub:
+      </p>
+      <a href="https://github.com/lxpio/omnigram/issues/new" target="_blank"
+         class="inline-block mt-3 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition no-underline">
+        Open an Issue on GitHub
+      </a>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">Community Discussions</h2>
+      <p class="text-slate-300 leading-relaxed">
+        For questions, feature requests, or general discussion, visit our GitHub Discussions:
+      </p>
+      <a href="https://github.com/lxpio/omnigram/discussions" target="_blank"
+         class="inline-block mt-3 px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-medium transition no-underline">
+        Join the Discussion
+      </a>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">Documentation</h2>
+      <p class="text-slate-300 leading-relaxed">
+        For setup guides, configuration help, and usage instructions:
+      </p>
+      <a href="/getting-started/quick-start"
+         class="inline-block mt-3 px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-medium transition no-underline">
+        Read the Docs
+      </a>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">Email Contact</h2>
+      <p class="text-slate-300 leading-relaxed">
+        For security issues or private inquiries:
+      </p>
+      <p class="text-slate-300">
+        <a href="mailto:omnigram@lxpio.com" class="text-blue-400 hover:text-blue-300">omnigram@lxpio.com</a>
+      </p>
+
+      <h2 class="text-xl font-semibold text-slate-100 mt-10 mb-4">FAQ</h2>
+
+      <div class="space-y-6 mt-6">
+        <div>
+          <h3 class="text-lg font-medium text-slate-200">How do I set up my own server?</h3>
+          <p class="text-slate-400 mt-2">
+            Follow our <a href="/getting-started/installation" class="text-blue-400 hover:text-blue-300">Installation Guide</a>
+            to deploy Omnigram on Docker with a single command.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-medium text-slate-200">How do I configure AI features?</h3>
+          <p class="text-slate-400 mt-2">
+            Go to Settings in the app, enter your AI provider's API key (OpenAI, Claude, Ollama, etc.).
+            AI features are optional — the app works fully without them.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-medium text-slate-200">How do I delete my data?</h3>
+          <p class="text-slate-400 mt-2">
+            Since Omnigram is self-hosted, you have full control. Uninstall the app to remove local data.
+            Delete your account or remove the server instance for server-side data.
+            See our <a href="/privacy#data-deletion" class="text-blue-400 hover:text-blue-300">Data Deletion</a> section for details.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-medium text-slate-200">Which ebook formats are supported?</h3>
+          <p class="text-slate-400 mt-2">
+            EPUB is the primary supported format. PDF support is also available.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,15 +1,19 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../utils/get_path/get_base_path.dart';
+
 import '../../dao/ai_cache.dart';
 import '../../dao/book.dart';
 import '../../dao/book_note.dart';
 import '../../dao/companion_chat.dart';
 import '../../dao/concept_tag.dart';
+import '../../dao/id_mapping.dart';
 import '../../dao/margin_note.dart';
 import '../../models/book.dart';
 import '../../models/book_note.dart';
@@ -451,31 +455,33 @@ class SyncManager extends _$SyncManager {
     final bookApi = conn.books;
     if (syncApi == null || bookApi == null) return;
 
-    try {
+   try {
       List<ServerBook> serverBooks;
+      final bookDao = BookDao();
 
-      if (_lastSyncTimeMs > 0) {
+      // Check if local DB is empty — if so, always do full sync
+      final localBooks = await bookDao.selectBooks(includeDeleted: false);
+      final isLocalEmpty = localBooks.isEmpty;
+      debugPrint('[SyncManager] _pullBooks: lastSyncTimeMs=$_lastSyncTimeMs, localBooks=${localBooks.length}, isLocalEmpty=$isLocalEmpty');
+
+      if (_lastSyncTimeMs > 0 && !isLocalEmpty) {
         // Incremental: use delta API with pagination
         final delta = await syncApi.deltaSync({'utime': _lastSyncTimeMs, 'limit': _pageSize});
-
-        // Use server_time for LWW (M-1)
-        final serverTimeMs = delta['server_time'] as int?;
-        if (serverTimeMs != null) {
-          await _persistLastSyncTime(DateTime.fromMillisecondsSinceEpoch(serverTimeMs));
-        }
 
         // Handle deleted books (tombstone)
         final deleted = (delta['deleted'] as List?)?.cast<String>() ?? [];
         if (deleted.isNotEmpty) {
-          final bookDao = BookDao();
-          for (final id in deleted) {
-            final bookId = int.tryParse(id) ?? 0;
-            if (bookId > 0) {
-              try {
-                final book = await bookDao.selectBookById(bookId);
-                book.isDeleted = true;
-                await bookDao.updateBook(book);
-              } catch (_) {}
+          for (final serverId in deleted) {
+            final localIdStr = await IdMappingDao.getLocalId(serverId, 'book');
+            if (localIdStr != null) {
+              final localId = int.tryParse(localIdStr) ?? 0;
+              if (localId > 0) {
+                try {
+                  final book = await bookDao.selectBookById(localId);
+                  book.isDeleted = true;
+                  await bookDao.updateBook(book);
+                } catch (_) {}
+              }
             }
           }
         }
@@ -488,12 +494,14 @@ class SyncManager extends _$SyncManager {
           serverBooks = upserted.map((b) => ServerBook.fromJson(b as Map<String, dynamic>)).toList();
         }
       } else {
-        // First sync: full pull
+        // First sync or local empty: full pull
+        debugPrint('[SyncManager] Full pull: fetching all books from server...');
         serverBooks = await bookApi.listBooks();
+        debugPrint('[SyncManager] Full pull: got ${serverBooks.length} books');
       }
 
-      final bookDao = BookDao();
       final total = serverBooks.length;
+      debugPrint('[SyncManager] Processing $total server books...');
 
       for (var i = 0; i < total; i++) {
         final serverBook = serverBooks[i];
@@ -502,28 +510,55 @@ class SyncManager extends _$SyncManager {
           state = state.copyWith(progress: pullProgress, message: '下载书籍 ${i + 1}/$total...');
         }
 
-        final bookId = int.tryParse(serverBook.id) ?? 0;
         try {
-          final localBook = await bookDao.selectBookById(bookId);
-          final serverTime = DateTime.fromMillisecondsSinceEpoch(serverBook.uTime);
-          if (serverTime.isAfter(localBook.updateTime)) {
-            // Log conflict if local was also modified
-            if (localBook.isDirty) {
-              conflicts.add(SyncConflict(
-                bookId: bookId,
-                field: 'metadata',
-                localValue: '${localBook.title} (${localBook.updateTime})',
-                serverValue: '${serverBook.title} ($serverTime)',
-              ));
+          // Look up local ID via mapping table
+          final localIdStr = await IdMappingDao.getLocalId(serverBook.id, 'book');
+          if (localIdStr != null) {
+            final localId = int.tryParse(localIdStr) ?? 0;
+            if (localId > 0) {
+              final localBook = await bookDao.selectBookById(localId);
+              // Download cover if missing locally
+              if (localBook.coverPath.isEmpty && serverBook.coverUrl.isNotEmpty) {
+                final localCoverPath = await _downloadCover(serverBook.coverUrl);
+                if (localCoverPath.isNotEmpty) {
+                  localBook.coverPath = localCoverPath;
+                  await bookDao.updateBook(localBook);
+                }
+              }
+              final serverTime = DateTime.fromMillisecondsSinceEpoch(serverBook.uTime);
+              if (serverTime.isAfter(localBook.updateTime)) {
+                if (localBook.isDirty) {
+                  conflicts.add(SyncConflict(
+                    bookId: localId,
+                    field: 'metadata',
+                    localValue: '${localBook.title} (${localBook.updateTime})',
+                    serverValue: '${serverBook.title} ($serverTime)',
+                  ));
+                }
+                _updateLocalBookFromServer(localBook, serverBook);
+                await bookDao.updateBook(localBook);
+              }
+              continue;
             }
-            _updateLocalBookFromServer(localBook, serverBook);
-            await bookDao.updateBook(localBook);
           }
-        } catch (_) {
+          // New book: insert and create mapping
           final newBook = _serverBookToLocal(serverBook);
-          await bookDao.insertBook(newBook);
+          // Download cover from server
+          if (serverBook.coverUrl.isNotEmpty) {
+            final localCoverPath = await _downloadCover(serverBook.coverUrl);
+            if (localCoverPath.isNotEmpty) {
+              newBook.coverPath = localCoverPath;
+            }
+          }
+          final insertedId = await bookDao.insertBook(newBook);
+          await IdMappingDao.upsert(insertedId.toString(), serverBook.id, 'book');
+        } catch (e) {
+          debugPrint('[SyncManager] Insert book ${serverBook.id} error: $e');
         }
       }
+
+      // Backfill covers for existing books missing local cover files
+      await _backfillCovers(bookDao);
     } catch (e) {
       debugPrint('[SyncManager] Pull books error: $e');
       rethrow;
@@ -541,7 +576,9 @@ class SyncManager extends _$SyncManager {
 
       for (final book in localBooks) {
         try {
-          final serverAnnotations = await annotationApi.listAnnotations(book.id.toString());
+          final serverId = await IdMappingDao.getServerId(book.id.toString(), 'book');
+          if (serverId == null) continue;
+          final serverAnnotations = await annotationApi.listAnnotations(serverId);
           if (serverAnnotations.isEmpty) continue;
 
           // P-3: Batch load local annotations instead of O(N) per-annotation queries
@@ -652,6 +689,70 @@ class SyncManager extends _$SyncManager {
     await prefs.setStringList('sync_offline_queue', queue);
   }
 
+  // ── Cover Download ──────────────────────────────────────────────
+
+  /// Download book cover from server and save to local filesystem.
+  /// Returns the local relative path if successful, or empty string.
+  Future<String> _downloadCover(String coverUrl) async {
+    if (coverUrl.isEmpty) return '';
+    final conn = ref.read(serverConnectionProvider.notifier);
+    final api = conn.api;
+    if (api == null) return '';
+    try {
+      final coverDir = getCoverDir();
+      if (!coverDir.existsSync()) coverDir.createSync(recursive: true);
+      final localPath = 'cover/$coverUrl';
+      final localFile = File(getBasePath(localPath));
+      if (localFile.existsSync()) return localPath;
+
+      await api.downloadFile('/img/covers/$coverUrl', savePath: localFile.path);
+      if (localFile.existsSync()) return localPath;
+    } catch (e) {
+      debugPrint('[SyncManager] Download cover failed: $e');
+    }
+    return '';
+  }
+
+  /// Backfill covers for books that have no local cover file.
+  Future<void> _backfillCovers(BookDao bookDao) async {
+    final conn = ref.read(serverConnectionProvider.notifier);
+    final bookApi = conn.books;
+    if (bookApi == null) return;
+
+    final allBooks = await bookDao.selectBooks(includeDeleted: false);
+    final missingCover = allBooks.where((b) {
+      if (b.coverPath.isEmpty) return true;
+      final f = File(b.coverFullPath);
+      return !f.existsSync();
+    }).toList();
+
+    if (missingCover.isEmpty) return;
+    debugPrint('[SyncManager] Backfilling covers for ${missingCover.length} books...');
+
+    // Fetch server book list to get cover_url mapping
+    final serverBooks = await bookApi.listBooks();
+    final coverMap = <String, String>{}; // serverId -> coverUrl
+    for (final sb in serverBooks) {
+      if (sb.coverUrl.isNotEmpty) coverMap[sb.id] = sb.coverUrl;
+    }
+
+    var downloaded = 0;
+    for (final book in missingCover) {
+      final serverId = await IdMappingDao.getServerId(book.id.toString(), 'book');
+      if (serverId == null) continue;
+      final coverUrl = coverMap[serverId];
+      if (coverUrl == null || coverUrl.isEmpty) continue;
+
+      final localPath = await _downloadCover(coverUrl);
+      if (localPath.isNotEmpty) {
+        book.coverPath = localPath;
+        await bookDao.updateBook(book);
+        downloaded++;
+      }
+    }
+    debugPrint('[SyncManager] Backfilled $downloaded covers');
+  }
+
   // ── Model Converters ────────────────────────────────────────────
 
   Map<String, dynamic> _localBookToServerFields(Book book) {
@@ -660,7 +761,7 @@ class SyncManager extends _$SyncManager {
 
   Book _serverBookToLocal(ServerBook sb) {
     return Book(
-      id: int.tryParse(sb.id) ?? 0,
+      id: -1,
       title: sb.title,
       author: sb.author,
       coverPath: sb.coverUrl,

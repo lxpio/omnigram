@@ -24,12 +24,12 @@ abstract class ServerBook with _$ServerBook {
     @JsonKey(name: 'author_sort') @Default('') String authorSort,
     @Default('') String publisher,
     String? description,
-    @JsonKey(name: 'file_type') @Default('') String fileType,
+    @JsonKey(name: 'file_type') @Default(0) int fileType,
     String? series,
     @JsonKey(name: 'series_index') String? seriesIndex,
     @JsonKey(name: 'pubdate') @Default('') String publishDate,
-    @Default(0.0) double rating,
-    @Default([]) List<String> tags,
+    @JsonKey(fromJson: _toDouble) @Default(0.0) double rating,
+    List<String>? tags,
     @JsonKey(name: 'publisher_url') @Default('') String publisherUrl,
     @JsonKey(name: 'count_visit') @Default(0) int countVisit,
     @JsonKey(name: 'count_download') @Default(0) int countDownload,
@@ -37,6 +37,8 @@ abstract class ServerBook with _$ServerBook {
 
   factory ServerBook.fromJson(Map<String, dynamic> json) => _$ServerBookFromJson(json);
 }
+
+double _toDouble(dynamic v) => (v is num) ? v.toDouble() : 0.0;
 
 @freezed
 abstract class ServerBookResp with _$ServerBookResp {
