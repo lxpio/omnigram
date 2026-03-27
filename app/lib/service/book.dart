@@ -461,7 +461,7 @@ Future<void> pushToReadingPage(WidgetRef ref, BuildContext context, Book book, {
     return;
   }
 
-  if (!File(book.fileFullPath).existsSync()) {
+  if (book.filePath.isEmpty || !File(book.fileFullPath).existsSync()) {
     // Try on-demand download from server
     final downloaded = await _downloadBookOnDemand(ref, context, book);
     if (!downloaded) return;

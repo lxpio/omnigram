@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:omnigram/models/book.dart';
-import 'package:omnigram/page/reader/immersive_reader.dart';
 import 'package:omnigram/providers/desk_provider.dart';
 import 'package:omnigram/service/ai/ai_availability.dart';
 import 'package:omnigram/service/ai/ambient_tasks.dart';
+import 'package:omnigram/service/book.dart';
 import 'package:omnigram/widgets/desk/greeting_header.dart';
 import 'package:omnigram/widgets/desk/hero_book_card.dart';
 import 'package:omnigram/widgets/desk/also_reading_shelf.dart';
@@ -24,12 +24,7 @@ class _DeskPageState extends ConsumerState<DeskPage> {
   int? _lastHeroBookId;
 
   void _openReader(BuildContext context, Book book) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ImmersiveReader(book: book),
-      ),
-    );
+    pushToReadingPage(ref, context, book);
   }
 
   void _fetchMemoryBridge(Book book) async {
@@ -75,30 +70,22 @@ class _DeskPageState extends ConsumerState<DeskPage> {
           }
 
           return ListView(
-            padding: const EdgeInsets.all(
-                OmnigramTheme.pageHorizontalPadding),
+            padding: const EdgeInsets.all(OmnigramTheme.pageHorizontalPadding),
             children: [
               const SizedBox(height: 16),
               const GreetingHeader(),
               const SizedBox(height: 24),
               HeroBookCard(
                 book: heroBook,
-                onContinueReading: () =>
-                    _openReader(context, heroBook),
+                onContinueReading: () => _openReader(context, heroBook),
                 memoryText: _memoryText,
               ),
               const SizedBox(height: 24),
-              AlsoReadingShelf(
-                books: desk.alsoReading,
-                onBookTap: (book) => _openReader(context, book),
-              ),
+              AlsoReadingShelf(books: desk.alsoReading, onBookTap: (book) => _openReader(context, book)),
               if (desk.todayReadingMinutes > 0) ...[
                 const SizedBox(height: 24),
                 Center(
-                  child: Text(
-                    '—— 今日阅读 ${desk.todayReadingMinutes} 分钟 ——',
-                    style: OmnigramTypography.caption(context),
-                  ),
+                  child: Text('—— 今日阅读 ${desk.todayReadingMinutes} 分钟 ——', style: OmnigramTypography.caption(context)),
                 ),
               ],
             ],
