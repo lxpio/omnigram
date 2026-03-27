@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:omnigram/models/book.dart';
-import 'package:omnigram/page/reader/immersive_reader.dart';
 import 'package:omnigram/providers/book_list.dart';
 import 'package:omnigram/service/book.dart';
 import 'package:omnigram/widgets/library/ai_recommendation_card.dart';
@@ -26,10 +25,7 @@ class LibraryPage extends ConsumerWidget {
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (e, _) => Center(child: Text('Error: $e')),
           data: (bookGroups) {
-            final allBooks = bookGroups
-                .expand((g) => g)
-                .where((b) => !b.isDeleted)
-                .toList();
+            final allBooks = bookGroups.expand((g) => g).where((b) => !b.isDeleted).toList();
 
             if (allBooks.isEmpty) {
               return EmptyState(
@@ -40,17 +36,14 @@ class LibraryPage extends ConsumerWidget {
               );
             }
 
-            final recentBooks = List<Book>.from(allBooks)
-              ..sort((a, b) => b.createTime.compareTo(a.createTime));
+            final recentBooks = List<Book>.from(allBooks)..sort((a, b) => b.createTime.compareTo(a.createTime));
             final recent = recentBooks.take(10).toList();
 
             return ListView(
-              padding:
-                  const EdgeInsets.all(OmnigramTheme.pageHorizontalPadding),
+              padding: const EdgeInsets.all(OmnigramTheme.pageHorizontalPadding),
               children: [
                 const SizedBox(height: 16),
-                Text('我的书房',
-                    style: OmnigramTypography.displayLarge(context)),
+                Text('我的书房', style: OmnigramTypography.displayLarge(context)),
                 const SizedBox(height: 16),
                 SearchBar(
                   hintText: '搜索书名或作者',
@@ -60,20 +53,16 @@ class LibraryPage extends ConsumerWidget {
                   },
                 ),
                 const SizedBox(height: 24),
-                AiRecommendationCard(
-                  recentBookTitles:
-                      allBooks.map((b) => b.title).toList(),
-                ),
+                AiRecommendationCard(recentBookTitles: allBooks.map((b) => b.title).toList()),
                 const SizedBox(height: 16),
                 TopicSection(
                   title: '最近添加',
                   count: recent.length,
                   books: recent,
-                  onBookTap: (book) => _openBook(context, book),
+                  onBookTap: (book) => _openBook(context, ref, book),
                 ),
                 const SizedBox(height: 24),
-                Text('全部 (${allBooks.length})',
-                    style: OmnigramTypography.titleMedium(context)),
+                Text('全部 (${allBooks.length})', style: OmnigramTypography.titleMedium(context)),
                 const SizedBox(height: 8),
                 GridView.builder(
                   shrinkWrap: true,
@@ -85,10 +74,7 @@ class LibraryPage extends ConsumerWidget {
                     mainAxisSpacing: 12,
                   ),
                   itemCount: allBooks.length,
-                  itemBuilder: (_, i) => BookGridItem(
-                    book: allBooks[i],
-                    onTap: () => _openBook(context, allBooks[i]),
-                  ),
+                  itemBuilder: (_, i) => BookGridItem(book: allBooks[i], onTap: () => _openBook(context, ref, allBooks[i])),
                 ),
               ],
             );
@@ -102,13 +88,8 @@ class LibraryPage extends ConsumerWidget {
     );
   }
 
-  void _openBook(BuildContext context, Book book) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ImmersiveReader(book: book),
-      ),
-    );
+  void _openBook(BuildContext context, WidgetRef ref, Book book) {
+    pushToReadingPage(ref, context, book);
   }
 
   void _importBooks(BuildContext context, WidgetRef ref) async {
@@ -118,10 +99,7 @@ class LibraryPage extends ConsumerWidget {
       allowedExtensions: ['epub', 'mobi', 'azw3', 'fb2', 'txt', 'pdf'],
     );
     if (result != null && result.files.isNotEmpty && context.mounted) {
-      final files = result.files
-          .where((f) => f.path != null)
-          .map((f) => File(f.path!))
-          .toList();
+      final files = result.files.where((f) => f.path != null).map((f) => File(f.path!)).toList();
       importBookList(files, context, ref);
     }
   }
