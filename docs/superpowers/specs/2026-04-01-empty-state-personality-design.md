@@ -19,7 +19,7 @@ Transform static empty states across the app into personality-aware experiences.
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
 | Languages | All 16 (full L10n) | One-time effort, complete coverage |
-| Warmth tiers | 3: low (<34) / mid (34-66) / high (>66) | Enough variation without combinatorial explosion |
+| Warmth tiers | 3: low (≤33) / mid (34-66) / high (≥67) | Enough variation without combinatorial explosion |
 | Visual style |递减: Lottie → SVG → Icon | Expressiveness gradient matches personality |
 | Illustration source | AI-generated SVG + code animation | **Placeholder — replaceable with professional assets** |
 | Architecture | External strategy factory | EmptyState component stays generic |
@@ -36,28 +36,32 @@ CompanionPersonality (warmth: 0-100)
         ↓
   WarmthTier.fromWarmth(warmth)  →  low / mid / high
         ↓
-  EmptyStateConfig.forPage(pageType, tier, l10n)
+  emptyStateConfigProvider(pageType)  →  EmptyStateData (data class)
         ↓
-  Returns: { message: String, visual: Widget, actionLabel?: String }
+  Returns: { message: String, visualType: VisualType, actionLabel?: String }
         ↓
-  EmptyState(message:, visual:, actionLabel:, onAction:)
+  UI layer builds: EmptyState(message:, visual: buildVisual(visualType), ...)
 ```
 
 ### 3.2 New Components
 
 **`WarmthTier` enum** (`lib/models/warmth_tier.dart`)
 - Values: `low`, `mid`, `high`
-- Factory: `WarmthTier.fromWarmth(int warmth)` — <34 → low, 34-66 → mid, >66 → high
+- Factory: `WarmthTier.fromWarmth(int warmth)` — ≤33 → low, 34-66 → mid, ≥67 → high
 - Default (no companion configured): `mid`
 
+**`EmptyStateData` data class** (`lib/models/empty_state_data.dart`)
+- Fields: `String message`, `EmptyVisualType visualType`, `String? actionLabel`
+- `EmptyVisualType` enum: `lottie(assetPath)`, `svg(assetPath)`, `icon(iconData)`
+- Pure data — no Widget references. UI layer builds widgets from this.
+
 **`EmptyStateConfig`** (`lib/widgets/common/empty_state_config.dart`)
-- Factory class: `EmptyStateConfig.forPage(EmptyPageType, WarmthTier, L10n)`
-- Returns configured `EmptyState` widget
+- Factory class: `EmptyStateConfig.forPage(EmptyPageType, WarmthTier, L10n)` → returns `EmptyStateData`
 - `EmptyPageType` enum: `desk`, `library`, `insights`, `companion`
 
 **`emptyStateConfigProvider`** (`lib/providers/empty_state_provider.dart`)
-- Riverpod family provider: `emptyStateConfigProvider(EmptyPageType)`
-- Reads `companionProvider` → extracts warmth → derives tier → builds config
+- Riverpod family provider: `emptyStateConfigProvider(EmptyPageType)` → returns `EmptyStateData`
+- Reads `companionProvider` → extracts warmth → derives tier → delegates to `EmptyStateConfig`
 - Auto-refreshes when personality changes
 
 ### 3.3 EmptyState Widget Change
@@ -82,7 +86,30 @@ EmptyState({
 })
 ```
 
-Backward compatible: callers passing nothing get no visual. Existing `icon` parameter removed — callers migrate to `visual: Icon(...)`.
+**Breaking change:** `icon` parameter is removed, replaced by `visual`. This is NOT backward compatible.
+
+Migration required (4 call sites):
+
+| File | Current | New |
+|------|---------|-----|
+| `page/home/desk_page.dart:55` | `icon: Icons.auto_stories_outlined` | Replaced by `emptyStateConfigProvider` |
+| `page/home/library_page.dart:31` | `icon: Icons.library_books_outlined` | Replaced by `emptyStateConfigProvider` |
+| `page/home/insights_page.dart:76` | `icon: Icons.insights_outlined` | Replaced by `emptyStateConfigProvider` |
+| `widgets/reader/companion_panel.dart:271` | Independent `_buildEmptyState` | Unified to shared `EmptyState` component |
+
+### 3.4 Companion Panel Unification
+
+`companion_panel.dart` currently has an independent `_buildEmptyState` method (Column + Icon + Text) that does NOT use the shared `EmptyState` widget. This implementation will be unified to use the shared component, ensuring consistent personality adaptation.
+
+Note: Companion panel is a reader sub-component. L10n context is available via standard `L10n.of(context)` — no special handling needed.
+
+### 3.5 Companion Panel First-Person Voice
+
+The companion panel High tier copy intentionally uses first-person ("I'm here!") because it represents the companion speaking directly. Other pages use impersonal voice. This is a deliberate narrative choice, not an inconsistency.
+
+### 3.6 Lottie Animation Lifecycle
+
+`EmptyState` remains a `StatelessWidget`. Lottie animations use `Lottie.asset()` with its built-in self-managing controller (auto-dispose on widget removal). No `StatefulWidget` or `AnimationController` management needed.
 
 ---
 
@@ -120,8 +147,11 @@ Backward compatible: callers passing nothing get no visual. Existing `icon` para
 | Mid | 选中文字或输入问题，开始对话。 | Select text or type a question to start. |
 | Low | 输入问题开始。 | Type to begin. |
 
-> **L10n scope:** 12 keys x 16 languages = 192 translations.
-> Key naming: `emptyState_{page}_{tier}` (e.g., `emptyState_desk_high`)
+> **L10n scope:** 12 message keys x 16 languages = 192 translations.
+> Action labels reuse existing L10n keys where available (e.g., `navBarBookshelf`, existing import labels).
+> Key naming (camelCase, matching project convention): `emptyStateDeskHigh`, `emptyStateDeskMid`, `emptyStateDeskLow`, etc.
+>
+> **Hardcoded Chinese cleanup:** This work also migrates existing hardcoded Chinese empty state strings in `desk_page.dart`, `library_page.dart`, and `insights_page.dart` to L10n (addresses KI-2 partially).
 
 ---
 
@@ -138,7 +168,7 @@ Backward compatible: callers passing nothing get no visual. Existing `icon` para
 ### 5.2 Asset Path
 
 ```
-assets/empty_states/
+assets/img/empty_states/
 ├── desk_high.json       # Lottie
 ├── desk_mid.svg         # SVG
 ├── library_high.json
@@ -147,6 +177,11 @@ assets/empty_states/
 ├── insights_mid.svg
 ├── companion_high.json
 ├── companion_mid.svg
+```
+
+Register in `pubspec.yaml` under `flutter.assets`:
+```yaml
+- assets/img/empty_states/
 ```
 
 ### 5.3 Illustration Themes
@@ -170,7 +205,7 @@ assets/empty_states/
 |----------|----------|
 | No companion configured | Default to Mid tier |
 | AI service unavailable | No effect — empty states are local-only, no AI dependency |
-| Warmth exactly 34 or 66 | 34 → mid, 66 → mid (boundaries inclusive to mid) |
+| Warmth boundary values | ≤33 → low, 34-66 → mid, ≥67 → high |
 | Companion panel without AI | Still shows personality-adapted empty state; quick prompts hidden if no AI |
 | Asset loading failure (Lottie/SVG) | Fallback to Material Icon (Low tier visual) |
 
@@ -178,15 +213,29 @@ assets/empty_states/
 
 ## 7. Dependencies
 
-- `lottie` package (already in pubspec for potential use — verify, add if missing)
-- `flutter_svg` package (already in pubspec — verify)
-- Existing `companionProvider` for warmth value
-- Existing `EmptyState` widget
+**New packages (not currently in pubspec.yaml):**
+- `lottie` — Lottie animation rendering (~200KB). Required for High tier visuals.
+- `flutter_svg` — SVG rendering (~150KB). Required for Mid tier visuals.
+
+**Existing:**
+- `companionProvider` for warmth value
+- `EmptyState` widget (to be modified)
 - L10n ARB infrastructure (16 languages)
 
 ---
 
-## 8. Out of Scope
+## 8. Testing Strategy
+
+| Test | Scope | Priority |
+|------|-------|----------|
+| `WarmthTier.fromWarmth()` boundary values | Unit: 0, 33, 34, 66, 67, 100 | P0 |
+| `EmptyStateConfig.forPage()` combinations | Unit: 3 tiers × 4 pages = 12 cases | P0 |
+| Provider integration | Widget test: warmth change → empty state content refresh | P1 |
+| Asset fallback | Unit: Lottie/SVG load failure → Icon fallback | P1 |
+
+---
+
+## 9. Out of Scope
 
 - Stealth library empty state (depends on stealth library feature, Layer 5)
 - Action button text personalization (only message and visual adapt; action labels stay functional)
