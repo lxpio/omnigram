@@ -1264,7 +1264,7 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
         body: Stack(
           children: [
             buildWebviewWithIOSWorkaround(context, url, initialCfi),
-            readingInfoWidget(),
+            // readingInfoWidget(), // Replaced by ReaderBottomBar progress indicator
             if (showHistory) _buildHistoryCapsule(),
             if (Prefs().openBookAnimation)
               SizedBox.expand(
