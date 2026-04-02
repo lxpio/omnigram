@@ -5,6 +5,8 @@ import 'package:omnigram/dao/book_note.dart';
 import 'package:omnigram/dao/reading_time.dart';
 import 'package:omnigram/models/book.dart';
 import 'package:omnigram/models/book_note.dart';
+import 'package:omnigram/models/empty_state_data.dart';
+import 'package:omnigram/providers/empty_state_provider.dart';
 import 'package:omnigram/widgets/insights/ai_narrative_card.dart';
 import 'package:omnigram/widgets/insights/knowledge_graph_card.dart';
 import 'package:omnigram/widgets/insights/reading_summary_card.dart';
@@ -73,10 +75,9 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
             future: _loadNotesByBook(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return const EmptyState(
-                  message: '开始阅读并添加笔记，洞察会随着你的阅读逐渐丰富。',
-                  icon: Icons.insights_outlined,
-                );
+                final tier = ref.watch(warmthTierProvider);
+                final data = emptyStateData(context, tier, EmptyPageType.insights);
+                return EmptyState.fromData(data);
               }
               return NotesByBookList(notesByBook: snapshot.data!);
             },
