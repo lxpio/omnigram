@@ -898,5 +898,12 @@
   "emptyStateInsightsLow": "Fără date de lectură deocamdată.",
   "emptyStateCompanionHigh": "Sunt aici! Selectează text sau întreabă orice — să vorbim despre orice din această carte.",
   "emptyStateCompanionMid": "Selectează text sau scrie o întrebare pentru a începe.",
-  "emptyStateCompanionLow": "Scrie pentru a începe."
+  "emptyStateCompanionLow": "Scrie pentru a începe.",
+  "companionBehaviorSection": "Preferințe de comportament",
+  "companionBehaviorAnnotateHardWords": "Adnotează cuvintele dificile",
+  "companionBehaviorCrossBookAlerts": "Alerte de conexiuni între cărți",
+  "companionBehaviorAutoKnowledgeGraph": "Organizare automată în graful de cunoștințe",
+  "companionBehaviorAutoChapterRecap": "Rezumat automat al capitolelor",
+  "companionBehaviorPostChapterQuestions": "Întrebări după fiecare capitol",
+  "companionBehaviorComingSoon": "În curând"
 }

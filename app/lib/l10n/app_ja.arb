@@ -898,5 +898,12 @@
   "emptyStateInsightsLow": "まだ読書データがありません。",
   "emptyStateCompanionHigh": "ここにいますよ！テキストを選択するか質問してください — この本について何でも話しましょう。",
   "emptyStateCompanionMid": "テキストを選択するか質問を入力して始めてください。",
-  "emptyStateCompanionLow": "入力して始める。"
+  "emptyStateCompanionLow": "入力して始める。",
+  "companionBehaviorSection": "行動の設定",
+  "companionBehaviorAnnotateHardWords": "難しい単語に注釈を付ける",
+  "companionBehaviorCrossBookAlerts": "本をまたいだ関連アラート",
+  "companionBehaviorAutoKnowledgeGraph": "知識グラフへ自動整理",
+  "companionBehaviorAutoChapterRecap": "章の自動まとめ",
+  "companionBehaviorPostChapterQuestions": "章読了後の質問",
+  "companionBehaviorComingSoon": "近日公開"
 }

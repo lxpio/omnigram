@@ -898,5 +898,12 @@
   "emptyStateInsightsLow": "아직 독서 데이터가 없습니다.",
   "emptyStateCompanionHigh": "여기 있어요! 텍스트를 선택하거나 그냥 물어보세요 — 이 책에 대해 무엇이든 이야기해요.",
   "emptyStateCompanionMid": "텍스트를 선택하거나 질문을 입력하여 시작하세요.",
-  "emptyStateCompanionLow": "입력하여 시작."
+  "emptyStateCompanionLow": "입력하여 시작.",
+  "companionBehaviorSection": "동작 설정",
+  "companionBehaviorAnnotateHardWords": "어려운 단어 주석 달기",
+  "companionBehaviorCrossBookAlerts": "책 간 연결 알림",
+  "companionBehaviorAutoKnowledgeGraph": "지식 그래프에 자동 정리",
+  "companionBehaviorAutoChapterRecap": "챕터 자동 요약",
+  "companionBehaviorPostChapterQuestions": "챕터 완독 후 질문",
+  "companionBehaviorComingSoon": "곧 출시"
 }

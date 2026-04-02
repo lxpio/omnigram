@@ -904,5 +904,12 @@
   "emptyStateInsightsLow": "暂无阅读数据。",
   "emptyStateCompanionHigh": "我在这里！选段文字或者直接问我，聊聊这本书的任何想法。",
   "emptyStateCompanionMid": "选中文字或输入问题，开始对话。",
-  "emptyStateCompanionLow": "输入问题开始。"
+  "emptyStateCompanionLow": "输入问题开始。",
+  "companionBehaviorSection": "行为偏好",
+  "companionBehaviorAnnotateHardWords": "标注难词",
+  "companionBehaviorCrossBookAlerts": "跨书连接提醒",
+  "companionBehaviorAutoKnowledgeGraph": "自动整理到知识图谱",
+  "companionBehaviorAutoChapterRecap": "自动生成章节回顾",
+  "companionBehaviorPostChapterQuestions": "章节读完后提问",
+  "companionBehaviorComingSoon": "即将推出"
 }

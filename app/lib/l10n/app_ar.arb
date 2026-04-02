@@ -898,5 +898,12 @@
   "emptyStateInsightsLow": "لا توجد بيانات قراءة بعد.",
   "emptyStateCompanionHigh": "أنا هنا! حدد نصاً أو اسأل فقط — دعنا نتحدث عن أي شيء في هذا الكتاب.",
   "emptyStateCompanionMid": "حدد نصاً أو اكتب سؤالاً للبدء.",
-  "emptyStateCompanionLow": "اكتب للبدء."
+  "emptyStateCompanionLow": "اكتب للبدء.",
+  "companionBehaviorSection": "تفضيلات السلوك",
+  "companionBehaviorAnnotateHardWords": "توضيح الكلمات الصعبة",
+  "companionBehaviorCrossBookAlerts": "تنبيهات الروابط بين الكتب",
+  "companionBehaviorAutoKnowledgeGraph": "التنظيم التلقائي في رسم المعرفة",
+  "companionBehaviorAutoChapterRecap": "ملخص تلقائي للفصل",
+  "companionBehaviorPostChapterQuestions": "أسئلة بعد كل فصل",
+  "companionBehaviorComingSoon": "قريباً"
 }

@@ -898,5 +898,12 @@
   "emptyStateInsightsLow": "暫無閱讀資料。",
   "emptyStateCompanionHigh": "我在這裡！選段文字或直接問我，聊聊這本書的任何想法。",
   "emptyStateCompanionMid": "選取文字或輸入問題，開始對話。",
-  "emptyStateCompanionLow": "輸入問題開始。"
+  "emptyStateCompanionLow": "輸入問題開始。",
+  "companionBehaviorSection": "行為偏好",
+  "companionBehaviorAnnotateHardWords": "標註難詞",
+  "companionBehaviorCrossBookAlerts": "跨書連接提醒",
+  "companionBehaviorAutoKnowledgeGraph": "自動整理至知識圖譜",
+  "companionBehaviorAutoChapterRecap": "自動產生章節回顧",
+  "companionBehaviorPostChapterQuestions": "章節讀完後提問",
+  "companionBehaviorComingSoon": "即將推出"
 }

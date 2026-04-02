@@ -898,5 +898,12 @@
   "emptyStateInsightsLow": "Sem dados de leitura ainda.",
   "emptyStateCompanionHigh": "Estou aqui! Selecione algum texto ou apenas pergunte — vamos falar sobre qualquer coisa neste livro.",
   "emptyStateCompanionMid": "Selecione texto ou digite uma pergunta para começar.",
-  "emptyStateCompanionLow": "Digite para começar."
+  "emptyStateCompanionLow": "Digite para começar.",
+  "companionBehaviorSection": "Preferências de comportamento",
+  "companionBehaviorAnnotateHardWords": "Anotar palavras difíceis",
+  "companionBehaviorCrossBookAlerts": "Alertas de conexões entre livros",
+  "companionBehaviorAutoKnowledgeGraph": "Organizar automaticamente no grafo de conhecimento",
+  "companionBehaviorAutoChapterRecap": "Resumo automático de capítulos",
+  "companionBehaviorPostChapterQuestions": "Perguntas após cada capítulo",
+  "companionBehaviorComingSoon": "Em breve"
 }
