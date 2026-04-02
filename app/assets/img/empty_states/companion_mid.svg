@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Main speech bubble -->
+  <path d="M30 40 Q30 25 45 25 L155 25 Q170 25 170 40 L170 110 Q170 125 155 125 L115 125 L100 148 L85 125 L45 125 Q30 125 30 110 Z"
+    fill="#F5F0FF" fill-opacity="0.7" stroke="#C4B8E0" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Inner bubble highlight -->
+  <path d="M38 44 Q38 32 50 32 L90 32" stroke="#E0D8F8" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <!-- Floating dot 1 (left) -->
+  <circle cx="65" cy="82" r="10" fill="#E8B4B8" fill-opacity="0.5" stroke="#E8B4B8" stroke-width="2"/>
+  <!-- Floating dot 2 (middle) -->
+  <circle cx="100" cy="75" r="13" fill="#C4B8E0" fill-opacity="0.5" stroke="#C4B8E0" stroke-width="2"/>
+  <!-- Floating dot 3 (right) -->
+  <circle cx="137" cy="82" r="10" fill="#B8D4C8" fill-opacity="0.5" stroke="#B8D4C8" stroke-width="2"/>
+  <!-- Inner fill dots (smaller, same color slightly darker) -->
+  <circle cx="65" cy="82" r="5" fill="#E8B4B8" fill-opacity="0.7"/>
+  <circle cx="100" cy="75" r="6" fill="#C4B8E0" fill-opacity="0.7"/>
+  <circle cx="137" cy="82" r="5" fill="#B8D4C8" fill-opacity="0.7"/>
+  <!-- Gentle wave line at top of bubble (decorative) -->
+  <path d="M50 55 Q65 48 80 55 Q95 62 110 55 Q125 48 140 55 Q145 57 148 60" stroke="#C4B8E0" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.4"/>
+  <!-- Small secondary bubble (reply feel) -->
+  <path d="M148 155 Q148 143 158 143 L178 143 Q188 143 188 153 L188 165 Q188 175 178 175 L172 175 L166 182 L163 175 L158 175 Q148 175 148 165 Z"
+    fill="#FFF0F5" fill-opacity="0.7" stroke="#E8B4B8" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Tiny dot in small bubble -->
+  <circle cx="168" cy="159" r="4" fill="#E8B4B8" fill-opacity="0.6"/>
+  <!-- Sparkle accents -->
+  <circle cx="25" cy="75" r="2" fill="#C4B8E0" fill-opacity="0.5"/>
+  <circle cx="22" cy="90" r="1.5" fill="#E8B4B8" fill-opacity="0.4"/>
+  <circle cx="178" cy="55" r="2" fill="#B8D4C8" fill-opacity="0.5"/>
+  <!-- Star sparkle -->
+  <path d="M175 100 L176 104 L180 104 L177 107 L178 111 L175 108.5 L172 111 L173 107 L170 104 L174 104 Z"
+    fill="#C4B8E0" fill-opacity="0.4"/>
+</svg>

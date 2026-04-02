@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Ground / soil -->
+  <ellipse cx="100" cy="168" rx="50" ry="10" fill="#D4C8F0" fill-opacity="0.4"/>
+  <path d="M55 168 Q100 155 145 168" stroke="#C4B8E0" stroke-width="2" stroke-linecap="round" fill="#E8D4F0" fill-opacity="0.3"/>
+  <!-- Pot -->
+  <path d="M82 168 Q78 185 120 185 Q122 168 118 168 Z" fill="#E8B4B8" fill-opacity="0.5" stroke="#E8B4B8" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="78" y="163" width="44" height="8" rx="4" fill="#E8B4B8" fill-opacity="0.6" stroke="#E8B4B8" stroke-width="2"/>
+  <!-- Main stem -->
+  <path d="M100 163 Q100 130 100 100" stroke="#B8D4C8" stroke-width="3" stroke-linecap="round"/>
+  <!-- Left branch -->
+  <path d="M100 140 Q85 130 75 118" stroke="#B8D4C8" stroke-width="2" stroke-linecap="round"/>
+  <!-- Right branch -->
+  <path d="M100 130 Q115 120 125 108" stroke="#B8D4C8" stroke-width="2" stroke-linecap="round"/>
+  <!-- Left leaf -->
+  <path d="M75 118 Q62 105 68 95 Q80 98 75 118 Z" fill="#B8D4C8" fill-opacity="0.6" stroke="#9FC4B4" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Right leaf -->
+  <path d="M125 108 Q138 95 132 85 Q120 90 125 108 Z" fill="#B8D4C8" fill-opacity="0.6" stroke="#9FC4B4" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Small middle-left leaf -->
+  <path d="M100 148 Q86 142 83 133 Q95 132 100 148 Z" fill="#C8E4D8" fill-opacity="0.5" stroke="#9FC4B4" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Top sprouting leaves -->
+  <path d="M100 100 Q90 85 93 72 Q103 78 100 100 Z" fill="#B8D4C8" fill-opacity="0.7" stroke="#9FC4B4" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M100 100 Q110 85 107 72 Q97 78 100 100 Z" fill="#C8E4D8" fill-opacity="0.7" stroke="#9FC4B4" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Tiny curled new leaf at top -->
+  <path d="M100 72 Q96 62 100 55 Q104 62 100 72" stroke="#9FC4B4" stroke-width="2" stroke-linecap="round" fill="#D8F0E8" fill-opacity="0.5"/>
+  <!-- Sparkle dots around the plant -->
+  <circle cx="60" cy="90" r="2.5" fill="#E8B4B8" fill-opacity="0.6"/>
+  <circle cx="145" cy="80" r="2" fill="#C4B8E0" fill-opacity="0.6"/>
+  <circle cx="55" cy="140" r="1.5" fill="#B8D4C8" fill-opacity="0.6"/>
+  <circle cx="148" cy="130" r="2" fill="#E8B4B8" fill-opacity="0.5"/>
+  <circle cx="70" cy="60" r="1.5" fill="#C4B8E0" fill-opacity="0.5"/>
+  <!-- Tiny star/sparkle top left -->
+  <path d="M50 70 L51.5 73 L55 73 L52.5 75 L53.5 78.5 L50 76.5 L46.5 78.5 L47.5 75 L45 73 L48.5 73 Z" fill="#E8B4B8" fill-opacity="0.4" stroke="#E8B4B8" stroke-width="0.5"/>
+  <!-- Ground detail lines -->
+  <path d="M65 172 Q100 168 135 172" stroke="#C4B8E0" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+</svg>
