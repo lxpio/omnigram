@@ -832,6 +832,23 @@ class ReadingPageState extends ConsumerState<ReadingPage> with WidgetsBindingObs
                         ),
                     ],
                   ),
+                  // Always-visible thin progress bar at bottom
+                  if (bottomBarOffstage)
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: IgnorePointer(
+                        child: LinearProgressIndicator(
+                          value: _readingProgress.clamp(0.0, 1.0),
+                          minHeight: 2,
+                          backgroundColor: Colors.transparent,
+                          valueColor: AlwaysStoppedAnimation(
+                            Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
+                          ),
+                        ),
+                      ),
+                    ),
                   chromeOverlay,
                   // TTS floating action button: always in the tree when toolbar
                   // is hidden; TtsFab handles its own show/hide internally so
