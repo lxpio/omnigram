@@ -28,7 +28,7 @@ class ReaderAppBar extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: colorScheme.surface.withValues(alpha: 0.92),
+        color: colorScheme.surface,
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
         boxShadow: [
           BoxShadow(
