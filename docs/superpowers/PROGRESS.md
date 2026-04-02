@@ -357,6 +357,7 @@
 | PDF 支持 | §10.2 | ❌ | 设计文档明确 defer |
 | 伴侣行为开关（5 个 toggle） | §7.2 | ✅ | `companion_personality.dart`, `companion_settings_page.dart` · `e8f9757` |
 | 伴侣名称自定义 | §7.2 | ✅ ¹ | 已在 `companion_settings_page.dart` 中实现（TextField） |
+| 书籍详情页重设计 | — | ✅ | `page/book_detail.dart`, `widgets/book_detail/` · `a58922e` |
 | OPDS 目录 | §10.9 | ✅ ¹ | 服务端已有 |
 
 > **架构修正文档：** `docs/superpowers/specs/2026-03-23-sync-architecture.md`
@@ -447,6 +448,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-04-02 | **书籍详情页重设计完成** ✅：从 760 行信息陈列柜重写为行动导向的"书的灵魂页"（~500行）。封面主色渐变、继续阅读按钮、AI 一句话总结、最近笔记预览。砍掉虚荣指标。54 tests 全绿 |
 | 2026-04-02 | **阅读器 Chrome 重构完成** ✅：从 reading_page.dart（916行→848行）抽取 chrome 到 3 个独立 widget（ReaderAppBar + ReaderBottomBar + ReaderChrome），Omnigram 视觉风格，进度条 + 按钮两层底栏，slide 动画。51 tests 全绿 |
 | 2026-04-02 | **伴侣行为开关完成** ✅：5 toggle（2 enabled + 3 Coming Soon），CompanionPersonality 扩展 5 bool 字段，Server 同步改用 toJson/fromJson，AI guard 接入 margin notes + concept extractor。41 tests 全绿 |
 | 2026-04-02 | **空状态性格化完成** ✅：4 页面空状态根据伴侣 warmth 三档适配（Lottie/SVG/Icon + 16 语言文案）。新增 WarmthTier、EmptyStateData、EmptyStateConfig、warmthTierProvider。EmptyState 组件升级支持 Widget visual。23 tests 全绿 |
