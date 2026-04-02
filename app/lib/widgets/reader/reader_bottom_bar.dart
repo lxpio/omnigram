@@ -14,6 +14,7 @@ class ReaderBottomBar extends StatelessWidget {
   final VoidCallback onShowProgress;
   final VoidCallback onShowStyle;
   final VoidCallback onShowTts;
+  final bool hideProgress;
 
   const ReaderBottomBar({
     super.key,
@@ -26,6 +27,7 @@ class ReaderBottomBar extends StatelessWidget {
     required this.onShowProgress,
     required this.onShowStyle,
     required this.onShowTts,
+    this.hideProgress = false,
   });
 
   @override
@@ -52,14 +54,16 @@ class ReaderBottomBar extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Progress layer
-              _ProgressLayer(
-                progress: progress,
-                percentText: '$pct%',
-                pageText: '$currentPage / $totalPages',
-                onSeek: onSeek,
-              ),
-              const SizedBox(height: 8),
+              // Progress layer (hidden when a sub-panel like ProgressWidget is active)
+              if (!hideProgress) ...[
+                _ProgressLayer(
+                  progress: progress,
+                  percentText: '$pct%',
+                  pageText: '$currentPage / $totalPages',
+                  onSeek: onSeek,
+                ),
+                const SizedBox(height: 8),
+              ],
               // Action buttons layer
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
