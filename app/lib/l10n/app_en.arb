@@ -916,5 +916,13 @@
   "companionBehaviorAutoKnowledgeGraph": "Auto-organize to knowledge graph",
   "companionBehaviorAutoChapterRecap": "Auto chapter recap",
   "companionBehaviorPostChapterQuestions": "Post-chapter questions",
-  "companionBehaviorComingSoon": "Coming Soon"
+  "companionBehaviorComingSoon": "Coming Soon",
+  "bookDetailContinueReading": "Continue Reading",
+  "bookDetailStartReading": "Start Reading",
+  "bookDetailAbout": "About this book",
+  "bookDetailMyNotes": "My Notes",
+  "bookDetailViewAll": "View All",
+  "bookDetailImportedOn": "Imported on {date}",
+  "@bookDetailImportedOn": { "placeholders": { "date": { "type": "String" } } },
+  "bookDetailEditTitle": "Edit title"
 }

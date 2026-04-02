@@ -905,5 +905,13 @@
   "companionBehaviorAutoKnowledgeGraph": "知識グラフへ自動整理",
   "companionBehaviorAutoChapterRecap": "章の自動まとめ",
   "companionBehaviorPostChapterQuestions": "章読了後の質問",
-  "companionBehaviorComingSoon": "近日公開"
+  "companionBehaviorComingSoon": "近日公開",
+  "bookDetailContinueReading": "続きを読む",
+  "bookDetailStartReading": "読み始める",
+  "bookDetailAbout": "この本について",
+  "bookDetailMyNotes": "マイノート",
+  "bookDetailViewAll": "すべて表示",
+  "bookDetailImportedOn": "{date} にインポート",
+  "@bookDetailImportedOn": { "placeholders": { "date": { "type": "String" } } },
+  "bookDetailEditTitle": "タイトルを編集"
 }

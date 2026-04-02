@@ -905,5 +905,13 @@
   "companionBehaviorAutoKnowledgeGraph": "التنظيم التلقائي في رسم المعرفة",
   "companionBehaviorAutoChapterRecap": "ملخص تلقائي للفصل",
   "companionBehaviorPostChapterQuestions": "أسئلة بعد كل فصل",
-  "companionBehaviorComingSoon": "قريباً"
+  "companionBehaviorComingSoon": "قريباً",
+  "bookDetailContinueReading": "متابعة القراءة",
+  "bookDetailStartReading": "بدء القراءة",
+  "bookDetailAbout": "حول هذا الكتاب",
+  "bookDetailMyNotes": "ملاحظاتي",
+  "bookDetailViewAll": "عرض الكل",
+  "bookDetailImportedOn": "تم الاستيراد في {date}",
+  "@bookDetailImportedOn": { "placeholders": { "date": { "type": "String" } } },
+  "bookDetailEditTitle": "تعديل العنوان"
 }

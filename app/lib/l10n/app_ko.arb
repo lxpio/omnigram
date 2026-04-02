@@ -905,5 +905,13 @@
   "companionBehaviorAutoKnowledgeGraph": "지식 그래프에 자동 정리",
   "companionBehaviorAutoChapterRecap": "챕터 자동 요약",
   "companionBehaviorPostChapterQuestions": "챕터 완독 후 질문",
-  "companionBehaviorComingSoon": "곧 출시"
+  "companionBehaviorComingSoon": "곧 출시",
+  "bookDetailContinueReading": "계속 읽기",
+  "bookDetailStartReading": "읽기 시작",
+  "bookDetailAbout": "이 책에 대하여",
+  "bookDetailMyNotes": "내 노트",
+  "bookDetailViewAll": "전체 보기",
+  "bookDetailImportedOn": "{date}에 가져옴",
+  "@bookDetailImportedOn": { "placeholders": { "date": { "type": "String" } } },
+  "bookDetailEditTitle": "제목 편집"
 }

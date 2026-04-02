@@ -908,5 +908,13 @@
   "companionBehaviorAutoKnowledgeGraph": "Автоматическая организация в граф знаний",
   "companionBehaviorAutoChapterRecap": "Автоматический итог главы",
   "companionBehaviorPostChapterQuestions": "Вопросы после главы",
-  "companionBehaviorComingSoon": "Скоро"
+  "companionBehaviorComingSoon": "Скоро",
+  "bookDetailContinueReading": "Продолжить чтение",
+  "bookDetailStartReading": "Начать чтение",
+  "bookDetailAbout": "Об этой книге",
+  "bookDetailMyNotes": "Мои заметки",
+  "bookDetailViewAll": "Смотреть все",
+  "bookDetailImportedOn": "Импортировано {date}",
+  "@bookDetailImportedOn": { "placeholders": { "date": { "type": "String" } } },
+  "bookDetailEditTitle": "Изменить название"
 }

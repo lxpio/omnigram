@@ -905,5 +905,13 @@
   "companionBehaviorAutoKnowledgeGraph": "自動整理至知識圖譜",
   "companionBehaviorAutoChapterRecap": "自動產生章節回顧",
   "companionBehaviorPostChapterQuestions": "章節讀完後提問",
-  "companionBehaviorComingSoon": "即將推出"
+  "companionBehaviorComingSoon": "即將推出",
+  "bookDetailContinueReading": "繼續閱讀",
+  "bookDetailStartReading": "開始閱讀",
+  "bookDetailAbout": "關於這本書",
+  "bookDetailMyNotes": "我的筆記",
+  "bookDetailViewAll": "查看全部",
+  "bookDetailImportedOn": "匯入於 {date}",
+  "@bookDetailImportedOn": { "placeholders": { "date": { "type": "String" } } },
+  "bookDetailEditTitle": "編輯標題"
 }
