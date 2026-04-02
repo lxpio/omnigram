@@ -355,8 +355,8 @@
 | 空状态受伴侣性格影响 | §10.5 | ✅ | `widgets/common/empty_state_config.dart`, `models/warmth_tier.dart` · `188ed53` |
 | AI 处理预算（用户可配置） | §10.6 | ❌ | 审核建议 #5（NAS 资源控制） |
 | PDF 支持 | §10.2 | ❌ | 设计文档明确 defer |
-| 伴侣行为开关（5 个 toggle） | §7.2 | ❌ | 章节回顾/难词标注/跨书提醒等 |
-| 伴侣名称自定义 | §7.2 | ❌ | |
+| 伴侣行为开关（5 个 toggle） | §7.2 | ✅ | `companion_personality.dart`, `companion_settings_page.dart` · `e8f9757` |
+| 伴侣名称自定义 | §7.2 | ✅ ¹ | 已在 `companion_settings_page.dart` 中实现（TextField） |
 | OPDS 目录 | §10.9 | ✅ ¹ | 服务端已有 |
 
 > **架构修正文档：** `docs/superpowers/specs/2026-03-23-sync-architecture.md`
@@ -447,6 +447,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-04-02 | **伴侣行为开关完成** ✅：5 toggle（2 enabled + 3 Coming Soon），CompanionPersonality 扩展 5 bool 字段，Server 同步改用 toJson/fromJson，AI guard 接入 margin notes + concept extractor。41 tests 全绿 |
 | 2026-04-02 | **空状态性格化完成** ✅：4 页面空状态根据伴侣 warmth 三档适配（Lottie/SVG/Icon + 16 语言文案）。新增 WarmthTier、EmptyStateData、EmptyStateConfig、warmthTierProvider。EmptyState 组件升级支持 Widget visual。23 tests 全绿 |
 | 2026-03-25 | **巩固：测试全绿 + 文档校正。** Go 测试：修复 conf/store 路径问题，schema/sys 加 `integration` build tag（`go test ./...` 全绿）。Dart 测试：补 main 方法（`flutter test test/` 全绿）。CI：修复 Hurl 变量名 username→account。PROGRESS.md：同步质量加固 ✅、测试状态表全面更新、DB 版本 v11→v13 |
 | 2026-03-24 | **Layer 3.5 同步架构全部完成** ✅：第二批修复 22 项外部审核缺口全部关闭。服务端：C-4 DoUpdates 元数据保留、S-2 Refresh token 轮换、S-3 速率限制、P-1 批量推送端点、M-1 server_time LWW、P-2 SSE 反压、R-2 SSE 断点续传、B-2 审计日志、D-2 版本协商。客户端：同步重试指数退避、U-2 错误分类、冲突日志通知、R-1 原子 checkpoint、M-2 AI 数据类型同步、P-3 标注 O(1) 批量比对、离线操作队列、书籍文件按需下载、分页拉取、D-1 ID 映射表(DB v13)、U-3 冲突解决页面、B-3 选择性同步设置、B-4 E2E 加密基础 |
