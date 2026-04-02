@@ -351,7 +351,7 @@
 | 🔴 同步质量加固 | 审核报告 | ✅ | 22 项全部关闭，详见 `specs/2026-03-24-sync-architecture-audit.md` |
 | 数据导出/迁移 | §10.9 | ❌ | Markdown/JSON/CSV 导出 |
 | 外部高亮导入（Kindle/Apple Books） | §10.9 | ❌ | |
-| 阅读器 Chrome 重写 | §5.2 | ❌ | 当前用 stub，完整 chrome 待实现 |
+| 阅读器 Chrome 重写 | §5.2 | ✅ | `widgets/reader/reader_chrome.dart`, `reader_app_bar.dart`, `reader_bottom_bar.dart` · `b2cd962` |
 | 空状态受伴侣性格影响 | §10.5 | ✅ | `widgets/common/empty_state_config.dart`, `models/warmth_tier.dart` · `188ed53` |
 | AI 处理预算（用户可配置） | §10.6 | ❌ | 审核建议 #5（NAS 资源控制） |
 | PDF 支持 | §10.2 | ❌ | 设计文档明确 defer |
@@ -447,6 +447,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-04-02 | **阅读器 Chrome 重构完成** ✅：从 reading_page.dart（916行→848行）抽取 chrome 到 3 个独立 widget（ReaderAppBar + ReaderBottomBar + ReaderChrome），Omnigram 视觉风格，进度条 + 按钮两层底栏，slide 动画。51 tests 全绿 |
 | 2026-04-02 | **伴侣行为开关完成** ✅：5 toggle（2 enabled + 3 Coming Soon），CompanionPersonality 扩展 5 bool 字段，Server 同步改用 toJson/fromJson，AI guard 接入 margin notes + concept extractor。41 tests 全绿 |
 | 2026-04-02 | **空状态性格化完成** ✅：4 页面空状态根据伴侣 warmth 三档适配（Lottie/SVG/Icon + 16 语言文案）。新增 WarmthTier、EmptyStateData、EmptyStateConfig、warmthTierProvider。EmptyState 组件升级支持 Widget visual。23 tests 全绿 |
 | 2026-03-25 | **巩固：测试全绿 + 文档校正。** Go 测试：修复 conf/store 路径问题，schema/sys 加 `integration` build tag（`go test ./...` 全绿）。Dart 测试：补 main 方法（`flutter test test/` 全绿）。CI：修复 Hurl 变量名 username→account。PROGRESS.md：同步质量加固 ✅、测试状态表全面更新、DB 版本 v11→v13 |
