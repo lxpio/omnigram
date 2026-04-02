@@ -113,6 +113,7 @@ class ReaderChrome extends StatelessWidget {
                       currentPage: currentPage,
                       totalPages: totalPages,
                       onSeek: onSeek,
+                      hideProgress: activePanel != null,
                       onShowToc: onShowToc,
                       onShowNotes: onShowNotes,
                       onShowProgress: onShowProgress,
