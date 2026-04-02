@@ -98,7 +98,7 @@ CREATE TABLE tb_groups (
 ''';
 
 const createAiCacheSQL = '''
-CREATE TABLE tb_ai_cache (
+CREATE TABLE IF NOT EXISTS tb_ai_cache (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   type TEXT NOT NULL,
   book_id INTEGER,
@@ -114,7 +114,7 @@ CREATE TABLE tb_ai_cache (
 const createAiCacheIndexSQL = 'CREATE UNIQUE INDEX IF NOT EXISTS idx_ai_cache_type_key ON tb_ai_cache(type, cache_key)';
 
 const createCompanionChatSQL = '''
-CREATE TABLE tb_companion_chat (
+CREATE TABLE IF NOT EXISTS tb_companion_chat (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   book_id INTEGER NOT NULL,
   role TEXT NOT NULL,
@@ -130,7 +130,7 @@ const createCompanionChatIndexSQL =
     'CREATE INDEX IF NOT EXISTS idx_companion_chat_book ON tb_companion_chat(book_id, created_at)';
 
 const createMarginNoteSQL = '''
-CREATE TABLE tb_margin_notes (
+CREATE TABLE IF NOT EXISTS tb_margin_notes (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   book_id INTEGER NOT NULL,
   chapter TEXT NOT NULL,
