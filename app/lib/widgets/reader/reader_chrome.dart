@@ -100,7 +100,14 @@ class ReaderChrome extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    ?activePanel,
+                    if (activePanel != null)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                        ),
+                        child: activePanel!,
+                      ),
                     ReaderBottomBar(
                       progress: progress,
                       currentPage: currentPage,
