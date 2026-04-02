@@ -898,5 +898,12 @@
   "emptyStateInsightsLow": "尚無閱讀記錄。",
   "emptyStateCompanionHigh": "吾在此！選文或逕問之，共論書中一切。",
   "emptyStateCompanionMid": "選文或輸問，即可開談。",
-  "emptyStateCompanionLow": "輸入以始。"
+  "emptyStateCompanionLow": "輸入以始。",
+  "companionBehaviorSection": "行為取向",
+  "companionBehaviorAnnotateHardWords": "注釋難字",
+  "companionBehaviorCrossBookAlerts": "跨書關聯提示",
+  "companionBehaviorAutoKnowledgeGraph": "自動歸納入知識圖",
+  "companionBehaviorAutoChapterRecap": "自動生成章節述要",
+  "companionBehaviorPostChapterQuestions": "章畢問難",
+  "companionBehaviorComingSoon": "即將推出"
 }

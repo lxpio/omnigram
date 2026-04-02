@@ -898,5 +898,12 @@
   "emptyStateInsightsLow": "Noch keine Lesedaten.",
   "emptyStateCompanionHigh": "Ich bin hier! Wähle einen Text aus oder frage einfach — lass uns über alles in diesem Buch sprechen.",
   "emptyStateCompanionMid": "Wähle Text aus oder tippe eine Frage, um zu beginnen.",
-  "emptyStateCompanionLow": "Tippe, um zu beginnen."
+  "emptyStateCompanionLow": "Tippe, um zu beginnen.",
+  "companionBehaviorSection": "Verhaltenseinstellungen",
+  "companionBehaviorAnnotateHardWords": "Schwierige Wörter annotieren",
+  "companionBehaviorCrossBookAlerts": "Buch-übergreifende Verbindungshinweise",
+  "companionBehaviorAutoKnowledgeGraph": "Automatisch in Wissensgraph organisieren",
+  "companionBehaviorAutoChapterRecap": "Automatische Kapitelzusammenfassung",
+  "companionBehaviorPostChapterQuestions": "Fragen nach dem Kapitel",
+  "companionBehaviorComingSoon": "Demnächst verfügbar"
 }

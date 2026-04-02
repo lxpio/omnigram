@@ -901,5 +901,12 @@
   "emptyStateInsightsLow": "Данных о чтении пока нет.",
   "emptyStateCompanionHigh": "Я здесь! Выделите текст или просто спросите — поговорим обо всём, что есть в этой книге.",
   "emptyStateCompanionMid": "Выделите текст или введите вопрос, чтобы начать.",
-  "emptyStateCompanionLow": "Введите текст, чтобы начать."
+  "emptyStateCompanionLow": "Введите текст, чтобы начать.",
+  "companionBehaviorSection": "Настройки поведения",
+  "companionBehaviorAnnotateHardWords": "Аннотировать сложные слова",
+  "companionBehaviorCrossBookAlerts": "Уведомления о связях между книгами",
+  "companionBehaviorAutoKnowledgeGraph": "Автоматическая организация в граф знаний",
+  "companionBehaviorAutoChapterRecap": "Автоматический итог главы",
+  "companionBehaviorPostChapterQuestions": "Вопросы после главы",
+  "companionBehaviorComingSoon": "Скоро"
 }

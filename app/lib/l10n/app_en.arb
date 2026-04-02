@@ -909,5 +909,12 @@
   "emptyStateInsightsLow": "No reading data yet.",
   "emptyStateCompanionHigh": "I'm here! Select some text or just ask — let's talk about anything in this book.",
   "emptyStateCompanionMid": "Select text or type a question to start.",
-  "emptyStateCompanionLow": "Type to begin."
+  "emptyStateCompanionLow": "Type to begin.",
+  "companionBehaviorSection": "Behavior Preferences",
+  "companionBehaviorAnnotateHardWords": "Annotate difficult words",
+  "companionBehaviorCrossBookAlerts": "Cross-book connection alerts",
+  "companionBehaviorAutoKnowledgeGraph": "Auto-organize to knowledge graph",
+  "companionBehaviorAutoChapterRecap": "Auto chapter recap",
+  "companionBehaviorPostChapterQuestions": "Post-chapter questions",
+  "companionBehaviorComingSoon": "Coming Soon"
 }

@@ -898,5 +898,12 @@
   "emptyStateInsightsLow": "Henüz okuma verisi yok.",
   "emptyStateCompanionHigh": "Buradayım! Metin seçin ya da sormak istediğinizi sorun — bu kitaptaki her şey hakkında konuşalım.",
   "emptyStateCompanionMid": "Başlamak için metin seçin veya bir soru yazın.",
-  "emptyStateCompanionLow": "Başlamak için yazın."
+  "emptyStateCompanionLow": "Başlamak için yazın.",
+  "companionBehaviorSection": "Davranış Tercihleri",
+  "companionBehaviorAnnotateHardWords": "Zor kelimeleri açıkla",
+  "companionBehaviorCrossBookAlerts": "Kitaplar arası bağlantı uyarıları",
+  "companionBehaviorAutoKnowledgeGraph": "Bilgi grafiğine otomatik düzenle",
+  "companionBehaviorAutoChapterRecap": "Otomatik bölüm özeti",
+  "companionBehaviorPostChapterQuestions": "Bölüm sonrası sorular",
+  "companionBehaviorComingSoon": "Yakında"
 }
