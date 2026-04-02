@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:omnigram/models/book.dart';
+import 'package:omnigram/models/empty_state_data.dart';
 import 'package:omnigram/providers/desk_provider.dart';
+import 'package:omnigram/providers/empty_state_provider.dart';
 import 'package:omnigram/service/ai/ai_availability.dart';
 import 'package:omnigram/service/ai/ambient_tasks.dart';
 import 'package:omnigram/service/book.dart';
@@ -52,11 +54,9 @@ class _DeskPageState extends ConsumerState<DeskPage> {
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (desk) {
           if (desk.currentBook == null) {
-            return const EmptyState(
-              message: '书桌还是空的，去书架找一本书开始阅读吧。',
-              actionLabel: '去书架',
-              icon: Icons.auto_stories_outlined,
-            );
+            final tier = ref.watch(warmthTierProvider);
+            final data = emptyStateData(context, tier, EmptyPageType.desk);
+            return EmptyState.fromData(data);
           }
 
           // Fetch memory bridge when hero book changes
