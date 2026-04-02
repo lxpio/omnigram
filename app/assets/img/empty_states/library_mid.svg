@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Back wall -->
+  <rect x="15" y="30" width="170" height="150" rx="6" fill="#FBF8FF" fill-opacity="0.5" stroke="#C4B8E0" stroke-width="1.5"/>
+  <!-- Top shelf -->
+  <rect x="20" y="80" width="160" height="6" rx="3" fill="#D4C8F0" stroke="#C4B8E0" stroke-width="1.5"/>
+  <!-- Middle shelf -->
+  <rect x="20" y="130" width="160" height="6" rx="3" fill="#D4C8F0" stroke="#C4B8E0" stroke-width="1.5"/>
+  <!-- Bottom shelf -->
+  <rect x="20" y="170" width="160" height="6" rx="3" fill="#D4C8F0" stroke="#C4B8E0" stroke-width="1.5"/>
+  <!-- Left side panel -->
+  <rect x="15" y="30" width="8" height="145" rx="3" fill="#D4C8F0" stroke="#C4B8E0" stroke-width="1.5"/>
+  <!-- Right side panel -->
+  <rect x="177" y="30" width="8" height="145" rx="3" fill="#D4C8F0" stroke="#C4B8E0" stroke-width="1.5"/>
+  <!-- Books on top shelf (a few, not full) -->
+  <!-- Book 1 -->
+  <rect x="30" y="55" width="12" height="25" rx="2" fill="#E8B4B8" fill-opacity="0.7" stroke="#E8B4B8" stroke-width="1.5"/>
+  <!-- Book 2 -->
+  <rect x="44" y="58" width="10" height="22" rx="2" fill="#C4B8E0" fill-opacity="0.7" stroke="#C4B8E0" stroke-width="1.5"/>
+  <!-- Book 3 slightly leaning -->
+  <rect x="56" y="60" width="8" height="20" rx="2" fill="#B8D4C8" fill-opacity="0.7" stroke="#B8D4C8" stroke-width="1.5" transform="rotate(-5 60 70)"/>
+  <!-- Empty space on top shelf -->
+  <!-- Books on middle shelf (sparse) -->
+  <rect x="30" y="106" width="14" height="24" rx="2" fill="#E8B4B8" fill-opacity="0.5" stroke="#E8B4B8" stroke-width="1.5"/>
+  <rect x="46" y="110" width="10" height="20" rx="2" fill="#C4B8E0" fill-opacity="0.5" stroke="#C4B8E0" stroke-width="1.5"/>
+  <!-- Leaning book decoration -->
+  <rect x="140" y="108" width="12" height="22" rx="2" fill="#B8D4C8" fill-opacity="0.5" stroke="#B8D4C8" stroke-width="1.5" transform="rotate(8 146 119)"/>
+  <!-- Empty bottom shelf -->
+  <!-- Window light effect on wall -->
+  <rect x="100" y="40" width="50" height="35" rx="4" fill="#FFF9E6" fill-opacity="0.6"/>
+  <line x1="125" y1="40" x2="125" y2="75" stroke="#E8D4A0" stroke-width="1" opacity="0.6"/>
+  <line x1="100" y1="57" x2="150" y2="57" stroke="#E8D4A0" stroke-width="1" opacity="0.6"/>
+  <!-- Light rays -->
+  <line x1="125" y1="75" x2="110" y2="88" stroke="#FFF0B0" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+  <line x1="125" y1="75" x2="125" y2="90" stroke="#FFF0B0" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+  <line x1="125" y1="75" x2="140" y2="88" stroke="#FFF0B0" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+  <!-- Small potted plant on shelf -->
+  <rect x="158" y="60" width="12" height="10" rx="3" fill="#B8D4C8" fill-opacity="0.5" stroke="#B8D4C8" stroke-width="1.5"/>
+  <path d="M164 60 Q160 52 164 48 Q168 52 164 60" fill="#B8D4C8" fill-opacity="0.7" stroke="#9FC4B4" stroke-width="1.5"/>
+  <path d="M164 58 Q158 50 162 46" stroke="#9FC4B4" stroke-width="1" stroke-linecap="round"/>
+</svg>
