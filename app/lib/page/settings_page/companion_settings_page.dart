@@ -7,6 +7,7 @@ import 'package:omnigram/service/ai/companion_prompt.dart';
 import 'package:omnigram/theme/colors.dart';
 import 'package:omnigram/theme/typography.dart';
 import 'package:omnigram/theme/omnigram_theme.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/widgets/common/omnigram_card.dart';
 
 class CompanionSettingsPage extends ConsumerStatefulWidget {
@@ -103,6 +104,39 @@ class _CompanionSettingsPageState extends ConsumerState<CompanionSettingsPage> {
           _VoiceSelector(
             currentVoice: personality.voice,
             onChanged: notifier.updateVoice,
+          ),
+          const SizedBox(height: 24),
+
+          // Behavior toggles
+          Text(L10n.of(context).companionBehaviorSection, style: OmnigramTypography.titleMedium(context)),
+          const SizedBox(height: 8),
+          SwitchListTile(
+            title: Text(L10n.of(context).companionBehaviorCrossBookAlerts),
+            value: personality.crossBookAlerts,
+            onChanged: (v) => notifier.updateCrossBookAlerts(v),
+          ),
+          SwitchListTile(
+            title: Text(L10n.of(context).companionBehaviorAutoKnowledgeGraph),
+            value: personality.autoKnowledgeGraph,
+            onChanged: (v) => notifier.updateAutoKnowledgeGraph(v),
+          ),
+          SwitchListTile(
+            title: Text(L10n.of(context).companionBehaviorAnnotateHardWords),
+            subtitle: Text(L10n.of(context).companionBehaviorComingSoon),
+            value: false,
+            onChanged: null,
+          ),
+          SwitchListTile(
+            title: Text(L10n.of(context).companionBehaviorAutoChapterRecap),
+            subtitle: Text(L10n.of(context).companionBehaviorComingSoon),
+            value: false,
+            onChanged: null,
+          ),
+          SwitchListTile(
+            title: Text(L10n.of(context).companionBehaviorPostChapterQuestions),
+            subtitle: Text(L10n.of(context).companionBehaviorComingSoon),
+            value: false,
+            onChanged: null,
           ),
           const SizedBox(height: 24),
 
