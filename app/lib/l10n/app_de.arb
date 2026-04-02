@@ -885,5 +885,18 @@
   "aiModelSwitchTitle": "Modell wechseln",
   "aiModelEnterManually": "Modellname eingeben",
   "aiModelOrSelectBelow": "Oder aus Liste auswählen:",
-  "aiChatFontSize": "Schriftgröße"
+  "aiChatFontSize": "Schriftgröße",
+  "emptyStateDeskHigh": "Dein Schreibtisch wartet! Wähle etwas aus dem Regal — das heutige Lesen beginnt hier.",
+  "emptyStateDeskMid": "Keine Bücher in Bearbeitung. Gehe zum Bücherregal, um eines zu beginnen.",
+  "emptyStateDeskLow": "Keine Bücher in Bearbeitung.",
+  "emptyStateLibraryHigh": "Ein leeres Regal, unendliche Möglichkeiten! Importiere dein erstes Buch, um zu beginnen.",
+  "emptyStateLibraryMid": "Dein Bücherregal ist leer. Importiere Bücher, um loszulegen.",
+  "emptyStateLibraryLow": "Noch keine Bücher.",
+  "emptyStateLibraryAction": "Bücher importieren",
+  "emptyStateInsightsHigh": "Erstmal eine leere Seite, aber jede großartige Bibliothek beginnt mit einem Buch. Deine Erkenntnisse wachsen beim Lesen.",
+  "emptyStateInsightsMid": "Erkenntnisse erscheinen hier, sobald du anfängst zu lesen und Notizen zu machen.",
+  "emptyStateInsightsLow": "Noch keine Lesedaten.",
+  "emptyStateCompanionHigh": "Ich bin hier! Wähle einen Text aus oder frage einfach — lass uns über alles in diesem Buch sprechen.",
+  "emptyStateCompanionMid": "Wähle Text aus oder tippe eine Frage, um zu beginnen.",
+  "emptyStateCompanionLow": "Tippe, um zu beginnen."
 }

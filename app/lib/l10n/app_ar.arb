@@ -885,5 +885,18 @@
    "aiModelSwitchTitle": "تغيير النموذج",
    "aiModelEnterManually": "أدخل اسم النموذج",
    "aiModelOrSelectBelow": "أو اختر من القائمة:",
-   "aiChatFontSize": "حجم الخط"
+   "aiChatFontSize": "حجم الخط",
+  "emptyStateDeskHigh": "مكتبك ينتظرك! اختر شيئاً من الرف — قراءة اليوم تبدأ من هنا.",
+  "emptyStateDeskMid": "لا توجد كتب قيد القراءة. توجه إلى المكتبة لبدء واحد.",
+  "emptyStateDeskLow": "لا توجد كتب قيد القراءة.",
+  "emptyStateLibraryHigh": "رف فارغ، إمكانيات لا نهاية لها! استورد كتابك الأول للبدء.",
+  "emptyStateLibraryMid": "مكتبتك فارغة. استورد كتباً للبدء.",
+  "emptyStateLibraryLow": "لا توجد كتب بعد.",
+  "emptyStateLibraryAction": "استيراد الكتب",
+  "emptyStateInsightsHigh": "صفحة فارغة الآن، لكن كل مكتبة عظيمة تبدأ بكتاب واحد. ستنمو رؤاك كلما قرأت.",
+  "emptyStateInsightsMid": "ستظهر الرؤى هنا بمجرد أن تبدأ القراءة وتدوين الملاحظات.",
+  "emptyStateInsightsLow": "لا توجد بيانات قراءة بعد.",
+  "emptyStateCompanionHigh": "أنا هنا! حدد نصاً أو اسأل فقط — دعنا نتحدث عن أي شيء في هذا الكتاب.",
+  "emptyStateCompanionMid": "حدد نصاً أو اكتب سؤالاً للبدء.",
+  "emptyStateCompanionLow": "اكتب للبدء."
 }

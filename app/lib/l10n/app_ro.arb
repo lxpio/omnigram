@@ -885,5 +885,18 @@
    "aiModelOrSelectBelow": "Sau selectează din listă:",
    "aiChatFontSize": "Dimensiune font",
    "commonAddSuccess": "Adăugat cu succes",
-   "commonSaveSuccess": "Salvat cu succes"
+   "commonSaveSuccess": "Salvat cu succes",
+  "emptyStateDeskHigh": "Biroul tău te așteaptă! Alege ceva de pe raft — lectura de azi începe aici.",
+  "emptyStateDeskMid": "Nicio carte în progres. Mergi la bibliotecă pentru a începe una.",
+  "emptyStateDeskLow": "Nicio carte în progres.",
+  "emptyStateLibraryHigh": "Un raft gol, posibilități infinite! Importă prima ta carte pentru a începe.",
+  "emptyStateLibraryMid": "Biblioteca ta este goală. Importă cărți pentru a începe.",
+  "emptyStateLibraryLow": "Nicio carte deocamdată.",
+  "emptyStateLibraryAction": "Importă cărți",
+  "emptyStateInsightsHigh": "O pagină albă deocamdată, dar fiecare mare bibliotecă începe cu o carte. Perspectivele tale vor crește pe măsură ce citești.",
+  "emptyStateInsightsMid": "Perspectivele vor apărea aici odată ce începi să citești și să iei notițe.",
+  "emptyStateInsightsLow": "Fără date de lectură deocamdată.",
+  "emptyStateCompanionHigh": "Sunt aici! Selectează text sau întreabă orice — să vorbim despre orice din această carte.",
+  "emptyStateCompanionMid": "Selectează text sau scrie o întrebare pentru a începe.",
+  "emptyStateCompanionLow": "Scrie pentru a începe."
 }

@@ -885,5 +885,18 @@
    "aiModelSwitchTitle": "モデル切替",
    "aiModelEnterManually": "モデル名を入力",
    "aiModelOrSelectBelow": "またはリストから選択：",
-   "aiChatFontSize": "フォントサイズ"
+   "aiChatFontSize": "フォントサイズ",
+  "emptyStateDeskHigh": "読書デスクがあなたを待っています！棚から一冊選んで — 今日の読書はここから始まります。",
+  "emptyStateDeskMid": "進行中の本がありません。本棚へ行って始めましょう。",
+  "emptyStateDeskLow": "進行中の本なし。",
+  "emptyStateLibraryHigh": "空の棚、無限の可能性！最初の本をインポートして始めましょう。",
+  "emptyStateLibraryMid": "本棚は空です。本をインポートして始めましょう。",
+  "emptyStateLibraryLow": "まだ本がありません。",
+  "emptyStateLibraryAction": "本をインポート",
+  "emptyStateInsightsHigh": "今は白紙ですが、すべての偉大な図書館は一冊の本から始まります。読むにつれてインサイトが育っていきます。",
+  "emptyStateInsightsMid": "読書とメモを始めると、ここにインサイトが表示されます。",
+  "emptyStateInsightsLow": "まだ読書データがありません。",
+  "emptyStateCompanionHigh": "ここにいますよ！テキストを選択するか質問してください — この本について何でも話しましょう。",
+  "emptyStateCompanionMid": "テキストを選択するか質問を入力して始めてください。",
+  "emptyStateCompanionLow": "入力して始める。"
 }

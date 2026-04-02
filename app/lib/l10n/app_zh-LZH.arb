@@ -885,5 +885,18 @@
   "aiModelSwitchTitle": "換模型",
   "aiModelEnterManually": "輸入模型名",
   "aiModelOrSelectBelow": "或選下列：",
-  "aiChatFontSize": "字大小"
+  "aiChatFontSize": "字大小",
+  "emptyStateDeskHigh": "書案待汝！取架上一卷，今日之讀，自此始焉。",
+  "emptyStateDeskMid": "尚無在讀之書。往書閣選一卷開始。",
+  "emptyStateDeskLow": "無在讀之書。",
+  "emptyStateLibraryHigh": "書閣空空，可能無限！導入第一卷書，開啟讀書之旅。",
+  "emptyStateLibraryMid": "書閣空矣。導入書籍以開始閱讀。",
+  "emptyStateLibraryLow": "尚無書籍。",
+  "emptyStateLibraryAction": "導入書籍",
+  "emptyStateInsightsHigh": "此頁尚白，然天下書院皆從一卷始。汝之洞見，將隨讀書日漸豐盈。",
+  "emptyStateInsightsMid": "讀書添注之後，洞見將現於此。",
+  "emptyStateInsightsLow": "尚無閱讀記錄。",
+  "emptyStateCompanionHigh": "吾在此！選文或逕問之，共論書中一切。",
+  "emptyStateCompanionMid": "選文或輸問，即可開談。",
+  "emptyStateCompanionLow": "輸入以始。"
 }
