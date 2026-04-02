@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:omnigram/dao/margin_note.dart';
+import 'package:omnigram/providers/companion_provider.dart';
 import 'package:omnigram/service/ai/ambient_ai_pipeline.dart';
 
 /// Margin Notes overlay — shows AI-generated cross-book connections
@@ -76,6 +77,13 @@ class _MarginNotesOverlayState extends ConsumerState<MarginNotesOverlay> with Si
   }
 
   Future<void> _generateNotes() async {
+    // Guard: skip if cross-book alerts are disabled
+    final personality = ref.read(companionProvider);
+    if (!personality.crossBookAlerts) {
+      setState(() => _isLoading = false);
+      return;
+    }
+
     try {
       final result = await AmbientAiPipeline.execute(
         type: AmbientTaskType.recommendation,
