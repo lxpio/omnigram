@@ -23,12 +23,14 @@ func getCompanionHandle(c *gin.Context) {
 	if err != nil {
 		// Return default profile if none exists
 		c.JSON(200, &schema.CompanionProfile{
-			UserID:      userID,
-			Name:        "TARS",
-			Proactivity: 50,
-			Style:       50,
-			Depth:       50,
-			Warmth:      50,
+			UserID:             userID,
+			Name:               "TARS",
+			Proactivity:        50,
+			Style:              50,
+			Depth:              50,
+			Warmth:             50,
+			CrossBookAlerts:    true,
+			AutoKnowledgeGraph: true,
 		})
 		return
 	}

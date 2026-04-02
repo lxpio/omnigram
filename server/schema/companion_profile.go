@@ -12,8 +12,13 @@ type CompanionProfile struct {
 	Depth       int    `json:"depth" gorm:"default:50;comment:深度 0(简洁)到100(详细)"`
 	Warmth      int    `json:"warmth" gorm:"default:50;comment:温度 0(理性)到100(感性)"`
 	Voice       string `json:"voice" gorm:"type:varchar(200);comment:关联的TTS声音ID"`
-	PresetName  string `json:"preset_name" gorm:"type:varchar(50);comment:预设模板名"`
-	CTime       int64  `json:"ctime" gorm:"column:ctime;autoCreateTime:milli;comment:创建时间"`
+	PresetName           string `json:"preset_name" gorm:"type:varchar(50);comment:预设模板名"`
+	AutoChapterRecap     bool   `json:"autoChapterRecap" gorm:"default:false;comment:自动章节回顾"`
+	AnnotateHardWords    bool   `json:"annotateHardWords" gorm:"default:false;comment:标注难词"`
+	CrossBookAlerts      bool   `json:"crossBookAlerts" gorm:"default:true;comment:跨书连接提醒"`
+	PostChapterQuestions bool   `json:"postChapterQuestions" gorm:"default:false;comment:章节读后提问"`
+	AutoKnowledgeGraph   bool   `json:"autoKnowledgeGraph" gorm:"default:true;comment:自动知识图谱"`
+	CTime                int64  `json:"ctime" gorm:"column:ctime;autoCreateTime:milli;comment:创建时间"`
 	UTime       int64  `json:"utime" gorm:"column:utime;autoUpdateTime:milli;comment:更新时间"`
 }
 
@@ -29,6 +34,13 @@ func GetCompanionProfile(db *gorm.DB, userID int64) (*CompanionProfile, error) {
 		return nil, err
 	}
 	return profile, nil
+}
+
+// MigrateCompanionToggles sets correct defaults for existing rows after adding toggle columns.
+func MigrateCompanionToggles(db *gorm.DB) error {
+	return db.Exec(
+		"UPDATE companion_profiles SET cross_book_alerts = true, auto_knowledge_graph = true WHERE cross_book_alerts = false AND auto_knowledge_graph = false",
+	).Error
 }
 
 // SaveCompanionProfile creates or updates companion profile for a user.
