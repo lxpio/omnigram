@@ -40,6 +40,10 @@ func initUserData() error {
 			return err
 		}
 
+		if err = MigrateCompanionToggles(tx); err != nil {
+			return err
+		}
+
 		u := &User{
 			Name:       os.Getenv(`OMNI_USER`),
 			Credential: os.Getenv(`OMNI_PASSWORD`),
