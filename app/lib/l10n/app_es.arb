@@ -905,5 +905,13 @@
   "companionBehaviorAutoKnowledgeGraph": "Organizar automáticamente en grafo de conocimiento",
   "companionBehaviorAutoChapterRecap": "Resumen automático de capítulos",
   "companionBehaviorPostChapterQuestions": "Preguntas después de cada capítulo",
-  "companionBehaviorComingSoon": "Próximamente"
+  "companionBehaviorComingSoon": "Próximamente",
+  "bookDetailContinueReading": "Continuar leyendo",
+  "bookDetailStartReading": "Comenzar a leer",
+  "bookDetailAbout": "Acerca de este libro",
+  "bookDetailMyNotes": "Mis notas",
+  "bookDetailViewAll": "Ver todo",
+  "bookDetailImportedOn": "Importado el {date}",
+  "@bookDetailImportedOn": { "placeholders": { "date": { "type": "String" } } },
+  "bookDetailEditTitle": "Editar título"
 }

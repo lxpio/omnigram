@@ -905,5 +905,13 @@
   "companionBehaviorAutoKnowledgeGraph": "Bilgi grafiğine otomatik düzenle",
   "companionBehaviorAutoChapterRecap": "Otomatik bölüm özeti",
   "companionBehaviorPostChapterQuestions": "Bölüm sonrası sorular",
-  "companionBehaviorComingSoon": "Yakında"
+  "companionBehaviorComingSoon": "Yakında",
+  "bookDetailContinueReading": "Okumaya Devam Et",
+  "bookDetailStartReading": "Okumaya Başla",
+  "bookDetailAbout": "Bu kitap hakkında",
+  "bookDetailMyNotes": "Notlarım",
+  "bookDetailViewAll": "Tümünü Gör",
+  "bookDetailImportedOn": "{date} tarihinde içe aktarıldı",
+  "@bookDetailImportedOn": { "placeholders": { "date": { "type": "String" } } },
+  "bookDetailEditTitle": "Başlığı düzenle"
 }

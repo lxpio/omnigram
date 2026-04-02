@@ -905,5 +905,13 @@
   "companionBehaviorAutoKnowledgeGraph": "Organizare automată în graful de cunoștințe",
   "companionBehaviorAutoChapterRecap": "Rezumat automat al capitolelor",
   "companionBehaviorPostChapterQuestions": "Întrebări după fiecare capitol",
-  "companionBehaviorComingSoon": "În curând"
+  "companionBehaviorComingSoon": "În curând",
+  "bookDetailContinueReading": "Continuă lectura",
+  "bookDetailStartReading": "Începe lectura",
+  "bookDetailAbout": "Despre această carte",
+  "bookDetailMyNotes": "Notele mele",
+  "bookDetailViewAll": "Vezi tot",
+  "bookDetailImportedOn": "Importat pe {date}",
+  "@bookDetailImportedOn": { "placeholders": { "date": { "type": "String" } } },
+  "bookDetailEditTitle": "Editează titlul"
 }
