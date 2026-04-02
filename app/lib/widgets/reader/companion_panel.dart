@@ -6,9 +6,12 @@ import 'package:langchain_core/chat_models.dart';
 import 'package:omnigram/dao/companion_chat.dart';
 import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/models/companion_personality.dart';
+import 'package:omnigram/models/empty_state_data.dart';
 import 'package:omnigram/providers/companion_provider.dart';
+import 'package:omnigram/providers/empty_state_provider.dart';
 import 'package:omnigram/service/ai/companion_prompt.dart';
 import 'package:omnigram/service/ai/index.dart';
+import 'package:omnigram/widgets/common/empty_state.dart';
 import 'package:omnigram/widgets/markdown/styled_markdown.dart';
 
 /// Companion Panel — bidirectional conversation with reading companion.
@@ -245,7 +248,7 @@ class _CompanionPanelState extends ConsumerState<CompanionPanel> {
     }
 
     if (_messages.isEmpty && !_isStreaming) {
-      return _buildEmptyState(theme);
+      return _buildEmptyState(context, ref);
     }
 
     return ListView.builder(
@@ -268,41 +271,30 @@ class _CompanionPanelState extends ConsumerState<CompanionPanel> {
     );
   }
 
-  Widget _buildEmptyState(ThemeData theme) {
-    final personality = ref.read(companionProvider);
-    final greeting = CompanionPrompt.previewText(personality);
+  Widget _buildEmptyState(BuildContext context, WidgetRef ref) {
+    final tier = ref.watch(warmthTierProvider);
+    final data = emptyStateData(context, tier, EmptyPageType.companion);
+    final theme = Theme.of(context);
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.chat_bubble_outline, size: 48, color: theme.colorScheme.onSurfaceVariant.withAlpha(80)),
-            const SizedBox(height: 16),
-            Text(
-              greeting,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-                fontStyle: FontStyle.italic,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              alignment: WrapAlignment.center,
-              children: _quickPrompts.map((prompt) {
-                return ActionChip(
-                  label: Text(prompt, style: theme.textTheme.bodySmall),
-                  onPressed: () => _sendMessage(prompt),
-                );
-              }).toList(),
-            ),
-          ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        EmptyState.fromData(data),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            alignment: WrapAlignment.center,
+            children: _quickPrompts.map((prompt) {
+              return ActionChip(
+                label: Text(prompt, style: theme.textTheme.bodySmall),
+                onPressed: () => _sendMessage(prompt),
+              );
+            }).toList(),
+          ),
         ),
-      ),
+      ],
     );
   }
 
