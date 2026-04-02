@@ -1264,7 +1264,7 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
         body: Stack(
           children: [
             buildWebviewWithIOSWorkaround(context, url, initialCfi),
-            readingInfoWidget(),
+            // readingInfoWidget() removed — replaced by ReaderChrome (top bar + bottom bar)
             if (showHistory) _buildHistoryCapsule(),
             if (Prefs().openBookAnimation)
               SizedBox.expand(
