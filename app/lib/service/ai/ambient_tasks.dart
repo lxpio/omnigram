@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:omnigram/dao/concept_tag.dart';
+import 'package:omnigram/providers/companion_provider.dart';
 import 'package:omnigram/service/ai/ambient_ai_pipeline.dart';
 import 'package:omnigram/service/ai/concept_extractor.dart';
 
@@ -176,6 +177,10 @@ class AmbientTasks {
     required int bookId,
     required String bookTitle,
   }) async {
+    // Guard: skip if auto knowledge graph is disabled
+    final personality = ref.read(companionProvider);
+    if (!personality.autoKnowledgeGraph) return 0;
+
     final tags = await ConceptExtractor.extractFromNotes(
       ref: ref,
       bookId: bookId,
