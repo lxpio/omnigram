@@ -41,6 +41,11 @@ class Companion extends _$Companion {
   void updateDepth(int v) => update(state.copyWith(depth: v));
   void updateWarmth(int v) => update(state.copyWith(warmth: v));
   void updateVoice(String v) => update(state.copyWith(voice: v));
+  void updateAutoChapterRecap(bool v) => update(state.copyWith(autoChapterRecap: v));
+  void updateAnnotateHardWords(bool v) => update(state.copyWith(annotateHardWords: v));
+  void updateCrossBookAlerts(bool v) => update(state.copyWith(crossBookAlerts: v));
+  void updatePostChapterQuestions(bool v) => update(state.copyWith(postChapterQuestions: v));
+  void updateAutoKnowledgeGraph(bool v) => update(state.copyWith(autoKnowledgeGraph: v));
 
   void applyPreset(CompanionPersonality preset) => update(preset.copyWith(name: state.name));
 
@@ -62,14 +67,8 @@ class Companion extends _$Companion {
         fromJson: (data) => data as Map<String, dynamic>,
       );
 
-      final serverPersonality = CompanionPersonality(
-        name: response['name'] as String? ?? state.name,
-        proactivity: response['proactivity'] as int? ?? state.proactivity,
-        style: response['style'] as int? ?? state.style,
-        depth: response['depth'] as int? ?? state.depth,
-        warmth: response['warmth'] as int? ?? state.warmth,
-        voice: response['voice'] as String? ?? state.voice,
-      );
+      final merged = <String, dynamic>{...state.toJson(), ...response};
+      final serverPersonality = CompanionPersonality.fromJson(merged);
 
       state = serverPersonality;
       _save(serverPersonality);
@@ -87,14 +86,7 @@ class Companion extends _$Companion {
       final api = ref.read(serverConnectionProvider.notifier).api;
       if (api == null) return;
 
-      await api.putVoid('/user/companion', data: {
-        'name': p.name,
-        'proactivity': p.proactivity,
-        'style': p.style,
-        'depth': p.depth,
-        'warmth': p.warmth,
-        'voice': p.voice,
-      });
+      await api.putVoid('/user/companion', data: p.toJson());
     } catch (e) {
       debugPrint('[Companion] Server push failed: $e');
     }
