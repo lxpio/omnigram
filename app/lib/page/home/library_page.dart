@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:omnigram/models/book.dart';
+import 'package:omnigram/models/empty_state_data.dart';
 import 'package:omnigram/providers/book_list.dart';
+import 'package:omnigram/providers/empty_state_provider.dart';
 import 'package:omnigram/service/book.dart';
 import 'package:omnigram/widgets/library/ai_recommendation_card.dart';
 import 'package:omnigram/widgets/library/book_grid_item.dart';
@@ -28,12 +30,9 @@ class LibraryPage extends ConsumerWidget {
             final allBooks = bookGroups.expand((g) => g).where((b) => !b.isDeleted).toList();
 
             if (allBooks.isEmpty) {
-              return EmptyState(
-                message: '你的书架还是空的，导入第一本书开始阅读吧。',
-                actionLabel: '导入书籍',
-                icon: Icons.library_books_outlined,
-                onAction: () => _importBooks(context, ref),
-              );
+              final tier = ref.watch(warmthTierProvider);
+              final data = emptyStateData(context, tier, EmptyPageType.library);
+              return EmptyState.fromData(data, onAction: () => _importBooks(context, ref));
             }
 
             final recentBooks = List<Book>.from(allBooks)..sort((a, b) => b.createTime.compareTo(a.createTime));
