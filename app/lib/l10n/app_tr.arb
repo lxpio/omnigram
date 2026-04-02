@@ -885,5 +885,18 @@
    "aiModelSwitchTitle": "Modeli değiştir",
    "aiModelEnterManually": "Model adı girin",
    "aiModelOrSelectBelow": "Veya listeden seçin:",
-   "aiChatFontSize": "Yazı boyutu"
+   "aiChatFontSize": "Yazı boyutu",
+  "emptyStateDeskHigh": "Masanız sizi bekliyor! Raftan bir şeyler seçin — bugünün okuma serüveni burada başlıyor.",
+  "emptyStateDeskMid": "Devam eden kitap yok. Bir tane başlatmak için kitaplığa gidin.",
+  "emptyStateDeskLow": "Devam eden kitap yok.",
+  "emptyStateLibraryHigh": "Boş bir raf, sonsuz olasılıklar! Başlamak için ilk kitabınızı içe aktarın.",
+  "emptyStateLibraryMid": "Kitaplığınız boş. Başlamak için kitap içe aktarın.",
+  "emptyStateLibraryLow": "Henüz kitap yok.",
+  "emptyStateLibraryAction": "Kitap içe aktar",
+  "emptyStateInsightsHigh": "Şimdilik boş bir sayfa, ama her büyük kütüphane bir kitapla başlar. Okudukça içgörüleriniz büyüyecek.",
+  "emptyStateInsightsMid": "Okumaya ve not almaya başladığınızda içgörüler burada görünecek.",
+  "emptyStateInsightsLow": "Henüz okuma verisi yok.",
+  "emptyStateCompanionHigh": "Buradayım! Metin seçin ya da sormak istediğinizi sorun — bu kitaptaki her şey hakkında konuşalım.",
+  "emptyStateCompanionMid": "Başlamak için metin seçin veya bir soru yazın.",
+  "emptyStateCompanionLow": "Başlamak için yazın."
 }

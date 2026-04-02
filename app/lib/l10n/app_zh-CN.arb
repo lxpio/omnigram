@@ -891,5 +891,18 @@
   "aiChatFontSize": "字体大小",
   "aiModelSwitchTitle": "切换模型",
   "aiModelEnterManually": "输入模型名称",
-  "aiModelOrSelectBelow": "或从列表中选择："
+  "aiModelOrSelectBelow": "或从列表中选择：",
+  "emptyStateDeskHigh": "书桌在等你呢！去书架挑一本，今天的阅读从这里开始。",
+  "emptyStateDeskMid": "还没有在读的书。去书架选一本开始吧。",
+  "emptyStateDeskLow": "暂无在读书籍。",
+  "emptyStateLibraryHigh": "空空的书架，无限的可能！导入你的第一本书，开启阅读旅程。",
+  "emptyStateLibraryMid": "书架是空的。导入书籍开始阅读。",
+  "emptyStateLibraryLow": "暂无书籍。",
+  "emptyStateLibraryAction": "导入书籍",
+  "emptyStateInsightsHigh": "这里还是一张白纸，但每座图书馆都从第一本书开始。你的洞察会随阅读慢慢生长。",
+  "emptyStateInsightsMid": "开始阅读并添加笔记后，洞察会在这里出现。",
+  "emptyStateInsightsLow": "暂无阅读数据。",
+  "emptyStateCompanionHigh": "我在这里！选段文字或者直接问我，聊聊这本书的任何想法。",
+  "emptyStateCompanionMid": "选中文字或输入问题，开始对话。",
+  "emptyStateCompanionLow": "输入问题开始。"
 }

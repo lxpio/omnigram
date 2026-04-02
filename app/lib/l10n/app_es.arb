@@ -885,5 +885,18 @@
   "aiModelSwitchTitle": "Cambiar modelo",
   "aiModelEnterManually": "Ingrese nombre del modelo",
   "aiModelOrSelectBelow": "O seleccione de la lista:",
-  "aiChatFontSize": "Tamaño de fuente"
+  "aiChatFontSize": "Tamaño de fuente",
+  "emptyStateDeskHigh": "¡Tu escritorio te espera! Elige algo del estante — la lectura de hoy empieza aquí.",
+  "emptyStateDeskMid": "Sin libros en progreso. Ve a la librería para empezar uno.",
+  "emptyStateDeskLow": "Sin libros en progreso.",
+  "emptyStateLibraryHigh": "¡Un estante vacío, posibilidades infinitas! Importa tu primer libro para comenzar.",
+  "emptyStateLibraryMid": "Tu librería está vacía. Importa libros para empezar.",
+  "emptyStateLibraryLow": "Sin libros aún.",
+  "emptyStateLibraryAction": "Importar libros",
+  "emptyStateInsightsHigh": "Una página en blanco por ahora, pero cada gran biblioteca comienza con un libro. Tus perspectivas crecerán mientras lees.",
+  "emptyStateInsightsMid": "Las perspectivas aparecerán aquí una vez que empieces a leer y tomar notas.",
+  "emptyStateInsightsLow": "Sin datos de lectura aún.",
+  "emptyStateCompanionHigh": "¡Estoy aquí! Selecciona texto o simplemente pregunta — hablemos de cualquier cosa en este libro.",
+  "emptyStateCompanionMid": "Selecciona texto o escribe una pregunta para empezar.",
+  "emptyStateCompanionLow": "Escribe para empezar."
 }

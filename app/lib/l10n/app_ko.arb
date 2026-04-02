@@ -885,5 +885,18 @@
    "aiModelSwitchTitle": "모델 변경",
    "aiModelEnterManually": "모델 이름 입력",
    "aiModelOrSelectBelow": "또는 목록에서 선택:",
-   "aiChatFontSize": "글꼴 크기"
+   "aiChatFontSize": "글꼴 크기",
+  "emptyStateDeskHigh": "독서 책상이 기다리고 있어요! 책장에서 하나 골라보세요 — 오늘의 독서가 여기서 시작됩니다.",
+  "emptyStateDeskMid": "진행 중인 책이 없습니다. 책장으로 가서 시작해보세요.",
+  "emptyStateDeskLow": "진행 중인 책 없음.",
+  "emptyStateLibraryHigh": "빈 책장, 무한한 가능성! 첫 번째 책을 가져와서 시작해보세요.",
+  "emptyStateLibraryMid": "책장이 비어 있습니다. 책을 가져와서 시작해보세요.",
+  "emptyStateLibraryLow": "아직 책이 없습니다.",
+  "emptyStateLibraryAction": "책 가져오기",
+  "emptyStateInsightsHigh": "지금은 빈 페이지지만, 모든 위대한 도서관은 책 한 권에서 시작됩니다. 읽어갈수록 인사이트가 쌓여갑니다.",
+  "emptyStateInsightsMid": "독서와 메모를 시작하면 여기에 인사이트가 나타납니다.",
+  "emptyStateInsightsLow": "아직 독서 데이터가 없습니다.",
+  "emptyStateCompanionHigh": "여기 있어요! 텍스트를 선택하거나 그냥 물어보세요 — 이 책에 대해 무엇이든 이야기해요.",
+  "emptyStateCompanionMid": "텍스트를 선택하거나 질문을 입력하여 시작하세요.",
+  "emptyStateCompanionLow": "입력하여 시작."
 }

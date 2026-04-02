@@ -896,5 +896,18 @@
   "reading": "Reading",
   "bookshelf": "Bookshelf",
   "insights": "Insights",
-  "settings": "Settings"
+  "settings": "Settings",
+  "emptyStateDeskHigh": "Your desk is waiting! Pick something from the shelf — today's reading starts here.",
+  "emptyStateDeskMid": "No books in progress. Head to the bookshelf to start one.",
+  "emptyStateDeskLow": "No books in progress.",
+  "emptyStateLibraryHigh": "An empty shelf, endless possibilities! Import your first book to begin.",
+  "emptyStateLibraryMid": "Your bookshelf is empty. Import books to get started.",
+  "emptyStateLibraryLow": "No books yet.",
+  "emptyStateLibraryAction": "Import Books",
+  "emptyStateInsightsHigh": "A blank page for now, but every great library starts with one book. Your insights will grow as you read.",
+  "emptyStateInsightsMid": "Insights will appear here once you start reading and taking notes.",
+  "emptyStateInsightsLow": "No reading data yet.",
+  "emptyStateCompanionHigh": "I'm here! Select some text or just ask — let's talk about anything in this book.",
+  "emptyStateCompanionMid": "Select text or type a question to start.",
+  "emptyStateCompanionLow": "Type to begin."
 }
