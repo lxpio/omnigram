@@ -21,7 +21,7 @@ Add 5 bool fields to `app/lib/models/companion_personality.dart`:
 | Field | Description | Default | Feature Status |
 |-------|-------------|---------|----------------|
 | `autoChapterRecap` | Auto-generate chapter recap on chapter switch | `false` | Not implemented |
-| `annotateHardWords` | Auto-detect and annotate difficult words | `true` | Partial (glossary exists, auto-detect pending) |
+| `annotateHardWords` | Auto-detect and annotate difficult words | `false` | Not implemented (auto-detect pending) |
 | `crossBookAlerts` | Show cross-book connection alerts in margins | `true` | Implemented (margin notes) |
 | `postChapterQuestions` | Prompt thought questions after finishing a chapter | `false` | Not implemented |
 | `autoKnowledgeGraph` | Auto-extract concepts to knowledge graph | `true` | Implemented (concept extractor) |
@@ -33,10 +33,12 @@ Update the three presets:
 | Preset | autoChapterRecap | annotateHardWords | crossBookAlerts | postChapterQuestions | autoKnowledgeGraph |
 |--------|-----------------|-------------------|-----------------|---------------------|-------------------|
 | Silent | false | false | false | false | false |
-| Buddy | false | true | true | false | true |
-| Scholar | false | true | true | false | true |
+| Buddy | false | false | true | false | true |
+| Scholar | false | false | true | false | true |
 
 Silent turns everything off (minimal interference). Buddy and Scholar enable implemented features, leave unimplemented ones off.
+
+> **Note (R-7):** Presets will be revisited when `autoChapterRecap`, `annotateHardWords`, and `postChapterQuestions` are implemented. Scholar may enable more toggles at that time.
 
 ### 2.3 CompanionProfile (Go — Server)
 
@@ -44,13 +46,51 @@ Add 5 bool fields to `server/schema/companion_profile.go`:
 
 ```go
 AutoChapterRecap     bool `json:"autoChapterRecap" gorm:"default:false"`
-AnnotateHardWords    bool `json:"annotateHardWords" gorm:"default:true"`
+AnnotateHardWords    bool `json:"annotateHardWords" gorm:"default:false"`
 CrossBookAlerts      bool `json:"crossBookAlerts" gorm:"default:true"`
 PostChapterQuestions  bool `json:"postChapterQuestions" gorm:"default:false"`
 AutoKnowledgeGraph   bool `json:"autoKnowledgeGraph" gorm:"default:true"`
 ```
 
+After `AutoMigrate`, regenerate swagger docs: `cd server && make swagger` (R-10).
+
 No new endpoints needed — fields sync via existing `GET/PUT /user/companion`.
+
+### 2.4 Server Sync Safety (R-1, R-2)
+
+**Problem:** Old clients that `PUT /user/companion` only send 6 fields. Go deserializes missing bools as `false`, causing `db.Save()` to overwrite toggles to `false`.
+
+**Fix — Client side:** Change `_syncToServer` and `_syncFromServer` in `companion_provider.dart` to use `p.toJson()` / `CompanionPersonality.fromJson()` instead of manual field mapping. This eliminates field drift for all future additions.
+
+**Fix — Server side:** `getCompanionHandle` fallback response must include the 3 true-default toggles: `AnnotateHardWords: true, CrossBookAlerts: true, AutoKnowledgeGraph: true`.
+
+**Fix — Migration:** After `AutoMigrate`, run a one-time migration to set correct defaults on existing rows:
+```sql
+UPDATE companion_profiles
+SET annotate_hard_words = true, cross_book_alerts = true, auto_knowledge_graph = true
+WHERE annotate_hard_words = false AND created_at < <migration_timestamp>;
+```
+
+### 2.5 Companion Provider Sync Update (R-3)
+
+`companion_provider.dart` methods `_syncToServer` and `_syncFromServer` currently hand-map 6 fields. Both must be updated:
+
+- `_syncToServer`: change `data: { manual fields }` → `data: p.toJson()`
+- `_syncFromServer`: change manual field extraction → `CompanionPersonality.fromJson(response)`
+
+This eliminates the need to update sync code every time a field is added.
+
+### 2.6 Provider Convenience Methods (R-8)
+
+Add 5 convenience methods to `Companion` notifier matching the existing pattern:
+
+```dart
+void updateAutoChapterRecap(bool v) => update(state.copyWith(autoChapterRecap: v));
+void updateAnnotateHardWords(bool v) => update(state.copyWith(annotateHardWords: v));
+void updateCrossBookAlerts(bool v) => update(state.copyWith(crossBookAlerts: v));
+void updatePostChapterQuestions(bool v) => update(state.copyWith(postChapterQuestions: v));
+void updateAutoKnowledgeGraph(bool v) => update(state.copyWith(autoKnowledgeGraph: v));
+```
 
 ---
 
@@ -65,9 +105,9 @@ Add a "Behavior Preferences" section in `companion_settings_page.dart`, below th
 [voice selector]
 
 ─── Behavior Preferences ───
-☑ Annotate difficult words              (SwitchListTile, enabled)
 ☑ Cross-book connection alerts           (SwitchListTile, enabled)
 ☑ Auto-organize to knowledge graph       (SwitchListTile, enabled)
+☐ Annotate difficult words     Coming Soon (SwitchListTile, disabled + badge)
 ☐ Auto chapter recap           Coming Soon (SwitchListTile, disabled + badge)
 ☐ Post-chapter questions       Coming Soon (SwitchListTile, disabled + badge)
 ```
@@ -107,9 +147,9 @@ When a toggle is off, the corresponding AI feature is skipped at its entry point
 
 | Toggle | Guard Location | Behavior When Off |
 |--------|---------------|-------------------|
-| `annotateHardWords` | `widgets/reader/glossary_tooltip.dart` | Skip auto-detection; manual selection still works |
+| `annotateHardWords` | Guard deferred — auto-detect not yet implemented | N/A (toggle exists as Coming Soon) |
 | `crossBookAlerts` | `widgets/reader/margin_notes_overlay.dart` | Don't generate or display margin notes |
-| `autoKnowledgeGraph` | `service/ai/concept_extractor.dart` | Skip concept extraction after reading |
+| `autoKnowledgeGraph` | `service/ai/ambient_tasks.dart` → `extractConcepts` | Skip concept extraction after reading |
 
 ### 4.2 Guard Implementation
 
@@ -124,11 +164,21 @@ Simple early return — no complex logic. The AI pipeline itself is untouched; o
 
 ### 4.3 Manual vs Auto Distinction
 
-`annotateHardWords` only gates **automatic** detection. If the user manually selects text and taps "Explain", the glossary still works regardless of toggle state. The toggle controls proactive behavior, not user-initiated actions.
+All toggles gate **proactive/automatic** behavior only. User-initiated actions (e.g., manually selecting text and tapping "Explain") work regardless of toggle state.
+
+### 4.4 Toggle Off vs Existing Data (R-12)
+
+Turning a toggle off **hides future generation** but does not delete or hide existing data. E.g., turning off `crossBookAlerts` stops new margin notes from being generated, but already-existing margin notes remain visible and accessible. This is the simplest and least surprising behavior.
+
+### 4.5 annotateHardWords Status (R-5)
+
+`annotateHardWords` is reclassified as **Coming Soon** alongside `autoChapterRecap` and `postChapterQuestions`. The auto-detect feature is not yet implemented (PROGRESS.md shows "自动检测难词 ❌"), so there is no code to gate. The toggle will be enabled when the auto-detect feature is built. The existing manual glossary (user selects text → Explain) is unaffected by this toggle.
+
+Updated defaults: `annotateHardWords` default changes to `false` (Coming Soon = off by default).
 
 ---
 
-## 5. Codegen Impact
+## 5. Codegen & Build Impact
 
 Adding fields to `CompanionPersonality` (freezed) requires:
 1. Update `companion_personality.dart` with new fields
@@ -137,15 +187,20 @@ Adding fields to `CompanionPersonality` (freezed) requires:
 
 Existing code that reads `CompanionPersonality` is unaffected — new fields have defaults.
 
+Server changes require:
+1. Update `companion_profile.go` with new fields
+2. Run `cd server && make swagger` to regenerate API docs
+3. One-time migration for existing rows (§2.4)
+
 ---
 
 ## 6. Degradation
 
 | Scenario | Behavior |
 |----------|----------|
-| No companion configured | All toggles use default values (3 on, 2 off) |
-| Old server without new fields | Client defaults apply; PUT sends all fields, server ignores unknown ones |
-| Old client with new server | Server returns extra fields, old client ignores them (freezed `fromJson` is lenient) |
+| No companion configured | All toggles use default values (2 on, 3 off) |
+| Old server without new fields | Client defaults apply; `toJson()` sends all fields, server ignores unknown ones |
+| Old client with new server | Handled by §2.4 — server preserves toggles via PATCH-style merge or client upgrade |
 
 ---
 
