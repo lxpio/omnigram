@@ -15,7 +15,6 @@ import 'package:omnigram/page/book_detail.dart';
 import 'package:omnigram/page/book_player/epub_player.dart';
 import 'package:omnigram/service/ai/index.dart';
 import 'package:omnigram/service/ai/prompt_generate.dart';
-import 'package:omnigram/utils/env_var.dart';
 import 'package:omnigram/utils/toast/common.dart';
 import 'package:omnigram/utils/ui/status_bar.dart';
 import 'package:omnigram/widgets/ai/ai_chat_stream.dart';
@@ -29,6 +28,8 @@ import 'package:omnigram/widgets/reading_page/style_widget.dart';
 import 'package:omnigram/widgets/reading_page/toc_widget.dart';
 import 'package:omnigram/widgets/common/axis_flex.dart';
 import 'package:omnigram/widgets/reader/companion_panel.dart';
+import 'package:omnigram/widgets/reader/reader_chrome.dart';
+import 'package:omnigram/providers/current_reading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -73,6 +74,14 @@ class ReadingPageState extends ConsumerState<ReadingPage> with WidgetsBindingObs
   late double _aiChatHeight;
   bool _isResizingAiChat = false;
   bool bookmarkExists = false;
+  String _chapterTitle = '';
+  double _readingProgress = 0.0;
+  int _currentChapterPage = 0;
+  int _totalChapterPages = 0;
+
+  late final AnimationController _chromeAnimController;
+  late final Animation<Offset> _topSlide;
+  late final Animation<Offset> _bottomSlide;
 
   late final FocusNode _readerFocusNode;
   // late final VolumeKeyBoard _volumeKeyBoard;
@@ -81,6 +90,19 @@ class ReadingPageState extends ConsumerState<ReadingPage> with WidgetsBindingObs
   @override
   void initState() {
     _readerFocusNode = FocusNode(debugLabel: 'reading_page_focus');
+
+    _chromeAnimController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    _topSlide = Tween<Offset>(
+      begin: const Offset(0, -1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _chromeAnimController, curve: Curves.easeOut));
+    _bottomSlide = Tween<Offset>(
+      begin: const Offset(0, 1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _chromeAnimController, curve: Curves.easeOut));
 
     // Initialize AI panel sizes from persistent storage
     _aiChatWidth = Prefs().aiPanelWidth;
@@ -139,6 +161,7 @@ class ReadingPageState extends ConsumerState<ReadingPage> with WidgetsBindingObs
     //   unawaited(_volumeKeyBoard.removeListener());
     // }
     _readerFocusNode.dispose();
+    _chromeAnimController.dispose();
     super.dispose();
   }
 
@@ -302,19 +325,24 @@ class ReadingPageState extends ConsumerState<ReadingPage> with WidgetsBindingObs
     setState(() {
       showStatusBarWithoutResize();
       bottomBarOffstage = false;
+      _chromeAnimController.forward();
       _releaseReaderFocus();
     });
   }
 
   void hideBottomBar() {
-    setState(() {
-      _currentPage = empty;
-      bottomBarOffstage = true;
-      if (Prefs().hideStatusBar) {
-        hideStatusBar();
+    _chromeAnimController.reverse().then((_) {
+      if (mounted) {
+        setState(() {
+          _currentPage = empty;
+          bottomBarOffstage = true;
+        });
       }
-      _requestReaderFocus();
     });
+    if (Prefs().hideStatusBar) {
+      hideStatusBar();
+    }
+    _requestReaderFocus();
   }
 
   void showOrHideAppBarAndBottomBar(bool show) {
@@ -590,8 +618,13 @@ class ReadingPageState extends ConsumerState<ReadingPage> with WidgetsBindingObs
 
   void updateState() {
     if (mounted) {
+      final reading = ref.read(currentReadingProvider);
       setState(() {
         bookmarkExists = epubPlayerKey.currentState!.bookmarkExists;
+        _chapterTitle = reading.chapterTitle ?? _book.title;
+        _readingProgress = reading.percentage ?? 0.0;
+        _currentChapterPage = reading.chapterCurrentPage ?? 0;
+        _totalChapterPages = reading.chapterTotalPages ?? 0;
       });
     }
   }
@@ -622,154 +655,54 @@ class ReadingPageState extends ConsumerState<ReadingPage> with WidgetsBindingObs
 
   @override
   Widget build(BuildContext context) {
-    var aiButton = IconButton(
-      tooltip: L10n.of(context).aiChat,
-      icon: const Icon(Icons.auto_awesome),
-      onPressed: () async {
-        // Determine if should show as split based on display mode
-        final displayMode = Prefs().aiChatDisplayMode;
-        final screenWidth = MediaQuery.of(context).size.width;
-
-        bool shouldShowAsSplit = false;
-        switch (displayMode) {
-          case AiChatDisplayMode.adaptive:
-            shouldShowAsSplit = screenWidth >= 600;
-            break;
-          case AiChatDisplayMode.split:
-            shouldShowAsSplit = true;
-            break;
-          case AiChatDisplayMode.popup:
-            shouldShowAsSplit = false;
-            break;
-        }
-
-        if (shouldShowAsSplit && _aiChat != null) {
-          setState(() {
-            _aiChat = null;
-          });
-          return;
-        }
-
-        showOrHideAppBarAndBottomBar(false);
-        showAiChat();
-      },
-    );
-    Offstage controller = Offstage(
-      offstage: bottomBarOffstage,
+    Widget chromeOverlay = Offstage(
+      offstage: bottomBarOffstage && !_chromeAnimController.isAnimating,
       child: PointerInterceptor(
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: () {
-                  showOrHideAppBarAndBottomBar(false);
+        child: ReaderChrome(
+          visible: !bottomBarOffstage,
+          topSlide: _topSlide,
+          bottomSlide: _bottomSlide,
+          onDismiss: () => showOrHideAppBarAndBottomBar(false),
+          chapterTitle: _chapterTitle.isNotEmpty ? _chapterTitle : _book.title,
+          isBookmarked: bookmarkExists,
+          onBack: () => Navigator.pop(context),
+          onToggleBookmark: () {
+            if (bookmarkExists) {
+              epubPlayerKey.currentState!.removeAnnotation(epubPlayerKey.currentState!.bookmarkCfi);
+            } else {
+              epubPlayerKey.currentState!.addBookmarkHere();
+            }
+          },
+          onShowCompanion: showCompanionPanel,
+          onShowMenu: () {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) => BookDetail(book: widget.book)));
+          },
+          progress: _readingProgress,
+          currentPage: _currentChapterPage,
+          totalPages: _totalChapterPages,
+          onSeek: (pct) {
+            epubPlayerKey.currentState?.webViewController.evaluateJavascript(
+              source: 'goToPercentage($pct)',
+            );
+          },
+          onShowToc: tocHandler,
+          onShowNotes: noteHandler,
+          onShowProgress: progressHandler,
+          onShowStyle: () async {
+            List<ReadTheme> themes = await themeDao.selectThemes();
+            setState(() {
+              _currentPage = StyleWidget(
+                themes: themes,
+                epubPlayerKey: epubPlayerKey,
+                setCurrentPage: (Widget page) {
+                  setState(() => _currentPage = page);
                 },
-                behavior: HitTestBehavior.opaque,
-                onVerticalDragUpdate: (details) {},
-                onVerticalDragEnd: (details) {},
-                child: Container(color: Colors.black.withAlpha(30)),
-              ),
-            ),
-            Column(
-              children: [
-                AppBar(
-                  title: Text(_book.title, overflow: TextOverflow.ellipsis),
-                  leading: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () {
-                      // close reading page
-                      Navigator.pop(context);
-                    },
-                  ),
-                  actions: [
-                    if (EnvVar.enableAIFeature)
-                      IconButton(
-                        tooltip: L10n.of(context).readingPageCompanion,
-                        icon: const Icon(Icons.chat_bubble_outline),
-                        onPressed: showCompanionPanel,
-                      ),
-                    if (EnvVar.enableAIFeature) aiButton,
-                    IconButton(
-                      icon: const Icon(Icons.copy),
-                      tooltip: L10n.of(context).readingPageCopyChapterContent,
-                      onPressed: () async {
-                        try {
-                          var content = await epubPlayerKey.currentState?.theChapterContent();
-                          var len = content?.length ?? 0;
-                          if (len > 0) {
-                            await Clipboard.setData(ClipboardData(text: content!));
-                          }
-                          AnxToast.show(L10n.of(context).readingPageCopiedCharacters(len));
-                        } catch (e) {
-                          AnxToast.show(L10n.of(context).readingPageErrorCopyingContent);
-                        }
-                      },
-                    ),
-                    IconButton(
-                      tooltip: L10n.of(context).readingPageBookmark,
-                      onPressed: () {
-                        if (bookmarkExists) {
-                          epubPlayerKey.currentState!.removeAnnotation(epubPlayerKey.currentState!.bookmarkCfi);
-                        } else {
-                          epubPlayerKey.currentState!.addBookmarkHere();
-                        }
-                      },
-                      icon: bookmarkExists ? const Icon(Icons.bookmark) : const Icon(Icons.bookmark_border),
-                    ),
-                    IconButton(
-                      tooltip: L10n.of(context).readingPageBookDetails,
-                      icon: const Icon(EvaIcons.more_vertical),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute(builder: (context) => BookDetail(book: widget.book)),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                const Spacer(),
-                BottomSheet(
-                  onClosing: () {},
-                  enableDrag: false,
-                  builder: (context) => SafeArea(
-                    top: false,
-                    child: Container(
-                      constraints: const BoxConstraints(maxWidth: 600),
-                      child: StatefulBuilder(
-                        builder: (BuildContext context, StateSetter setState) {
-                          final hasContent = !identical(_currentPage, empty);
-                          return IntrinsicHeight(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (hasContent) Expanded(child: _currentPage),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: [
-                                    IconButton(icon: const Icon(Icons.toc), onPressed: tocHandler),
-                                    IconButton(icon: const Icon(EvaIcons.edit), onPressed: noteHandler),
-                                    IconButton(icon: const Icon(Icons.data_usage), onPressed: progressHandler),
-                                    IconButton(
-                                      icon: const Icon(Icons.color_lens),
-                                      onPressed: () {
-                                        styleHandler(setState);
-                                      },
-                                    ),
-                                    IconButton(icon: const Icon(EvaIcons.headphones), onPressed: ttsHandler),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+                hideAppBarAndBottomBar: showOrHideAppBarAndBottomBar,
+              );
+            });
+          },
+          onShowTts: ttsHandler,
+          activePanel: identical(_currentPage, empty) ? null : _currentPage,
         ),
       ),
     );
@@ -899,7 +832,7 @@ class ReadingPageState extends ConsumerState<ReadingPage> with WidgetsBindingObs
                         ),
                     ],
                   ),
-                  controller,
+                  chromeOverlay,
                   // TTS floating action button: always in the tree when toolbar
                   // is hidden; TtsFab handles its own show/hide internally so
                   // its State (expanded flag) is never destroyed mid-session.
