@@ -17,8 +17,8 @@ import (
 // @Produce json
 // @Security BearerAuth
 // @Param book_id query string false "Filter by book ID"
-// @Param since query integer false "Only return records with ctime > since (Unix ms)"
-// @Success 200 {object} map[string]interface{}
+// @Param since query int false "Delta sync: only return records with ctime > since (milliseconds)"
+// @Success 200 {object} object{nodes=[]schema.ConceptTag,edges=[]schema.ConceptEdge,server_time=int64} "Knowledge graph with server timestamp"
 // @Failure 500 {object} schema.ErrorResponse
 // @Router /reader/knowledge [get]
 func GetKnowledgeGraph(c *gin.Context) {
@@ -79,7 +79,7 @@ func GetKnowledgeGraph(c *gin.Context) {
 // @Produce json
 // @Security BearerAuth
 // @Param body body []schema.ConceptTagWithLocalID true "Concept tags with optional local_id"
-// @Success 200 {object} map[string]interface{}
+// @Success 200 {object} object{status=string,mappings=[]object{local_id=int,server_id=int}} "Sync result with ID mappings"
 // @Failure 400 {object} schema.ErrorResponse
 // @Router /reader/knowledge/tags [post]
 func SyncConceptTags(c *gin.Context) {
