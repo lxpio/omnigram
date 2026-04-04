@@ -79,6 +79,7 @@ class SyncState {
 class _SyncKeys {
   static const lastSyncTime = 'sync_last_sync_time_ms';
   static const syncCheckpoint = 'sync_checkpoint_step';
+  static const lastAiSyncServerTime = 'sync_last_ai_sync_server_time_ms';
 }
 
 /// Bidirectional incremental sync manager.
@@ -91,6 +92,7 @@ class SyncManager extends _$SyncManager {
   Timer? _autoSyncTimer;
   static const _maxRetries = 3;
   static const _pageSize = 500;
+  int _lastAiSyncServerTimeMs = 0;
 
   @override
   SyncState build() {
@@ -106,6 +108,7 @@ class SyncManager extends _$SyncManager {
     if (ms != null && ms > 0) {
       state = state.copyWith(lastSyncTime: DateTime.fromMillisecondsSinceEpoch(ms));
     }
+    _lastAiSyncServerTimeMs = prefs.getInt(_SyncKeys.lastAiSyncServerTime) ?? 0;
   }
 
   /// Persist lastSyncTime to SharedPreferences.
@@ -224,6 +227,10 @@ class SyncManager extends _$SyncManager {
 
       // Step 7: Process offline queue
       await _processOfflineQueue();
+
+      // Step 8: Pull AI data
+      state = state.copyWith(progress: 0.97, message: '同步 AI 数据...');
+      await _pullAiData();
 
       final now = DateTime.now();
       await _persistLastSyncTime(now);
@@ -370,17 +377,78 @@ class SyncManager extends _$SyncManager {
     final api = conn.api;
     if (api == null) return;
 
-    // Concept tags
-    try {
-      final conceptDao = ConceptTagDao();
-      final unsyncedTags = await conceptDao.getUnsynced();
-      if (unsyncedTags.isNotEmpty) {
-        final tagMaps = unsyncedTags.map((t) => t.toMap()).toList();
-        await api.postVoid('/reader/knowledge/tags', data: tagMaps);
-        await conceptDao.markSynced(unsyncedTags.where((t) => t.id != null).map((t) => t.id!).toList());
+    // Concept Tags — convert book_id to server ID, get ID mappings back
+    final conceptDao = ConceptTagDao();
+    final unsyncedTags = await conceptDao.getUnsynced();
+    if (unsyncedTags.isNotEmpty) {
+      final bookMappings = await IdMappingDao.getAllMappings('book');
+
+      final tagMaps = <Map<String, dynamic>>[];
+      final localTagIds = <int>[];
+      for (final t in unsyncedTags) {
+        final serverBookId = bookMappings[t.bookId.toString()];
+        if (serverBookId == null) continue;
+        final m = t.toMap();
+        m['local_id'] = t.id;
+        m['book_id'] = serverBookId;
+        tagMaps.add(m);
+        if (t.id != null) localTagIds.add(t.id!);
       }
-    } catch (e) {
-      debugPrint('[SyncManager] Push concept tags: $e');
+
+      if (tagMaps.isNotEmpty) {
+        try {
+          final resp = await api.post<Map<String, dynamic>>(
+            '/reader/knowledge/tags',
+            data: tagMaps,
+            fromJson: (d) => d as Map<String, dynamic>,
+          );
+          final mappings = resp['mappings'] as List? ?? [];
+          for (final m in mappings) {
+            await IdMappingDao.upsert(
+              m['local_id'].toString(),
+              m['server_id'].toString(),
+              'concept_tag',
+            );
+          }
+          await conceptDao.markSynced(localTagIds);
+        } catch (e) {
+          debugPrint('[SyncManager] Push concept tags: $e');
+        }
+      }
+    }
+
+    // Concept Edges — map local tag IDs to server tag IDs
+    final unsyncedEdges = await conceptDao.getUnsyncedEdges();
+    if (unsyncedEdges.isNotEmpty) {
+      final edgeMaps = <Map<String, dynamic>>[];
+      final syncedEdgeIds = <int>[];
+
+      for (final e in unsyncedEdges) {
+        final sourceServerId = await IdMappingDao.getServerId(
+          e.sourceTagId.toString(), 'concept_tag',
+        );
+        final targetServerId = await IdMappingDao.getServerId(
+          e.targetTagId.toString(), 'concept_tag',
+        );
+        if (sourceServerId == null || targetServerId == null) continue;
+
+        edgeMaps.add({
+          'source_id': int.parse(sourceServerId),
+          'target_id': int.parse(targetServerId),
+          'weight': e.weight,
+          'reason': e.reason,
+        });
+        if (e.id != null) syncedEdgeIds.add(e.id!);
+      }
+
+      if (edgeMaps.isNotEmpty) {
+        try {
+          await api.postVoid('/reader/knowledge/edges', data: edgeMaps);
+          await conceptDao.markEdgesSynced(syncedEdgeIds);
+        } catch (e) {
+          debugPrint('[SyncManager] Push concept edges: $e');
+        }
+      }
     }
 
     // AI cache
@@ -396,54 +464,58 @@ class SyncManager extends _$SyncManager {
       debugPrint('[SyncManager] Push AI cache: $e');
     }
 
-    // Companion chat
-    try {
-      final chatDao = CompanionChatDao();
-      final unsyncedChats = await chatDao.getUnsynced();
-      if (unsyncedChats.isNotEmpty) {
-        final byBook = <int, List<CompanionMessage>>{};
-        for (final msg in unsyncedChats) {
-          byBook.putIfAbsent(msg.bookId, () => []).add(msg);
-        }
-        for (final entry in byBook.entries) {
-          try {
-            await api.postVoid(
-              '/reader/books/${entry.key}/companion/chat',
-              data: entry.value.map((m) => m.toMap()).toList(),
-            );
-            await chatDao.markSynced(entry.value.where((m) => m.id != null).map((m) => m.id!).toList());
-          } catch (e) {
-            debugPrint('[SyncManager] Push chat for book ${entry.key}: $e');
-          }
+    // Companion chat — use server book IDs for URLs
+    final chatDao = CompanionChatDao();
+    final unsyncedChats = await chatDao.getUnsynced();
+    if (unsyncedChats.isNotEmpty) {
+      final byBook = <int, List<CompanionMessage>>{};
+      for (final msg in unsyncedChats) {
+        byBook.putIfAbsent(msg.bookId, () => []).add(msg);
+      }
+      for (final entry in byBook.entries) {
+        try {
+          final serverId = await IdMappingDao.getServerId(
+            entry.key.toString(), 'book',
+          );
+          if (serverId == null) continue;
+          await api.postVoid(
+            '/reader/books/$serverId/companion/chat',
+            data: entry.value.map((m) => m.toMap()).toList(),
+          );
+          await chatDao.markSynced(
+            entry.value.where((m) => m.id != null).map((m) => m.id!).toList(),
+          );
+        } catch (e) {
+          debugPrint('[SyncManager] Push chat for book ${entry.key}: $e');
         }
       }
-    } catch (e) {
-      debugPrint('[SyncManager] Push companion chat: $e');
     }
 
-    // Margin notes
-    try {
-      final marginDao = MarginNoteDao();
-      final unsyncedNotes = await marginDao.getUnsynced();
-      if (unsyncedNotes.isNotEmpty) {
-        final byBook = <int, List<MarginNote>>{};
-        for (final note in unsyncedNotes) {
-          byBook.putIfAbsent(note.bookId, () => []).add(note);
-        }
-        for (final entry in byBook.entries) {
-          try {
-            await api.postVoid(
-              '/reader/books/${entry.key}/margin-notes',
-              data: entry.value.map((n) => n.toMap()).toList(),
-            );
-            await marginDao.markSynced(entry.value.where((n) => n.id != null).map((n) => n.id!).toList());
-          } catch (e) {
-            debugPrint('[SyncManager] Push margin notes for book ${entry.key}: $e');
-          }
+    // Margin notes — use server book IDs for URLs
+    final marginDao = MarginNoteDao();
+    final unsyncedNotes = await marginDao.getUnsynced();
+    if (unsyncedNotes.isNotEmpty) {
+      final byBook = <int, List<MarginNote>>{};
+      for (final note in unsyncedNotes) {
+        byBook.putIfAbsent(note.bookId, () => []).add(note);
+      }
+      for (final entry in byBook.entries) {
+        try {
+          final serverId = await IdMappingDao.getServerId(
+            entry.key.toString(), 'book',
+          );
+          if (serverId == null) continue;
+          await api.postVoid(
+            '/reader/books/$serverId/margin-notes',
+            data: entry.value.map((n) => n.toMap()).toList(),
+          );
+          await marginDao.markSynced(
+            entry.value.where((n) => n.id != null).map((n) => n.id!).toList(),
+          );
+        } catch (e) {
+          debugPrint('[SyncManager] Push margin notes for book ${entry.key}: $e');
         }
       }
-    } catch (e) {
-      debugPrint('[SyncManager] Push margin notes: $e');
     }
   }
 
@@ -636,6 +708,136 @@ class SyncManager extends _$SyncManager {
     } catch (e) {
       debugPrint('[SyncManager] Pull progress error: $e');
     }
+  }
+
+  /// Pull AI data from server: companion chat, margin notes, concept tags/edges.
+  /// Strategy: Server Wins — server data overwrites local on conflict.
+  Future<void> _pullAiData() async {
+    final conn = ref.read(serverConnectionProvider.notifier);
+    if (!conn.state.isConnected) return;
+    final api = conn.api;
+    if (api == null) return;
+
+    final since = _lastAiSyncServerTimeMs;
+    final books = await IdMappingDao.getAllMappings('book');
+    int latestServerTime = since;
+
+    final chatDao = CompanionChatDao();
+    final marginDao = MarginNoteDao();
+    final conceptDao = ConceptTagDao();
+
+    for (final entry in books.entries) {
+      final localBookId = int.parse(entry.key);
+      final serverId = entry.value;
+
+      // 1. Pull companion chat (paginated)
+      try {
+        int offset = 0;
+        const limit = 100;
+        while (true) {
+          final resp = await api.get<Map<String, dynamic>>(
+            '/reader/books/$serverId/companion/chat',
+            queryParameters: {'since': since, 'limit': limit, 'offset': offset},
+            fromJson: (d) => d as Map<String, dynamic>,
+          );
+          final chats = (resp['data'] as List?) ?? [];
+          final serverTime = resp['server_time'] as int? ?? 0;
+          latestServerTime = max(latestServerTime, serverTime);
+
+          for (final chat in chats) {
+            final serverChatId = chat['id'] as int;
+            final existing = await IdMappingDao.getLocalId(
+              serverChatId.toString(), 'companion_chat',
+            );
+            if (existing != null) continue;
+
+            final localId = await chatDao.insertFromServer(
+              CompanionMessage.fromServerJson(
+                chat as Map<String, dynamic>, localBookId,
+              ),
+            );
+            await IdMappingDao.upsert(
+              localId.toString(), serverChatId.toString(), 'companion_chat',
+            );
+          }
+
+          if (chats.length < limit) break;
+          offset += limit;
+        }
+      } catch (e) {
+        debugPrint('[SyncManager] Pull companion chat for $serverId: $e');
+      }
+
+      // 2. Pull margin notes
+      try {
+        final resp = await api.get<Map<String, dynamic>>(
+          '/reader/books/$serverId/margin-notes',
+          queryParameters: {'since': since},
+          fromJson: (d) => d as Map<String, dynamic>,
+        );
+        final notes = (resp['data'] as List?) ?? [];
+        final serverTime = resp['server_time'] as int? ?? 0;
+        latestServerTime = max(latestServerTime, serverTime);
+
+        for (final note in notes) {
+          await marginDao.upsertFromServer(
+            MarginNote.fromServerJson(
+              note as Map<String, dynamic>, localBookId,
+            ),
+          );
+        }
+      } catch (e) {
+        debugPrint('[SyncManager] Pull margin notes for $serverId: $e');
+      }
+    }
+
+    // 3. Pull concept tags + edges (all books at once)
+    try {
+      final resp = await api.get<Map<String, dynamic>>(
+        '/reader/knowledge',
+        queryParameters: {'since': since},
+        fromJson: (d) => d as Map<String, dynamic>,
+      );
+      final serverTime = resp['server_time'] as int? ?? 0;
+      latestServerTime = max(latestServerTime, serverTime);
+
+      final serverTagIdToLocalId = <int, int>{};
+
+      final nodes = (resp['nodes'] as List?) ?? [];
+      for (final tag in nodes) {
+        final serverBookId = tag['book_id'] as String?;
+        if (serverBookId == null) continue;
+        final localBookId = await IdMappingDao.getLocalId(serverBookId, 'book');
+        if (localBookId == null) continue;
+
+        final localId = await conceptDao.insertTagIfNotExists(
+          ConceptTag.fromServerJson(
+            tag as Map<String, dynamic>, int.parse(localBookId),
+          ),
+        );
+        serverTagIdToLocalId[tag['id'] as int] = localId;
+      }
+
+      final edges = (resp['edges'] as List?) ?? [];
+      for (final edge in edges) {
+        final localSourceId = serverTagIdToLocalId[edge['source_id']];
+        final localTargetId = serverTagIdToLocalId[edge['target_id']];
+        if (localSourceId == null || localTargetId == null) continue;
+
+        await conceptDao.insertEdgeIfNotExists(
+          ConceptEdge.fromServerJson(
+            edge as Map<String, dynamic>, localSourceId, localTargetId,
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('[SyncManager] Pull knowledge graph: $e');
+    }
+
+    // Persist server time for next delta pull
+    _lastAiSyncServerTimeMs = latestServerTime;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_SyncKeys.lastAiSyncServerTime, latestServerTime);
   }
 
   // ── Offline queue ────────────────────────────────────────────────
