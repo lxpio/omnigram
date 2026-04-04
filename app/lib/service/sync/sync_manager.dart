@@ -386,13 +386,14 @@ class SyncManager extends _$SyncManager {
       final tagMaps = <Map<String, dynamic>>[];
       final localTagIds = <int>[];
       for (final t in unsyncedTags) {
+        if (t.id == null) continue; // Can't map without local ID
         final serverBookId = bookMappings[t.bookId.toString()];
         if (serverBookId == null) continue;
         final m = t.toMap();
         m['local_id'] = t.id;
         m['book_id'] = serverBookId;
         tagMaps.add(m);
-        if (t.id != null) localTagIds.add(t.id!);
+        localTagIds.add(t.id!);
       }
 
       if (tagMaps.isNotEmpty) {
