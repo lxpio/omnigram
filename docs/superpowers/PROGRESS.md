@@ -1,6 +1,6 @@
 # Omnigram 实施进度索引
 
-> **最后更新：2026-03-25**
+> **最后更新：2026-04-04**
 > **参考设计：** `docs/superpowers/specs/2026-03-22-ambient-ai-reading-design.md`
 > **审核报告：** `docs/superpowers/specs/2026-03-22-ambient-ai-reading-review.md`
 > **已知问题：** `docs/superpowers/KNOWN_ISSUES.md`
@@ -347,7 +347,7 @@
 | ~~**🟡 AI 缓存持久化**~~ | §10.6 | ✅ | Sprint 4 Phase 0 完成：Client sqflite + Server PG 双层缓存 |
 | ~~**🟡 伴侣人格同步**~~ | §10.7 | ✅ | Sprint 3.5：双向同步（SharedPrefs + Server） |
 | Onboarding 流程 | §10.8 | ❌ | 渐进式引导，首次使用零 AI |
-| 多设备同步 | §10.7 | ⚠️ 部分 | 数据架构已定义。M-1(时钟偏移) M-2(AI 数据同步) 已修复，完整多设备测试待验证 |
+| 多设备同步 | §10.7 | ⚠️ 部分 | 数据架构已定义。M-1(时钟偏移) M-2(AI 数据同步) 已修复。KI-1 AI 数据双向同步已修复（2026-04-04）。完整多设备测试待验证 |
 | 🔴 同步质量加固 | 审核报告 | ✅ | 22 项全部关闭，详见 `specs/2026-03-24-sync-architecture-audit.md` |
 | 数据导出/迁移 | §10.9 | ❌ | Markdown/JSON/CSV 导出 |
 | 外部高亮导入（Kindle/Apple Books） | §10.9 | ❌ | |
@@ -448,6 +448,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-04-04 | **KI-1/KI-3/KI-4 同步缺口修复** ✅：Companion Chat、Margin Notes、Concept Tags/Edges 双向同步完成。Server GET 端点增加 delta pull（since + server_time）。Push 侧 book ID 映射修复（KI-4），concept tag ID 映射修复（KI-3）。Server Wins 冲突策略 |
 | 2026-04-02 | **书籍详情页重设计完成** ✅：从 760 行信息陈列柜重写为行动导向的"书的灵魂页"（~500行）。封面主色渐变、继续阅读按钮、AI 一句话总结、最近笔记预览。砍掉虚荣指标。54 tests 全绿 |
 | 2026-04-02 | **阅读器 Chrome 重构完成** ✅：从 reading_page.dart（916行→848行）抽取 chrome 到 3 个独立 widget（ReaderAppBar + ReaderBottomBar + ReaderChrome），Omnigram 视觉风格，进度条 + 按钮两层底栏，slide 动画。51 tests 全绿 |
 | 2026-04-02 | **伴侣行为开关完成** ✅：5 toggle（2 enabled + 3 Coming Soon），CompanionPersonality 扩展 5 bool 字段，Server 同步改用 toJson/fromJson，AI guard 接入 margin notes + concept extractor。41 tests 全绿 |
