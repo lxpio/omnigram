@@ -3,6 +3,7 @@ package reader
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lxpio/omnigram/server/middleware"
@@ -27,7 +28,15 @@ func listCompanionChatHandle(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 
 	var chats []schema.CompanionChat
-	query := orm.Where("user_id = ? AND book_id = ?", userID, bookID).Order("ctime ASC")
+	query := orm.Where("user_id = ? AND book_id = ?", userID, bookID)
+
+	if sinceStr := c.Query("since"); sinceStr != "" {
+		if since, err := strconv.ParseInt(sinceStr, 10, 64); err == nil && since > 0 {
+			query = query.Where("ctime > ?", since)
+		}
+	}
+
+	query = query.Order("ctime ASC")
 
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "50"))
 	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
@@ -40,7 +49,10 @@ func listCompanionChatHandle(c *gin.Context) {
 		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
 		return
 	}
-	schema.Success(c, chats)
+	c.JSON(http.StatusOK, gin.H{
+		"data":        chats,
+		"server_time": time.Now().UnixMilli(),
+	})
 }
 
 // @Summary Add companion chat messages
@@ -95,6 +107,12 @@ func listMarginNotesHandle(c *gin.Context) {
 
 	query := orm.Where("user_id = ? AND book_id = ?", userID, bookID)
 
+	if sinceStr := c.Query("since"); sinceStr != "" {
+		if since, err := strconv.ParseInt(sinceStr, 10, 64); err == nil && since > 0 {
+			query = query.Where("utime > ?", since)
+		}
+	}
+
 	if chapter := c.Query("chapter"); chapter != "" {
 		query = query.Where("chapter = ?", chapter)
 	}
@@ -106,7 +124,10 @@ func listMarginNotesHandle(c *gin.Context) {
 		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
 		return
 	}
-	schema.Success(c, notes)
+	c.JSON(http.StatusOK, gin.H{
+		"data":        notes,
+		"server_time": time.Now().UnixMilli(),
+	})
 }
 
 // @Summary Upsert margin notes
