@@ -179,11 +179,20 @@ class ConceptTagDao {
   /// Returns the local ID (existing or newly inserted).
   Future<int> insertTagIfNotExists(ConceptTag tag) async {
     final db = await DBHelper().database;
+    final String whereClause;
+    final List<Object?> whereArgs;
+    if (tag.noteId != null) {
+      whereClause = 'book_id = ? AND name = ? AND note_id = ?';
+      whereArgs = [tag.bookId, tag.name, tag.noteId];
+    } else {
+      whereClause = 'book_id = ? AND name = ? AND (note_id IS NULL OR note_id = 0)';
+      whereArgs = [tag.bookId, tag.name];
+    }
     final existing = await db.query(
       'tb_concept_tags',
       columns: ['id'],
-      where: 'book_id = ? AND name = ? AND note_id = ?',
-      whereArgs: [tag.bookId, tag.name, tag.noteId ?? 0],
+      where: whereClause,
+      whereArgs: whereArgs,
       limit: 1,
     );
     if (existing.isNotEmpty) {
