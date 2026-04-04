@@ -2,6 +2,8 @@ package reader
 
 import (
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lxpio/omnigram/server/middleware"
@@ -15,6 +17,7 @@ import (
 // @Produce json
 // @Security BearerAuth
 // @Param book_id query string false "Filter by book ID"
+// @Param since query integer false "Only return records with ctime > since (Unix ms)"
 // @Success 200 {object} map[string]interface{}
 // @Failure 500 {object} schema.ErrorResponse
 // @Router /reader/knowledge [get]
@@ -24,44 +27,65 @@ func GetKnowledgeGraph(c *gin.Context) {
 
 	db := store.FileStore()
 
+	var since int64
+	if sinceStr := c.Query("since"); sinceStr != "" {
+		if s, err := strconv.ParseInt(sinceStr, 10, 64); err == nil && s > 0 {
+			since = s
+		}
+	}
+
 	var tags []schema.ConceptTag
 	var err error
-	if bookID != "" {
-		tags, err = schema.ListConceptTagsByBook(db, userID, bookID)
+	if since > 0 {
+		if bookID != "" {
+			tags, err = schema.ListConceptTagsByBookSince(db, userID, bookID, since)
+		} else {
+			tags, err = schema.ListConceptTagsSince(db, userID, since)
+		}
 	} else {
-		tags, err = schema.ListConceptTags(db, userID)
+		if bookID != "" {
+			tags, err = schema.ListConceptTagsByBook(db, userID, bookID)
+		} else {
+			tags, err = schema.ListConceptTags(db, userID)
+		}
 	}
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, schema.ErrorResponse{Message: err.Error()})
 		return
 	}
 
-	edges, err := schema.ListConceptEdges(db, userID)
+	var edges []schema.ConceptEdge
+	if since > 0 {
+		edges, err = schema.ListConceptEdgesSince(db, userID, since)
+	} else {
+		edges, err = schema.ListConceptEdges(db, userID)
+	}
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, schema.ErrorResponse{Message: err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"nodes": tags,
-		"edges": edges,
+		"nodes":       tags,
+		"edges":       edges,
+		"server_time": time.Now().UnixMilli(),
 	})
 }
 
 // @Summary Sync concept tags
-// @Description Bulk upsert concept tags from client
+// @Description Bulk upsert concept tags from client, returns server-assigned ID mappings
 // @Tags Reader
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param body body []schema.ConceptTag true "Concept tags"
-// @Success 200 {object} map[string]string
+// @Param body body []schema.ConceptTagWithLocalID true "Concept tags with optional local_id"
+// @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} schema.ErrorResponse
 // @Router /reader/knowledge/tags [post]
 func SyncConceptTags(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 
-	var tags []schema.ConceptTag
+	var tags []schema.ConceptTagWithLocalID
 	if err := c.ShouldBindJSON(&tags); err != nil {
 		c.JSON(http.StatusBadRequest, schema.ErrorResponse{Message: err.Error()})
 		return
@@ -71,12 +95,16 @@ func SyncConceptTags(c *gin.Context) {
 		tags[i].UserID = userID
 	}
 
-	if err := schema.UpsertConceptTags(store.FileStore(), tags); err != nil {
+	mappings, err := schema.UpsertConceptTagsWithMapping(store.FileStore(), tags)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, schema.ErrorResponse{Message: err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	c.JSON(http.StatusOK, gin.H{
+		"status":   "ok",
+		"mappings": mappings,
+	})
 }
 
 // @Summary Sync concept edges
