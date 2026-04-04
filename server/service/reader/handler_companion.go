@@ -18,9 +18,10 @@ import (
 // @Produce json
 // @Security BearerAuth
 // @Param book_id path string true "Book ID"
+// @Param since query int false "Delta sync: only return records with ctime > since (milliseconds)"
 // @Param limit query int false "Limit" default(50)
 // @Param offset query int false "Offset" default(0)
-// @Success 200 {array} schema.CompanionChat
+// @Success 200 {object} object{data=[]schema.CompanionChat,server_time=int64} "Chat messages with server timestamp"
 // @Failure 400 {object} schema.ErrorResponse
 // @Router /reader/books/{book_id}/companion/chat [get]
 func listCompanionChatHandle(c *gin.Context) {
@@ -97,8 +98,9 @@ func addCompanionChatHandle(c *gin.Context) {
 // @Produce json
 // @Security BearerAuth
 // @Param book_id path string true "Book ID"
+// @Param since query int false "Delta sync: only return records with utime > since (milliseconds)"
 // @Param chapter query string false "Chapter name filter"
-// @Success 200 {array} schema.MarginNote
+// @Success 200 {object} object{data=[]schema.MarginNote,server_time=int64} "Margin notes with server timestamp"
 // @Failure 400 {object} schema.ErrorResponse
 // @Router /reader/books/{book_id}/margin-notes [get]
 func listMarginNotesHandle(c *gin.Context) {
