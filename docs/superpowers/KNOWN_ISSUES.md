@@ -1,35 +1,22 @@
 # Omnigram Known Issues
 
-> **最后更新：2026-03-23**
+> **最后更新：2026-04-04**
 > **来源：Sprint 4 代码审查**
 
 ---
 
-## 🟡 数据同步缺口
+## ✅ 已修复 — 数据同步缺口
 
 ### KI-1: Sprint 4 新数据无 Server 同步逻辑
 
 **影响范围：** Companion Chat、Margin Notes、Concept Tags
 
-**现状：**
-- 三个 DAO 都有 `synced` 标记字段（sqflite），Server 也有对应的 CRUD endpoints
-- 但没有实际的同步调用代码——`SyncManager` 未扩展来处理这些新表
-- 数据目前仅存在于本地 sqflite，多设备用户会丢失这些数据
-
-**客户端 DAO：**
-- `dao/companion_chat.dart` — `synced` 字段存在，`getUnsynced()` 未实现
-- `dao/margin_note.dart` — `synced` 字段存在
-- `dao/concept_tag.dart` — `synced` 字段存在，`getUnsynced()` + `markSynced()` 已实现
-
-**Server endpoints（已就绪）：**
-- `POST /reader/books/:id/companion/chat` — 批量上传聊天
-- `POST /reader/books/:id/margin-notes` — 批量上传边注
-- `POST /reader/knowledge/tags` — 批量上传概念标签
-- `POST /reader/knowledge/edges` — 批量上传概念关联
-
-**修复方案：** 扩展 `service/sync/sync_manager.dart`，参照现有 annotation 同步模式，增加三类数据的双向增量同步。
-
-**优先级：** Sprint 5
+**修复（2026-04-04）：**
+- SyncManager 新增 `_pullAiData()` 步骤，实现 Server→Client 增量拉取
+- Push 侧修复 book ID 映射（使用 IdMappingDao 转换本地 int → 服务端 char(24)）
+- 服务端 GET 端点增加 `since` 参数 + `server_time` 响应字段
+- 冲突策略：Server Wins
+- **设计文档：** `docs/superpowers/specs/2026-04-04-ki1-sync-gap-design.md`
 
 ---
 
@@ -52,36 +39,23 @@
 
 ---
 
-## 🟢 性能优化
+## ✅ 已修复 — 概念提取 ID 问题
 
 ### KI-3: 概念提取使用本地 SQLite ID 作为 AI 交互标识
 
 **影响范围：** `service/ai/concept_extractor.dart`
 
-**现状：**
-- `findConnections()` 方法将本地 sqflite autoincrement ID 放入 AI prompt（`[ID:${t.id}]`）
-- AI 返回的 `sourceID|targetID` 是本地 ID，如果数据同步到 server，ID 不匹配
-
-**修复方案：** 同步时使用 name+bookId 作为匹配键，而非依赖本地 ID；或在 prompt 中使用 UUID/name 替代 autoincrement ID。
-
-**优先级：** 与 KI-1 同步修复时一并处理
+**修复（2026-04-04）：** 同步时通过 IdMappingDao 维护 local tag ID → server tag ID 映射。Push tags 后服务端返回 `[{local_id, server_id}]` 映射，edges push 使用映射后的 server tag ID。随 KI-1 一并修复。
 
 ---
 
-## 🟢 客户端 Book ID 类型差异
+## ✅ 已修复 — Book ID 类型差异
 
 ### KI-4: Client Book ID (int) vs Server Book ID (string char(24))
 
 **影响范围：** 所有 Sprint 4 新 DAO
 
-**现状：**
-- Client sqflite 中 `book_id` 为 `INTEGER`
-- Server PG 中 `book_id` 为 `char(24)` string
-- 现有 `SyncManager` 用 `book.id.toString()` 做转换，但新增的 DAO 没有接入这套转换逻辑
-
-**修复方案：** 在 KI-1 同步逻辑实现时统一处理 ID 映射。
-
-**优先级：** 与 KI-1 一并处理
+**修复（2026-04-04）：** Push 侧所有 URL 和 payload 中的 book_id 均通过 `IdMappingDao.getServerId()` 转换。无 server mapping 的书跳过同步。随 KI-1 一并修复。
 
 ---
 
@@ -89,4 +63,5 @@
 
 | 日期 | 更新 |
 |------|------|
+| 2026-04-04 | KI-1/KI-3/KI-4 已修复：AI 数据双向同步完成 |
 | 2026-03-23 | 初始创建，记录 Sprint 4 代码审查遗留问题 |

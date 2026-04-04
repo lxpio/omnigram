@@ -282,3 +282,42 @@ HTTP 200
 GET {{host}}/reader/stats/daily
 Authorization: Bearer {{token}}
 HTTP 200
+
+# ============================================================
+# L9: AI Data Sync (KI-1 fix)
+# ============================================================
+
+# Knowledge graph — returns nodes, edges, server_time
+GET {{host}}/reader/knowledge
+Authorization: Bearer {{token}}
+HTTP 200
+[Asserts]
+jsonpath "$.nodes" isCollection
+jsonpath "$.edges" isCollection
+jsonpath "$.server_time" isInteger
+
+# Knowledge graph with since param
+GET {{host}}/reader/knowledge?since=0
+Authorization: Bearer {{token}}
+HTTP 200
+[Asserts]
+jsonpath "$.server_time" isInteger
+
+# Push concept tags — returns status + mappings
+POST {{host}}/reader/knowledge/tags
+Authorization: Bearer {{token}}
+Content-Type: application/json
+[]
+HTTP 200
+[Asserts]
+jsonpath "$.status" == "ok"
+jsonpath "$.mappings" isCollection
+
+# Push concept edges — empty array
+POST {{host}}/reader/knowledge/edges
+Authorization: Bearer {{token}}
+Content-Type: application/json
+[]
+HTTP 200
+[Asserts]
+jsonpath "$.status" == "ok"
