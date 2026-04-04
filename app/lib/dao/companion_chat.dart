@@ -72,6 +72,15 @@ class CompanionChatDao extends BaseDao {
     final placeholders = List.filled(ids.length, '?').join(',');
     await db.rawUpdate('UPDATE $table SET synced = 1 WHERE id IN ($placeholders)', ids);
   }
+
+  /// Insert a message from server. Returns the local auto-increment ID.
+  /// Dedup is handled by SyncManager via IdMappingDao (server ID check).
+  Future<int> insertFromServer(CompanionMessage msg) async {
+    final db = await database;
+    final map = msg.toMap();
+    map['synced'] = 1;
+    return await db.insert('tb_companion_chat', map);
+  }
 }
 
 /// Roles in a companion conversation.
@@ -126,6 +135,21 @@ class CompanionMessage {
 
   bool get isUser => role == ChatRole.user.name;
   bool get isCompanion => role == ChatRole.companion.name;
+
+  /// Construct from server JSON response, mapping server book_id to local book_id.
+  factory CompanionMessage.fromServerJson(Map<String, dynamic> json, int localBookId) {
+    return CompanionMessage(
+      bookId: localBookId,
+      role: json['role'] as String,
+      content: json['content'] as String,
+      chapter: json['chapter'] as String?,
+      cfi: json['cfi'] as String?,
+      createdAt: json['ctime'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(json['ctime'] as int).toIso8601String()
+          : DateTime.now().toIso8601String(),
+      synced: true,
+    );
+  }
 }
 
 final companionChatDao = CompanionChatDao();

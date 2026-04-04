@@ -36,6 +36,19 @@ class ConceptTag {
     createTime: map['create_time'] as String?,
     synced: map['synced'] as int? ?? 0,
   );
+
+  factory ConceptTag.fromServerJson(Map<String, dynamic> json, int localBookId) {
+    return ConceptTag(
+      bookId: localBookId,
+      name: json['name'] as String,
+      source: json['source'] as String?,
+      noteId: json['note_id'] as int?,
+      createTime: json['ctime'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(json['ctime'] as int).toIso8601String()
+          : null,
+      synced: 1,
+    );
+  }
 }
 
 class ConceptEdge {
@@ -74,6 +87,23 @@ class ConceptEdge {
     createTime: map['create_time'] as String?,
     synced: map['synced'] as int? ?? 0,
   );
+
+  factory ConceptEdge.fromServerJson(
+    Map<String, dynamic> json,
+    int localSourceId,
+    int localTargetId,
+  ) {
+    return ConceptEdge(
+      sourceTagId: localSourceId,
+      targetTagId: localTargetId,
+      weight: (json['weight'] as num?)?.toDouble() ?? 1.0,
+      reason: json['reason'] as String?,
+      createTime: json['ctime'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(json['ctime'] as int).toIso8601String()
+          : null,
+      synced: 1,
+    );
+  }
 }
 
 class ConceptTagDao {
@@ -142,6 +172,59 @@ class ConceptTagDao {
       {'synced': 1},
       where: 'id IN (${ids.map((_) => '?').join(',')})',
       whereArgs: ids,
+    );
+  }
+
+  /// Insert a tag if it doesn't exist (dedup by book_id + name + note_id).
+  /// Returns the local ID (existing or newly inserted).
+  Future<int> insertTagIfNotExists(ConceptTag tag) async {
+    final db = await DBHelper().database;
+    final existing = await db.query(
+      'tb_concept_tags',
+      columns: ['id'],
+      where: 'book_id = ? AND name = ? AND note_id = ?',
+      whereArgs: [tag.bookId, tag.name, tag.noteId ?? 0],
+      limit: 1,
+    );
+    if (existing.isNotEmpty) {
+      return existing.first['id'] as int;
+    }
+    final map = tag.toMap();
+    map['synced'] = 1;
+    return await db.insert('tb_concept_tags', map);
+  }
+
+  /// Insert an edge if it doesn't exist (dedup by source_tag_id + target_tag_id).
+  Future<void> insertEdgeIfNotExists(ConceptEdge edge) async {
+    final db = await DBHelper().database;
+    final existing = await db.query(
+      'tb_concept_edges',
+      columns: ['id'],
+      where: 'source_tag_id = ? AND target_tag_id = ?',
+      whereArgs: [edge.sourceTagId, edge.targetTagId],
+      limit: 1,
+    );
+    if (existing.isNotEmpty) return;
+    final map = edge.toMap();
+    map['synced'] = 1;
+    await db.insert('tb_concept_edges', map);
+  }
+
+  /// Get edges not yet synced to server.
+  Future<List<ConceptEdge>> getUnsyncedEdges() async {
+    final db = await DBHelper().database;
+    final rows = await db.query('tb_concept_edges', where: 'synced = 0');
+    return rows.map((r) => ConceptEdge.fromMap(r)).toList();
+  }
+
+  /// Mark edges as synced after successful push.
+  Future<void> markEdgesSynced(List<int> ids) async {
+    if (ids.isEmpty) return;
+    final db = await DBHelper().database;
+    final placeholders = List.filled(ids.length, '?').join(',');
+    await db.rawUpdate(
+      'UPDATE tb_concept_edges SET synced = 1 WHERE id IN ($placeholders)',
+      ids,
     );
   }
 }
