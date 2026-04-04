@@ -74,3 +74,51 @@ func UpsertConceptEdges(db *gorm.DB, edges []ConceptEdge) error {
 	}
 	return nil
 }
+
+func ListConceptTagsSince(db *gorm.DB, userID int64, since int64) ([]ConceptTag, error) {
+	var tags []ConceptTag
+	err := db.Where("user_id = ? AND ctime > ?", userID, since).Order("ctime desc").Find(&tags).Error
+	return tags, err
+}
+
+func ListConceptTagsByBookSince(db *gorm.DB, userID int64, bookID string, since int64) ([]ConceptTag, error) {
+	var tags []ConceptTag
+	err := db.Where("user_id = ? AND book_id = ? AND ctime > ?", userID, bookID, since).Order("ctime desc").Find(&tags).Error
+	return tags, err
+}
+
+func ListConceptEdgesSince(db *gorm.DB, userID int64, since int64) ([]ConceptEdge, error) {
+	var edges []ConceptEdge
+	err := db.Where("user_id = ? AND ctime > ?", userID, since).Find(&edges).Error
+	return edges, err
+}
+
+// TagMapping maps client-provided local_id to server-assigned id.
+type TagMapping struct {
+	LocalID  int64 `json:"local_id"`
+	ServerID int64 `json:"server_id"`
+}
+
+// ConceptTagWithLocalID extends ConceptTag with a client-side local_id for sync mapping.
+type ConceptTagWithLocalID struct {
+	ConceptTag
+	LocalID int64 `json:"local_id" gorm:"-"`
+}
+
+func UpsertConceptTagsWithMapping(db *gorm.DB, tags []ConceptTagWithLocalID) ([]TagMapping, error) {
+	mappings := make([]TagMapping, 0, len(tags))
+	for _, tag := range tags {
+		var existing ConceptTag
+		err := db.Where("user_id = ? AND book_id = ? AND name = ? AND note_id = ?",
+			tag.UserID, tag.BookID, tag.Name, tag.NoteID).
+			Assign(tag.ConceptTag).FirstOrCreate(&existing).Error
+		if err != nil {
+			return nil, err
+		}
+		mappings = append(mappings, TagMapping{
+			LocalID:  tag.LocalID,
+			ServerID: existing.ID,
+		})
+	}
+	return mappings, nil
+}
