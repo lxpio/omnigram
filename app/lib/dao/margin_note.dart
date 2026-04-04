@@ -70,6 +70,36 @@ class MarginNoteDao extends BaseDao {
     final placeholders = List.filled(ids.length, '?').join(',');
     await db.rawUpdate('UPDATE tb_margin_notes SET synced = 1 WHERE id IN ($placeholders)', ids);
   }
+
+  /// Upsert a margin note from server using Server Wins strategy.
+  /// Dedup key: (book_id, chapter, cfi, content).
+  /// If exists: update dismissed/helpful/confidence. If not: insert.
+  Future<void> upsertFromServer(MarginNote note) async {
+    final db = await database;
+    final existing = await db.query(
+      'tb_margin_notes',
+      where: 'book_id = ? AND chapter = ? AND cfi = ? AND content = ?',
+      whereArgs: [note.bookId, note.chapter, note.cfi ?? '', note.content],
+      limit: 1,
+    );
+    if (existing.isNotEmpty) {
+      await db.update(
+        'tb_margin_notes',
+        {
+          'dismissed': note.dismissed ? 1 : 0,
+          'helpful': note.helpful ? 1 : 0,
+          'confidence': note.confidence,
+          'synced': 1,
+        },
+        where: 'id = ?',
+        whereArgs: [existing.first['id']],
+      );
+    } else {
+      final map = note.toMap();
+      map['synced'] = 1;
+      await db.insert('tb_margin_notes', map);
+    }
+  }
 }
 
 /// A single margin note — AI-generated cross-book connection.
@@ -137,6 +167,26 @@ class MarginNote {
       'created_at': createdAt,
       'synced': synced ? 1 : 0,
     };
+  }
+
+  /// Construct from server JSON response, mapping server book_id to local book_id.
+  factory MarginNote.fromServerJson(Map<String, dynamic> json, int localBookId) {
+    return MarginNote(
+      bookId: localBookId,
+      chapter: json['chapter'] as String,
+      cfi: json['cfi'] as String?,
+      content: json['content'] as String,
+      relatedBookId: null,
+      relatedBookTitle: json['related_book_title'] as String?,
+      relatedHighlight: json['related_highlight'] as String?,
+      confidence: (json['confidence'] as num?)?.toDouble() ?? 0.5,
+      dismissed: json['dismissed'] as bool? ?? false,
+      helpful: json['helpful'] as bool? ?? false,
+      createdAt: json['ctime'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(json['ctime'] as int).toIso8601String()
+          : DateTime.now().toIso8601String(),
+      synced: true,
+    );
   }
 }
 
