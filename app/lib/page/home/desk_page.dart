@@ -11,6 +11,7 @@ import 'package:omnigram/widgets/desk/greeting_header.dart';
 import 'package:omnigram/widgets/desk/hero_book_card.dart';
 import 'package:omnigram/widgets/desk/also_reading_shelf.dart';
 import 'package:omnigram/widgets/common/empty_state.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/theme/omnigram_theme.dart';
 import 'package:omnigram/theme/typography.dart';
 
@@ -85,7 +86,7 @@ class _DeskPageState extends ConsumerState<DeskPage> {
               if (desk.todayReadingMinutes > 0) ...[
                 const SizedBox(height: 24),
                 Center(
-                  child: Text('—— 今日阅读 ${desk.todayReadingMinutes} 分钟 ——', style: OmnigramTypography.caption(context)),
+                  child: Text(L10n.of(context).deskTodayReading(desk.todayReadingMinutes), style: OmnigramTypography.caption(context)),
                 ),
               ],
             ],

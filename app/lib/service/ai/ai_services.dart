@@ -23,7 +23,7 @@ List<AiServiceOption> buildDefaultAiServices() {
     !EnvVar.enableOpenAiConfig
         ? AiServiceOption(
             identifier: 'openai',
-            title: '通用',
+            title: 'General',
             logo: 'assets/images/commonAi.png',
             defaultUrl:
                 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
