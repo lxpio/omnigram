@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:omnigram/dao/concept_tag.dart';
 import 'package:omnigram/service/ai/ai_availability.dart';
+import 'package:omnigram/service/ai/ai_language.dart';
 import 'package:omnigram/service/ai/ambient_ai_pipeline.dart';
 import 'package:omnigram/theme/colors.dart';
 import 'package:omnigram/theme/typography.dart';
@@ -54,14 +55,15 @@ class _KnowledgeGraphCardState extends ConsumerState<KnowledgeGraphCard> {
         }
       }
 
+      final lang = getAiReplyLanguage();
       final prompt =
-          '''基于以下知识概念和它们的关联，用2-3句话描述阅读者的知识网络特征。
-语气像一个聪明的朋友在总结你的阅读收获。突出跨书的有趣连接。
+          '''Based on the following concepts and their connections, describe the reader's knowledge network in 2-3 sentences.
+Use the tone of a smart friend summarizing reading insights. Highlight interesting cross-book connections.
 
-概念: ${tagNames.join(', ')}
-${edgeDescriptions.isNotEmpty ? '关联:\n${edgeDescriptions.join('\n')}' : ''}
+Concepts: ${tagNames.join(', ')}
+${edgeDescriptions.isNotEmpty ? 'Connections:\n${edgeDescriptions.join('\n')}' : ''}
 
-请用自然的中文叙述:''';
+Reply in $lang.''';
 
       narrative = await AmbientAiPipeline.execute(
         type: AmbientTaskType.knowledgeNarrative,
