@@ -26,7 +26,7 @@ func listTagsHandle(c *gin.Context) {
 		Group("tag").
 		Order("count DESC").
 		Scan(&tags).Error; err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 	schema.Success(c, tags)
@@ -55,7 +55,7 @@ func createTagHandle(c *gin.Context) {
 	if req.BookID != "" {
 		ts := schema.BookTagShip{BookID: req.BookID, Tag: req.Tag}
 		if err := orm.Where("book_id = ? AND tag = ?", req.BookID, req.Tag).FirstOrCreate(&ts).Error; err != nil {
-			schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+			schema.InternalError(c, err)
 			return
 		}
 		schema.Success(c, ts)
@@ -77,7 +77,7 @@ func createTagHandle(c *gin.Context) {
 func deleteTagHandle(c *gin.Context) {
 	tagName := c.Param("tag_id")
 	if err := orm.Where("tag = ?", tagName).Delete(&schema.BookTagShip{}).Error; err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 	schema.Success(c, gin.H{"tag": tagName, "deleted": true})

@@ -24,7 +24,7 @@ func listShelvesHandle(c *gin.Context) {
 
 	var shelves []schema.Shelf
 	if err := orm.Where("user_id = ?", userID).Order("sort_order ASC, ctime DESC").Find(&shelves).Error; err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 
@@ -85,7 +85,7 @@ func createShelfHandle(c *gin.Context) {
 	}
 
 	if err := orm.Create(&shelf).Error; err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 
@@ -171,14 +171,14 @@ func updateShelfHandle(c *gin.Context) {
 
 	if len(updates) > 0 {
 		if err := orm.Model(&schema.Shelf{}).Where("id = ? AND user_id = ?", shelfID, userID).Updates(updates).Error; err != nil {
-			schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+			schema.InternalError(c, err)
 			return
 		}
 	}
 
 	var shelf schema.Shelf
 	if err := orm.First(&shelf, "id = ? AND user_id = ?", shelfID, userID).Error; err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 	schema.Success(c, shelf)
@@ -205,7 +205,7 @@ func deleteShelfHandle(c *gin.Context) {
 		return tx.Where("id = ? AND user_id = ?", shelfID, userID).Delete(&schema.Shelf{}).Error
 	})
 	if err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 
@@ -235,7 +235,7 @@ func addBooksToShelfHandle(c *gin.Context) {
 	// verify ownership
 	var count int64
 	if err := orm.Model(&schema.Shelf{}).Where("id = ? AND user_id = ?", shelfID, userID).Count(&count).Error; err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 	if count == 0 {
@@ -259,7 +259,7 @@ func addBooksToShelfHandle(c *gin.Context) {
 	// ignore duplicates
 	for i := range entries {
 		if err := orm.Where("shelf_id = ? AND book_id = ?", entries[i].ShelfID, entries[i].BookID).FirstOrCreate(&entries[i]).Error; err != nil {
-			schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+			schema.InternalError(c, err)
 			return
 		}
 	}
@@ -286,7 +286,7 @@ func removeBooksFromShelfHandle(c *gin.Context) {
 	// verify ownership
 	var count int64
 	if err := orm.Model(&schema.Shelf{}).Where("id = ? AND user_id = ?", shelfID, userID).Count(&count).Error; err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 	if count == 0 {
@@ -303,7 +303,7 @@ func removeBooksFromShelfHandle(c *gin.Context) {
 	}
 
 	if err := orm.Where("shelf_id = ? AND book_id IN ?", shelfID, req.BookIDs).Delete(&schema.ShelfBook{}).Error; err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 
