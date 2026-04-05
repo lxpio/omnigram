@@ -135,7 +135,10 @@ func updateAnnotationHandle(c *gin.Context) {
 		}
 	}
 
-	orm.First(&existing, "id = ?", annotationID)
+	if err := orm.First(&existing, "id = ?", annotationID).Error; err != nil {
+		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		return
+	}
 	schema.Success(c, existing)
 }
 
@@ -251,7 +254,10 @@ func syncAnnotationsHandle(c *gin.Context) {
 
 	// return server annotations newer than last_sync_time
 	var serverAnnotations []schema.Annotation
-	orm.Where("user_id = ? AND utime > ?", userID, req.LastSyncTime).Find(&serverAnnotations)
+	if err := orm.Where("user_id = ? AND utime > ?", userID, req.LastSyncTime).Find(&serverAnnotations).Error; err != nil {
+		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		return
+	}
 
 	schema.Success(c, gin.H{
 		"annotations":    serverAnnotations,

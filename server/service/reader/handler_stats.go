@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/middleware"
 	"github.com/lxpio/omnigram/server/schema"
 )
@@ -51,13 +52,19 @@ func statsOverviewHandle(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 
 	var totalBooks int64
-	orm.Model(&schema.Book{}).Count(&totalBooks)
+	if err := orm.Model(&schema.Book{}).Count(&totalBooks).Error; err != nil {
+		log.E("[stats] count books: ", err)
+	}
 
 	var totalTime int64
-	orm.Model(&schema.ReadingSession{}).Where("user_id = ?", userID).Select("COALESCE(SUM(duration), 0)").Scan(&totalTime)
+	if err := orm.Model(&schema.ReadingSession{}).Where("user_id = ?", userID).Select("COALESCE(SUM(duration), 0)").Scan(&totalTime).Error; err != nil {
+		log.E("[stats] sum reading time: ", err)
+	}
 
 	var booksRead int64
-	orm.Model(&schema.ReadingSession{}).Where("user_id = ?", userID).Distinct("book_id").Count(&booksRead)
+	if err := orm.Model(&schema.ReadingSession{}).Where("user_id = ?", userID).Distinct("book_id").Count(&booksRead).Error; err != nil {
+		log.E("[stats] count books read: ", err)
+	}
 
 	schema.Success(c, gin.H{
 		"total_books":          totalBooks,
@@ -100,7 +107,9 @@ func statsDailyHandle(c *gin.Context) {
 		query = query.Where("start_time <= ?", dateToMillis(to)+86400000)
 	}
 
-	query.Scan(&stats)
+	if err := query.Scan(&stats).Error; err != nil {
+		log.E("[stats] daily scan: ", err)
+	}
 	schema.Success(c, stats)
 }
 
@@ -129,9 +138,11 @@ func statsTopBooksHandle(c *gin.Context) {
 	}
 
 	var stats []bookStat
-	orm.Raw(`SELECT s.book_id, b.title, b.author, SUM(s.duration) as duration, COUNT(*) as sessions
+	if err := orm.Raw(`SELECT s.book_id, b.title, b.author, SUM(s.duration) as duration, COUNT(*) as sessions
 		FROM reading_sessions s LEFT JOIN books b ON s.book_id = b.id
-		WHERE s.user_id = ? GROUP BY s.book_id ORDER BY duration DESC LIMIT ?`, userID, limit).Scan(&stats)
+		WHERE s.user_id = ? GROUP BY s.book_id ORDER BY duration DESC LIMIT ?`, userID, limit).Scan(&stats).Error; err != nil {
+		log.E("[stats] top books scan: ", err)
+	}
 
 	schema.Success(c, stats)
 }
