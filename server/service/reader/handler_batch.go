@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/schema"
 	"gorm.io/gorm"
 )
@@ -95,11 +96,19 @@ func batchTagHandle(c *gin.Context) {
 		case "set":
 			orm.Where("book_id = ?", bookID).Delete(&schema.BookTagShip{})
 			for _, tag := range req.Tags {
-				orm.FirstOrCreate(&schema.BookTagShip{BookID: bookID, Tag: tag}, schema.BookTagShip{BookID: bookID, Tag: tag})
+				ts := schema.BookTagShip{BookID: bookID, Tag: tag}
+				if err := orm.Where("book_id = ? AND tag = ?", bookID, tag).FirstOrCreate(&ts).Error; err != nil {
+					log.E("[batch] upsert tag ", tag, " for book ", bookID, ": ", err)
+					continue
+				}
 			}
 		case "add":
 			for _, tag := range req.Tags {
-				orm.FirstOrCreate(&schema.BookTagShip{BookID: bookID, Tag: tag}, schema.BookTagShip{BookID: bookID, Tag: tag})
+				ts := schema.BookTagShip{BookID: bookID, Tag: tag}
+				if err := orm.Where("book_id = ? AND tag = ?", bookID, tag).FirstOrCreate(&ts).Error; err != nil {
+					log.E("[batch] upsert tag ", tag, " for book ", bookID, ": ", err)
+					continue
+				}
 			}
 		case "remove":
 			orm.Where("book_id = ? AND tag IN ?", bookID, req.Tags).Delete(&schema.BookTagShip{})
@@ -137,7 +146,10 @@ func batchShelfHandle(c *gin.Context) {
 		switch req.Action {
 		case "add":
 			sb := schema.ShelfBook{ShelfID: req.ShelfID, BookID: bookID}
-			orm.Where("shelf_id = ? AND book_id = ?", req.ShelfID, bookID).FirstOrCreate(&sb)
+			if err := orm.Where("shelf_id = ? AND book_id = ?", req.ShelfID, bookID).FirstOrCreate(&sb).Error; err != nil {
+				log.E("[batch] upsert shelf_book shelf=", req.ShelfID, " book=", bookID, ": ", err)
+				continue
+			}
 		case "remove":
 			orm.Where("shelf_id = ? AND book_id = ?", req.ShelfID, bookID).Delete(&schema.ShelfBook{})
 		}

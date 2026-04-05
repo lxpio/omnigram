@@ -54,7 +54,10 @@ func createTagHandle(c *gin.Context) {
 	}
 	if req.BookID != "" {
 		ts := schema.BookTagShip{BookID: req.BookID, Tag: req.Tag}
-		orm.Where("book_id = ? AND tag = ?", req.BookID, req.Tag).FirstOrCreate(&ts)
+		if err := orm.Where("book_id = ? AND tag = ?", req.BookID, req.Tag).FirstOrCreate(&ts).Error; err != nil {
+			schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+			return
+		}
 		schema.Success(c, ts)
 		return
 	}
