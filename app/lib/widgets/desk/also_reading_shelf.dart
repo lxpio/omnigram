@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/models/book.dart';
 import 'package:omnigram/theme/typography.dart';
 
@@ -16,7 +17,7 @@ class AlsoReadingShelf extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('也在读', style: OmnigramTypography.titleMedium(context)),
+        Text(L10n.of(context).deskAlsoReading, style: OmnigramTypography.titleMedium(context)),
         const SizedBox(height: 12),
         SizedBox(
           height: 160,

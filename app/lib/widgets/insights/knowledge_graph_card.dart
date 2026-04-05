@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:omnigram/dao/concept_tag.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/service/ai/ai_availability.dart';
 import 'package:omnigram/service/ai/ai_language.dart';
 import 'package:omnigram/service/ai/ambient_ai_pipeline.dart';
@@ -116,9 +117,9 @@ Reply in $lang.''';
             children: [
               Icon(Icons.hub, size: 18, color: OmnigramColors.accentMint),
               const SizedBox(width: 8),
-              Text('知识网络', style: OmnigramTypography.titleMedium(context)),
+              Text(L10n.of(context).insightsKnowledgeNetwork, style: OmnigramTypography.titleMedium(context)),
               const Spacer(),
-              Text('${_tags.length} 个概念', style: OmnigramTypography.caption(context)),
+              Text(L10n.of(context).insightsConceptCount(_tags.length), style: OmnigramTypography.caption(context)),
             ],
           ),
           if (_narrative != null) ...[

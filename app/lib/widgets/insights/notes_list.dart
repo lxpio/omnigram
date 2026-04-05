@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/models/book_note.dart';
 import 'package:omnigram/theme/typography.dart';
 import 'package:omnigram/widgets/common/omnigram_card.dart';
@@ -15,7 +16,7 @@ class NotesByBookList extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.all(32),
         child: Text(
-          '开始阅读并添加笔记，这里会展示你的知识积累。',
+          L10n.of(context).insightsNotesEmpty,
           style: OmnigramTypography.bodyMedium(context),
           textAlign: TextAlign.center,
         ),
@@ -37,7 +38,7 @@ class NotesByBookList extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(bookTitle, style: OmnigramTypography.titleMedium(context)),
-              Text('${notes.length} 条笔记', style: OmnigramTypography.caption(context)),
+              Text(L10n.of(context).insightsNoteCount(notes.length), style: OmnigramTypography.caption(context)),
               const SizedBox(height: 8),
               ...notes
                   .take(3)
@@ -52,7 +53,7 @@ class NotesByBookList extends StatelessWidget {
                       ),
                     ),
                   ),
-              if (notes.length > 3) Text('...还有 ${notes.length - 3} 条', style: OmnigramTypography.caption(context)),
+              if (notes.length > 3) Text(L10n.of(context).insightsMoreNotes(notes.length - 3), style: OmnigramTypography.caption(context)),
             ],
           ),
         );
