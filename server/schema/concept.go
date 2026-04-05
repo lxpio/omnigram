@@ -1,15 +1,18 @@
 package schema
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+)
 
 // ConceptTag represents an auto-extracted concept from notes/highlights.
 type ConceptTag struct {
 	ID     int64  `json:"id" gorm:"primaryKey"`
-	UserID int64  `json:"user_id" gorm:"index:idx_concept_user;comment:用户ID"`
-	BookID string `json:"book_id" gorm:"type:char(24);index:idx_concept_book;comment:书籍ID"`
-	Name   string `json:"name" gorm:"type:varchar(200);index:idx_concept_name;comment:概念名称"`
+	UserID int64  `json:"user_id" gorm:"index:idx_concept_user;uniqueIndex:idx_concept_unique;comment:用户ID"`
+	BookID string `json:"book_id" gorm:"type:char(24);index:idx_concept_book;uniqueIndex:idx_concept_unique;comment:书籍ID"`
+	Name   string `json:"name" gorm:"type:varchar(200);index:idx_concept_name;uniqueIndex:idx_concept_unique;comment:概念名称"`
 	Source string `json:"source" gorm:"type:text;comment:来源文本(高亮/笔记原文)"`
-	NoteID int64  `json:"note_id" gorm:"comment:关联的笔记ID"`
+	NoteID int64  `json:"note_id" gorm:"uniqueIndex:idx_concept_unique;comment:关联的笔记ID"`
 	CTime  int64  `json:"ctime" gorm:"column:ctime;autoCreateTime:milli;comment:创建时间"`
 }
 
@@ -20,9 +23,9 @@ func (ConceptTag) TableName() string {
 // ConceptEdge represents a relationship between two concepts across books.
 type ConceptEdge struct {
 	ID       int64   `json:"id" gorm:"primaryKey"`
-	UserID   int64   `json:"user_id" gorm:"index:idx_edge_user;comment:用户ID"`
-	SourceID int64   `json:"source_id" gorm:"comment:源概念ID"`
-	TargetID int64   `json:"target_id" gorm:"comment:目标概念ID"`
+	UserID   int64   `json:"user_id" gorm:"index:idx_edge_user;uniqueIndex:idx_edge_unique;comment:用户ID"`
+	SourceID int64   `json:"source_id" gorm:"uniqueIndex:idx_edge_unique;comment:源概念ID"`
+	TargetID int64   `json:"target_id" gorm:"uniqueIndex:idx_edge_unique;comment:目标概念ID"`
 	Weight   float64 `json:"weight" gorm:"default:1.0;comment:关联强度"`
 	Reason   string  `json:"reason" gorm:"type:text;comment:AI生成的关联原因"`
 	CTime    int64   `json:"ctime" gorm:"column:ctime;autoCreateTime:milli;comment:创建时间"`
@@ -52,27 +55,23 @@ func ListConceptEdges(db *gorm.DB, userID int64) ([]ConceptEdge, error) {
 }
 
 func UpsertConceptTags(db *gorm.DB, tags []ConceptTag) error {
-	for _, tag := range tags {
-		err := db.Where("user_id = ? AND book_id = ? AND name = ? AND note_id = ?",
-			tag.UserID, tag.BookID, tag.Name, tag.NoteID).
-			Assign(tag).FirstOrCreate(&tag).Error
-		if err != nil {
-			return err
-		}
+	if len(tags) == 0 {
+		return nil
 	}
-	return nil
+	return db.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "user_id"}, {Name: "book_id"}, {Name: "name"}, {Name: "note_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"source"}),
+	}).Create(&tags).Error
 }
 
 func UpsertConceptEdges(db *gorm.DB, edges []ConceptEdge) error {
-	for _, edge := range edges {
-		err := db.Where("user_id = ? AND source_id = ? AND target_id = ?",
-			edge.UserID, edge.SourceID, edge.TargetID).
-			Assign(edge).FirstOrCreate(&edge).Error
-		if err != nil {
-			return err
-		}
+	if len(edges) == 0 {
+		return nil
 	}
-	return nil
+	return db.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "user_id"}, {Name: "source_id"}, {Name: "target_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"weight", "reason"}),
+	}).Create(&edges).Error
 }
 
 func ListConceptTagsSince(db *gorm.DB, userID int64, since int64) ([]ConceptTag, error) {
@@ -106,19 +105,29 @@ type ConceptTagWithLocalID struct {
 }
 
 func UpsertConceptTagsWithMapping(db *gorm.DB, tags []ConceptTagWithLocalID) ([]TagMapping, error) {
-	mappings := make([]TagMapping, 0, len(tags))
-	for _, tag := range tags {
-		var existing ConceptTag
-		err := db.Where("user_id = ? AND book_id = ? AND name = ? AND note_id = ?",
-			tag.UserID, tag.BookID, tag.Name, tag.NoteID).
-			Assign(tag.ConceptTag).FirstOrCreate(&existing).Error
-		if err != nil {
-			return nil, err
-		}
-		mappings = append(mappings, TagMapping{
-			LocalID:  tag.LocalID,
-			ServerID: existing.ID,
-		})
+	if len(tags) == 0 {
+		return nil, nil
+	}
+
+	// Extract local IDs in order, then batch upsert the underlying ConceptTags.
+	localIDs := make([]int64, len(tags))
+	rows := make([]ConceptTag, len(tags))
+	for i, t := range tags {
+		localIDs[i] = t.LocalID
+		rows[i] = t.ConceptTag
+	}
+
+	if err := db.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "user_id"}, {Name: "book_id"}, {Name: "name"}, {Name: "note_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"source"}),
+	}).Create(&rows).Error; err != nil {
+		return nil, err
+	}
+
+	// rows[i].ID is now populated (INSERT returns the id; ON CONFLICT update also returns it via RETURNING).
+	mappings := make([]TagMapping, len(rows))
+	for i, row := range rows {
+		mappings[i] = TagMapping{LocalID: localIDs[i], ServerID: row.ID}
 	}
 	return mappings, nil
 }

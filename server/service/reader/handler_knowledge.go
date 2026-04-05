@@ -47,7 +47,7 @@ func GetKnowledgeGraph(c *gin.Context) {
 		}
 	}
 	if err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 
@@ -58,7 +58,7 @@ func GetKnowledgeGraph(c *gin.Context) {
 		edges, err = schema.ListConceptEdges(orm, userID)
 	}
 	if err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 
@@ -94,7 +94,7 @@ func SyncConceptTags(c *gin.Context) {
 
 	mappings, err := schema.UpsertConceptTagsWithMapping(orm, tags)
 	if err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 
@@ -128,7 +128,7 @@ func SyncConceptEdges(c *gin.Context) {
 	}
 
 	if err := schema.UpsertConceptEdges(orm, edges); err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 

@@ -1,7 +1,9 @@
 package schema
 
 import (
+	"log"
 	"math"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -42,4 +44,11 @@ func SuccessPaged(c *gin.Context, data any, page, pageSize int, total int64) {
 func Error(c *gin.Context, status int, code, message string) {
 	c.JSON(status, ErrorResponse{Code: code, Message: message})
 	c.Abort()
+}
+
+// InternalError returns a generic 500 response without leaking internal details.
+// The actual error is logged server-side.
+func InternalError(c *gin.Context, err error) {
+	log.Printf("[ERROR] %s %s: %v", c.Request.Method, c.Request.URL.Path, err)
+	Error(c, http.StatusInternalServerError, "INTERNAL_ERROR", "An internal error occurred")
 }
