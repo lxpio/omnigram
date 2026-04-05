@@ -1001,5 +1001,13 @@
   "companionQuickConnect": "How does this connect to what I read before?",
   "companionQuickMissed": "Any key points I might have missed?",
 
-  "aiProviderGeneral": "General"
+  "aiProviderGeneral": "General",
+
+  "onboardingWelcome": "Welcome to Omnigram",
+  "onboardingChooseLanguage": "Choose your language",
+  "onboardingNext": "Next",
+  "onboardingStartJourney": "Start your reading journey",
+  "onboardingImportBooks": "Import local books",
+  "onboardingConnectServer": "Connect to Omnigram Server",
+  "onboardingSkip": "Skip for now"
 }
