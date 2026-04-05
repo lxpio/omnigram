@@ -298,7 +298,12 @@ class _CompanionPanelState extends ConsumerState<CompanionPanel> {
     );
   }
 
-  List<String> get _quickPrompts => ['总结这一章', '解释一下核心概念', '这和之前读的有什么关联？', '有什么我可能遗漏的要点？'];
+  List<String> get _quickPrompts => [
+        L10n.of(context).companionQuickSummarize,
+        L10n.of(context).companionQuickExplain,
+        L10n.of(context).companionQuickConnect,
+        L10n.of(context).companionQuickMissed,
+      ];
 
   Widget _buildMessageBubble(
     ThemeData theme, {

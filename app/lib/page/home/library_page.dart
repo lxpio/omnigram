@@ -11,6 +11,7 @@ import 'package:omnigram/widgets/library/ai_recommendation_card.dart';
 import 'package:omnigram/widgets/library/book_grid_item.dart';
 import 'package:omnigram/widgets/library/topic_section.dart';
 import 'package:omnigram/widgets/common/empty_state.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/theme/omnigram_theme.dart';
 import 'package:omnigram/theme/typography.dart';
 
@@ -42,10 +43,10 @@ class LibraryPage extends ConsumerWidget {
               padding: const EdgeInsets.all(OmnigramTheme.pageHorizontalPadding),
               children: [
                 const SizedBox(height: 16),
-                Text('我的书房', style: OmnigramTypography.displayLarge(context)),
+                Text(L10n.of(context).libraryTitle, style: OmnigramTypography.displayLarge(context)),
                 const SizedBox(height: 16),
                 SearchBar(
-                  hintText: '搜索书名或作者',
+                  hintText: L10n.of(context).librarySearchHint,
                   leading: const Icon(Icons.search),
                   onTap: () {
                     // TODO: navigate to search page
@@ -55,13 +56,13 @@ class LibraryPage extends ConsumerWidget {
                 AiRecommendationCard(recentBookTitles: allBooks.map((b) => b.title).toList()),
                 const SizedBox(height: 16),
                 TopicSection(
-                  title: '最近添加',
+                  title: L10n.of(context).libraryRecentlyAdded,
                   count: recent.length,
                   books: recent,
                   onBookTap: (book) => _openBook(context, ref, book),
                 ),
                 const SizedBox(height: 24),
-                Text('全部 (${allBooks.length})', style: OmnigramTypography.titleMedium(context)),
+                Text(L10n.of(context).libraryAllBooks(allBooks.length), style: OmnigramTypography.titleMedium(context)),
                 const SizedBox(height: 8),
                 GridView.builder(
                   shrinkWrap: true,

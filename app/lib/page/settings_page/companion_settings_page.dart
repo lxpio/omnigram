@@ -38,14 +38,14 @@ class _CompanionSettingsPageState extends ConsumerState<CompanionSettingsPage> {
     final notifier = ref.read(companionProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('阅读伴侣')),
+      appBar: AppBar(title: Text(L10n.of(context).companionTitle)),
       body: ListView(
         padding: const EdgeInsets.all(OmnigramTheme.pageHorizontalPadding),
         children: [
           // Name
           TextField(
             controller: _nameController,
-            decoration: const InputDecoration(labelText: '伴侣名称', hintText: 'TARS'),
+            decoration: InputDecoration(labelText: L10n.of(context).companionNameLabel, hintText: 'TARS'),
             onChanged: notifier.updateName,
           ),
           const SizedBox(height: 24),
@@ -56,7 +56,7 @@ class _CompanionSettingsPageState extends ConsumerState<CompanionSettingsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('预览', style: OmnigramTypography.caption(context)),
+                Text(L10n.of(context).companionPreview, style: OmnigramTypography.caption(context)),
                 const SizedBox(height: 8),
                 Text(
                   CompanionPrompt.previewText(personality),
@@ -69,30 +69,30 @@ class _CompanionSettingsPageState extends ConsumerState<CompanionSettingsPage> {
 
           // Sliders
           _PersonalitySlider(
-            label: '主动性',
-            lowLabel: '安静助手',
-            highLabel: '健谈学者',
+            label: L10n.of(context).companionProactivity,
+            lowLabel: L10n.of(context).companionQuietAssistant,
+            highLabel: L10n.of(context).companionTalkativeScholar,
             value: personality.proactivity,
             onChanged: (v) => notifier.updateProactivity(v.round()),
           ),
           _PersonalitySlider(
-            label: '风格',
-            lowLabel: '直接回答',
-            highLabel: '苏格拉底式',
+            label: L10n.of(context).companionStyle,
+            lowLabel: L10n.of(context).companionDirectAnswer,
+            highLabel: L10n.of(context).companionSocratic,
             value: personality.style,
             onChanged: (v) => notifier.updateStyle(v.round()),
           ),
           _PersonalitySlider(
-            label: '深度',
-            lowLabel: '通俗易懂',
-            highLabel: '学术分析',
+            label: L10n.of(context).companionDepth,
+            lowLabel: L10n.of(context).companionSimple,
+            highLabel: L10n.of(context).companionAcademic,
             value: personality.depth,
             onChanged: (v) => notifier.updateDepth(v.round()),
           ),
           _PersonalitySlider(
-            label: '温度',
-            lowLabel: '冷静客观',
-            highLabel: '热情投入',
+            label: L10n.of(context).companionWarmth,
+            lowLabel: L10n.of(context).companionCool,
+            highLabel: L10n.of(context).companionWarm,
             value: personality.warmth,
             onChanged: (v) => notifier.updateWarmth(v.round()),
           ),

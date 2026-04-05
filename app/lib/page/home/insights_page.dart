@@ -13,6 +13,7 @@ import 'package:omnigram/widgets/insights/reading_summary_card.dart';
 import 'package:omnigram/widgets/insights/notes_list.dart';
 import 'package:omnigram/widgets/insights/time_period_selector.dart';
 import 'package:omnigram/widgets/common/empty_state.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/theme/omnigram_theme.dart';
 import 'package:omnigram/theme/typography.dart';
 
@@ -33,7 +34,7 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
         padding: const EdgeInsets.all(OmnigramTheme.pageHorizontalPadding),
         children: [
           const SizedBox(height: 16),
-          Text('洞察', style: OmnigramTypography.displayLarge(context)),
+          Text(L10n.of(context).insightsTitle, style: OmnigramTypography.displayLarge(context)),
           const SizedBox(height: 16),
           TimePeriodSelector(
             selected: _period,
@@ -69,7 +70,7 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
             },
           ),
           const SizedBox(height: 24),
-          Text('笔记', style: OmnigramTypography.titleLarge(context)),
+          Text(L10n.of(context).insightsNotes, style: OmnigramTypography.titleLarge(context)),
           const SizedBox(height: 12),
           FutureBuilder<Map<String, List<BookNote>>>(
             future: _loadNotesByBook(),
