@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:omnigram/dao/concept_tag.dart';
 import 'package:omnigram/providers/companion_provider.dart';
+import 'package:omnigram/service/ai/ai_language.dart';
 import 'package:omnigram/service/ai/ambient_ai_pipeline.dart';
 import 'package:omnigram/service/ai/concept_extractor.dart';
 
@@ -97,6 +98,35 @@ class AmbientTasks {
       prompt: prompt,
       ref: ref,
       cacheParams: {'glossary': selectedText},
+    );
+  }
+
+  /// Auto-detect difficult words in chapter text.
+  /// Returns lines of "word|definition", one per line.
+  static Future<String?> autoGlossary({
+    required WidgetRef ref,
+    required int bookId,
+    required String chapterTitle,
+    required String chapterText,
+  }) {
+    final lang = getAiReplyLanguage();
+    final truncated = chapterText.length > 3000
+        ? chapterText.substring(0, 3000)
+        : chapterText;
+    final prompt =
+        'Identify 5-8 difficult, uncommon, or domain-specific words/phrases in the following text.\n'
+        'For each word, provide a brief definition (1 sentence max).\n'
+        'Format: one per line, word|definition\n'
+        'Only include words that a general reader would likely not know.\n\n'
+        'Text:\n$truncated\n\n'
+        'Reply in $lang.';
+
+    return AmbientAiPipeline.execute(
+      type: AmbientTaskType.autoGlossary,
+      prompt: prompt,
+      ref: ref,
+      cacheParams: {'bookId': bookId, 'chapter': chapterTitle},
+      bookId: bookId,
     );
   }
 
