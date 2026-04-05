@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lxpio/omnigram/server/middleware"
 	"github.com/lxpio/omnigram/server/schema"
-	"github.com/lxpio/omnigram/server/store"
 )
 
 // @Summary Get knowledge graph data
@@ -25,8 +24,6 @@ func GetKnowledgeGraph(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 	bookID := c.Query("book_id")
 
-	db := store.FileStore()
-
 	var since int64
 	if sinceStr := c.Query("since"); sinceStr != "" {
 		if s, err := strconv.ParseInt(sinceStr, 10, 64); err == nil && s > 0 {
@@ -38,30 +35,30 @@ func GetKnowledgeGraph(c *gin.Context) {
 	var err error
 	if since > 0 {
 		if bookID != "" {
-			tags, err = schema.ListConceptTagsByBookSince(db, userID, bookID, since)
+			tags, err = schema.ListConceptTagsByBookSince(orm, userID, bookID, since)
 		} else {
-			tags, err = schema.ListConceptTagsSince(db, userID, since)
+			tags, err = schema.ListConceptTagsSince(orm, userID, since)
 		}
 	} else {
 		if bookID != "" {
-			tags, err = schema.ListConceptTagsByBook(db, userID, bookID)
+			tags, err = schema.ListConceptTagsByBook(orm, userID, bookID)
 		} else {
-			tags, err = schema.ListConceptTags(db, userID)
+			tags, err = schema.ListConceptTags(orm, userID)
 		}
 	}
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, schema.ErrorResponse{Message: err.Error()})
+		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
 		return
 	}
 
 	var edges []schema.ConceptEdge
 	if since > 0 {
-		edges, err = schema.ListConceptEdgesSince(db, userID, since)
+		edges, err = schema.ListConceptEdgesSince(orm, userID, since)
 	} else {
-		edges, err = schema.ListConceptEdges(db, userID)
+		edges, err = schema.ListConceptEdges(orm, userID)
 	}
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, schema.ErrorResponse{Message: err.Error()})
+		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
 		return
 	}
 
@@ -87,7 +84,7 @@ func SyncConceptTags(c *gin.Context) {
 
 	var tags []schema.ConceptTagWithLocalID
 	if err := c.ShouldBindJSON(&tags); err != nil {
-		c.JSON(http.StatusBadRequest, schema.ErrorResponse{Message: err.Error()})
+		schema.Error(c, http.StatusBadRequest, "VALIDATION_ERROR", err.Error())
 		return
 	}
 
@@ -95,9 +92,9 @@ func SyncConceptTags(c *gin.Context) {
 		tags[i].UserID = userID
 	}
 
-	mappings, err := schema.UpsertConceptTagsWithMapping(store.FileStore(), tags)
+	mappings, err := schema.UpsertConceptTagsWithMapping(orm, tags)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, schema.ErrorResponse{Message: err.Error()})
+		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
 		return
 	}
 
@@ -122,7 +119,7 @@ func SyncConceptEdges(c *gin.Context) {
 
 	var edges []schema.ConceptEdge
 	if err := c.ShouldBindJSON(&edges); err != nil {
-		c.JSON(http.StatusBadRequest, schema.ErrorResponse{Message: err.Error()})
+		schema.Error(c, http.StatusBadRequest, "VALIDATION_ERROR", err.Error())
 		return
 	}
 
@@ -130,8 +127,8 @@ func SyncConceptEdges(c *gin.Context) {
 		edges[i].UserID = userID
 	}
 
-	if err := schema.UpsertConceptEdges(store.FileStore(), edges); err != nil {
-		c.JSON(http.StatusInternalServerError, schema.ErrorResponse{Message: err.Error()})
+	if err := schema.UpsertConceptEdges(orm, edges); err != nil {
+		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
 		return
 	}
 
