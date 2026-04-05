@@ -356,6 +356,10 @@ export class View extends HTMLElement {
       overlayer.remove(value)
       if (!remove) {
         const range = doc ? anchor(doc) : anchor
+        if (annotation.type === 'glossary') {
+          overlayer.add(value, range, Overlayer.underlineDashed, { color: '#39c5bb88' })
+          return { index }
+        }
         const draw = (func, opts) => overlayer.add(value, range, func, opts)
         this.#emit('draw-annotation', { draw, annotation, doc, range })
       }

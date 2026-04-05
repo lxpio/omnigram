@@ -209,6 +209,23 @@ export class Overlayer {
         }
         return g
     }
+    static underlineDashed(rects, options = {}) {
+        const { color = 'red' } = options
+        const g = createSVGElement('g')
+        g.setAttribute('fill', 'none')
+        g.setAttribute('stroke', color)
+        for (const { left, bottom, width } of rects) {
+            const el = createSVGElement('line')
+            el.setAttribute('x1', left)
+            el.setAttribute('y1', bottom - 1)
+            el.setAttribute('x2', left + width)
+            el.setAttribute('y2', bottom - 1)
+            el.setAttribute('stroke-dasharray', '3,2')
+            el.setAttribute('stroke-width', '1.5')
+            g.append(el)
+        }
+        return g
+    }
     // make an exact copy of an image in the overlay
     // one can then apply filters to the entire element, without affecting them;
     // it's a bit silly and probably better to just invert images twice
