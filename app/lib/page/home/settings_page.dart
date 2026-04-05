@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/theme/typography.dart';
 import 'package:omnigram/theme/omnigram_theme.dart';
 import 'package:omnigram/widgets/common/omnigram_card.dart';
@@ -9,6 +10,8 @@ import 'package:omnigram/page/settings_page/server_connection_page.dart';
 import 'package:omnigram/page/settings_page/sync.dart';
 import 'package:omnigram/page/settings_page/more_settings_page.dart';
 import 'package:omnigram/providers/server_connection_provider.dart';
+import 'package:omnigram/service/export/data_export.dart';
+import 'package:omnigram/utils/toast/common.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -67,6 +70,13 @@ class SettingsPage extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           _SettingsSection(
+            icon: Icons.download_outlined,
+            title: L10n.of(context).exportData,
+            subtitle: L10n.of(context).exportAllNotesDesc,
+            onTap: () => _showExportSheet(context),
+          ),
+          const SizedBox(height: 12),
+          _SettingsSection(
             icon: Icons.build_outlined,
             title: '高级',
             subtitle: 'AI 服务配置 · AI Chat (调试) · 开发者选项',
@@ -89,6 +99,52 @@ class SettingsPage extends ConsumerWidget {
       ),
     );
   }
+}
+
+void _showExportSheet(BuildContext context) {
+  final l10n = L10n.of(context);
+  showModalBottomSheet(
+    context: context,
+    builder: (ctx) => SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.description_outlined),
+            title: Text(l10n.exportAllNotes),
+            subtitle: Text(l10n.exportAllNotesDesc),
+            onTap: () async {
+              Navigator.pop(ctx);
+              final path = await DataExport.exportAllNotes();
+              if (context.mounted) {
+                if (path != null) {
+                  AnxToast.show(l10n.exportSuccess(path));
+                } else {
+                  AnxToast.show(l10n.exportNoNotes);
+                }
+              }
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.hub_outlined),
+            title: Text(l10n.exportKnowledge),
+            subtitle: Text(l10n.exportKnowledgeDesc),
+            onTap: () async {
+              Navigator.pop(ctx);
+              final path = await DataExport.exportKnowledge();
+              if (context.mounted) {
+                if (path != null) {
+                  AnxToast.show(l10n.exportSuccess(path));
+                } else {
+                  AnxToast.show(l10n.exportNoKnowledge);
+                }
+              }
+            },
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class _ServerConnectionSection extends ConsumerWidget {

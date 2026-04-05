@@ -1004,5 +1004,15 @@
   "onboardingStartJourney": "开始你的阅读之旅",
   "onboardingImportBooks": "导入本地书籍",
   "onboardingConnectServer": "连接 Omnigram 服务端",
-  "onboardingSkip": "跳过，稍后再说"
+  "onboardingSkip": "跳过，稍后再说",
+
+  "exportData": "数据",
+  "exportAllNotes": "导出全部笔记",
+  "exportAllNotesDesc": "Markdown 格式，按书分组",
+  "exportKnowledge": "导出知识网络",
+  "exportKnowledgeDesc": "JSON 格式，概念和关联",
+  "exportSuccess": "已导出到 {path}",
+  "@exportSuccess": { "placeholders": { "path": { "type": "String" } } },
+  "exportNoNotes": "无笔记可导出",
+  "exportNoKnowledge": "无知识数据可导出"
 }
