@@ -5,6 +5,8 @@ import 'package:omnigram/page/home/desk_page.dart';
 import 'package:omnigram/page/home/library_page.dart';
 import 'package:omnigram/page/home/insights_page.dart';
 import 'package:omnigram/page/home/settings_page.dart' as omnigram;
+import 'package:omnigram/config/shared_preference_provider.dart';
+import 'package:omnigram/page/onboarding_flow.dart';
 
 enum OmnigramTab { reading, bookshelf, insights, settings }
 
@@ -17,6 +19,18 @@ class OmnigramHome extends ConsumerStatefulWidget {
 
 class _OmnigramHomeState extends ConsumerState<OmnigramHome> {
   OmnigramTab _currentTab = OmnigramTab.reading;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Prefs().lastAppVersion == null) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const OnboardingFlow()),
+        );
+      }
+    });
+  }
 
   Widget _buildPage() {
     switch (_currentTab) {
