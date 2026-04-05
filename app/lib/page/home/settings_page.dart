@@ -10,6 +10,7 @@ import 'package:omnigram/page/settings_page/server_connection_page.dart';
 import 'package:omnigram/page/settings_page/sync.dart';
 import 'package:omnigram/page/settings_page/more_settings_page.dart';
 import 'package:omnigram/providers/server_connection_provider.dart';
+import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/service/export/data_export.dart';
 import 'package:omnigram/utils/toast/common.dart';
 
@@ -75,6 +76,8 @@ class SettingsPage extends ConsumerWidget {
             subtitle: L10n.of(context).exportAllNotesDesc,
             onTap: () => _showExportSheet(context),
           ),
+          const SizedBox(height: 12),
+          const _AiBudgetSection(),
           const SizedBox(height: 12),
           _SettingsSection(
             icon: Icons.build_outlined,
@@ -196,6 +199,55 @@ class _ServerConnectionSection extends ConsumerWidget {
           const SizedBox(width: 8),
           Icon(Icons.chevron_right,
               color: Theme.of(context).colorScheme.outlineVariant),
+        ],
+      ),
+    );
+  }
+}
+
+class _AiBudgetSection extends ConsumerStatefulWidget {
+  const _AiBudgetSection();
+
+  @override
+  ConsumerState<_AiBudgetSection> createState() => _AiBudgetSectionState();
+}
+
+class _AiBudgetSectionState extends ConsumerState<_AiBudgetSection> {
+  @override
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
+    return OmnigramCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.memory, size: 28, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(width: 16),
+              Text(l10n.aiBudgetTitle, style: OmnigramTypography.titleMedium(context)),
+            ],
+          ),
+          const SizedBox(height: 12),
+          SwitchListTile(
+            title: Text(l10n.aiBudgetBackgroundAi),
+            subtitle: Text(l10n.aiBudgetBackgroundAiDesc, style: OmnigramTypography.caption(context)),
+            value: Prefs().backgroundAiEnabled,
+            onChanged: (v) => setState(() => Prefs().backgroundAiEnabled = v),
+            contentPadding: EdgeInsets.zero,
+          ),
+          ListTile(
+            title: Text(l10n.aiBudgetConcurrency),
+            subtitle: Text(l10n.aiBudgetConcurrencyDesc, style: OmnigramTypography.caption(context)),
+            trailing: DropdownButton<int>(
+              value: Prefs().maxConcurrentAiTasks,
+              items: [1, 2, 3, 5].map((n) => DropdownMenuItem(value: n, child: Text('$n'))).toList(),
+              onChanged: (v) {
+                if (v != null) setState(() => Prefs().maxConcurrentAiTasks = v);
+              },
+              underline: const SizedBox(),
+            ),
+            contentPadding: EdgeInsets.zero,
+          ),
         ],
       ),
     );

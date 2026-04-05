@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:langchain_core/chat_models.dart';
+import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/dao/ai_cache.dart';
 import 'package:omnigram/providers/companion_provider.dart';
 import 'package:omnigram/service/ai/companion_prompt.dart';
@@ -19,6 +20,41 @@ class AmbientAiResult {
 
 class AmbientAiPipeline {
   AmbientAiPipeline._();
+
+  /// Background task types — blocked when backgroundAiEnabled is false.
+  /// User-triggered tasks (glossary, contextBar, memoryBridge) are unaffected.
+  static const _backgroundTaskTypes = {
+    AmbientTaskType.autoTag,
+    AmbientTaskType.autoGlossary,
+    AmbientTaskType.summary,
+    AmbientTaskType.recommendation,
+    AmbientTaskType.narrative,
+    AmbientTaskType.conceptExtract,
+    AmbientTaskType.conceptConnect,
+    AmbientTaskType.knowledgeNarrative,
+  };
+
+  // Concurrency semaphore
+  static int _activeCount = 0;
+  static final List<Completer<void>> _waitQueue = [];
+
+  static Future<void> _acquireSlot() async {
+    final maxConcurrent = Prefs().maxConcurrentAiTasks;
+    if (maxConcurrent <= 0) return; // 0 = unlimited
+    while (_activeCount >= maxConcurrent) {
+      final completer = Completer<void>();
+      _waitQueue.add(completer);
+      await completer.future;
+    }
+    _activeCount++;
+  }
+
+  static void _releaseSlot() {
+    _activeCount--;
+    if (_waitQueue.isNotEmpty) {
+      _waitQueue.removeAt(0).complete();
+    }
+  }
 
   // L1: In-memory cache (hot, session-scoped)
   static final Map<String, AmbientAiResult> _cache = {};
@@ -101,6 +137,12 @@ class AmbientAiPipeline {
       if (dbCached != null) return dbCached.content;
     }
 
+    // Check if background AI is disabled for this task type
+    if (_backgroundTaskTypes.contains(type) && !Prefs().backgroundAiEnabled) {
+      return null;
+    }
+
+    await _acquireSlot();
     try {
       final personality = ref.read(companionProvider);
       final systemPrompt = CompanionPrompt.buildSystemPrompt(personality);
@@ -125,6 +167,8 @@ class AmbientAiPipeline {
     } catch (_) {
       // Ambient AI never throws — silently degrade
       return null;
+    } finally {
+      _releaseSlot();
     }
   }
 }

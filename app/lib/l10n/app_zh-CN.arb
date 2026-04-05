@@ -1014,5 +1014,11 @@
   "exportSuccess": "已导出到 {path}",
   "@exportSuccess": { "placeholders": { "path": { "type": "String" } } },
   "exportNoNotes": "无笔记可导出",
-  "exportNoKnowledge": "无知识数据可导出"
+  "exportNoKnowledge": "无知识数据可导出",
+
+  "aiBudgetTitle": "AI 处理",
+  "aiBudgetBackgroundAi": "后台 AI",
+  "aiBudgetBackgroundAiDesc": "自动标签、难词检测、知识网络",
+  "aiBudgetConcurrency": "最大并发任务",
+  "aiBudgetConcurrencyDesc": "限制同时执行的 AI 请求数"
 }

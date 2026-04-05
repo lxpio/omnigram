@@ -1019,5 +1019,11 @@
   "exportSuccess": "Exported to {path}",
   "@exportSuccess": { "placeholders": { "path": { "type": "String" } } },
   "exportNoNotes": "No notes to export",
-  "exportNoKnowledge": "No knowledge data to export"
+  "exportNoKnowledge": "No knowledge data to export",
+
+  "aiBudgetTitle": "AI Processing",
+  "aiBudgetBackgroundAi": "Background AI",
+  "aiBudgetBackgroundAiDesc": "Auto-tagging, glossary detection, knowledge graph",
+  "aiBudgetConcurrency": "Max concurrent tasks",
+  "aiBudgetConcurrencyDesc": "Limit simultaneous AI requests"
 }

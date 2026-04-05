@@ -569,6 +569,16 @@ class Prefs extends ChangeNotifier {
     return prefs.getInt('aiRpm') ?? 0;
   }
 
+  /// Whether background AI tasks (P2/P3: autoTag, autoGlossary, conceptExtract,
+  /// knowledgeNarrative, recommendation) are enabled.
+  /// User-triggered AI (glossary, companion chat) is not affected.
+  bool get backgroundAiEnabled => prefs.getBool('backgroundAiEnabled') ?? true;
+  set backgroundAiEnabled(bool v) => prefs.setBool('backgroundAiEnabled', v);
+
+  /// Max concurrent AI tasks. Excess tasks queue up.
+  int get maxConcurrentAiTasks => prefs.getInt('maxConcurrentAiTasks') ?? 2;
+  set maxConcurrentAiTasks(int v) => prefs.setInt('maxConcurrentAiTasks', v);
+
   // set convertChineseMode(ConvertChineseMode mode) {
   //   prefs.setString('convertChineseMode', mode.name);
   //   notifyListeners();
