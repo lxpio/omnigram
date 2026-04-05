@@ -26,6 +26,8 @@ import 'package:omnigram/providers/book_list.dart';
 import 'package:omnigram/providers/book_toc.dart';
 import 'package:omnigram/providers/bookmark.dart';
 import 'package:omnigram/providers/chapter_content_bridge.dart';
+import 'package:omnigram/providers/companion_provider.dart';
+import 'package:omnigram/service/ai/ambient_tasks.dart';
 import 'package:omnigram/providers/current_reading.dart';
 import 'package:omnigram/service/book_player/book_player_server.dart';
 import 'package:omnigram/providers/toc_search.dart';
@@ -103,6 +105,9 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
   String? _lastSelectionContextText;
   bool _selectionClearLocked = false;
   bool _selectionClearPending = false;
+
+  String? _lastAutoGlossaryChapter;
+  List<Map<String, String>> _glossaryWords = [];
 
   // Scroll wheel debounce
   Timer? _scrollDebounceTimer;
@@ -597,6 +602,162 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
     }
   }
 
+  /// Auto-detect difficult words when chapter changes.
+  /// Controlled by companion personality annotateHardWords toggle.
+  Future<void> _triggerAutoGlossary() async {
+    final personality = ref.read(companionProvider);
+    if (!personality.annotateHardWords) return;
+
+    if (chapterTitle == _lastAutoGlossaryChapter) return;
+    _lastAutoGlossaryChapter = chapterTitle;
+
+    final handlers = ref.read(chapterContentBridgeProvider);
+    if (handlers == null) return;
+
+    String chapterText;
+    try {
+      chapterText = await handlers.fetchCurrentChapter(maxCharacters: 3000);
+    } catch (e) {
+      debugPrint('[AutoGlossary] Failed to fetch chapter text: $e');
+      return;
+    }
+
+    if (chapterText.trim().isEmpty) return;
+
+    final result = await AmbientTasks.autoGlossary(
+      ref: ref,
+      bookId: widget.book.id,
+      chapterTitle: chapterTitle,
+      chapterText: chapterText,
+    );
+
+    if (result == null || result.isEmpty || !mounted) return;
+
+    final words = <Map<String, String>>[];
+    for (final line in result.split('\n')) {
+      final parts = line.trim().split('|');
+      if (parts.length >= 2 && parts[0].trim().isNotEmpty) {
+        words.add({'word': parts[0].trim(), 'definition': parts[1].trim()});
+      }
+    }
+
+    if (words.isEmpty) return;
+    _glossaryWords = words;
+
+    // Inject glossary annotations into WebView
+    for (var i = 0; i < words.length; i++) {
+      final word = words[i]['word']!;
+      final escapedWord = word
+          .replaceAll("\\", "\\\\")
+          .replaceAll("'", "\\'")
+          .replaceAll("\n", " ");
+      webViewController.evaluateJavascript(source: '''
+        (function() {
+          var word = '$escapedWord';
+          var body = document.body || document.documentElement;
+          if (!body) return;
+          var walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT);
+          while (walker.nextNode()) {
+            var node = walker.currentNode;
+            var idx = node.textContent.toLowerCase().indexOf(word.toLowerCase());
+            if (idx >= 0) {
+              var range = document.createRange();
+              range.setStart(node, idx);
+              range.setEnd(node, idx + word.length);
+              try {
+                var cfi = reader.getCFIFromRange(range);
+                if (cfi) {
+                  reader.addAnnotation({
+                    id: ${10000 + i},
+                    type: 'glossary',
+                    value: cfi,
+                    color: '#39c5bb88',
+                    note: '',
+                  });
+                }
+              } catch(e) {}
+              break;
+            }
+          }
+        })();
+      ''');
+    }
+  }
+
+  void _showGlossaryPopup(
+    BuildContext context,
+    String word,
+    String definition,
+    double left,
+    double top,
+    double right,
+    double bottom,
+  ) {
+    contextMenuEntry?.remove();
+    contextMenuEntry = OverlayEntry(
+      builder: (ctx) => Stack(
+        children: [
+          // Dismiss on tap outside
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () {
+                contextMenuEntry?.remove();
+                contextMenuEntry = null;
+              },
+              behavior: HitTestBehavior.translucent,
+            ),
+          ),
+          Positioned(
+            left: left.clamp(8.0, MediaQuery.of(context).size.width - 288.0),
+            top: bottom + 4,
+            child: Material(
+              elevation: 4,
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 280),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.auto_awesome,
+                            size: 14,
+                            color: Theme.of(context).colorScheme.primary),
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(word,
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w600)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      definition,
+                      style: TextStyle(
+                          fontSize: 14,
+                          color:
+                              Theme.of(context).colorScheme.onSurfaceVariant),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    Overlay.of(context).insert(contextMenuEntry!);
+  }
+
   Future<void> renderAnnotations(InAppWebViewController controller) async {
     List<BookNote> annotationList =
         await bookNoteDao.selectBookNotesByBookId(widget.book.id);
@@ -662,6 +823,7 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
           widget.updateParent();
           saveReadingProgress();
           readingPageKey.currentState?.resetAwakeTimer();
+          _triggerAutoGlossary();
         });
     controller.addJavaScriptHandler(
         handlerName: 'onClick',
@@ -751,6 +913,19 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
           double top = (annotation['pos']['top'] as num).toDouble();
           double right = (annotation['pos']['right'] as num).toDouble();
           double bottom = (annotation['pos']['bottom'] as num).toDouble();
+
+          // Glossary annotation — show cached definition popup
+          if (id >= 10000 && id < 20000) {
+            final wordIndex = id - 10000;
+            if (wordIndex < _glossaryWords.length) {
+              final word = _glossaryWords[wordIndex]['word']!;
+              final definition = _glossaryWords[wordIndex]['definition']!;
+              _showGlossaryPopup(
+                  context, word, definition, left, top, right, bottom);
+              return;
+            }
+          }
+
           showContextMenu(
             context,
             left,
