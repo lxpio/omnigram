@@ -98,10 +98,10 @@
 | └─ 一句话摘要 | §4.3 | ✅ | AmbientTasks.summary() | `d4f355e` |
 | **阅读器 AI Layer 2：Inline Glossary** | §5.1 | ✅ | `widgets/reader/glossary_tooltip.dart` | `12e449f` |
 | ├─ 选词自动浮现释义 | §5.1 | ✅ | `widgets/context_menu/excerpt_menu.dart` (Explain 按钮) | `12e449f` |
-| └─ 自动检测难词 | §5.1 | ❌ | | |
+| └─ 自动检测难词 | §5.1 | ✅ | `page/book_player/epub_player.dart` | `97ac9ba` |
 | **书架 AI 功能** | §4.3 | ✅ | | |
 | ├─ AI 推荐卡 | §4.2 | ✅ | `widgets/library/ai_recommendation_card.dart` | `e4bdf3f` |
-| ├─ 智能分组（主题聚合） | §4.3 | ❌ | | |
+| ├─ 智能分组（主题聚合） | §4.3 | ✅ | `page/home/library_page.dart` | `9ac37e4` |
 | └─ 语义搜索 | §4.2 | ✅ | Sprint 4 完成 |
 | **洞察 Layer 1 升级：AI 叙事** | §6.1 | ✅ | `widgets/insights/ai_narrative_card.dart` | `d6c2fc2` |
 | └─ AI 生成阅读旅程叙述 | §6.1 | ✅ | `page/home/insights_page.dart` | `d6c2fc2` |
@@ -448,6 +448,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-04-05 | **Layer 3 补全** ✅：自动检测难词（章节切换触发 AI 扫描，虚线下划线高亮，点击显示释义）+ 智能分组（书架按 AI 标签主题聚合为 TopicSection） |
 | 2026-04-05 | **KI-2 国际化缺口修复** ✅：批次 A — 3 处 AI prompt 改为英文 + `Reply in {language}`。批次 B — ~50 个硬编码中文字符串移入 L10n ARB（16 文件），新增 ~50 个 ARB key |
 | 2026-04-04 | **KI-1/KI-3/KI-4 同步缺口修复** ✅：Companion Chat、Margin Notes、Concept Tags/Edges 双向同步完成。Server GET 端点增加 delta pull（since + server_time）。Push 侧 book ID 映射修复（KI-4），concept tag ID 映射修复（KI-3）。Server Wins 冲突策略 |
 | 2026-04-02 | **书籍详情页重设计完成** ✅：从 760 行信息陈列柜重写为行动导向的"书的灵魂页"（~500行）。封面主色渐变、继续阅读按钮、AI 一句话总结、最近笔记预览。砍掉虚荣指标。54 tests 全绿 |
