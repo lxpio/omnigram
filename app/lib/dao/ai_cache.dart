@@ -63,6 +63,24 @@ class AiCacheDao extends BaseDao {
     return result.firstOrNull ?? 0;
   }
 
+  /// Get all cached autoTag results, returning a map of bookId → tags string.
+  Future<Map<int, String>> getAllAutoTags() async {
+    final entries = await queryList<AiCacheEntry>(
+      table,
+      mapper: AiCacheEntry.fromRow,
+      where: 'type = ?',
+      whereArgs: ['autoTag'],
+    );
+    final result = <int, String>{};
+    for (final entry in entries) {
+      final bookId = entry.bookId;
+      if (bookId != null) {
+        result[bookId] = entry.content;
+      }
+    }
+    return result;
+  }
+
   /// Get unsynced entries for server push (M-2).
   Future<List<AiCacheEntry>> getUnsynced() async {
     return queryList(table, mapper: AiCacheEntry.fromRow, where: 'synced = 0');
