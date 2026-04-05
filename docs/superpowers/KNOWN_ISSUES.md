@@ -20,22 +20,24 @@
 
 ---
 
-## 🟡 国际化缺口
+## 🟡 国际化缺口（部分修复）
 
 ### KI-2: AI Prompt 和 UI 文本硬编码中文
 
-**影响范围：** 知识网络、概念提取、伴侣面板
+**影响范围：** 知识网络、概念提取、伴侣面板 + 13 个 UI 文件
 
-**现状：**
-- `widgets/insights/knowledge_graph_card.dart` — 卡片标题"知识网络"、AI prompt 硬编码中文
-- `service/ai/concept_extractor.dart` — 概念提取和关联发现的 prompt 硬编码中文
-- `widgets/reader/companion_panel.dart` — Quick prompts（"总结这一章"等）硬编码中文
+**批次 A 已修复（2026-04-05）：** AI Prompt 国际化
+- `service/ai/concept_extractor.dart` — 2 处 prompt 改为英文 + `Reply in {language}`
+- `widgets/insights/knowledge_graph_card.dart` — 1 处 prompt 改为英文 + `Reply in {language}`
+- 新增 `service/ai/ai_language.dart` — 共享语言检测 helper
+- **设计文档：** `docs/superpowers/specs/2026-04-05-ki2-ai-prompt-i18n-design.md`
 
-**修复方案：**
-1. UI 文本移入 L10n ARB 文件
-2. AI prompt 根据用户语言偏好动态选择（或始终用英文 prompt + 指定输出语言）
+**批次 B 待修复：** UI 文本 L10n（~50 个字符串，16 个文件）
+- 页面标题、按钮、状态文本、问候语等硬编码中文
+- 伴侣面板 quick prompts、preview 文案
+- 同步状态指示器文本
 
-**优先级：** Sprint 5（随 L10n 统一处理）
+**优先级：** 下一次迭代
 
 ---
 
