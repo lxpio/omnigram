@@ -353,7 +353,7 @@
 | 外部高亮导入（Kindle/Apple Books） | §10.9 | ❌ | |
 | 阅读器 Chrome 重写 | §5.2 | ✅ | `widgets/reader/reader_chrome.dart`, `reader_app_bar.dart`, `reader_bottom_bar.dart` · `b2cd962` |
 | 空状态受伴侣性格影响 | §10.5 | ✅ | `widgets/common/empty_state_config.dart`, `models/warmth_tier.dart` · `188ed53` |
-| AI 处理预算（用户可配置） | §10.6 | ❌ | 审核建议 #5（NAS 资源控制） |
+| AI 处理预算（用户可配置） | §10.6 | ✅ | 后台 AI 总开关 + 并发限制信号量 · `ambient_ai_pipeline.dart` |
 | PDF 支持 | §10.2 | ❌ | 设计文档明确 defer |
 | 伴侣行为开关（5 个 toggle） | §7.2 | ✅ | `companion_personality.dart`, `companion_settings_page.dart` · `e8f9757` |
 | 伴侣名称自定义 | §7.2 | ✅ ¹ | 已在 `companion_settings_page.dart` 中实现（TextField） |
@@ -448,6 +448,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-04-05 | **AI 处理预算** ✅：后台 AI 总开关（backgroundAiEnabled）+ 并发限制信号量（maxConcurrentAiTasks），设置页 AI 预算卡片 |
 | 2026-04-05 | **数据导出** ✅：全库笔记 Markdown 导出 + 知识网络 JSON 导出。设置页新增"数据"分区 |
 | 2026-04-05 | **Onboarding 流程** ✅：渐进式 2 步引导（语言选择 + 导入书籍/连接服务端），接入 OmnigramHome 首次启动检测 |
 | 2026-04-05 | **Layer 3 补全** ✅：自动检测难词（章节切换触发 AI 扫描，虚线下划线高亮，点击显示释义）+ 智能分组（书架按 AI 标签主题聚合为 TopicSection） |
