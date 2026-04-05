@@ -996,5 +996,13 @@
   "companionQuickConnect": "这和之前读的有什么关联？",
   "companionQuickMissed": "有什么我可能遗漏的要点？",
 
-  "aiProviderGeneral": "通用"
+  "aiProviderGeneral": "通用",
+
+  "onboardingWelcome": "欢迎使用 Omnigram",
+  "onboardingChooseLanguage": "选择你的语言",
+  "onboardingNext": "下一步",
+  "onboardingStartJourney": "开始你的阅读之旅",
+  "onboardingImportBooks": "导入本地书籍",
+  "onboardingConnectServer": "连接 Omnigram 服务端",
+  "onboardingSkip": "跳过，稍后再说"
 }
