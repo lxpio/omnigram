@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 
 import '../../service/sync/sync_manager.dart';
 
@@ -26,7 +27,7 @@ class SyncStatusIndicator extends ConsumerWidget {
           if (showLabel) ...[
             const SizedBox(width: 6),
             Text(
-              _statusText(syncState),
+              _statusText(context, syncState),
               style: TextStyle(fontSize: 12, color: _statusColor(context, syncState.status)),
             ),
           ],
@@ -54,19 +55,21 @@ class SyncStatusIndicator extends ConsumerWidget {
     }
   }
 
-  String _statusText(SyncState syncState) {
+  String _statusText(BuildContext context, SyncState syncState) {
     if (syncState.message != null) return syncState.message!;
     switch (syncState.status) {
       case SyncStatus.idle:
-        return syncState.lastSyncTime != null ? '上次同步: ${_formatTime(syncState.lastSyncTime!)}' : '未同步';
+        return syncState.lastSyncTime != null
+            ? L10n.of(context).syncLastSync(_formatTime(context, syncState.lastSyncTime!))
+            : L10n.of(context).syncNotSynced;
       case SyncStatus.syncing:
-        return '同步中...';
+        return L10n.of(context).syncSyncing;
       case SyncStatus.success:
-        return '已同步';
+        return L10n.of(context).syncSynced;
       case SyncStatus.error:
-        return '同步失败';
+        return L10n.of(context).syncFailed;
       case SyncStatus.offline:
-        return '离线';
+        return L10n.of(context).syncOffline;
     }
   }
 
@@ -81,12 +84,12 @@ class SyncStatusIndicator extends ConsumerWidget {
     }
   }
 
-  String _formatTime(DateTime time) {
+  String _formatTime(BuildContext context, DateTime time) {
     final now = DateTime.now();
     final diff = now.difference(time);
-    if (diff.inMinutes < 1) return '刚刚';
-    if (diff.inHours < 1) return '${diff.inMinutes}分钟前';
-    if (diff.inDays < 1) return '${diff.inHours}小时前';
-    return '${diff.inDays}天前';
+    if (diff.inMinutes < 1) return L10n.of(context).syncTimeJustNow;
+    if (diff.inHours < 1) return L10n.of(context).syncTimeMinutesAgo(diff.inMinutes);
+    if (diff.inDays < 1) return L10n.of(context).syncTimeHoursAgo(diff.inHours);
+    return L10n.of(context).syncTimeDaysAgo(diff.inDays);
   }
 }

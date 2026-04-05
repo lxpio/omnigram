@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/service/ai/ai_availability.dart';
 import 'package:omnigram/service/ai/ambient_tasks.dart';
 import 'package:omnigram/theme/colors.dart';
@@ -80,7 +81,7 @@ class _AiNarrativeCardState extends ConsumerState<AiNarrativeCard> {
             children: [
               Icon(Icons.auto_stories, size: 18, color: OmnigramColors.accentLavender),
               const SizedBox(width: 8),
-              Text('阅读旅程', style: OmnigramTypography.titleMedium(context)),
+              Text(L10n.of(context).insightsReadingJourney, style: OmnigramTypography.titleMedium(context)),
             ],
           ),
           const SizedBox(height: 12),

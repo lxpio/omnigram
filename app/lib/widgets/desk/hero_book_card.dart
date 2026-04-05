@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/models/book.dart';
 import 'package:omnigram/theme/colors.dart';
 import 'package:omnigram/theme/typography.dart';
@@ -65,7 +66,7 @@ class HeroBookCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text('$progress% 已读', style: OmnigramTypography.caption(context)),
+                Text(L10n.of(context).deskProgressRead(progress), style: OmnigramTypography.caption(context)),
                 if (memoryText != null) ...[
                   const SizedBox(height: 8),
                   Text(
@@ -79,7 +80,7 @@ class HeroBookCard extends StatelessWidget {
                   ),
                 ],
                 const SizedBox(height: 16),
-                FilledButton(onPressed: onContinueReading, child: const Text('继续阅读')),
+                FilledButton(onPressed: onContinueReading, child: Text(L10n.of(context).deskContinueReading)),
               ],
             ),
           ),

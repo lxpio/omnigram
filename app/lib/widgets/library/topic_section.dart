@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/models/book.dart';
 import 'package:omnigram/theme/typography.dart';
 import 'package:omnigram/widgets/library/book_grid_item.dart';
@@ -28,7 +29,7 @@ class TopicSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('$title ($count)', style: OmnigramTypography.titleMedium(context)),
-            if (onViewAll != null) TextButton(onPressed: onViewAll, child: const Text('查看全部')),
+            if (onViewAll != null) TextButton(onPressed: onViewAll, child: Text(L10n.of(context).libraryViewAll)),
           ],
         ),
         const SizedBox(height: 8),

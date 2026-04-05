@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/theme/colors.dart';
 import 'package:omnigram/theme/typography.dart';
 import 'package:omnigram/widgets/common/omnigram_card.dart';
@@ -17,9 +18,9 @@ class ReadingSummaryCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _Stat(value: '$booksRead', label: '本书'),
-          _Stat(value: '$totalHours', label: '小时'),
-          _Stat(value: '$totalNotes', label: '条笔记'),
+          _Stat(value: '$booksRead', label: L10n.of(context).readingSummaryBooks),
+          _Stat(value: '$totalHours', label: L10n.of(context).readingSummaryHours),
+          _Stat(value: '$totalNotes', label: L10n.of(context).readingSummaryNotes),
         ],
       ),
     );
