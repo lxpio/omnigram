@@ -68,7 +68,20 @@
     "companionQuickExplain",
     "companionQuickConnect",
     "companionQuickMissed",
-    "aiProviderGeneral"
+    "aiProviderGeneral",
+    "onboardingWelcome",
+    "onboardingChooseLanguage",
+    "onboardingStartJourney",
+    "onboardingImportBooks",
+    "onboardingConnectServer",
+    "exportData",
+    "exportAllNotes",
+    "exportAllNotesDesc",
+    "exportKnowledge",
+    "exportKnowledgeDesc",
+    "exportSuccess",
+    "exportNoNotes",
+    "exportNoKnowledge"
   ],
 
   "de": [
@@ -140,7 +153,20 @@
     "companionQuickExplain",
     "companionQuickConnect",
     "companionQuickMissed",
-    "aiProviderGeneral"
+    "aiProviderGeneral",
+    "onboardingWelcome",
+    "onboardingChooseLanguage",
+    "onboardingStartJourney",
+    "onboardingImportBooks",
+    "onboardingConnectServer",
+    "exportData",
+    "exportAllNotes",
+    "exportAllNotesDesc",
+    "exportKnowledge",
+    "exportKnowledgeDesc",
+    "exportSuccess",
+    "exportNoNotes",
+    "exportNoKnowledge"
   ],
 
   "es": [
@@ -212,7 +238,20 @@
     "companionQuickExplain",
     "companionQuickConnect",
     "companionQuickMissed",
-    "aiProviderGeneral"
+    "aiProviderGeneral",
+    "onboardingWelcome",
+    "onboardingChooseLanguage",
+    "onboardingStartJourney",
+    "onboardingImportBooks",
+    "onboardingConnectServer",
+    "exportData",
+    "exportAllNotes",
+    "exportAllNotesDesc",
+    "exportKnowledge",
+    "exportKnowledgeDesc",
+    "exportSuccess",
+    "exportNoNotes",
+    "exportNoKnowledge"
   ],
 
   "fr": [
@@ -284,7 +323,20 @@
     "companionQuickExplain",
     "companionQuickConnect",
     "companionQuickMissed",
-    "aiProviderGeneral"
+    "aiProviderGeneral",
+    "onboardingWelcome",
+    "onboardingChooseLanguage",
+    "onboardingStartJourney",
+    "onboardingImportBooks",
+    "onboardingConnectServer",
+    "exportData",
+    "exportAllNotes",
+    "exportAllNotesDesc",
+    "exportKnowledge",
+    "exportKnowledgeDesc",
+    "exportSuccess",
+    "exportNoNotes",
+    "exportNoKnowledge"
   ],
 
   "it": [
@@ -356,7 +408,20 @@
     "companionQuickExplain",
     "companionQuickConnect",
     "companionQuickMissed",
-    "aiProviderGeneral"
+    "aiProviderGeneral",
+    "onboardingWelcome",
+    "onboardingChooseLanguage",
+    "onboardingStartJourney",
+    "onboardingImportBooks",
+    "onboardingConnectServer",
+    "exportData",
+    "exportAllNotes",
+    "exportAllNotesDesc",
+    "exportKnowledge",
+    "exportKnowledgeDesc",
+    "exportSuccess",
+    "exportNoNotes",
+    "exportNoKnowledge"
   ],
 
   "ja": [
@@ -428,7 +493,20 @@
     "companionQuickExplain",
     "companionQuickConnect",
     "companionQuickMissed",
-    "aiProviderGeneral"
+    "aiProviderGeneral",
+    "onboardingWelcome",
+    "onboardingChooseLanguage",
+    "onboardingStartJourney",
+    "onboardingImportBooks",
+    "onboardingConnectServer",
+    "exportData",
+    "exportAllNotes",
+    "exportAllNotesDesc",
+    "exportKnowledge",
+    "exportKnowledgeDesc",
+    "exportSuccess",
+    "exportNoNotes",
+    "exportNoKnowledge"
   ],
 
   "ko": [
@@ -500,7 +578,20 @@
     "companionQuickExplain",
     "companionQuickConnect",
     "companionQuickMissed",
-    "aiProviderGeneral"
+    "aiProviderGeneral",
+    "onboardingWelcome",
+    "onboardingChooseLanguage",
+    "onboardingStartJourney",
+    "onboardingImportBooks",
+    "onboardingConnectServer",
+    "exportData",
+    "exportAllNotes",
+    "exportAllNotesDesc",
+    "exportKnowledge",
+    "exportKnowledgeDesc",
+    "exportSuccess",
+    "exportNoNotes",
+    "exportNoKnowledge"
   ],
 
   "pt": [
@@ -572,7 +663,20 @@
     "companionQuickExplain",
     "companionQuickConnect",
     "companionQuickMissed",
-    "aiProviderGeneral"
+    "aiProviderGeneral",
+    "onboardingWelcome",
+    "onboardingChooseLanguage",
+    "onboardingStartJourney",
+    "onboardingImportBooks",
+    "onboardingConnectServer",
+    "exportData",
+    "exportAllNotes",
+    "exportAllNotesDesc",
+    "exportKnowledge",
+    "exportKnowledgeDesc",
+    "exportSuccess",
+    "exportNoNotes",
+    "exportNoKnowledge"
   ],
 
   "ro": [
@@ -644,7 +748,20 @@
     "companionQuickExplain",
     "companionQuickConnect",
     "companionQuickMissed",
-    "aiProviderGeneral"
+    "aiProviderGeneral",
+    "onboardingWelcome",
+    "onboardingChooseLanguage",
+    "onboardingStartJourney",
+    "onboardingImportBooks",
+    "onboardingConnectServer",
+    "exportData",
+    "exportAllNotes",
+    "exportAllNotesDesc",
+    "exportKnowledge",
+    "exportKnowledgeDesc",
+    "exportSuccess",
+    "exportNoNotes",
+    "exportNoKnowledge"
   ],
 
   "ru": [
@@ -716,7 +833,20 @@
     "companionQuickExplain",
     "companionQuickConnect",
     "companionQuickMissed",
-    "aiProviderGeneral"
+    "aiProviderGeneral",
+    "onboardingWelcome",
+    "onboardingChooseLanguage",
+    "onboardingStartJourney",
+    "onboardingImportBooks",
+    "onboardingConnectServer",
+    "exportData",
+    "exportAllNotes",
+    "exportAllNotesDesc",
+    "exportKnowledge",
+    "exportKnowledgeDesc",
+    "exportSuccess",
+    "exportNoNotes",
+    "exportNoKnowledge"
   ],
 
   "tr": [
@@ -788,7 +918,20 @@
     "companionQuickExplain",
     "companionQuickConnect",
     "companionQuickMissed",
-    "aiProviderGeneral"
+    "aiProviderGeneral",
+    "onboardingWelcome",
+    "onboardingChooseLanguage",
+    "onboardingStartJourney",
+    "onboardingImportBooks",
+    "onboardingConnectServer",
+    "exportData",
+    "exportAllNotes",
+    "exportAllNotesDesc",
+    "exportKnowledge",
+    "exportKnowledgeDesc",
+    "exportSuccess",
+    "exportNoNotes",
+    "exportNoKnowledge"
   ],
 
   "zh": [
@@ -855,7 +998,20 @@
     "companionQuickExplain",
     "companionQuickConnect",
     "companionQuickMissed",
-    "aiProviderGeneral"
+    "aiProviderGeneral",
+    "onboardingWelcome",
+    "onboardingChooseLanguage",
+    "onboardingStartJourney",
+    "onboardingImportBooks",
+    "onboardingConnectServer",
+    "exportData",
+    "exportAllNotes",
+    "exportAllNotesDesc",
+    "exportKnowledge",
+    "exportKnowledgeDesc",
+    "exportSuccess",
+    "exportNoNotes",
+    "exportNoKnowledge"
   ],
 
   "zh_CN": [
@@ -935,7 +1091,20 @@
     "companionQuickExplain",
     "companionQuickConnect",
     "companionQuickMissed",
-    "aiProviderGeneral"
+    "aiProviderGeneral",
+    "onboardingWelcome",
+    "onboardingChooseLanguage",
+    "onboardingStartJourney",
+    "onboardingImportBooks",
+    "onboardingConnectServer",
+    "exportData",
+    "exportAllNotes",
+    "exportAllNotesDesc",
+    "exportKnowledge",
+    "exportKnowledgeDesc",
+    "exportSuccess",
+    "exportNoNotes",
+    "exportNoKnowledge"
   ],
 
   "zh_TW": [
@@ -1007,6 +1176,19 @@
     "companionQuickExplain",
     "companionQuickConnect",
     "companionQuickMissed",
-    "aiProviderGeneral"
+    "aiProviderGeneral",
+    "onboardingWelcome",
+    "onboardingChooseLanguage",
+    "onboardingStartJourney",
+    "onboardingImportBooks",
+    "onboardingConnectServer",
+    "exportData",
+    "exportAllNotes",
+    "exportAllNotesDesc",
+    "exportKnowledge",
+    "exportKnowledgeDesc",
+    "exportSuccess",
+    "exportNoNotes",
+    "exportNoKnowledge"
   ]
 }

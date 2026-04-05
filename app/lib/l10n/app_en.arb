@@ -1009,5 +1009,15 @@
   "onboardingStartJourney": "Start your reading journey",
   "onboardingImportBooks": "Import local books",
   "onboardingConnectServer": "Connect to Omnigram Server",
-  "onboardingSkip": "Skip for now"
+  "onboardingSkip": "Skip for now",
+
+  "exportData": "Data",
+  "exportAllNotes": "Export all notes",
+  "exportAllNotesDesc": "Markdown format, grouped by book",
+  "exportKnowledge": "Export knowledge network",
+  "exportKnowledgeDesc": "JSON format, nodes and edges",
+  "exportSuccess": "Exported to {path}",
+  "@exportSuccess": { "placeholders": { "path": { "type": "String" } } },
+  "exportNoNotes": "No notes to export",
+  "exportNoKnowledge": "No knowledge data to export"
 }
