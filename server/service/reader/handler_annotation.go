@@ -2,6 +2,7 @@ package reader
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -13,22 +14,34 @@ import (
 
 // listAnnotationsHandle GET /reader/books/:book_id/annotations
 // @Summary List annotations
-// @Description Get all annotations for a book
+// @Description Get all annotations for a book, with optional pagination
 // @Tags Reader
 // @Produce json
 // @Security BearerAuth
 // @Param book_id path string true "Book ID"
+// @Param limit query int false "Max results (1-500, default 100)"
+// @Param offset query int false "Offset for pagination (default 0)"
 // @Success 200 {object} object{data=[]schema.Annotation}
 // @Router /reader/books/{book_id}/annotations [get]
 func listAnnotationsHandle(c *gin.Context) {
 	bookID := c.Param("book_id")
 	userID := c.GetInt64(middleware.XUserIDTag)
 
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "100"))
+	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
+	if limit < 1 || limit > 500 {
+		limit = 100
+	}
+	if offset < 0 {
+		offset = 0
+	}
+
 	var annotations []schema.Annotation
 	if err := orm.Where("user_id = ? AND book_id = ?", userID, bookID).
 		Order("ctime DESC").
+		Limit(limit).Offset(offset).
 		Find(&annotations).Error; err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 	schema.Success(c, annotations)
@@ -60,7 +73,7 @@ func createAnnotationHandle(c *gin.Context) {
 	ann.BookID = bookID
 
 	if err := orm.Create(&ann).Error; err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 
@@ -130,13 +143,13 @@ func updateAnnotationHandle(c *gin.Context) {
 
 	if len(updates) > 0 {
 		if err := orm.Model(&existing).Updates(updates).Error; err != nil {
-			schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+			schema.InternalError(c, err)
 			return
 		}
 	}
 
 	if err := orm.First(&existing, "id = ?", annotationID).Error; err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 	schema.Success(c, existing)
@@ -158,7 +171,7 @@ func deleteAnnotationHandle(c *gin.Context) {
 	userID := c.GetInt64(middleware.XUserIDTag)
 
 	if err := orm.Where("id = ? AND user_id = ?", annotationID, userID).Delete(&schema.Annotation{}).Error; err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 
@@ -194,7 +207,7 @@ func updateBookRatingHandle(c *gin.Context) {
 	}
 
 	if err := orm.Model(&schema.Book{}).Where("id = ?", bookID).Update("rating", req.Rating).Error; err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 
@@ -255,7 +268,7 @@ func syncAnnotationsHandle(c *gin.Context) {
 	// return server annotations newer than last_sync_time
 	var serverAnnotations []schema.Annotation
 	if err := orm.Where("user_id = ? AND utime > ?", userID, req.LastSyncTime).Find(&serverAnnotations).Error; err != nil {
-		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
+		schema.InternalError(c, err)
 		return
 	}
 

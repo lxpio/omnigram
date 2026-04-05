@@ -2,6 +2,7 @@ package reader
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lxpio/omnigram/server/middleware"
@@ -52,11 +53,13 @@ func getBookAiHandle(c *gin.Context) {
 // --- AI Cache Sync Endpoints ---
 
 // @Summary List cached AI results for a book
-// @Description Returns all AI-generated cached results for a specific book
+// @Description Returns AI-generated cached results for a specific book, with optional pagination
 // @Tags AI
 // @Produce json
 // @Security BearerAuth
 // @Param book_id path string true "Book ID"
+// @Param limit query int false "Max results (1-500, default 100)"
+// @Param offset query int false "Offset for pagination (default 0)"
 // @Success 200 {array} schema.AiResult
 // @Failure 400 {object} schema.ErrorResponse
 // @Router /reader/books/{book_id}/ai/cache [get]
@@ -64,8 +67,19 @@ func listAiCacheHandle(c *gin.Context) {
 	bookID := c.Param("book_id")
 	userID := c.GetInt64(middleware.XUserIDTag)
 
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "100"))
+	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
+	if limit < 1 || limit > 500 {
+		limit = 100
+	}
+	if offset < 0 {
+		offset = 0
+	}
+
 	var results []schema.AiResult
-	if err := orm.Where("user_id = ? AND book_id = ?", userID, bookID).Find(&results).Error; err != nil {
+	if err := orm.Where("user_id = ? AND book_id = ?", userID, bookID).
+		Limit(limit).Offset(offset).
+		Find(&results).Error; err != nil {
 		schema.Error(c, http.StatusInternalServerError, "DB_ERROR", err.Error())
 		return
 	}

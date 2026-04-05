@@ -130,6 +130,11 @@ func initReaderData() error {
 		// Create GIN index for tsvector
 		tx.Exec(`CREATE INDEX IF NOT EXISTS idx_books_search_vector ON books USING GIN(search_vector)`)
 
+		// Composite indexes for delta sync queries (user_id + timestamp)
+		tx.Exec(`CREATE INDEX IF NOT EXISTS idx_concept_tags_sync ON concept_tags(user_id, ctime)`)
+		tx.Exec(`CREATE INDEX IF NOT EXISTS idx_concept_edges_sync ON concept_edges(user_id, ctime)`)
+		tx.Exec(`CREATE INDEX IF NOT EXISTS idx_annotations_sync ON annotations(user_id, utime)`)
+
 		// Create trigger to auto-update tsvector on insert/update
 		tx.Exec(`CREATE OR REPLACE FUNCTION books_search_vector_update() RETURNS trigger AS $$
 		BEGIN
