@@ -20,24 +20,20 @@
 
 ---
 
-## 🟡 国际化缺口（部分修复）
+## ✅ 已修复 — 国际化缺口
 
 ### KI-2: AI Prompt 和 UI 文本硬编码中文
 
-**影响范围：** 知识网络、概念提取、伴侣面板 + 13 个 UI 文件
+**修复（2026-04-05）：**
 
-**批次 A 已修复（2026-04-05）：** AI Prompt 国际化
-- `service/ai/concept_extractor.dart` — 2 处 prompt 改为英文 + `Reply in {language}`
-- `widgets/insights/knowledge_graph_card.dart` — 1 处 prompt 改为英文 + `Reply in {language}`
+**批次 A — AI Prompt 国际化：**
+- 3 处 AI prompt 改为英文 + `Reply in {language}` 动态语言后缀
 - 新增 `service/ai/ai_language.dart` — 共享语言检测 helper
-- **设计文档：** `docs/superpowers/specs/2026-04-05-ki2-ai-prompt-i18n-design.md`
 
-**批次 B 待修复：** UI 文本 L10n（~50 个字符串，16 个文件）
-- 页面标题、按钮、状态文本、问候语等硬编码中文
-- 伴侣面板 quick prompts、preview 文案
-- 同步状态指示器文本
-
-**优先级：** 下一次迭代
+**批次 B — UI 文本 L10n：**
+- ~50 个硬编码中文字符串移入 L10n ARB 文件（16 语言）
+- 覆盖 16 个源文件：desk widgets、insights widgets、library widgets、pages、companion settings/panel
+- 新增英文和中文 ARB key，其他 14 语言 fallback 到英文
 
 ---
 

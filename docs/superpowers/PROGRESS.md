@@ -448,6 +448,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-04-05 | **KI-2 国际化缺口修复** ✅：批次 A — 3 处 AI prompt 改为英文 + `Reply in {language}`。批次 B — ~50 个硬编码中文字符串移入 L10n ARB（16 文件），新增 ~50 个 ARB key |
 | 2026-04-04 | **KI-1/KI-3/KI-4 同步缺口修复** ✅：Companion Chat、Margin Notes、Concept Tags/Edges 双向同步完成。Server GET 端点增加 delta pull（since + server_time）。Push 侧 book ID 映射修复（KI-4），concept tag ID 映射修复（KI-3）。Server Wins 冲突策略 |
 | 2026-04-02 | **书籍详情页重设计完成** ✅：从 760 行信息陈列柜重写为行动导向的"书的灵魂页"（~500行）。封面主色渐变、继续阅读按钮、AI 一句话总结、最近笔记预览。砍掉虚荣指标。54 tests 全绿 |
 | 2026-04-02 | **阅读器 Chrome 重构完成** ✅：从 reading_page.dart（916行→848行）抽取 chrome 到 3 个独立 widget（ReaderAppBar + ReaderBottomBar + ReaderChrome），Omnigram 视觉风格，进度条 + 按钮两层底栏，slide 动画。51 tests 全绿 |
