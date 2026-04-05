@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:omnigram/dao/book_note.dart';
 import 'package:omnigram/dao/concept_tag.dart';
 import 'package:omnigram/service/ai/ai_availability.dart';
+import 'package:omnigram/service/ai/ai_language.dart';
 import 'package:omnigram/service/ai/ambient_ai_pipeline.dart';
 
 /// Extracts concept tags from book notes using AI.
@@ -21,21 +22,23 @@ class ConceptExtractor {
 
     final notesText = notes
         .where((n) => n.content.trim().isNotEmpty)
-        .map((n) => '- [${n.chapter}] ${n.content}${n.readerNote != null ? " (笔记: ${n.readerNote})" : ""}')
+        .map((n) => '- [${n.chapter}] ${n.content}${n.readerNote != null ? " (note: ${n.readerNote})" : ""}')
         .join('\n');
 
     if (notesText.isEmpty) return [];
 
+    final lang = getAiReplyLanguage();
     final prompt =
-        '''从以下书籍"$bookTitle"的高亮和笔记中，提取关键概念标签。
-每个概念用一行表示，格式为: 概念名称|来源文本片段
-只提取有实质意义的概念（人物、理论、方法论、核心观点等），不要提取通用词汇。
-最多提取10个最重要的概念。
+        '''From the following highlights and notes of the book "$bookTitle", extract key concept tags.
+One concept per line, format: concept name|source text snippet
+Only extract meaningful concepts (people, theories, methods, core ideas), not common words.
+Extract at most 10 of the most important concepts.
 
-笔记内容:
+Notes:
 $notesText
 
-请直接输出概念列表，每行一个，格式: 概念|来源''';
+Output the concept list directly, one per line, format: concept|source
+Reply in $lang.''';
 
     final result = await AmbientAiPipeline.execute(
       type: AmbientTaskType.conceptExtract,
@@ -70,15 +73,17 @@ $notesText
 
     final tagList = allTags.map((t) => '[ID:${t.id}] ${t.name} (book:${t.bookId})').join('\n');
 
+    final lang = getAiReplyLanguage();
     final prompt =
-        '''以下是从多本书中提取的概念标签。请找出跨书的概念关联。
-每个关联用一行表示，格式: 源ID|目标ID|权重(0.1-1.0)|关联原因
-只找出真正有意义的跨书关联，最多5个。
+        '''The following are concept tags extracted from multiple books. Find cross-book concept connections.
+One connection per line, format: sourceID|targetID|weight(0.1-1.0)|reason
+Only find truly meaningful cross-book connections, at most 5.
 
-概念列表:
+Concept list:
 $tagList
 
-请直接输出关联列表:''';
+Output the connection list directly.
+Reply in $lang.''';
 
     final result = await AmbientAiPipeline.execute(
       type: AmbientTaskType.conceptConnect,
