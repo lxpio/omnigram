@@ -346,7 +346,7 @@
 | ~~**🔴 AI 处理去重**~~ | §4.4 | ✅ | Server 连接时跳过 Client AI，改用 Server 结果 |
 | ~~**🟡 AI 缓存持久化**~~ | §10.6 | ✅ | Sprint 4 Phase 0 完成：Client sqflite + Server PG 双层缓存 |
 | ~~**🟡 伴侣人格同步**~~ | §10.7 | ✅ | Sprint 3.5：双向同步（SharedPrefs + Server） |
-| Onboarding 流程 | §10.8 | ❌ | 渐进式引导，首次使用零 AI |
+| Onboarding 流程 | §10.8 | ✅ | `page/onboarding_flow.dart` — 渐进式 2 步引导（语言+导入） |
 | 多设备同步 | §10.7 | ⚠️ 部分 | 数据架构已定义。M-1(时钟偏移) M-2(AI 数据同步) 已修复。KI-1 AI 数据双向同步已修复（2026-04-04）。完整多设备测试待验证 |
 | 🔴 同步质量加固 | 审核报告 | ✅ | 22 项全部关闭，详见 `specs/2026-03-24-sync-architecture-audit.md` |
 | 数据导出/迁移 | §10.9 | ❌ | Markdown/JSON/CSV 导出 |
@@ -448,6 +448,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-04-05 | **Onboarding 流程** ✅：渐进式 2 步引导（语言选择 + 导入书籍/连接服务端），接入 OmnigramHome 首次启动检测 |
 | 2026-04-05 | **Layer 3 补全** ✅：自动检测难词（章节切换触发 AI 扫描，虚线下划线高亮，点击显示释义）+ 智能分组（书架按 AI 标签主题聚合为 TopicSection） |
 | 2026-04-05 | **KI-2 国际化缺口修复** ✅：批次 A — 3 处 AI prompt 改为英文 + `Reply in {language}`。批次 B — ~50 个硬编码中文字符串移入 L10n ARB（16 文件），新增 ~50 个 ARB key |
 | 2026-04-04 | **KI-1/KI-3/KI-4 同步缺口修复** ✅：Companion Chat、Margin Notes、Concept Tags/Edges 双向同步完成。Server GET 端点增加 delta pull（since + server_time）。Push 侧 book ID 映射修复（KI-4），concept tag ID 映射修复（KI-3）。Server Wins 冲突策略 |
