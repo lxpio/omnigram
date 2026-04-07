@@ -1059,5 +1059,11 @@
   "@importKindleSuccess": { "placeholders": { "count": { "type": "int" }, "books": { "type": "int" } } },
   "importKindleNoMatch": "{count} highlights skipped (no matching book)",
   "@importKindleNoMatch": { "placeholders": { "count": { "type": "int" } } },
-  "importKindleEmpty": "No highlights found in file"
+  "importKindleEmpty": "No highlights found in file",
+
+  "stealthPrivateLibrary": "Private Library",
+  "stealthExit": "Exit private mode",
+  "stealthAuthFailed": "Authentication failed",
+  "stealthAuthRequired": "Authenticate to access private library",
+  "stealthImportBooks": "Import to private library"
 }

@@ -55,6 +55,8 @@
 	</dict>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Authenticate to access your private library</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>We need access to your photo library to save images.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
