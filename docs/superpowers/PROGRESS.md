@@ -350,7 +350,7 @@
 | 多设备同步 | §10.7 | ⚠️ 部分 | 数据架构已定义。M-1(时钟偏移) M-2(AI 数据同步) 已修复。KI-1 AI 数据双向同步已修复（2026-04-04）。完整多设备测试待验证 |
 | 🔴 同步质量加固 | 审核报告 | ✅ | 22 项全部关闭，详见 `specs/2026-03-24-sync-architecture-audit.md` |
 | 数据导出/迁移 | §10.9 | ✅ | 全库笔记 Markdown 导出 + 知识网络 JSON 导出 · `service/export/data_export.dart` |
-| 外部高亮导入（Kindle/Apple Books） | §10.9 | ❌ | |
+| 外部高亮导入（Kindle） | §10.9 | ✅ | `service/import/kindle_import.dart` — My Clippings.txt 解析+导入 |
 | 阅读器 Chrome 重写 | §5.2 | ✅ | `widgets/reader/reader_chrome.dart`, `reader_app_bar.dart`, `reader_bottom_bar.dart` · `b2cd962` |
 | 空状态受伴侣性格影响 | §10.5 | ✅ | `widgets/common/empty_state_config.dart`, `models/warmth_tier.dart` · `188ed53` |
 | AI 处理预算（用户可配置） | §10.6 | ✅ | 后台 AI 总开关 + 并发限制信号量 · `ambient_ai_pipeline.dart` |
@@ -448,6 +448,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-04-07 | **Kindle 高亮导入** ✅：My Clippings.txt 解析（多语言类型检测），按书名模糊匹配，Highlight+Note 合并，去重导入 |
 | 2026-04-07 | **Layer 5 跨书连接** ✅：跨书发现列表（ConceptEdge 跨书过滤 + 卡片展示）+ "Record my thought" 思考日记（tb_thoughts DB v14 + bottom sheet + 时间线展示）+ InsightsPage FAB |
 | 2026-04-05 | **AI 处理预算** ✅：后台 AI 总开关（backgroundAiEnabled）+ 并发限制信号量（maxConcurrentAiTasks），设置页 AI 预算卡片 |
 | 2026-04-05 | **数据导出** ✅：全库笔记 Markdown 导出 + 知识网络 JSON 导出。设置页新增"数据"分区 |
