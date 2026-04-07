@@ -1051,5 +1051,13 @@
   "settingsServerTitle": "Omnigram Server",
   "settingsServerConnected": "Connected · {name}",
   "@settingsServerConnected": { "placeholders": { "name": { "type": "String" } } },
-  "settingsServerNotConnected": "Not connected · Tap to set up"
+  "settingsServerNotConnected": "Not connected · Tap to set up",
+
+  "importKindleHighlights": "Import Kindle highlights",
+  "importKindleDesc": "From My Clippings.txt",
+  "importKindleSuccess": "Imported {count} highlights from {books} books",
+  "@importKindleSuccess": { "placeholders": { "count": { "type": "int" }, "books": { "type": "int" } } },
+  "importKindleNoMatch": "{count} highlights skipped (no matching book)",
+  "@importKindleNoMatch": { "placeholders": { "count": { "type": "int" } } },
+  "importKindleEmpty": "No highlights found in file"
 }
