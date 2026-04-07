@@ -422,7 +422,7 @@
 | Server Docker | ✅ | docker-compose: pgvector/pgvector:pg17 |
 | Android 构建 | ✅ | AGP 8.9.1, Gradle 8.11.1, compileSdk 36 |
 | iOS 构建 | ✅ | Debug 真机运行正常（2026-03-23 验证） |
-| macOS 构建 | ⚠️ | 未验证 |
+| macOS 构建 | ⚠️ | 需要 Mac Development 签名证书（Team ID 28W956D5K8） |
 | Release APK | ⚠️ | 缺少 keystore 配置 |
 | Debug APK | ✅ | 正常构建 |
 | Flutter Analyze | ✅ | 0 errors, warnings 仅 unused elements |
