@@ -8,6 +8,7 @@ class OmnigramCard extends StatelessWidget {
   final Color? backgroundColor;
   final EdgeInsetsGeometry? padding;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
   final double? borderRadius;
 
   const OmnigramCard({
@@ -16,6 +17,7 @@ class OmnigramCard extends StatelessWidget {
     this.backgroundColor,
     this.padding,
     this.onTap,
+    this.onLongPress,
     this.borderRadius,
   });
 
@@ -30,8 +32,8 @@ class OmnigramCard extends StatelessWidget {
       child: child,
     );
 
-    if (onTap != null) {
-      return GestureDetector(onTap: onTap, child: card);
+    if (onTap != null || onLongPress != null) {
+      return GestureDetector(onTap: onTap, onLongPress: onLongPress, child: card);
     }
     return card;
   }

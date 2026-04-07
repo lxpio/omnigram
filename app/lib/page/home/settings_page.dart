@@ -13,6 +13,8 @@ import 'package:omnigram/providers/server_connection_provider.dart';
 import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/service/export/data_export.dart';
 import 'package:omnigram/service/import/kindle_import.dart';
+import 'package:omnigram/service/stealth/biometric_auth_service.dart';
+import 'package:omnigram/page/stealth/stealth_home.dart';
 import 'package:omnigram/dao/book.dart';
 import 'package:omnigram/utils/toast/common.dart';
 import 'package:file_picker/file_picker.dart';
@@ -101,6 +103,7 @@ class SettingsPage extends ConsumerWidget {
             onTap: () {
               // TODO: about page
             },
+            onLongPress: () => _enterStealth(context),
           ),
         ],
       ),
@@ -162,6 +165,34 @@ void _showExportSheet(BuildContext context) {
       ),
     ),
   );
+}
+
+Future<void> _enterStealth(BuildContext context) async {
+  final l10n = L10n.of(context);
+
+  final available = await BiometricAuthService.isAvailable();
+  if (!available) return;
+
+  final authenticated = await BiometricAuthService.authenticate(
+    l10n.stealthAuthRequired,
+  );
+  if (!authenticated) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.stealthAuthFailed)),
+      );
+    }
+    return;
+  }
+
+  final key = await BiometricAuthService.getOrCreateKey();
+  if (key == null) return;
+
+  if (context.mounted) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => StealthHome(encryptionKey: key)),
+    );
+  }
 }
 
 Future<void> _importKindle(BuildContext context) async {
@@ -304,18 +335,21 @@ class _SettingsSection extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
 
   const _SettingsSection({
     required this.icon,
     required this.title,
     required this.subtitle,
     required this.onTap,
+    this.onLongPress,
   });
 
   @override
   Widget build(BuildContext context) {
     return OmnigramCard(
       onTap: onTap,
+      onLongPress: onLongPress,
       child: Row(
         children: [
           Icon(icon, size: 28, color: Theme.of(context).colorScheme.primary),
