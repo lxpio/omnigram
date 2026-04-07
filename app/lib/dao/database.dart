@@ -13,7 +13,7 @@ import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 // Current app database version
-const int currentDbVersion = 13;
+const int currentDbVersion = 14;
 
 const createBookSQL = '''
 CREATE TABLE tb_books (
@@ -408,6 +408,17 @@ class DBHelper {
         await db.execute(createMarginNoteIndexSQL);
         await db.execute(createConceptTagSQL);
         await db.execute(createConceptEdgeSQL);
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS tb_thoughts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            content TEXT NOT NULL,
+            concept_name TEXT,
+            book_id INTEGER,
+            edge_id INTEGER,
+            created_at TEXT NOT NULL,
+            synced INTEGER DEFAULT 0
+          )
+        ''');
         continue case1;
       case1:
       case 1:
@@ -550,6 +561,20 @@ class DBHelper {
         ''');
         await db.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_id_mapping_local ON tb_id_mapping(local_id, entity_type)');
         await db.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_id_mapping_server ON tb_id_mapping(server_id, entity_type)');
+        continue case13;
+      case13:
+      case 13:
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS tb_thoughts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            content TEXT NOT NULL,
+            concept_name TEXT,
+            book_id INTEGER,
+            edge_id INTEGER,
+            created_at TEXT NOT NULL,
+            synced INTEGER DEFAULT 0
+          )
+        ''');
     }
 
     if (oldVersion != 0) {
