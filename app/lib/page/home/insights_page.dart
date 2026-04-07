@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:omnigram/dao/book.dart';
 import 'package:omnigram/dao/book_note.dart';
+import 'package:omnigram/dao/concept_tag.dart';
 import 'package:omnigram/dao/reading_time.dart';
+import 'package:omnigram/dao/thought.dart';
 import 'package:omnigram/models/book.dart';
 import 'package:omnigram/models/book_note.dart';
 import 'package:omnigram/models/empty_state_data.dart';
 import 'package:omnigram/providers/empty_state_provider.dart';
 import 'package:omnigram/widgets/insights/ai_narrative_card.dart';
+import 'package:omnigram/widgets/insights/cross_book_card.dart';
 import 'package:omnigram/widgets/insights/knowledge_graph_card.dart';
 import 'package:omnigram/widgets/insights/reading_summary_card.dart';
 import 'package:omnigram/widgets/insights/notes_list.dart';
+import 'package:omnigram/widgets/insights/record_thought_sheet.dart';
+import 'package:omnigram/widgets/insights/thought_card.dart';
 import 'package:omnigram/widgets/insights/time_period_selector.dart';
 import 'package:omnigram/widgets/common/empty_state.dart';
 import 'package:omnigram/l10n/generated/L10n.dart';
@@ -29,61 +34,113 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.all(OmnigramTheme.pageHorizontalPadding),
-        children: [
-          const SizedBox(height: 16),
-          Text(L10n.of(context).insightsTitle, style: OmnigramTypography.displayLarge(context)),
-          const SizedBox(height: 16),
-          TimePeriodSelector(
-            selected: _period,
-            onChanged: (p) => setState(() => _period = p),
-          ),
-          const SizedBox(height: 24),
-          FutureBuilder<_NarrativeData>(
-            future: _loadNarrativeData(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) return const SizedBox.shrink();
-              final data = snapshot.data!;
-              return AiNarrativeCard(
-                bookTitles: data.bookTitles,
-                totalMinutes: data.totalMinutes,
-                totalNotes: data.totalNotes,
-                timePeriod: _timePeriodLabel(_period),
-              );
-            },
-          ),
-          const SizedBox(height: 16),
-          const KnowledgeGraphCard(),
-          const SizedBox(height: 16),
-          FutureBuilder<Map<String, int>>(
-            future: _loadStats(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) return const SizedBox.shrink();
-              final stats = snapshot.data!;
-              return ReadingSummaryCard(
-                booksRead: stats['books']!,
-                totalHours: stats['hours']!,
-                totalNotes: stats['notes']!,
-              );
-            },
-          ),
-          const SizedBox(height: 24),
-          Text(L10n.of(context).insightsNotes, style: OmnigramTypography.titleLarge(context)),
-          const SizedBox(height: 12),
-          FutureBuilder<Map<String, List<BookNote>>>(
-            future: _loadNotesByBook(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                final tier = ref.watch(warmthTierProvider);
-                final data = emptyStateData(context, tier, EmptyPageType.insights);
-                return EmptyState.fromData(data);
-              }
-              return NotesByBookList(notesByBook: snapshot.data!);
-            },
-          ),
-        ],
+    return Scaffold(
+      floatingActionButton: FloatingActionButton.small(
+        onPressed: () => _recordThought(),
+        child: const Icon(Icons.edit_note),
+      ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(OmnigramTheme.pageHorizontalPadding),
+          children: [
+            const SizedBox(height: 16),
+            Text(L10n.of(context).insightsTitle, style: OmnigramTypography.displayLarge(context)),
+            const SizedBox(height: 16),
+            TimePeriodSelector(
+              selected: _period,
+              onChanged: (p) => setState(() => _period = p),
+            ),
+            const SizedBox(height: 24),
+            FutureBuilder<_NarrativeData>(
+              future: _loadNarrativeData(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return const SizedBox.shrink();
+                final data = snapshot.data!;
+                return AiNarrativeCard(
+                  bookTitles: data.bookTitles,
+                  totalMinutes: data.totalMinutes,
+                  totalNotes: data.totalNotes,
+                  timePeriod: _timePeriodLabel(_period),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
+            const KnowledgeGraphCard(),
+            const SizedBox(height: 16),
+            // Cross-book discoveries
+            FutureBuilder<List<CrossBookDiscovery>>(
+              future: _loadCrossBookDiscoveries(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData || snapshot.data!.isEmpty) return const SizedBox.shrink();
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 16),
+                    Text(L10n.of(context).insightsCrossBookDiscoveries,
+                        style: OmnigramTypography.titleLarge(context)),
+                    const SizedBox(height: 8),
+                    ...snapshot.data!.map((d) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: CrossBookCard(
+                        discovery: d,
+                        onRecordThought: () => _recordThought(
+                          topic: '${d.sourceConcept} ↔ ${d.targetConcept}',
+                          edgeId: d.edgeId,
+                        ),
+                      ),
+                    )),
+                  ],
+                );
+              },
+            ),
+            // My Thoughts
+            FutureBuilder<List<Thought>>(
+              future: _loadThoughts(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData || snapshot.data!.isEmpty) return const SizedBox.shrink();
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 16),
+                    Text(L10n.of(context).insightsMyThoughts,
+                        style: OmnigramTypography.titleLarge(context)),
+                    const SizedBox(height: 8),
+                    ...snapshot.data!.map((t) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: ThoughtCard(thought: t),
+                    )),
+                  ],
+                );
+              },
+            ),
+            FutureBuilder<Map<String, int>>(
+              future: _loadStats(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return const SizedBox.shrink();
+                final stats = snapshot.data!;
+                return ReadingSummaryCard(
+                  booksRead: stats['books']!,
+                  totalHours: stats['hours']!,
+                  totalNotes: stats['notes']!,
+                );
+              },
+            ),
+            const SizedBox(height: 24),
+            Text(L10n.of(context).insightsNotes, style: OmnigramTypography.titleLarge(context)),
+            const SizedBox(height: 12),
+            FutureBuilder<Map<String, List<BookNote>>>(
+              future: _loadNotesByBook(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  final tier = ref.watch(warmthTierProvider);
+                  final data = emptyStateData(context, tier, EmptyPageType.insights);
+                  return EmptyState.fromData(data);
+                }
+                return NotesByBookList(notesByBook: snapshot.data!);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -168,6 +225,53 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
       }
     }
     return grouped;
+  }
+
+  Future<List<CrossBookDiscovery>> _loadCrossBookDiscoveries() async {
+    final dao = ConceptTagDao();
+    final tags = await dao.getAll();
+    final edges = await dao.getAllEdges();
+    final bookDao = BookDao();
+    final books = await bookDao.selectBooks();
+
+    final tagById = <int, ConceptTag>{};
+    for (final t in tags) {
+      if (t.id != null) tagById[t.id!] = t;
+    }
+    final bookById = <int, Book>{};
+    for (final b in books) {
+      bookById[b.id] = b;
+    }
+
+    final discoveries = <CrossBookDiscovery>[];
+    for (final edge in edges) {
+      final source = tagById[edge.sourceTagId];
+      final target = tagById[edge.targetTagId];
+      if (source == null || target == null) continue;
+      if (source.bookId == target.bookId) continue;
+
+      discoveries.add(CrossBookDiscovery(
+        edgeId: edge.id ?? 0,
+        sourceBookTitle: bookById[source.bookId]?.title ?? '',
+        targetBookTitle: bookById[target.bookId]?.title ?? '',
+        sourceConcept: source.name,
+        targetConcept: target.name,
+        reason: edge.reason ?? '',
+        weight: edge.weight,
+      ));
+    }
+
+    discoveries.sort((a, b) => b.weight.compareTo(a.weight));
+    return discoveries.take(10).toList();
+  }
+
+  Future<List<Thought>> _loadThoughts() async {
+    return ThoughtDao().getAll();
+  }
+
+  Future<void> _recordThought({String? topic, int? edgeId}) async {
+    final result = await showRecordThoughtSheet(context, topic: topic, edgeId: edgeId);
+    if (result != null) setState(() {});
   }
 }
 
