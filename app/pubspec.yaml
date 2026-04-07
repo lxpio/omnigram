@@ -126,6 +126,7 @@ dependencies:
   haptic_feedback: ^0.6.4+2
   lottie: ^3.3.1
   flutter_svg: ^2.0.17
+  local_auth: ^2.3.0
 
 dependency_overrides:
   langchain:

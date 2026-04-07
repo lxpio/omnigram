@@ -1054,5 +1054,11 @@
   "@importKindleSuccess": { "placeholders": { "count": { "type": "int" }, "books": { "type": "int" } } },
   "importKindleNoMatch": "{count} 条高亮已跳过（无匹配书籍）",
   "@importKindleNoMatch": { "placeholders": { "count": { "type": "int" } } },
-  "importKindleEmpty": "文件中未找到高亮"
+  "importKindleEmpty": "文件中未找到高亮",
+
+  "stealthPrivateLibrary": "隐身书房",
+  "stealthExit": "退出隐身模式",
+  "stealthAuthFailed": "验证失败",
+  "stealthAuthRequired": "验证身份以访问隐身书房",
+  "stealthImportBooks": "导入到隐身书房"
 }
