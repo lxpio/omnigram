@@ -376,7 +376,7 @@
 |------|------|--------|------|------|
 | L1 静态分析 | `flutter analyze` | P0 | ✅ 已用 | 0 errors，每次提交前运行 |
 | L2 自动爬虫 | Firebase Robo Test | P0 | ⚠️ CI 已配置 | `test-robo.yaml` 已创建，需 GCP secrets |
-| L3 视觉回归 | Golden Test | P1 | ❌ 未搭建 | 关键页面截图 diff，零 golden 文件 |
+| L3 视觉回归 | Golden Test | P1 | ✅ 已搭建 | 5 golden tests：CoverHeader, CrossBookCard, EmptyState, ThoughtCard (×2) |
 | L4 E2E 流程 | Maestro | P2 | ❌ 未搭建 | 备选方案 |
 
 ### Server 端测试
