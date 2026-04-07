@@ -1028,5 +1028,23 @@
   "insightsThoughtPlaceholder": "记录你的想法...",
   "insightsThoughtAbout": "关于: {topic}",
   "@insightsThoughtAbout": { "placeholders": { "topic": { "type": "String" } } },
-  "insightsSave": "保存"
+  "insightsSave": "保存",
+
+  "settingsTitle": "设置",
+  "settingsReadingIdentity": "阅读身份",
+  "settingsReadingIdentityDesc": "阅读目标 · 偏好语言 · 账户",
+  "settingsCompanion": "阅读伴侣",
+  "settingsCompanionDesc": "性格 · 声音 · 行为偏好",
+  "settingsReadingExperience": "阅读体验",
+  "settingsReadingExperienceDesc": "字体 · 排版 · 翻页 · 主题",
+  "settingsSyncStorage": "同步与存储",
+  "settingsSyncStorageDesc": "导入导出 · 缓存",
+  "settingsAdvanced": "高级",
+  "settingsAdvancedDesc": "AI 服务配置 · AI Chat (调试) · 开发者选项",
+  "settingsAbout": "关于 Omnigram",
+  "settingsAboutDesc": "版本 · 许可 · 链接",
+  "settingsServerTitle": "Omnigram 服务器",
+  "settingsServerConnected": "已连接 · {name}",
+  "@settingsServerConnected": { "placeholders": { "name": { "type": "String" } } },
+  "settingsServerNotConnected": "未连接 · 点击设置"
 }

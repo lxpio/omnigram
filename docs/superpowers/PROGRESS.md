@@ -1,6 +1,6 @@
 # Omnigram 实施进度索引
 
-> **最后更新：2026-04-04**
+> **最后更新：2026-04-07**
 > **参考设计：** `docs/superpowers/specs/2026-03-22-ambient-ai-reading-design.md`
 > **审核报告：** `docs/superpowers/specs/2026-03-22-ambient-ai-reading-review.md`
 > **已知问题：** `docs/superpowers/KNOWN_ISSUES.md`
@@ -19,7 +19,7 @@
 | Layer 3.5 | Server-Client 同步架构 | ✅ 完成 | Sprint 3.5 |
 | Layer 4.0 | 架构迁移（PG + 去 WebDAV + AI 缓存） | ✅ 完成 | Sprint 4 Phase 0 |
 | Layer 4.1 | 深度 AI（伴侣面板 + 边注 + 知识网络 + 语义搜索） | ✅ 完成 | Sprint 4 Phase 1 |
-| Layer 5 | 高级体验 | ❌ 未开始 | Sprint 5 |
+| Layer 5 | 高级体验 | 🔶 部分完成 | Sprint 5 |
 
 ---
 

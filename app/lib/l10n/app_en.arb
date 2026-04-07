@@ -1033,5 +1033,23 @@
   "insightsThoughtPlaceholder": "Record your thought...",
   "insightsThoughtAbout": "About: {topic}",
   "@insightsThoughtAbout": { "placeholders": { "topic": { "type": "String" } } },
-  "insightsSave": "Save"
+  "insightsSave": "Save",
+
+  "settingsTitle": "Settings",
+  "settingsReadingIdentity": "Reading Identity",
+  "settingsReadingIdentityDesc": "Goals · Language · Account",
+  "settingsCompanion": "Reading Companion",
+  "settingsCompanionDesc": "Personality · Voice · Behavior",
+  "settingsReadingExperience": "Reading Experience",
+  "settingsReadingExperienceDesc": "Font · Layout · Page Turn · Theme",
+  "settingsSyncStorage": "Sync & Storage",
+  "settingsSyncStorageDesc": "Import/Export · Cache",
+  "settingsAdvanced": "Advanced",
+  "settingsAdvancedDesc": "AI Config · AI Chat (Debug) · Developer",
+  "settingsAbout": "About Omnigram",
+  "settingsAboutDesc": "Version · License · Links",
+  "settingsServerTitle": "Omnigram Server",
+  "settingsServerConnected": "Connected · {name}",
+  "@settingsServerConnected": { "placeholders": { "name": { "type": "String" } } },
+  "settingsServerNotConnected": "Not connected · Tap to set up"
 }

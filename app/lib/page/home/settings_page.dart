@@ -24,14 +24,14 @@ class SettingsPage extends ConsumerWidget {
         padding: const EdgeInsets.all(OmnigramTheme.pageHorizontalPadding),
         children: [
           const SizedBox(height: 16),
-          Text('设置', style: OmnigramTypography.displayLarge(context)),
+          Text(L10n.of(context).settingsTitle, style: OmnigramTypography.displayLarge(context)),
           const SizedBox(height: 24),
           _ServerConnectionSection(),
           const SizedBox(height: 12),
           _SettingsSection(
             icon: Icons.person_outline,
-            title: '阅读身份',
-            subtitle: '阅读目标 · 偏好语言 · 账户',
+            title: L10n.of(context).settingsReadingIdentity,
+            subtitle: L10n.of(context).settingsReadingIdentityDesc,
             onTap: () {
               // TODO Sprint 2
             },
@@ -39,8 +39,8 @@ class SettingsPage extends ConsumerWidget {
           const SizedBox(height: 12),
           _SettingsSection(
             icon: Icons.smart_toy_outlined,
-            title: '阅读伴侣',
-            subtitle: '性格 · 声音 · 行为偏好',
+            title: L10n.of(context).settingsCompanion,
+            subtitle: L10n.of(context).settingsCompanionDesc,
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -50,8 +50,8 @@ class SettingsPage extends ConsumerWidget {
           const SizedBox(height: 12),
           _SettingsSection(
             icon: Icons.text_format,
-            title: '阅读体验',
-            subtitle: '字体 · 排版 · 翻页 · 主题',
+            title: L10n.of(context).settingsReadingExperience,
+            subtitle: L10n.of(context).settingsReadingExperienceDesc,
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -61,8 +61,8 @@ class SettingsPage extends ConsumerWidget {
           const SizedBox(height: 12),
           _SettingsSection(
             icon: Icons.sync,
-            title: '同步与存储',
-            subtitle: '导入导出 · 缓存',
+            title: L10n.of(context).settingsSyncStorage,
+            subtitle: L10n.of(context).settingsSyncStorageDesc,
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -81,8 +81,8 @@ class SettingsPage extends ConsumerWidget {
           const SizedBox(height: 12),
           _SettingsSection(
             icon: Icons.build_outlined,
-            title: '高级',
-            subtitle: 'AI 服务配置 · AI Chat (调试) · 开发者选项',
+            title: L10n.of(context).settingsAdvanced,
+            subtitle: L10n.of(context).settingsAdvancedDesc,
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -92,8 +92,8 @@ class SettingsPage extends ConsumerWidget {
           const SizedBox(height: 12),
           _SettingsSection(
             icon: Icons.info_outline,
-            title: '关于 Omnigram',
-            subtitle: '版本 · 许可 · 链接',
+            title: L10n.of(context).settingsAbout,
+            subtitle: L10n.of(context).settingsAboutDesc,
             onTap: () {
               // TODO: about page
             },
@@ -175,13 +175,13 @@ class _ServerConnectionSection extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Omnigram 服务器',
+                Text(L10n.of(context).settingsServerTitle,
                     style: OmnigramTypography.titleMedium(context)),
                 const SizedBox(height: 2),
                 Text(
                   isConnected
-                      ? '已连接 · ${connectionState.user?.name ?? ""}'
-                      : '未连接 · 点击设置',
+                      ? L10n.of(context).settingsServerConnected(connectionState.user?.name ?? "")
+                      : L10n.of(context).settingsServerNotConnected,
                   style: OmnigramTypography.caption(context),
                 ),
               ],
