@@ -1020,5 +1020,13 @@
   "aiBudgetBackgroundAi": "后台 AI",
   "aiBudgetBackgroundAiDesc": "自动标签、难词检测、知识网络",
   "aiBudgetConcurrency": "最大并发任务",
-  "aiBudgetConcurrencyDesc": "限制同时执行的 AI 请求数"
+  "aiBudgetConcurrencyDesc": "限制同时执行的 AI 请求数",
+
+  "insightsCrossBookDiscoveries": "跨书发现",
+  "insightsRecordThought": "记录想法",
+  "insightsMyThoughts": "我的思考",
+  "insightsThoughtPlaceholder": "记录你的想法...",
+  "insightsThoughtAbout": "关于: {topic}",
+  "@insightsThoughtAbout": { "placeholders": { "topic": { "type": "String" } } },
+  "insightsSave": "保存"
 }

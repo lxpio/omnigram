@@ -1025,5 +1025,13 @@
   "aiBudgetBackgroundAi": "Background AI",
   "aiBudgetBackgroundAiDesc": "Auto-tagging, glossary detection, knowledge graph",
   "aiBudgetConcurrency": "Max concurrent tasks",
-  "aiBudgetConcurrencyDesc": "Limit simultaneous AI requests"
+  "aiBudgetConcurrencyDesc": "Limit simultaneous AI requests",
+
+  "insightsCrossBookDiscoveries": "Cross-book Discoveries",
+  "insightsRecordThought": "Record a thought",
+  "insightsMyThoughts": "My Thoughts",
+  "insightsThoughtPlaceholder": "Record your thought...",
+  "insightsThoughtAbout": "About: {topic}",
+  "@insightsThoughtAbout": { "placeholders": { "topic": { "type": "String" } } },
+  "insightsSave": "Save"
 }
