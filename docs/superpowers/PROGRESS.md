@@ -326,9 +326,9 @@
 
 | 功能 | 设计文档章节 | 状态 | 关键文件 | 提交 |
 |------|-------------|------|----------|------|
-| **跨书连接（洞察 Layer 3）** | §6.1 Layer 3 | ❌ | | |
-| ├─ 跨书主题关联（非认知推断） | 审核建议 #1 | ❌ | | |
-| └─ "Record my thought" 按钮 | §6.1 | ❌ | | |
+| **跨书连接（洞察 Layer 3）** | §6.1 Layer 3 | ✅ | `widgets/insights/cross_book_card.dart` | `708aba7` |
+| ├─ 跨书主题关联（非认知推断） | 审核建议 #1 | ✅ | `page/home/insights_page.dart` | `2c30448` |
+| └─ "Record my thought" 按钮 | §6.1 | ✅ | `widgets/insights/record_thought_sheet.dart` | `2c30448` |
 | **隐身书房** | §8 | ❌ | | |
 | ├─ 独立加密空间 | §8.2 | ❌ | | |
 | ├─ Platform Keystore 密钥管理 | §10.4 | ❌ | | |
@@ -448,6 +448,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-04-07 | **Layer 5 跨书连接** ✅：跨书发现列表（ConceptEdge 跨书过滤 + 卡片展示）+ "Record my thought" 思考日记（tb_thoughts DB v14 + bottom sheet + 时间线展示）+ InsightsPage FAB |
 | 2026-04-05 | **AI 处理预算** ✅：后台 AI 总开关（backgroundAiEnabled）+ 并发限制信号量（maxConcurrentAiTasks），设置页 AI 预算卡片 |
 | 2026-04-05 | **数据导出** ✅：全库笔记 Markdown 导出 + 知识网络 JSON 导出。设置页新增"数据"分区 |
 | 2026-04-05 | **Onboarding 流程** ✅：渐进式 2 步引导（语言选择 + 导入书籍/连接服务端），接入 OmnigramHome 首次启动检测 |
