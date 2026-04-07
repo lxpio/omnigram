@@ -329,12 +329,12 @@
 | **跨书连接（洞察 Layer 3）** | §6.1 Layer 3 | ✅ | `widgets/insights/cross_book_card.dart` | `708aba7` |
 | ├─ 跨书主题关联（非认知推断） | 审核建议 #1 | ✅ | `page/home/insights_page.dart` | `2c30448` |
 | └─ "Record my thought" 按钮 | §6.1 | ✅ | `widgets/insights/record_thought_sheet.dart` | `2c30448` |
-| **隐身书房** | §8 | ❌ | | |
-| ├─ 独立加密空间 | §8.2 | ❌ | | |
-| ├─ Platform Keystore 密钥管理 | §10.4 | ❌ | | |
-| ├─ 隐藏入口 + 生物识别 | §7.3, §8.2 | ❌ | | |
-| ├─ AI 数据完全隔离 | §8.2 | ❌ | | |
-| └─ 快速锁定 + 卸载策略 | §10.4 | ❌ | | |
+| **隐身书房** | §8 | 🔶 Phase 1 | | |
+| ├─ 独立加密空间 | §8.2 | ✅ | `dao/stealth/stealth_db_helper.dart` | `7381f67` |
+| ├─ Platform Keystore 密钥管理 | §10.4 | ✅ | `service/stealth/biometric_auth_service.dart` | `05fa38c` |
+| ├─ 隐藏入口 + 生物识别 | §7.3, §8.2 | ✅ | `page/home/settings_page.dart` (长按关于) | `95ffdb2` |
+| ├─ AI 数据完全隔离 | §8.2 | ❌ | Phase 2 | |
+| └─ 快速锁定 + 卸载策略 | §10.4 | ❌ | Phase 2 | |
 
 ---
 
@@ -448,6 +448,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-04-07 | **隐身书房 Phase 1** ✅：生物识别入口（长按关于 Omnigram）+ AES-256 加密数据库 + Platform Keystore 密钥管理 + 隐身书架 UI。Phase 2（AI 隔离、快速锁定）待做 |
 | 2026-04-07 | **Kindle 高亮导入** ✅：My Clippings.txt 解析（多语言类型检测），按书名模糊匹配，Highlight+Note 合并，去重导入 |
 | 2026-04-07 | **Layer 5 跨书连接** ✅：跨书发现列表（ConceptEdge 跨书过滤 + 卡片展示）+ "Record my thought" 思考日记（tb_thoughts DB v14 + bottom sheet + 时间线展示）+ InsightsPage FAB |
 | 2026-04-05 | **AI 处理预算** ✅：后台 AI 总开关（backgroundAiEnabled）+ 并发限制信号量（maxConcurrentAiTasks），设置页 AI 预算卡片 |
