@@ -12,7 +12,11 @@ import 'package:omnigram/page/settings_page/more_settings_page.dart';
 import 'package:omnigram/providers/server_connection_provider.dart';
 import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/service/export/data_export.dart';
+import 'package:omnigram/service/import/kindle_import.dart';
+import 'package:omnigram/dao/book.dart';
 import 'package:omnigram/utils/toast/common.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -144,10 +148,51 @@ void _showExportSheet(BuildContext context) {
               }
             },
           ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.file_upload_outlined),
+            title: Text(l10n.importKindleHighlights),
+            subtitle: Text(l10n.importKindleDesc),
+            onTap: () async {
+              Navigator.pop(ctx);
+              await _importKindle(context);
+            },
+          ),
         ],
       ),
     ),
   );
+}
+
+Future<void> _importKindle(BuildContext context) async {
+  final l10n = L10n.of(context);
+  final result = await FilePicker.platform.pickFiles(
+    type: FileType.custom,
+    allowedExtensions: ['txt'],
+  );
+  if (result == null || result.files.isEmpty) return;
+
+  final file = File(result.files.first.path!);
+  final content = await file.readAsString();
+
+  final clippings = KindleImport.parseClippings(content);
+  if (clippings.isEmpty) {
+    if (context.mounted) AnxToast.show(l10n.importKindleEmpty);
+    return;
+  }
+
+  final books = await BookDao().selectNotDeleteBooks();
+  final importResult = await KindleImport.importToLibrary(clippings, books);
+
+  if (context.mounted) {
+    if (importResult.importedCount > 0) {
+      AnxToast.show(l10n.importKindleSuccess(
+          importResult.importedCount, importResult.matchedBooks));
+    }
+    if (importResult.skippedCount > 0) {
+      AnxToast.show(l10n.importKindleNoMatch(importResult.skippedCount));
+    }
+  }
 }
 
 class _ServerConnectionSection extends ConsumerWidget {

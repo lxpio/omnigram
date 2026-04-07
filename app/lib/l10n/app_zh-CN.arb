@@ -1046,5 +1046,13 @@
   "settingsServerTitle": "Omnigram 服务器",
   "settingsServerConnected": "已连接 · {name}",
   "@settingsServerConnected": { "placeholders": { "name": { "type": "String" } } },
-  "settingsServerNotConnected": "未连接 · 点击设置"
+  "settingsServerNotConnected": "未连接 · 点击设置",
+
+  "importKindleHighlights": "导入 Kindle 高亮",
+  "importKindleDesc": "从 My Clippings.txt",
+  "importKindleSuccess": "已导入 {count} 条高亮，来自 {books} 本书",
+  "@importKindleSuccess": { "placeholders": { "count": { "type": "int" }, "books": { "type": "int" } } },
+  "importKindleNoMatch": "{count} 条高亮已跳过（无匹配书籍）",
+  "@importKindleNoMatch": { "placeholders": { "count": { "type": "int" } } },
+  "importKindleEmpty": "文件中未找到高亮"
 }
