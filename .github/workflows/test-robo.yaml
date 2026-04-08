@@ -19,8 +19,12 @@ on:
       KEY_ALIAS:
         required: true
 
-  # Manual trigger only — requires GCP secrets configured in repo
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'app/lib/**'
+      - 'app/pubspec.yaml'
 
 jobs:
   robo-test:
