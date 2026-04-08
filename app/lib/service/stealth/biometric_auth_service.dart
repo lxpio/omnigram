@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:omnigram/service/stealth/encryption_service.dart';
+import 'package:omnigram/utils/get_path/databases_path.dart';
+import 'package:path/path.dart';
 
 class BiometricAuthService {
   BiometricAuthService._();
@@ -39,6 +43,15 @@ class BiometricAuthService {
     if (key == null) {
       key = EncryptionService.generateKey();
       await _storage.write(key: _keyName, value: key);
+    } else {
+      // If key exists but DB file doesn't (reinstall), delete stale key
+      final databasePath = await getAnxDataBasesPath();
+      final dbFile = File(join(databasePath, 'stealth_database.db'));
+      if (!await dbFile.exists()) {
+        await _storage.delete(key: _keyName);
+        key = EncryptionService.generateKey();
+        await _storage.write(key: _keyName, value: key);
+      }
     }
     return key;
   }
