@@ -117,7 +117,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
                     selectedTag: _selectedLanguageTag,
                     onTagChanged: (tag) {
                       setState(() => _selectedLanguageTag = tag);
-                      if (tag == 'system' || tag == null) {
+                      if (tag == 'System' || tag == null) {
                         Prefs().saveLocaleToPrefs('system');
                       } else {
                         Prefs().saveLocaleToPrefs(tag);
@@ -203,8 +203,8 @@ class _LanguagePage extends StatelessWidget {
       );
     }).toList();
 
-    // Determine current value; default to 'system'
-    final currentValue = selectedTag ?? 'system';
+    // Determine current value; default to 'System' (matches languageOptions[0])
+    final currentValue = selectedTag ?? 'System';
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
