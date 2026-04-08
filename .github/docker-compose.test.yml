@@ -1,0 +1,39 @@
+services:
+  omnigram-server:
+    build:
+      context: ../server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      DB_DRIVER: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: omnigram
+      DB_PASSWORD: omnigram
+      DB_NAME: omnigram
+      TTS_PROVIDER: edge
+      INIT_ADMIN: "true"
+      INIT_ADMIN_USER: testadmin
+      INIT_ADMIN_PASS: testpass123
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:80/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 30s
+
+  db:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: omnigram
+      POSTGRES_PASSWORD: omnigram
+      POSTGRES_DB: omnigram
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U omnigram"]
+      interval: 5s
+      timeout: 3s
+      retries: 10

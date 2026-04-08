@@ -18,7 +18,7 @@ on:
       - 'app/lib/service/api/**'
       - 'app/lib/models/server/**'
       - 'app/integration_test/**'
-      - 'docker-compose.yml'
+      - '.github/docker-compose.test.yml'
 
 jobs:
   api-smoke-test:
@@ -35,55 +35,16 @@ jobs:
           curl -fsSL "https://github.com/Orange-OpenSource/hurl/releases/download/${VERSION}/hurl_${VERSION}_amd64.deb" -o hurl.deb
           sudo dpkg -i hurl.deb
 
-      - name: Create test docker-compose
-        run: |
-          cat > docker-compose.test.yml << 'YAML'
-          version: '3'
-          services:
-            omnigram-server:
-              build:
-                context: server
-                dockerfile: Dockerfile
-              ports:
-                - "8080:80"
-              environment:
-                DB_DRIVER: postgres
-                DB_HOST: db
-                DB_PORT: 5432
-                DB_USER: omnigram
-                DB_PASSWORD: omnigram
-                DB_NAME: omnigram
-                TTS_PROVIDER: edge
-                INIT_ADMIN: "true"
-                INIT_ADMIN_USER: testadmin
-                INIT_ADMIN_PASS: testpass123
-              depends_on:
-                db:
-                  condition: service_healthy
-
-            db:
-              image: pgvector/pgvector:pg17
-              environment:
-                POSTGRES_USER: omnigram
-                POSTGRES_PASSWORD: omnigram
-                POSTGRES_DB: omnigram
-              healthcheck:
-                test: ["CMD-SHELL", "pg_isready -U omnigram"]
-                interval: 5s
-                timeout: 3s
-                retries: 10
-          YAML
-
       - name: Start services
         run: |
-          docker compose -f docker-compose.test.yml up -d --build
+          docker compose -f .github/docker-compose.test.yml up -d --build
           # Wait for server to be ready
-          for i in $(seq 1 30); do
+          for i in $(seq 1 60); do
             if curl -sf http://localhost:8080/healthz > /dev/null 2>&1; then
               echo "Server is ready"
               break
             fi
-            echo "Waiting for server... ($i/30)"
+            echo "Waiting for server... ($i/60)"
             sleep 2
           done
 
@@ -125,7 +86,7 @@ jobs:
             http://localhost:8080/swagger/doc.json \
             --checks all \
             --url http://localhost:8080 \
-            --header "Authorization: Bearer $(curl -s http://localhost:8080/auth/login -H 'Content-Type: application/json' -d '{"username":"testadmin","password":"testpass123"}' | jq -r '.token')" \
+            --header "Authorization: Bearer $(curl -s http://localhost:8080/auth/token -H 'Content-Type: application/json' -d '{"account":"testadmin","password":"testpass123"}' | jq -r '.access_token')" \
             --max-response-time 5000 \
             --hypothesis-max-examples 50 \
             --report \
@@ -134,7 +95,7 @@ jobs:
       - name: Collect logs on failure
         if: failure()
         run: |
-          docker compose -f docker-compose.test.yml logs > server-logs.txt 2>&1
+          docker compose -f .github/docker-compose.test.yml logs > server-logs.txt 2>&1
 
       - name: Upload test results
         if: always()
@@ -148,4 +109,4 @@ jobs:
 
       - name: Cleanup
         if: always()
-        run: docker compose -f docker-compose.test.yml down -v
+        run: docker compose -f .github/docker-compose.test.yml down -v
