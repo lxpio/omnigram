@@ -1,5 +1,5 @@
 # stage 1: build web frontend
-FROM node:20-alpine AS webbuilder
+FROM node:24-alpine AS webbuilder
 COPY web/ /web/
 WORKDIR /web
 RUN npm ci && npm run build
@@ -37,7 +37,7 @@ RUN apk add build-base && \
 
 
 
-FROM --platform=$TARGETPLATFORM alpine:3.20.3
+FROM alpine:3.23.3
 
 LABEL author="exppii" \
     description="omnigram-server"
