@@ -19,17 +19,16 @@ class OmnigramHome extends ConsumerStatefulWidget {
 
 class _OmnigramHomeState extends ConsumerState<OmnigramHome> {
   OmnigramTab _currentTab = OmnigramTab.reading;
+  late bool _showOnboarding;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (Prefs().lastAppVersion == null) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const OnboardingFlow()),
-        );
-      }
-    });
+    _showOnboarding = Prefs().lastAppVersion == null;
+  }
+
+  void _onOnboardingComplete() {
+    setState(() => _showOnboarding = false);
   }
 
   Widget _buildPage() {
@@ -47,6 +46,10 @@ class _OmnigramHomeState extends ConsumerState<OmnigramHome> {
 
   @override
   Widget build(BuildContext context) {
+    if (_showOnboarding) {
+      return OnboardingFlow(onComplete: _onOnboardingComplete);
+    }
+
     final l10n = L10n.of(context);
     final isWide = MediaQuery.sizeOf(context).width > 600;
 

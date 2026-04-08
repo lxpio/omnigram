@@ -12,7 +12,8 @@ import 'package:omnigram/providers/server_connection_provider.dart';
 import 'package:omnigram/service/book.dart';
 
 class OnboardingFlow extends ConsumerStatefulWidget {
-  const OnboardingFlow({super.key});
+  final VoidCallback? onComplete;
+  const OnboardingFlow({super.key, this.onComplete});
 
   @override
   ConsumerState<OnboardingFlow> createState() => _OnboardingFlowState();
@@ -57,9 +58,13 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
   Future<void> _complete() async {
     Prefs().lastAppVersion = '1.0.0';
     if (!mounted) return;
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const OmnigramHome()),
-    );
+    if (widget.onComplete != null) {
+      widget.onComplete!();
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const OmnigramHome()),
+      );
+    }
   }
 
   Future<void> _importBooks() async {
