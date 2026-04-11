@@ -2,6 +2,7 @@
 
 > **日期：** 2026-04-11
 > **状态：** Approved
+> **审阅：** `2026-04-11-tts-settings-redesign-review.md`（已采纳全部意见）
 
 ---
 
@@ -31,15 +32,14 @@
 │  或 "还没有本地模型 [下载推荐模型]"        │
 │                                         │
 │  ☁️ 在线声音                             │
-│  [声音卡片网格 — Edge TTS 声音]          │
+│  [声音卡片网格]                          │
 │                                         │
 │  📱 系统声音                             │
 │  [声音卡片网格 — 系统 TTS 声音]          │
 │                                         │
 ├─ 高级设置 ──────────────── 折叠 ▸ ──────┤
-│  引擎管理                                │
 │  模型管理（下载/删除）                    │
-│  API 配置（Azure/OpenAI/Aliyun）        │
+│  API 配置（Azure/OpenAI/Aliyun/Server） │
 │  语速/混音                               │
 └─────────────────────────────────────────┘
 ```
@@ -80,8 +80,22 @@
 
 ### 4.2 在线声音
 
-- Edge TTS 声音列表（19 个，无需配置，直接可用）
-- Azure/OpenAI/Aliyun 声音（仅在高级设置中配置了 API key 后出现）
+按子来源分组显示：
+
+#### 4.2.1 Omnigram Server
+- 需要 server 连接已配置（见"高级设置 → API 配置"）
+- 已配置且可达 → 显示服务端返回的声音
+- 未配置 → 不显示此子分区
+
+#### 4.2.2 Edge TTS
+- 预置一组常用声音（数量以实现为准，当前约 20+ 个）
+- 无需配置，直接显示，按语言分组
+
+#### 4.2.3 Azure / OpenAI / Aliyun
+- 未配置 → 显示灰态占位卡片："未配置 [去配置]"，点击跳转高级设置
+- 配置完整但拉取失败 → 显示"拉取失败 [重试]"
+- 配置完整且拉取成功 → 显示声音卡片
+- 高级设置中修改配置后自动刷新对应声音列表
 
 ### 4.3 系统声音
 
@@ -105,33 +119,58 @@
 
 默认折叠，展开后包含：
 
-### 7.1 模型管理（仅 sherpa-onnx 相关）
+### 7.1 模型管理（sherpa-onnx 本地模型）
 - 列出所有内置模型 + 下载状态
 - 已下载：显示 ✅ + 删除按钮
 - 未下载：显示大小 + 下载按钮（带进度条）
 - 下载中：进度条
 
 ### 7.2 API 配置
+- Omnigram Server：url + token
 - Azure：key + region
 - OpenAI：url + key + model + instructions
 - Aliyun：appkey + accessKeyId + secret + endpoint
-- 配置完成后对应声音自动出现在"在线声音"区域
+- 配置变更后对应声音区域自动刷新
 
 ### 7.3 朗读参数
 - 语速滑条
 - 混音模式开关
 
-## 8. 数据流
+## 8. 数据流与配置持久化
+
+### 8.1 声音唯一标识
+
+引入 `source:voiceId` 格式：
+```
+edge:zh-CN-XiaoxiaoNeural
+sherpa:kokoro-multi-lang-v1_0:47      ← source:modelId:speakerId
+azure:en-US-JennyNeural
+openai:nova
+aliyun:xiaoyun
+server:voice-1
+system:com.apple.ttsbundle.Tingting
+```
+
+新增 `Prefs().selectedVoiceFullId` 存储完整标识。
+
+### 8.2 自动切引擎
 
 ```
 用户选择声音卡片
-  → 判断来源（sherpa/edge/azure/openai/aliyun/system）
-  → 自动切换引擎（TtsService）
-  → 保存 voice 配置
+  → 解析 source（edge/sherpa/azure/...）
+  → 自动切换 TtsService
+  → 保存 selectedVoiceFullId
   → 更新"当前声音"显示
 ```
 
-用户**不需要手动切换引擎**。选了 Edge 的声音就自动用 Edge，选了 Kokoro 的声音就自动用 sherpa-onnx。
+### 8.3 迁移兼容
+
+旧配置（`ttsService` + `voice`）升级到新结构：
+- 读取旧 `Prefs().ttsService` + `getSelectedVoice()`
+- 拼接为 `source:voiceId` 格式
+- 写入 `selectedVoiceFullId`
+- 旧字段保留不删（向后兼容）
+- 如果迁移后找不到对应声音 → 降级到 Edge 首个中文声音
 
 ## 9. 文件改动
 
@@ -139,22 +178,47 @@
 |------|------|
 | 重写 `page/settings_page/narrate.dart` | 完全重写 UI 布局 |
 | 修改 `service/tts/sherpa_onnx_tts.dart` | getVoices 返回 speaker 声音 |
+| 修改 `service/tts/tts_service_provider.dart` | 支持 selectedVoiceFullId |
+| 修改 `service/tts/tts_factory.dart` | 支持按声音来源自动切换引擎 |
+| 修改 `config/shared_preference_provider.dart` | 新增 selectedVoiceFullId |
 | 新建 `widgets/settings/voice_card.dart` | 声音卡片组件 |
 | 新建 `widgets/settings/voice_grid.dart` | 声音网格组件 |
 | 修改 L10n ARB | 新增相关 key |
 
-## 10. 不做
+## 10. 改动范围说明
 
-- 不改变 TTS 引擎底层逻辑
+### 不做的事
+- 不改变各 TTS Provider 的实现协议（Azure SSML、OpenAI JSON 等）
 - 不增加新的 TTS 引擎
 - 不做声音收藏/自定义排序
 - 不做语音克隆
 
+### 允许的改动
+- **命令层**：调整 TtsFactory、TtsService、Provider 的选择与路由逻辑，实现"按声音来源自动切换引擎"
+- **配置层**：引入 `selectedVoiceFullId` 结构，简化跨服务选择的持久化
+- **UI 层**：聚合所有服务的 voices，统一呈现为声音卡片网格
+
 ## 11. 测试要点
 
+### 正向场景
 - 首次进入：Edge 声音可见可选，本地区域显示下载引导
 - 下载 Kokoro 后：本地声音卡片出现
 - 选声音自动切换引擎（不需要手动选引擎）
 - 试听按钮正常播放
 - 高级设置折叠/展开正常
-- Azure/OpenAI 配置 key 后声音出现在在线区域
+- Azure/OpenAI/Aliyun 配置 key 后声音出现在在线区域
+- Server 已连接时声音出现在在线区域
+
+### 兼容与迁移
+- 升级前用户（已保存的服务+voice）打开设置页后正常显示当前声音
+- 旧配置无对应声音时自动降级到 Edge 首个中文声音并提示
+
+### 失败与容错
+- API 配置不完整时在线声音区显示"待配置"灰态
+- 拉取 voices 超时/失败时显示"拉取失败 [重试]"
+- 高级设置修改 API 配置后在线声音列表自动刷新
+- 试听中切换声音/服务时正常中断前一个播放
+
+### 边界与性能
+- 100+ 声音卡片时列表不卡顿
+- 快速在服务间切换（Edge → Kokoro → Edge）时正常
