@@ -56,22 +56,29 @@ Uint8List _generateInBackground(Map<String, dynamic> params) {
   }
 
   final tts = sherpa.OfflineTts(config);
-  final audio = tts.generate(text: text, sid: sid, speed: speed);
+  var audio = tts.generate(text: text, sid: sid, speed: speed);
+
+  if (audio.samples.isNotEmpty && _hasNaN(audio.samples) && speed != 1.0) {
+    // Kokoro models may produce NaN with non-1.0 speed on some devices.
+    // Retry with speed=1.0 as fallback.
+    // ignore: avoid_print
+    print('[SherpaOnnx] NaN detected at speed=$speed, retrying with speed=1.0');
+    audio = tts.generate(text: text, sid: sid, speed: 1.0);
+  }
+
   tts.free();
 
   if (audio.samples.isEmpty) {
     return Uint8List(0);
   }
 
-  // Check for NaN/zero samples (common in simulator environments)
-  int nanCount = 0;
-  int zeroCount = 0;
-  for (final s in audio.samples) {
-    if (s.isNaN || s.isInfinite) nanCount++;
-    if (s == 0.0) zeroCount++;
-  }
-  if (nanCount > 0 || zeroCount == audio.samples.length) {
-    // Return a special marker: 'NANS' in first 4 bytes to signal the issue
+  // Log diagnostic info
+  final nanCount = audio.samples.where((s) => s.isNaN || s.isInfinite).length;
+  // ignore: avoid_print
+  print('[SherpaOnnx] samples=${audio.samples.length} sampleRate=${audio.sampleRate} '
+      'nanCount=$nanCount speed=$speed sid=$sid');
+
+  if (nanCount > 0 || audio.samples.every((s) => s == 0.0)) {
     final marker = Uint8List(4);
     marker[0] = 78; // N
     marker[1] = 65; // A
@@ -81,6 +88,13 @@ Uint8List _generateInBackground(Map<String, dynamic> params) {
   }
 
   return SherpaOnnxProvider._encodeWav(audio.samples, audio.sampleRate);
+}
+
+bool _hasNaN(Float32List samples) {
+  for (final s in samples) {
+    if (s.isNaN || s.isInfinite) return true;
+  }
+  return false;
 }
 
 /// Kokoro speaker names → IDs mapping.
