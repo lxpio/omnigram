@@ -35,7 +35,7 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - sherpa_onnx_macos (1.12.31):
+  - sherpa_onnx_macos (1.12.34):
     - FlutterMacOS
   - sqflite_darwin (0.0.4):
     - Flutter
@@ -136,7 +136,7 @@ SPEC CHECKSUMS:
   screen_retriever_macos: 452e51764a9e1cdb74b3c541238795849f21557f
   share_plus: 510bf0af1a42cd602274b4629920c9649c52f4cc
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
-  sherpa_onnx_macos: 0822e8fd7a5b40bdfa8e2ed1924477b06a1a5a63
+  sherpa_onnx_macos: 3d37f232617f0d1d1e7e62f62fd7ec0661be7546
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   url_launcher_macos: f87a979182d112f911de6820aefddaf56ee9fbfd
   wakelock_plus: 917609be14d812ddd9e9528876538b2263aaa03b

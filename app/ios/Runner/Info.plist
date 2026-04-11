@@ -48,13 +48,13 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
-	<key>LSSupportsOpeningDocumentsInPlace</key>
-	<true/>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Authenticate to access your private library</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

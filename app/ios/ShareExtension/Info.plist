@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-  <dict>
-    <key>AppGroupId</key>
-    <string>$(CUSTOM_GROUP_ID)</string>
-	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+<dict>
+	<key>AppGroupId</key>
+	<string>$(CUSTOM_GROUP_ID)</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionAttributes</key>
-        <dict>
-        	<key>NSExtensionActivationRule</key>
-            <string>
+		<dict>
+			<key>NSExtensionActivationRule</key>
+			<string>
                 SUBQUERY(
                     extensionItems,
                     $extensionItem,
@@ -24,14 +22,14 @@
                             OR ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.plain-text"
                             OR ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.data"
                         )
-                    ).@count > 0
-                ).@count > 0
+                    ).@count &gt; 0
+                ).@count &gt; 0
             </string>
-        </dict>
+		</dict>
 		<key>NSExtensionMainStoryboard</key>
 		<string>MainInterface</string>
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.share-services</string>
 	</dict>
-  </dict>
+</dict>
 </plist>
