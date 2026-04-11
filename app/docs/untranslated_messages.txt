@@ -112,7 +112,12 @@
     "importKindleDesc",
     "importKindleSuccess",
     "importKindleNoMatch",
-    "importKindleEmpty"
+    "importKindleEmpty",
+    "stealthPrivateLibrary",
+    "stealthExit",
+    "stealthAuthFailed",
+    "stealthAuthRequired",
+    "stealthImportBooks"
   ],
 
   "de": [
@@ -228,7 +233,12 @@
     "importKindleDesc",
     "importKindleSuccess",
     "importKindleNoMatch",
-    "importKindleEmpty"
+    "importKindleEmpty",
+    "stealthPrivateLibrary",
+    "stealthExit",
+    "stealthAuthFailed",
+    "stealthAuthRequired",
+    "stealthImportBooks"
   ],
 
   "es": [
@@ -344,7 +354,12 @@
     "importKindleDesc",
     "importKindleSuccess",
     "importKindleNoMatch",
-    "importKindleEmpty"
+    "importKindleEmpty",
+    "stealthPrivateLibrary",
+    "stealthExit",
+    "stealthAuthFailed",
+    "stealthAuthRequired",
+    "stealthImportBooks"
   ],
 
   "fr": [
@@ -460,7 +475,12 @@
     "importKindleDesc",
     "importKindleSuccess",
     "importKindleNoMatch",
-    "importKindleEmpty"
+    "importKindleEmpty",
+    "stealthPrivateLibrary",
+    "stealthExit",
+    "stealthAuthFailed",
+    "stealthAuthRequired",
+    "stealthImportBooks"
   ],
 
   "it": [
@@ -576,7 +596,12 @@
     "importKindleDesc",
     "importKindleSuccess",
     "importKindleNoMatch",
-    "importKindleEmpty"
+    "importKindleEmpty",
+    "stealthPrivateLibrary",
+    "stealthExit",
+    "stealthAuthFailed",
+    "stealthAuthRequired",
+    "stealthImportBooks"
   ],
 
   "ja": [
@@ -692,7 +717,12 @@
     "importKindleDesc",
     "importKindleSuccess",
     "importKindleNoMatch",
-    "importKindleEmpty"
+    "importKindleEmpty",
+    "stealthPrivateLibrary",
+    "stealthExit",
+    "stealthAuthFailed",
+    "stealthAuthRequired",
+    "stealthImportBooks"
   ],
 
   "ko": [
@@ -808,7 +838,12 @@
     "importKindleDesc",
     "importKindleSuccess",
     "importKindleNoMatch",
-    "importKindleEmpty"
+    "importKindleEmpty",
+    "stealthPrivateLibrary",
+    "stealthExit",
+    "stealthAuthFailed",
+    "stealthAuthRequired",
+    "stealthImportBooks"
   ],
 
   "pt": [
@@ -924,7 +959,12 @@
     "importKindleDesc",
     "importKindleSuccess",
     "importKindleNoMatch",
-    "importKindleEmpty"
+    "importKindleEmpty",
+    "stealthPrivateLibrary",
+    "stealthExit",
+    "stealthAuthFailed",
+    "stealthAuthRequired",
+    "stealthImportBooks"
   ],
 
   "ro": [
@@ -1040,7 +1080,12 @@
     "importKindleDesc",
     "importKindleSuccess",
     "importKindleNoMatch",
-    "importKindleEmpty"
+    "importKindleEmpty",
+    "stealthPrivateLibrary",
+    "stealthExit",
+    "stealthAuthFailed",
+    "stealthAuthRequired",
+    "stealthImportBooks"
   ],
 
   "ru": [
@@ -1156,7 +1201,12 @@
     "importKindleDesc",
     "importKindleSuccess",
     "importKindleNoMatch",
-    "importKindleEmpty"
+    "importKindleEmpty",
+    "stealthPrivateLibrary",
+    "stealthExit",
+    "stealthAuthFailed",
+    "stealthAuthRequired",
+    "stealthImportBooks"
   ],
 
   "tr": [
@@ -1272,7 +1322,12 @@
     "importKindleDesc",
     "importKindleSuccess",
     "importKindleNoMatch",
-    "importKindleEmpty"
+    "importKindleEmpty",
+    "stealthPrivateLibrary",
+    "stealthExit",
+    "stealthAuthFailed",
+    "stealthAuthRequired",
+    "stealthImportBooks"
   ],
 
   "zh": [
@@ -1383,7 +1438,12 @@
     "importKindleDesc",
     "importKindleSuccess",
     "importKindleNoMatch",
-    "importKindleEmpty"
+    "importKindleEmpty",
+    "stealthPrivateLibrary",
+    "stealthExit",
+    "stealthAuthFailed",
+    "stealthAuthRequired",
+    "stealthImportBooks"
   ],
 
   "zh_CN": [
@@ -1507,7 +1567,12 @@
     "importKindleDesc",
     "importKindleSuccess",
     "importKindleNoMatch",
-    "importKindleEmpty"
+    "importKindleEmpty",
+    "stealthPrivateLibrary",
+    "stealthExit",
+    "stealthAuthFailed",
+    "stealthAuthRequired",
+    "stealthImportBooks"
   ],
 
   "zh_TW": [
@@ -1623,6 +1688,11 @@
     "importKindleDesc",
     "importKindleSuccess",
     "importKindleNoMatch",
-    "importKindleEmpty"
+    "importKindleEmpty",
+    "stealthPrivateLibrary",
+    "stealthExit",
+    "stealthAuthFailed",
+    "stealthAuthRequired",
+    "stealthImportBooks"
   ]
 }

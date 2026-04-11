@@ -38,7 +38,7 @@
 
 ## 3. 隐身数据库
 
-### 3.1 独立数据库
+### 3.1 独立数据库k
 
 - 文件名：`stealth_database.db`（与 `app_database.db` 并行）
 - 表结构：复用主库的表名和 schema（tb_books, tb_notes 等）
