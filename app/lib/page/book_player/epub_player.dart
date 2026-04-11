@@ -1159,6 +1159,9 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
     super.dispose();
   }
 
+  static const int _maxServerStartRetries = 15;
+  static const Duration _serverPollInterval = Duration(milliseconds: 200);
+
   /// Reload the WebView with the current book URL after a content process
   /// termination (iOS) or server restart. Waits until the local server is
   /// running before reloading to avoid a race condition.
@@ -1168,9 +1171,14 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
 
     // Wait for the local server to be ready (it may be restarting on resume).
     int retries = 0;
-    while (!Server().isRunning && retries < 15) {
-      await Future.delayed(const Duration(milliseconds: 200));
+    while (!Server().isRunning && retries < _maxServerStartRetries) {
+      await Future.delayed(_serverPollInterval);
       retries++;
+    }
+
+    if (retries >= _maxServerStartRetries) {
+      AnxLog.warning(
+          'EpubPlayer: Server not ready after ${retries * _serverPollInterval.inMilliseconds}ms, attempting reload anyway');
     }
 
     if (!mounted) return;
