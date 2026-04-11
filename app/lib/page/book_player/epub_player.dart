@@ -114,32 +114,28 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
   double _accumulatedScrollDelta = 0;
   static const double _scrollThreshold = 50.0;
 
-  // Track whether the WebView has been created and initialized
+  // Track whether the WebView has been created and initialized.
+  // Guards all webViewController access to prevent LateInitializationError.
   bool _webViewInitialized = false;
+
+  /// Safe wrapper for evaluateJavascript — no-ops if WebView not initialized.
+  void _evalJs(String source) {
+    if (!_webViewInitialized) return;
+    webViewController.evaluateJavascript(source: source);
+  }
+
 
   // to know anytime if we are on top of navigation stack
   bool get _isTopOfNavigationStack =>
       ModalRoute.of(context)?.isCurrent ?? false;
 
-  void prevPage() {
-    webViewController.evaluateJavascript(source: 'prevPage()');
-  }
+  void prevPage() => _evalJs('prevPage()');
 
-  void nextPage() {
-    webViewController.evaluateJavascript(source: 'nextPage()');
-  }
+  void nextPage() => _evalJs('nextPage()');
 
-  void prevChapter() {
-    webViewController.evaluateJavascript(source: '''
-      prevSection()
-      ''');
-  }
+  void prevChapter() => _evalJs('prevSection()');
 
-  void nextChapter() {
-    webViewController.evaluateJavascript(source: '''
-      nextSection()
-      ''');
-  }
+  void nextChapter() => _evalJs('nextSection()');
 
   void setTranslationMode(TranslationModeEnum mode) {
     webViewController.evaluateJavascript(source: '''
@@ -1169,10 +1165,15 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
       InAppWebViewController controller) async {
     if (!mounted) return;
 
+    // Reset glossary state so auto-glossary re-triggers after reload
+    _lastAutoGlossaryChapter = null;
+    _glossaryWords = [];
+
     // Wait for the local server to be ready (it may be restarting on resume).
     int retries = 0;
     while (!Server().isRunning && retries < _maxServerStartRetries) {
       await Future.delayed(_serverPollInterval);
+      if (!mounted) return;
       retries++;
     }
 
