@@ -1954,50 +1954,50 @@ packages:
     dependency: "direct main"
     description:
       name: sherpa_onnx
-      sha256: "0e2d256711952e9e5c9d0d77deb66f9a63085c949f248fba3f8c48c3ec57c1fd"
+      sha256: c10a1052bf03b9e68562e5be7d3a60568738c8356f3607012f0260f88ea11f08
       url: "https://pub.dev"
     source: hosted
-    version: "1.12.34"
+    version: "1.12.36"
   sherpa_onnx_android:
     dependency: transitive
     description:
       name: sherpa_onnx_android
-      sha256: b0c1f489daf32fba17b602bac4b5eaa7f1f95b6c0c520830a87dd25fe1fe20d8
+      sha256: "03a70665e83c026ccf4d853fe87d011321bc66810c5ea108ea08a128f95d862a"
       url: "https://pub.dev"
     source: hosted
-    version: "1.12.34"
+    version: "1.12.36"
   sherpa_onnx_ios:
     dependency: transitive
     description:
       name: sherpa_onnx_ios
-      sha256: "19032ec56c4b80e0c1106548aae32fa117633445dbce051c70febeff5857dc6a"
+      sha256: d00ae34a1b0da6f05b7caffc2eb72edf5766bd538b6b1b68edeba8efc6798332
       url: "https://pub.dev"
     source: hosted
-    version: "1.12.34"
+    version: "1.12.37"
   sherpa_onnx_linux:
     dependency: transitive
     description:
       name: sherpa_onnx_linux
-      sha256: e9febe73fecf248b337f819616f2d00c86837330379471c3715cb814b9dfee74
+      sha256: "55cf0071730f0c1f9aa1f8ae8aa1606719a47d899a2e1e1ec3336bc6c3d8cfab"
       url: "https://pub.dev"
     source: hosted
-    version: "1.12.34"
+    version: "1.12.37"
   sherpa_onnx_macos:
     dependency: transitive
     description:
       name: sherpa_onnx_macos
-      sha256: "7a6352c8bdaeca95ed18bc43c77ba4ee0cc3951abd66648ae353d21f0b255bae"
+      sha256: cd2f5310d3be0a72f616857ac5b1ed4183bb4a94ca9f1b4920362d80571614f2
       url: "https://pub.dev"
     source: hosted
-    version: "1.12.34"
+    version: "1.12.37"
   sherpa_onnx_windows:
     dependency: transitive
     description:
       name: sherpa_onnx_windows
-      sha256: da26d97fdeff6cebc06b482e02149e5104b3d1e0c88ebb47b6aa8e15638e6aec
+      sha256: b793d42bbc5ac48c0bb78170ac8c626397d45eb9d0f1aa9b431bec15ac651f66
       url: "https://pub.dev"
     source: hosted
-    version: "1.12.34"
+    version: "1.12.37"
   skeletonizer:
     dependency: "direct main"
     description:
