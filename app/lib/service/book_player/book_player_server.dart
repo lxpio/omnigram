@@ -46,8 +46,10 @@ class Server {
         'Server: Serving at http://${_server?.address.host}:${_server?.port}');
   }
 
+  bool get isRunning => _server != null;
+
   int get port {
-    return _server!.port;
+    return _server?.port ?? Prefs().lastServerPort;
   }
 
   Future stop() async {
