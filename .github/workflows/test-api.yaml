@@ -38,15 +38,23 @@ jobs:
       - name: Start services
         run: |
           docker compose -f .github/docker-compose.test.yml up -d --build
-          # Wait for server to be ready
+          echo "Waiting for server to be ready..."
           for i in $(seq 1 60); do
             if curl -sf http://localhost:8080/healthz > /dev/null 2>&1; then
-              echo "Server is ready"
-              break
+              echo "Server is ready after $((i*2)) seconds"
+              exit 0
             fi
-            echo "Waiting for server... ($i/60)"
+            # Show container status every 10 iterations
+            if [ $((i % 10)) -eq 0 ]; then
+              echo "--- Container status at iteration $i ---"
+              docker compose -f .github/docker-compose.test.yml ps
+              docker compose -f .github/docker-compose.test.yml logs --tail=5 omnigram-server 2>&1 || true
+            fi
             sleep 2
           done
+          echo "ERROR: Server failed to start within 120 seconds"
+          docker compose -f .github/docker-compose.test.yml logs omnigram-server
+          exit 1
 
       - name: Run smoke tests
         run: |
