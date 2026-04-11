@@ -39,6 +39,12 @@ class TtsFactory {
     _currentTts = createTts();
   }
 
+  /// Switch to the engine matching a VoiceFullId source.
+  Future<void> switchToVoiceSource(String source) async {
+    if (Prefs().ttsService == source) return;
+    await switchTtsType(source);
+  }
+
   Future<void> dispose() async {
     if (_currentTts != null) {
       await _currentTts!.stop();
