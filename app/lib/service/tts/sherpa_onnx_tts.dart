@@ -278,8 +278,8 @@ class SherpaOnnxProvider extends TtsServiceProvider {
 
     // Detect NaN marker from isolate (model produces invalid samples on this device)
     if (wav.length == 4 && wav[0] == 78 && wav[1] == 65 && wav[2] == 78 && wav[3] == 83) {
-      AnxLog.severe('SherpaOnnx: model produced NaN/zero samples – this model may not work on iOS Simulator');
-      throw Exception('Model produced invalid audio (NaN). Try a different model (e.g. Piper) or test on a real device.');
+      AnxLog.severe('SherpaOnnx: model produced NaN/zero samples – model may be incompatible with this device');
+      throw Exception('Model produced invalid audio. Try re-downloading the model, or switch to a different model (e.g. Piper).');
     }
 
     AnxLog.info('SherpaOnnx: generated ${wav.length} bytes WAV');
