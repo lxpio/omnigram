@@ -1,0 +1,58 @@
+# VPS Deployment Stack — Omnigram Demo Server
+#
+# Usage:
+#   docker compose -f docker-compose.vps.yml pull
+#   docker compose -f docker-compose.vps.yml up -d
+#
+# Prerequisites:
+#   - Docker & Docker Compose installed on VPS
+#   - Nginx configured externally for reverse proxy
+#
+# Note: The promotional site (omnigram.lxpio.com) is served as static files
+#       directly by Nginx, not as a Docker container.
+
+services:
+  # ── Demo Server (demo.omnigram.lxpio.com) ──
+  omnigram-server:
+    image: lxpio/omnigram-server:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:80"
+    volumes:
+      - demo_books:/docs
+      - demo_data:/metadata
+    environment:
+      DB_DRIVER: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: omnigram
+      DB_PASSWORD: ${DEMO_DB_PASSWORD:-omnigram_demo}
+      DB_NAME: omnigram
+      OMNI_USER: ${DEMO_USER:-demo}
+      OMNI_PASSWORD: ${DEMO_PASSWORD:-demo123}
+      TTS_PROVIDER: ""
+      TTS_SIDECAR_URL: ""
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ── PostgreSQL for demo ──
+  db:
+    image: pgvector/pgvector:pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: omnigram
+      POSTGRES_PASSWORD: ${DEMO_DB_PASSWORD:-omnigram_demo}
+      POSTGRES_DB: omnigram
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U omnigram"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  demo_books:
+  demo_data:
+  pgdata:
