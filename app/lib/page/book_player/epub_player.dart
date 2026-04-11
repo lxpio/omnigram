@@ -114,6 +114,9 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
   double _accumulatedScrollDelta = 0;
   static const double _scrollThreshold = 50.0;
 
+  // Track whether the WebView has been created and initialized
+  bool _webViewInitialized = false;
+
   // to know anytime if we are on top of navigation stack
   bool get _isTopOfNavigationStack =>
       ModalRoute.of(context)?.isCurrent ?? false;
@@ -1059,6 +1062,7 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
       await InAppWebViewController.setWebContentsDebuggingEnabled(true);
     }
     webViewController = controller;
+    _webViewInitialized = true;
     setHandler(controller);
     _registerChapterContentBridge();
 
@@ -1149,9 +1153,54 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
   void dispose() {
     _scrollDebounceTimer?.cancel();
     _animationController?.dispose();
+    _webViewInitialized = false;
     saveReadingProgress();
     removeOverlay();
     super.dispose();
+  }
+
+  static const int _maxServerStartRetries = 15;
+  static const Duration _serverPollInterval = Duration(milliseconds: 200);
+
+  /// Reload the WebView with the current book URL after a content process
+  /// termination (iOS) or server restart. Waits until the local server is
+  /// running before reloading to avoid a race condition.
+  Future<void> _reloadWebViewAfterProcessTermination(
+      InAppWebViewController controller) async {
+    if (!mounted) return;
+
+    // Wait for the local server to be ready (it may be restarting on resume).
+    int retries = 0;
+    while (!Server().isRunning && retries < _maxServerStartRetries) {
+      await Future.delayed(_serverPollInterval);
+      retries++;
+    }
+
+    if (retries >= _maxServerStartRetries) {
+      AnxLog.warning(
+          'EpubPlayer: Server not ready after ${retries * _serverPollInterval.inMilliseconds}ms, attempting reload anyway');
+    }
+
+    if (!mounted) return;
+
+    try {
+      final String uri = Uri.encodeComponent(widget.book.fileFullPath);
+      final String bookUrl = 'http://127.0.0.1:${Server().port}/book/$uri';
+      final bool dark = context.mounted
+          ? Theme.of(context).brightness == Brightness.dark
+          : false;
+      final String reloadUrl = generateUrl(
+        bookUrl,
+        cfi.isNotEmpty ? cfi : (widget.cfi ?? widget.book.lastReadPosition),
+        backgroundColor: backgroundColor,
+        textColor: textColor,
+        isDarkMode: dark,
+      );
+      await controller.loadUrl(urlRequest: URLRequest(url: WebUri(reloadUrl)));
+      AnxLog.info('EpubPlayer: WebView reloaded after content process termination');
+    } catch (e) {
+      AnxLog.severe('EpubPlayer: Failed to reload WebView after process termination: $e');
+    }
   }
 
   InAppWebViewSettings initialSettings = InAppWebViewSettings(
@@ -1402,6 +1451,10 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
       contextMenu: contextMenu,
       onLoadStop: (controller, uri) => onWebViewCreated(controller),
       onConsoleMessage: webviewConsoleMessage,
+      onWebContentProcessDidTerminate: (controller) {
+        AnxLog.warning('EpubPlayer: WKWebView content process terminated, scheduling reload');
+        _reloadWebViewAfterProcessTermination(controller);
+      },
     );
 
     if (!AnxPlatform.isIOS) {
