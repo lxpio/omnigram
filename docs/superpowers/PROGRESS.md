@@ -448,6 +448,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-04-11 | **TTS 设置页重设计** ✅：声音优先 UX，VoiceCard 网格，自动切引擎，VoiceFullId 统一标识，旧配置迁移兼容 |
 | 2026-04-08 | **隐身书房 Phase 2 + Layer 5 完成** ✅：AI 隔离（独立 DB 天然实现）+ 快速锁定（LifecycleObserver auto-pop）+ iOS Keychain 重装清理。Layer 5 全部完成 |
 | 2026-04-07 | **隐身书房 Phase 1** ✅：生物识别入口（长按关于 Omnigram）+ AES-256 加密数据库 + Platform Keystore 密钥管理 + 隐身书架 UI。Phase 2（AI 隔离、快速锁定）待做 |
 | 2026-04-07 | **Kindle 高亮导入** ✅：My Clippings.txt 解析（多语言类型检测），按书名模糊匹配，Highlight+Note 合并，去重导入 |
