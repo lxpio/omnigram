@@ -193,10 +193,17 @@ class SherpaOnnxProvider extends TtsServiceProvider {
   @override
   void setSelectedVoice(String voice) {
     super.setSelectedVoice(voice);
-    // For sherpa-onnx, the voice shortName IS the model_id.
-    // Sync model_id config so speak() loads the correct model.
+    // For Kokoro voices, shortName is the speaker_id (numeric).
+    // For Piper voices, shortName is the model_id.
+    final isNumeric = int.tryParse(voice) != null;
     final config = getConfig();
-    config['model_id'] = voice;
+    if (isNumeric) {
+      // Kokoro speaker selection — update speaker_id, keep model_id
+      config['speaker_id'] = voice;
+    } else {
+      // Piper model selection — update model_id
+      config['model_id'] = voice;
+    }
     saveConfig(config);
   }
 
@@ -374,26 +381,48 @@ class SherpaOnnxProvider extends TtsServiceProvider {
 
   @override
   Future<List<TtsVoice>> getVoices() async {
-    // Return voices from all downloaded models
+    final config = getConfig();
+    final modelId = config['model_id']?.toString() ?? '';
+    final model = builtInModels.where((m) => m.id == modelId).firstOrNull;
+
+    // For Kokoro models, return speaker voices
+    if (model != null && model.engine == 'kokoro') {
+      return _kokoroVoices.entries.map((e) {
+        final name = e.key;
+        final sid = e.value;
+        // Extract language and gender from voice name format: "zf_xiaobei (女·中文)"
+        final langMatch = RegExp(r'\((.+)\)').firstMatch(name);
+        final langInfo = langMatch?.group(1) ?? '';
+        final gender = langInfo.contains('女') || langInfo.contains('Female') || langInfo.contains('Femme')
+            ? 'Female' : 'Male';
+        final locale = name.startsWith('zf') || name.startsWith('zm') ? 'zh'
+            : name.startsWith('af') || name.startsWith('am') ? 'en'
+            : name.startsWith('jf') || name.startsWith('jm') ? 'ja'
+            : name.startsWith('ff') ? 'fr'
+            : 'multi';
+        return TtsVoice(
+          shortName: sid.toString(),
+          name: name,
+          locale: locale,
+          gender: gender,
+        );
+      }).toList();
+    }
+
+    // For Piper models, return downloaded models as voice options
     final downloaded = await TtsModelManager().getDownloadedModels();
     final voices = <TtsVoice>[];
-
-    for (final modelId in downloaded) {
-      final model = builtInModels.where((m) => m.id == modelId).firstOrNull;
-      if (model != null) {
-        voices.add(
-          TtsVoice(shortName: model.id, name: '${model.name} (${model.engine})', locale: model.language, gender: ''),
-        );
+    for (final dlId in downloaded) {
+      final dlModel = builtInModels.where((m) => m.id == dlId).firstOrNull;
+      if (dlModel != null && dlModel.engine == 'piper') {
+        voices.add(TtsVoice(
+          shortName: dlModel.id,
+          name: '${dlModel.name} (${dlModel.engine})',
+          locale: dlModel.language,
+          gender: '',
+        ));
       }
     }
-
-    // Also list not-yet-downloaded models for discovery
-    for (final model in builtInModels) {
-      if (!downloaded.contains(model.id)) {
-        voices.add(TtsVoice(shortName: model.id, name: '${model.name} ⬇️', locale: model.language, gender: ''));
-      }
-    }
-
     return voices;
   }
 
