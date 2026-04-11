@@ -432,6 +432,26 @@ class Prefs extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// New unified voice identifier (source:voiceId format).
+  String get selectedVoiceFullId => prefs.getString('selectedVoiceFullId') ?? '';
+  set selectedVoiceFullId(String id) => prefs.setString('selectedVoiceFullId', id);
+
+  /// Migrate old ttsService + voice config to new VoiceFullId format.
+  String migrateToVoiceFullId() {
+    final existing = selectedVoiceFullId;
+    if (existing.isNotEmpty) return existing;
+    final serviceId = ttsService;
+    final voice = getTtsVoiceModel(serviceId);
+    if (voice.isNotEmpty) {
+      final fullId = '$serviceId:$voice';
+      selectedVoiceFullId = fullId;
+      return fullId;
+    }
+    const defaultId = 'edge:zh-CN-XiaoxiaoNeural';
+    selectedVoiceFullId = defaultId;
+    return defaultId;
+  }
+
   set pageTurnStyle(PageTurn style) {
     prefs.setString('pageTurnStyle', style.name);
     notifyListeners();
