@@ -190,6 +190,16 @@ class SherpaOnnxProvider extends TtsServiceProvider {
     Prefs().saveOnlineTtsConfig(serviceId, config);
   }
 
+  @override
+  void setSelectedVoice(String voice) {
+    super.setSelectedVoice(voice);
+    // For sherpa-onnx, the voice shortName IS the model_id.
+    // Sync model_id config so speak() loads the correct model.
+    final config = getConfig();
+    config['model_id'] = voice;
+    saveConfig(config);
+  }
+
   /// Load (or reload) the sherpa-onnx model from the local file system.
   Future<void> _ensureModel(String modelId) async {
     if (_tts != null && _loadedModelId == modelId) return;
