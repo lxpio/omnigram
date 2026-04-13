@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<network-security-config>
+<network-security-config xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="InsecureBaseConfiguration,AcceptsUserCertificates">
+    <!-- Self-hosted servers may use HTTP or user-installed CAs (same as Immich/Jellyfin) -->
     <base-config cleartextTrafficPermitted="true">
         <trust-anchors>
             <certificates src="system" />
