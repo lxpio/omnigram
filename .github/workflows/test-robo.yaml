@@ -76,17 +76,6 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Verify required Google Cloud APIs
-        run: |
-          gcloud services list --enabled --filter="name:(testing.googleapis.com OR toolresults.googleapis.com)" --format="value(name)" | sort > /tmp/enabled_apis
-          for api in testing.googleapis.com toolresults.googleapis.com; do
-            if ! grep -q "$api" /tmp/enabled_apis; then
-              echo "::error::$api is not enabled. Enable it at: https://console.cloud.google.com/apis/library/$api"
-              exit 1
-            fi
-          done
-          echo "All required APIs are enabled"
-
       - name: Run Firebase Robo Test
         run: |
           gcloud firebase test android run \
