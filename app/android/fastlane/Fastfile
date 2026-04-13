@@ -32,17 +32,16 @@ platform :android do
     build_android
 
     track = options[:track] || 'internal'
-    # Set release_status based on track: completed for internal/beta, draft for production
-    # release_status = (track == 'production') ? 'draft' : 'completed'
-    release_status = 'draft'
-
+    # internal/alpha/beta: completed (auto-publish to testers)
+    # production: draft (requires manual review in Play Console)
+    release_status = (track == 'production') ? 'draft' : 'completed'
 
     supply(
       track: track,
       release_status: release_status,
       aab: "../build/app/outputs/bundle/release/app-release.aab",
       json_key: google_service_account_json_path,
-      skip_upload_apk: true, # Upload the aab instead of apk
+      skip_upload_apk: true,
       skip_upload_metadata: true,
       skip_upload_changelogs: true,
       skip_upload_images: true,
