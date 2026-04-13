@@ -22,6 +22,7 @@ jobs:
     with:
       version: ${{ needs.setup.outputs.version }}
       flutter_version: ${{ needs.setup.outputs.flutter_version }}
+      build_number: ${{ needs.setup.outputs.build_number }}
     secrets:
       KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
       KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -89,6 +90,7 @@ jobs:
       version: ${{ needs.setup.outputs.version }}
       flutter_version: ${{ needs.setup.outputs.flutter_version }}
       track: internal
+      build_number: ${{ needs.setup.outputs.build_number }}
     secrets:
       PLAY_STORE_JSON_KEY: ${{ secrets.PLAY_STORE_JSON_KEY }}
       KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}

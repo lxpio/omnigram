@@ -9,6 +9,9 @@ on:
       flutter_version:
         required: true
         type: string
+      build_number:
+        required: false
+        type: string
     secrets:
       KEYSTORE_BASE64:
         required: true
@@ -61,8 +64,12 @@ jobs:
         run: |
           flutter gen-l10n
           dart run build_runner build --delete-conflicting-outputs
-          flutter build apk --release
-          flutter build apk --split-per-abi
+          BUILD_NUM_FLAG=""
+          if [ -n "${{ inputs.build_number }}" ]; then
+            BUILD_NUM_FLAG="--build-number=${{ inputs.build_number }}"
+          fi
+          flutter build apk --release $BUILD_NUM_FLAG
+          flutter build apk --split-per-abi $BUILD_NUM_FLAG
 
       - name: Rename builds
         run: |
