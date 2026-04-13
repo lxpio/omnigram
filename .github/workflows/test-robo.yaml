@@ -76,6 +76,11 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
+      - name: Enable required Google Cloud APIs
+        run: |
+          gcloud services enable testing.googleapis.com
+          gcloud services enable toolresults.googleapis.com
+
       - name: Run Firebase Robo Test
         run: |
           gcloud firebase test android run \
