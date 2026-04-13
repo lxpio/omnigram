@@ -4,10 +4,10 @@
 ; Copy app/assets/packaging/logo-256.ico to D:\inno\logo-256.ico
 ; #define MyAppVersion "1.0.0"
 
-#define MyAppName "AnxReader"
-#define MyAppPublisher "Anxcye"
-#define MyAppURL "https://github.com/Anxcye/Anx-Reader"
-#define MyAppExeName "anx_reader.exe"
+#define MyAppName "Omnigram"
+#define MyAppPublisher "lxpio"
+#define MyAppURL "https://github.com/lxpio/omnigram"
+#define MyAppExeName "omnigram.exe"
 #define MyAppId "{{32610E5D-B613-420A-B68F-A57E2102BCE3}}"
 
 
