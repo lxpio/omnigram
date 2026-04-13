@@ -12,6 +12,9 @@ on:
       version:
         description: "Version string"
         value: ${{ jobs.setup.outputs.version }}
+      build_number:
+        description: "Auto-incremented build number"
+        value: ${{ jobs.setup.outputs.build_number }}
       is_alpha:
         description: "Is alpha release"
         value: ${{ jobs.setup.outputs.is_alpha }}
@@ -34,6 +37,7 @@ jobs:
     outputs:
       tag: ${{ steps.get_version.outputs.tag }}
       version: ${{ steps.get_version.outputs.version }}
+      build_number: ${{ steps.get_version.outputs.build_number }}
       is_alpha: ${{ steps.get_version.outputs.is_alpha }}
       is_beta: ${{ steps.get_version.outputs.is_beta }}
       release_notes: ${{ steps.extract_release_notes.outputs.release_notes }}
@@ -101,6 +105,12 @@ jobs:
           if [[ "${BASE_VERSION}" != "${PUBSPEC_VERSION}" ]]; then
             echo "::warning::Tag version ${BASE_VERSION} does not match pubspec version ${PUBSPEC_VERSION}" >&2
           fi
+
+          # Auto-increment build number: base from pubspec + run_number offset
+          PUBSPEC_BUILD=$( grep '^version:' app/pubspec.yaml | awk '{print $2}' | cut -d '+' -f 2 )
+          BUILD_NUMBER=$(( PUBSPEC_BUILD + ${{ github.run_number }} ))
+          echo "build_number=${BUILD_NUMBER}" >> $GITHUB_OUTPUT
+          echo "Build number: ${BUILD_NUMBER} (pubspec base: ${PUBSPEC_BUILD} + run: ${{ github.run_number }})"
 
       - name: Extract release notes
         id: extract_release_notes
