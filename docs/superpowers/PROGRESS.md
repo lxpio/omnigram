@@ -82,9 +82,9 @@
 
 ---
 
-## Layer 3 — 隐形 AI（Ambient AI） 🔶
+## Layer 3 — 隐形 AI（Ambient AI） ✅
 
-> Sprint 2 部分完成 + Sprint 3 待完成
+> Sprint 2/3 · 全部完成
 
 | 功能 | 设计文档章节 | 状态 | 关键文件 | 提交 |
 |------|-------------|------|----------|------|
@@ -320,9 +320,9 @@
 
 ---
 
-## Layer 5 — 高级体验 ❌
+## Layer 5 — 高级体验 ✅
 
-> Sprint 5 · 未开始
+> Sprint 5 · 全部完成
 
 | 功能 | 设计文档章节 | 状态 | 关键文件 | 提交 |
 |------|-------------|------|----------|------|
@@ -374,7 +374,7 @@
 
 | 层级 | 工具 | 优先级 | 状态 | 备注 |
 |------|------|--------|------|------|
-| L1 静态分析 | `flutter analyze` | P0 | ✅ 已用 | 0 errors，每次提交前运行 |
+| L1 静态分析 | `flutter analyze` | P0 | ✅ CI 门禁 | PR/push 自动运行，`test-app.yaml` |
 | L2 自动爬虫 | Firebase Robo Test | P0 | ⚠️ CI 已配置 | `test-robo.yaml` 已创建，需 GCP secrets |
 | L3 视觉回归 | Golden Test | P1 | ✅ 已搭建 | 5 golden tests：CoverHeader, CrossBookCard, EmptyState, ThoughtCard (×2) |
 | L4 E2E 流程 | Maestro | P2 | ❌ 未搭建 | 备选方案 |
@@ -407,10 +407,12 @@
 
 | 文件 | 用途 | 状态 | 备注 |
 |------|------|------|------|
+| `.github/workflows/test-app.yaml` | App 质量门禁 | ✅ 已创建 | PR/push 触发 analyze + test |
+| `.github/workflows/deploy-playstore.yaml` | Play Store 发布 | ✅ 已创建 | alpha/beta tag → internal track |
 | `.github/workflows/test-robo.yaml` | App Robo Test | ✅ 已创建 | 需 GCP secrets |
 | `.github/workflows/test-api.yaml` | Server + 集成测试 | ✅ 已创建 | Hurl + Schemathesis + Dart 集成 |
 | `.github/workflows/docker.yaml` | Docker 镜像构建 | ✅ 已有 | tag push 触发 |
-| `.github/workflows/build_app.yaml` | Flutter APK 构建 | ✅ 已有 | push/PR 触发 |
+| `.github/workflows/build-app.yaml` | Flutter APK 构建 + 发布 | ✅ 已有 | tag push 触发，alpha/beta 自动发 Play Store |
 
 ---
 
@@ -423,7 +425,7 @@
 | Android 构建 | ✅ | AGP 8.9.1, Gradle 8.11.1, compileSdk 36 |
 | iOS 构建 | ✅ | Debug 真机运行正常（2026-03-23 验证） |
 | macOS 构建 | ⚠️ | 需要 Mac Development 签名证书（Team ID 28W956D5K8） |
-| Release APK | ⚠️ | 缺少 keystore 配置 |
+| Release AAB | ✅ | 已配置签名，已上传 Google Play 测试轨道 |
 | Debug APK | ✅ | 正常构建 |
 | Flutter Analyze | ✅ | 0 errors, warnings 仅 unused elements |
 | Codegen (build_runner) | ✅ | freezed + riverpod + json_serializable |
@@ -440,7 +442,7 @@
 | 2 | 知识图谱方案未决 | 🔴 Critical | ✅ 已采纳 | 设计文档已修改：采用 tag-based 聚合方案 |
 | 3 | 缺少多设备同步设计 | 🔴 Critical | ✅ 已采纳 | 设计文档已新增 §10.7 数据架构 |
 | 4 | 隐身书房加密方案有误 | 🟡 Major | ✅ 已采纳 | 设计文档已修正 §10.4 |
-| 5 | NAS AI 处理负担 | 🟡 Major | 🔶 部分 | 管道优先级已实现，AI 预算配置未实现 |
+| 5 | NAS AI 处理负担 | 🟡 Major | ✅ 已采纳 | 管道优先级 + AI 预算配置（总开关+并发限制）均已实现 |
 
 ---
 
@@ -448,6 +450,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-04-13 | **CI 质量门禁 + Play Store 自动发布**：`test-app.yaml`（analyze+test PR 门禁）、`deploy-playstore.yaml`（fastlane supply → internal track）、`build-app.yaml` 接入自动发布（alpha/beta tag 触发） |
 | 2026-04-11 | **TTS 设置页重设计** ✅：声音优先 UX，VoiceCard 网格，自动切引擎，VoiceFullId 统一标识，旧配置迁移兼容 |
 | 2026-04-08 | **隐身书房 Phase 2 + Layer 5 完成** ✅：AI 隔离（独立 DB 天然实现）+ 快速锁定（LifecycleObserver auto-pop）+ iOS Keychain 重装清理。Layer 5 全部完成 |
 | 2026-04-07 | **隐身书房 Phase 1** ✅：生物识别入口（长按关于 Omnigram）+ AES-256 加密数据库 + Platform Keystore 密钥管理 + 隐身书架 UI。Phase 2（AI 隔离、快速锁定）待做 |
