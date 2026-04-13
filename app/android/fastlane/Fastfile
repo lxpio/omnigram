@@ -29,7 +29,11 @@ platform :android do
   # Release to Play Store using Fastlane Supply (https://docs.fastlane.tools/actions/supply/)
   desc "Release to Play Store"
   lane :release_play_store do |options|
-    build_android
+    # Skip build if AAB already exists (e.g., built by CI workflow)
+    aab_path = "../build/app/outputs/bundle/release/app-release.aab"
+    unless File.exist?(aab_path)
+      build_android
+    end
 
     track = options[:track] || 'internal'
     # internal/alpha/beta: completed (auto-publish to testers)
