@@ -8,7 +8,7 @@ if [ $# -eq 0 ]; then
 fi
 
 VERSION=$1
-APP_NAME="Anx-Reader"
+APP_NAME="Omnigram"
 BUILD_DIR="build/app/outputs/flutter-apk"
 
 # rename_apk(old_name, arch)

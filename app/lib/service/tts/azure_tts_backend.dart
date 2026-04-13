@@ -103,9 +103,7 @@ class AzureTtsProvider extends TtsServiceProvider {
 
   String _createSsml(String text, String voice, double rate, double pitch) {
     // Azure rate: relative value, e.g. +0.00%
-    // AnxReader rate: likely 0.5 to 2.0 range.
-    // Need to convert rate/pitch to SSML format if needed.
-    // Simple implementation for now.
+    // App rate: 0.5 to 2.0 range, convert to SSML percentage.
 
     // Convert rate (0.2 ~ 3.0) to percentage string
     // 1.0 = 0%
@@ -115,8 +113,7 @@ class AzureTtsProvider extends TtsServiceProvider {
     String rateStr = ratePercent >= 0 ? "+$ratePercent%" : "$ratePercent%";
 
     // Convert pitch (0.5 ~ 2.0 typically)
-    // Similar logic? Let's assume AnxReader passes standard 1.0 float base.
-    // If pitch comes from Prefs().ttsPitch which is double.
+    // Pitch from Prefs().ttsPitch, 1.0 base.
     int pitchPercent = ((pitch - 1.0) * 100).toInt();
     String pitchStr = pitchPercent >= 0 ? "+$pitchPercent%" : "$pitchPercent%";
 
