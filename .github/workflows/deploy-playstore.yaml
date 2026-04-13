@@ -1,0 +1,84 @@
+name: Deploy to Play Store
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      flutter_version:
+        required: true
+        type: string
+      track:
+        required: false
+        type: string
+        default: 'internal'
+    secrets:
+      PLAY_STORE_JSON_KEY:
+        required: true
+      KEYSTORE_BASE64:
+        required: true
+      KEYSTORE_PASSWORD:
+        required: true
+      KEY_PASSWORD:
+        required: true
+      KEY_ALIAS:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: app
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ inputs.flutter_version }}
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Setup Android signing
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=keystore.jks" >> android/key.properties
+
+      - name: Setup Play Store credentials
+        run: |
+          echo '${{ secrets.PLAY_STORE_JSON_KEY }}' > google_service_account.json
+
+      - name: Install dependencies & codegen
+        run: |
+          flutter pub get
+          flutter gen-l10n
+          dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build AAB
+        run: flutter build appbundle --release --dart-define=isPlayStore=true
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+          working-directory: app/android
+
+      - name: Deploy to Play Store
+        run: |
+          cd android
+          bundle exec fastlane android release_play_store track:${{ inputs.track }}
