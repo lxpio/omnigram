@@ -434,6 +434,38 @@
 
 ---
 
+## 下一步工作重点
+
+> **2026-04-13 评估：** Sprint 1-5 全部功能完成，师傅审核意见全部达标（PDF 除外，明确 defer）。当前重心从功能开发转向可发布性和质量保障。
+
+### P0 — 可发布性 ✅
+
+| 事项 | 状态 | 备注 |
+|------|------|------|
+| Release AAB 签名 + Google Play 上传 | ✅ | 已上传测试轨道 |
+| CI 质量门禁（analyze + test） | ✅ | `test-app.yaml`，PR/push 触发 |
+| CI → Play Store 自动发布 | ✅ | `deploy-playstore.yaml`，alpha/beta → internal track |
+| AnxReader → Omnigram 残留清理 | ✅ | Inno Setup、Logger、URL、脚本等 |
+| Docker 构建优化 | ✅ | alpha 不触发，server 无变更跳过 |
+
+### P1 — 质量加固
+
+| 事项 | 状态 | 备注 |
+|------|------|------|
+| 多设备同步实际测试 | ❌ 未验证 | 代码完成但未在真实多设备场景跑过 |
+| Firebase Robo Test 跑通 | ⚠️ 待验证 | GCP API 已启用，下次 alpha tag 验证 |
+| staticcheck 接入 Server CI | ❌ 未做 | `go vet` 通过，staticcheck 未接入 |
+
+### P2 — 用户体验打磨
+
+| 事项 | 状态 | 备注 |
+|------|------|------|
+| 实际使用中的 UX 问题 | 持续 | 需要真机使用发现 |
+| OPDS 客户端集成 | ❌ | 服务端已有，客户端未接 |
+| PDF 基本阅读支持 | ❌ defer | 设计文档明确延后，用户反馈强烈时再做 |
+
+---
+
 ## 审核报告关键问题追踪
 
 | # | 问题 | 严重程度 | 状态 | 处理方式 |
