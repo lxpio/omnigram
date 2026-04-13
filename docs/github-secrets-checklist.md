@@ -68,13 +68,23 @@
 | `ASC_KEY_P8_BASE64` | App Store Connect 私钥 | 下载的 `.p8` 文件 → `base64 -w 0 AuthKey_XXXX.p8` | `_archived/build-appstore.yaml` |
 | `MATCH_PASSWORD` | Fastlane Match 密钥链密码 | 自定义密码，用于加密证书存储 | `_archived/build-appstore.yaml` |
 | `MATCH_GIT_BASIC_AUTHORIZATION` | Fastlane Match Git 认证 | `echo -n "user:token" \| base64` | `_archived/build-appstore.yaml` |
-| `APP_BUNDLE_ID` | App Bundle ID | 如 `com.lxpio.omnigram` | `_archived/build-appstore.yaml` |
+| `MATCH_GIT_URL` | Match 证书存储 Git 仓库 URL | 创建私有 repo（如 `https://github.com/lxpio/omnigram-certs.git`） | `ios/fastlane/Matchfile` |
+| `APP_BUNDLE_ID` | App Bundle ID | `com.lxpio.omnigram.v2` | `_archived/build-appstore.yaml` |
 
-### Google Play Store（归档中，需要时解除注释）
+### Google Play Store 自动发布
 
 | Secret 名称 | 用途 | 获取方式 | 使用文件 |
 |-------------|------|---------|---------|
-| `PLAY_STORE_JSON_KEY` | Google Play 服务账号密钥 | Google Cloud Console → IAM → Service Accounts → Keys → JSON → `base64 -w 0` | `_archived/build-playstore.yaml` |
+| `PLAY_STORE_JSON_KEY` | Google Play Service Account JSON key | Google Cloud Console → IAM → Service Accounts → Keys → JSON（原始 JSON，非 base64） | `deploy-playstore.yaml` |
+
+> **配置步骤：**
+> 1. [Google Cloud Console](https://console.cloud.google.com) → IAM → Service Accounts → 创建或选择账号
+> 2. 创建 JSON 密钥并下载
+> 3. [Google Play Console](https://play.google.com/console) → Setup → API access → 关联该 Service Account
+> 4. 授予 "Release to production, exclude devices, and use Play App Signing" 权限
+> 5. 将 JSON 文件**完整内容**粘贴到 GitHub Secret `PLAY_STORE_JSON_KEY`
+>
+> 详见 [Fastlane Supply 文档](https://docs.fastlane.tools/actions/supply/#setup)
 
 ---
 
@@ -117,10 +127,11 @@
 ├── ASC_KEY_P8_BASE64
 ├── MATCH_PASSWORD
 ├── MATCH_GIT_BASIC_AUTHORIZATION
+├── MATCH_GIT_URL
 └── APP_BUNDLE_ID
 
-按需（Play Store 发布）：
-└── PLAY_STORE_JSON_KEY
+推荐（Play Store 自动发布）：
+└── PLAY_STORE_JSON_KEY     ← alpha/beta tag 自动发到 internal track
 ```
 
 ---
