@@ -85,14 +85,14 @@ $body'''),
               onPressed: () {
                 launchUrl(
                     Uri.parse(
-                        'https://github.com/Anxcye/anx-reader/releases/latest'),
+                        'https://github.com/lxpio/omnigram/releases/latest'),
                     mode: LaunchMode.externalApplication);
               },
               child: Text(L10n.of(context).updateViaGithub),
             ),
             TextButton(
               onPressed: () {
-                launchUrl(Uri.parse('https://anx.anxcye.com/download'),
+                launchUrl(Uri.parse('https://omnigram.lxpio.com/download'),
                     mode: LaunchMode.externalApplication);
               },
               child: Text(L10n.of(context).updateViaOfficialWebsite),

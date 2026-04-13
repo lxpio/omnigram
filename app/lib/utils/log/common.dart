@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
 class AnxLog {
-  static final log = Logger('AnxReader');
+  static final log = Logger('Omnigram');
   static late File? logFile;
 
   Level level;

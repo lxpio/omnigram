@@ -238,7 +238,7 @@ Future<void> openAboutDialog() async {
                               Icons.telegram,
                               color: Theme.of(context).colorScheme.secondary,
                             ),
-                            url: 'https://t.me/AnxReader',
+                            url: 'https://t.me/omnigram',
                             mode: LaunchMode.externalApplication),
                       linkIcon(
                           icon: Image.asset(
