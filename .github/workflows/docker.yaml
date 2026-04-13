@@ -2,15 +2,46 @@ name: Docker
 
 on:
   push:
-    # branches:
-    #   - 'main'
     tags:
-      - "v*.*.*"
+      - 'v[0-9]*.[0-9]*.[0-9]*'        # v1.2.3 only, not v1.2.3-alpha.1
   release:
     types: [published]
+  workflow_dispatch:                      # manual trigger for testing
 
 jobs:
+  check-changes:
+    name: "Check if server changed"
+    runs-on: ubuntu-latest
+    outputs:
+      server_changed: ${{ steps.check.outputs.changed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check server/ changes since last tag
+        id: check
+        run: |
+          # Find the previous tag
+          PREV_TAG=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -2 | tail -1)
+          if [ -z "$PREV_TAG" ]; then
+            echo "No previous tag found, assuming changed"
+            echo "changed=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          echo "Comparing $PREV_TAG..HEAD for server/ changes"
+          if git diff --name-only "$PREV_TAG"..HEAD | grep -q '^server/'; then
+            echo "server/ has changes"
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "server/ has no changes, skipping Docker build"
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
   build_and_push_server:
+    needs: check-changes
+    if: needs.check-changes.outputs.server_changed == 'true'
     name: "Build and push Docker image"
     runs-on: ubuntu-latest
     strategy:
