@@ -81,20 +81,20 @@ jobs:
       KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
 
-  # build-playstore:
-  #   needs: setup
-  #   uses: ./.github/workflows/_archived/build-playstore.yaml
-  #   with:
-  #     version: ${{ needs.setup.outputs.version }}
-  #     flutter_version: ${{ needs.setup.outputs.flutter_version }}
-  #     is_alpha: ${{ needs.setup.outputs.is_alpha }}
-  #     is_beta: ${{ needs.setup.outputs.is_beta }}
-  #   secrets:
-  #     PLAY_STORE_JSON_KEY: ${{ secrets.PLAY_STORE_JSON_KEY }}
-  #     KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-  #     KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-  #     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-  #     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+  deploy-playstore:
+    needs: [setup, build-android]
+    if: needs.setup.outputs.is_alpha == 'true' || needs.setup.outputs.is_beta == 'true'
+    uses: ./.github/workflows/deploy-playstore.yaml
+    with:
+      version: ${{ needs.setup.outputs.version }}
+      flutter_version: ${{ needs.setup.outputs.flutter_version }}
+      track: internal
+    secrets:
+      PLAY_STORE_JSON_KEY: ${{ secrets.PLAY_STORE_JSON_KEY }}
+      KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
 
   release:
     needs: [setup, build-android, build-ios, build-windows, build-macos]
