@@ -1,0 +1,101 @@
+name: Deploy to TestFlight
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      flutter_version:
+        required: true
+        type: string
+      xcode_version:
+        required: true
+        type: string
+      build_number:
+        required: false
+        type: string
+    secrets:
+      IOS_CERTIFICATE_BASE64:
+        required: true
+      IOS_CERTIFICATE_PASSWORD:
+        required: true
+      ASC_KEY_ID:
+        required: true
+      ASC_ISSUER_ID:
+        required: true
+      ASC_KEY_P8_BASE64:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: macos-26
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: app
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ inputs.flutter_version }}
+
+      - name: Select Xcode
+        run: sudo xcode-select -switch /Applications/Xcode_${{ inputs.xcode_version }}.app/Contents/Developer
+
+      - name: Install signing certificate
+        run: |
+          # Create temporary keychain
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          KEYCHAIN_PASSWORD=$(openssl rand -hex 16)
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          # Import certificate
+          CERT_PATH=$RUNNER_TEMP/certificate.p12
+          echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 --decode > "$CERT_PATH"
+          security import "$CERT_PATH" -P "${{ secrets.IOS_CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH" login.keychain-db
+
+      - name: Create App Store Connect API key file
+        run: |
+          mkdir -p ../private_keys
+          echo "${{ secrets.ASC_KEY_P8_BASE64 }}" | base64 --decode > ../private_keys/AuthKey_${{ secrets.ASC_KEY_ID }}.p8
+
+      - name: Install dependencies & codegen
+        run: |
+          flutter pub get
+          flutter gen-l10n
+          dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build and archive
+        run: |
+          BUILD_NUM_FLAG=""
+          if [ -n "${{ inputs.build_number }}" ]; then
+            BUILD_NUM_FLAG="--build-number=${{ inputs.build_number }}"
+          fi
+          flutter build ipa --release $BUILD_NUM_FLAG \
+            --export-options-plist=ios/ExportOptions.plist
+
+      - name: Upload to TestFlight
+        run: |
+          xcrun altool --upload-app \
+            --type ios \
+            --file build/ios/ipa/*.ipa \
+            --apiKey "${{ secrets.ASC_KEY_ID }}" \
+            --apiIssuer "${{ secrets.ASC_ISSUER_ID }}"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          security delete-keychain $RUNNER_TEMP/app-signing.keychain-db 2>/dev/null || true
+          rm -f $RUNNER_TEMP/certificate.p12
+          rm -rf ../private_keys
