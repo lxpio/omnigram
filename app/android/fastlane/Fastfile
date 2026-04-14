@@ -32,9 +32,9 @@ platform :android do
     prepare_play_store
 
     track = options[:track] || 'internal'
-    # internal/alpha/beta: completed (auto-publish to testers)
-    # production: draft (requires manual review in Play Console)
-    release_status = (track == 'production') ? 'draft' : 'completed'
+    # Use 'draft' for all tracks until app has its first production release,
+    # then switch internal/beta to 'completed' for auto-publish to testers.
+    release_status = 'draft'
 
     supply(
       track: track,
