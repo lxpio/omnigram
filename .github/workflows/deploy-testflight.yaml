@@ -67,8 +67,12 @@ jobs:
 
       - name: Create App Store Connect API key file
         run: |
-          mkdir -p ../private_keys
-          echo "${{ secrets.ASC_KEY_P8_BASE64 }}" | base64 --decode > ../private_keys/AuthKey_${{ secrets.ASC_KEY_ID }}.p8
+          mkdir -p ~/private_keys
+          echo "${{ secrets.ASC_KEY_P8_BASE64 }}" | base64 --decode > ~/private_keys/AuthKey_${{ secrets.ASC_KEY_ID }}.p8
+          # Xcode needs this env var to find the API key for automatic signing
+          echo "APP_STORE_CONNECT_API_KEY_KEY_ID=${{ secrets.ASC_KEY_ID }}" >> $GITHUB_ENV
+          echo "APP_STORE_CONNECT_API_KEY_ISSUER_ID=${{ secrets.ASC_ISSUER_ID }}" >> $GITHUB_ENV
+          echo "APP_STORE_CONNECT_API_KEY_KEY=$HOME/private_keys/AuthKey_${{ secrets.ASC_KEY_ID }}.p8" >> $GITHUB_ENV
 
       - name: Install dependencies & codegen
         run: |
@@ -76,20 +80,42 @@ jobs:
           flutter gen-l10n
           dart run build_runner build --delete-conflicting-outputs
 
-      - name: Build and archive
+      - name: Build iOS archive
         run: |
           BUILD_NUM_FLAG=""
           if [ -n "${{ inputs.build_number }}" ]; then
             BUILD_NUM_FLAG="--build-number=${{ inputs.build_number }}"
           fi
-          flutter build ipa --release $BUILD_NUM_FLAG \
-            --export-options-plist=ios/ExportOptions.plist
+          flutter build ios --release --no-codesign $BUILD_NUM_FLAG
+
+      - name: Sign and export IPA
+        run: |
+          cd ios
+          xcodebuild -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -archivePath $RUNNER_TEMP/Runner.xcarchive \
+            -sdk iphoneos \
+            -configuration Release \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/private_keys/AuthKey_${{ secrets.ASC_KEY_ID }}.p8 \
+            -authenticationKeyID ${{ secrets.ASC_KEY_ID }} \
+            -authenticationKeyIssuerID ${{ secrets.ASC_ISSUER_ID }} \
+            archive
+
+          xcodebuild -exportArchive \
+            -archivePath $RUNNER_TEMP/Runner.xcarchive \
+            -exportPath $RUNNER_TEMP/export \
+            -exportOptionsPlist ExportOptions.plist \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/private_keys/AuthKey_${{ secrets.ASC_KEY_ID }}.p8 \
+            -authenticationKeyID ${{ secrets.ASC_KEY_ID }} \
+            -authenticationKeyIssuerID ${{ secrets.ASC_ISSUER_ID }}
 
       - name: Upload to TestFlight
         run: |
           xcrun altool --upload-app \
             --type ios \
-            --file build/ios/ipa/*.ipa \
+            --file $RUNNER_TEMP/export/*.ipa \
             --apiKey "${{ secrets.ASC_KEY_ID }}" \
             --apiIssuer "${{ secrets.ASC_ISSUER_ID }}"
 
