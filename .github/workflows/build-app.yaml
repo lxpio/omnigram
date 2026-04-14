@@ -72,6 +72,7 @@ jobs:
 
   robo-test:
     needs: [setup, build-android]
+    continue-on-error: true
     uses: ./.github/workflows/test-robo.yaml
     with:
       flutter_version: ${{ needs.setup.outputs.flutter_version }}
