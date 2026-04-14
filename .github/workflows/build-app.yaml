@@ -98,6 +98,22 @@ jobs:
       KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
 
+  deploy-testflight:
+    needs: [setup]
+    if: needs.setup.outputs.is_alpha == 'true' || needs.setup.outputs.is_beta == 'true'
+    uses: ./.github/workflows/deploy-testflight.yaml
+    with:
+      version: ${{ needs.setup.outputs.version }}
+      flutter_version: ${{ needs.setup.outputs.flutter_version }}
+      xcode_version: ${{ needs.setup.outputs.xcode_version }}
+      build_number: ${{ needs.setup.outputs.build_number }}
+    secrets:
+      IOS_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
+      IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
+
   release:
     needs: [setup, build-android, build-ios, build-windows, build-macos]
     uses: ./.github/workflows/release-app.yaml
