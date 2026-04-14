@@ -76,6 +76,11 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
+      - name: Ensure results bucket exists
+        run: |
+          gcloud storage buckets describe gs://omm-ci-robo-results 2>/dev/null || \
+            gcloud storage buckets create gs://omm-ci-robo-results --location=us-central1
+
       - name: Run Firebase Robo Test
         run: |
           gcloud firebase test android run \
@@ -86,4 +91,6 @@ jobs:
             --timeout 300s \
             --no-record-video \
             --num-flaky-test-attempts 0 \
+            --results-bucket=gs://omm-ci-robo-results \
+            --project=omm-ci \
             --client-details matrixLabel="omnigram-robo-${{ github.sha }}"
