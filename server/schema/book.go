@@ -83,31 +83,31 @@ type Book struct {
 	CTime int64  `json:"ctime" form:"ctime" gorm:"column:ctime;autoCreateTime:milli;comment:创建时间"`
 	UTime int64  `json:"utime" gorm:"column:utime;autoUpdateTime:milli;comment:更新时间"`
 
-	Title string `json:"title" gorm:"index:idx_book_title;type:varchar(200);comment:标题"`
+	Title string `json:"title" gorm:"index:idx_book_title;type:varchar(500);comment:标题"`
 
-	SubTitle   string `json:"sub_title,omitempty" gorm:"type:varchar(255);comment:子标题"`
-	Language   string `json:"language" gorm:"type:varchar(50);comment:图书语言"`
+	SubTitle   string `json:"sub_title,omitempty" gorm:"type:varchar(500);comment:子标题"`
+	Language   string `json:"language" gorm:"type:varchar(100);comment:图书语言"`
 	CoverURL   string `json:"cover_url" gorm:"type:varchar(255);comment:封面URL"`
-	UUID       string `json:"uuid" gorm:"type:varchar(50);comment:图书UUID"`
+	UUID       string `json:"uuid" gorm:"type:varchar(100);comment:图书UUID"`
 	ISBN       string `json:"isbn" gorm:"type:varchar(50);comment:ISBN"`
 	ASIN       string `json:"asin" gorm:"type:varchar(50);comment:AWS ID"`
-	Identifier string `json:"identifier" gorm:"type:varchar(50);uniqueIndex;comment:唯一ID"`
+	Identifier string `json:"identifier" gorm:"type:varchar(100);uniqueIndex;comment:唯一ID"`
 
-	Category string `json:"category" gorm:"type:varchar(50);comment:Category"`
+	Category string `json:"category" gorm:"type:varchar(100);comment:Category"`
 
-	Author     string `json:"author" gorm:"index:idx_book_author;type:varchar(200);comment:作者"`
+	Author     string `json:"author" gorm:"index:idx_book_author;type:varchar(500);comment:作者"`
 	AuthorURL  string `json:"author_url" gorm:"type:varchar(255);comment:作者URL"`
 	AuthorSort string `json:"author_sort" gorm:"type:varchar(255);comment:作者列表"`
 	// Publisher identifies the publication's publisher.
-	Publisher   string   `json:"publisher" gorm:"type:varchar(200);comment:用户标签列表"`
+	Publisher   string   `json:"publisher" gorm:"type:varchar(500);comment:出版社"`
 	Description string   `json:"description,omitempty" gorm:"type:text;comment:描述信息"`
 	FileType    FileType `json:"file_type"  gorm:"column:file_type;comment:图书类型"`
 
 	// Series is the series to which this book belongs to.
-	Series string `json:",omitempty" gorm:"type:varchar(200);comment:系列"`
+	Series string `json:",omitempty" gorm:"type:varchar(500);comment:系列"`
 	// SeriesIndex is the position in the series to which the book belongs to.
-	SeriesIndex string `json:",omitempty" gorm:"type:varchar(200);comment:用户标签列表"`
-	PublishDate string `json:"pubdate" gorm:"type:varchar(50);comment:用户标签列表"`
+	SeriesIndex string `json:",omitempty" gorm:"type:varchar(200);comment:系列索引"`
+	PublishDate string `json:"pubdate" gorm:"type:varchar(100);comment:出版日期"`
 
 	Rating float32 `json:"rating" gorm:"comment:评分"`
 
@@ -933,30 +933,89 @@ func (m *Book) parseOPF(opf *epub.PackageDocument) {
 
 }
 
-func (m *Book) Save(ctx context.Context) error {
+// truncateUTF8 truncates a string to maxLen characters (not bytes),
+// preserving valid UTF-8 boundaries.
+func truncateUTF8(s string, maxLen int) string {
+	runes := []rune(s)
+	if len(runes) <= maxLen {
+		return s
+	}
+	return string(runes[:maxLen]) + "…"
+}
+
+// sanitizeFields truncates fields that exceed database column limits.
+// Returns a list of warnings describing which fields were truncated.
+func (m *Book) sanitizeFields() []string {
+	var warnings []string
+
+	type fieldLimit struct {
+		name  string
+		value *string
+		limit int
+	}
+
+	fields := []fieldLimit{
+		{"title", &m.Title, 500},
+		{"sub_title", &m.SubTitle, 500},
+		{"author", &m.Author, 500},
+		{"publisher", &m.Publisher, 500},
+		{"series", &m.Series, 500},
+		{"language", &m.Language, 100},
+		{"uuid", &m.UUID, 100},
+		{"identifier", &m.Identifier, 100},
+		{"category", &m.Category, 100},
+		{"publish_date", &m.PublishDate, 100},
+		{"author_url", &m.AuthorURL, 255},
+		{"author_sort", &m.AuthorSort, 255},
+		{"cover_url", &m.CoverURL, 255},
+		{"publisher_url", &m.PublisherURL, 255},
+		{"series_index", &m.SeriesIndex, 200},
+		{"isbn", &m.ISBN, 50},
+		{"asin", &m.ASIN, 50},
+	}
+
+	for _, f := range fields {
+		if len([]rune(*f.value)) > f.limit {
+			warnings = append(warnings, fmt.Sprintf("字段 %s 超长已截断（%d→%d）", f.name, len([]rune(*f.value)), f.limit))
+			*f.value = truncateUTF8(*f.value, f.limit)
+		}
+	}
+
+	return warnings
+}
+
+// Save stores book metadata to the database.
+// Returns a list of truncation warnings (if any fields were too long) and an error.
+func (m *Book) Save(ctx context.Context) ([]string, error) {
+
+	// Truncate fields that exceed database column limits
+	warnings := m.sanitizeFields()
+	if len(warnings) > 0 {
+		log.W(`图书字段截断：`, m.Path, ` → `, strings.Join(warnings, "; "))
+	}
 
 	db := store.FileStore()
 	if err := m.Create(db); err != nil {
 		log.E(`存储图书失败：`, err)
-		return errors.New(`文件：` + m.Path + ` 存储失败：` + err.Error())
+		return warnings, errors.New(`文件：` + m.Path + ` 存储失败：` + err.Error())
 	}
 
 	// Save cover image to filesystem
 	coverData := m.GetCoverData()
 	if len(coverData) == 0 || m.CoverURL == "" {
-		return nil
+		return warnings, nil
 	}
 
 	coverFile := CoverFilePath(m.Identifier)
 	coverDir := filepath.Dir(coverFile)
 	if err := os.MkdirAll(coverDir, 0755); err != nil {
 		log.E(`创建封面目录失败：`, err.Error())
-		return nil
+		return warnings, nil
 	}
 
 	if err := os.WriteFile(coverFile, coverData, 0644); err != nil {
 		log.E(`存储封面失败,`, m.Path, `失败：`, err.Error())
-		return nil
+		return warnings, nil
 	}
 
 	// Update cover_url to identifier-based path
@@ -965,7 +1024,7 @@ func (m *Book) Save(ctx context.Context) error {
 		m.CoverURL = coverURL
 		db.Model(m).Update("cover_url", coverURL)
 	}
-	return nil
+	return warnings, nil
 }
 
 // CoverFilePath returns the filesystem path for a book's cover image.

@@ -120,7 +120,7 @@ func bookUploadHandle(c *gin.Context) {
 		return
 	}
 
-	if err := book.Save(context.Background()); err != nil {
+	if _, err := book.Save(context.Background()); err != nil {
 		log.E(`录入文档失败`, err)
 		c.JSON(http.StatusOK, utils.ErrSaveFile)
 		return

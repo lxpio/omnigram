@@ -121,7 +121,11 @@ func (m *Scanner) scanFiles(books <-chan *schema.Book) {
 					log.E(`获取图书基本元素失败 `, err.Error())
 					errs = append(errs, `文件：`+book.Path+` 解析失败：`+err.Error())
 				} else {
-					if err := book.Save(m.ctx); err != nil {
+					warnings, err := book.Save(m.ctx)
+					for _, w := range warnings {
+						errs = append(errs, `文件：`+book.Path+` `+w+`（已截断并导入）`)
+					}
+					if err != nil {
 						errs = append(errs, err.Error())
 					} else {
 						m.cacheFilePath(m.ctx, book.Path, book.Identifier)

@@ -236,7 +236,7 @@ func RunCalibreImport(ctx context.Context, calibrePath, dataPath string) (*Calib
 		}
 
 		// Use book.Save() which handles both DB creation and cover storage to BadgerDB
-		if err := book.Save(ctx); err != nil {
+		if _, err := book.Save(ctx); err != nil {
 			log.E("Calibre import: save error for", cb.Title, ":", err.Error())
 			result.Errors++
 			result.Messages = append(result.Messages, fmt.Sprintf("save error for '%s': %v", cb.Title, err))

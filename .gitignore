@@ -57,3 +57,6 @@ lib/models/objectbox.g.dart
 docs/discussions/
 data/
 server/conf/conf2.yaml
+
+# Internal deployment configs (contains VPS details, not for public)
+deploy/

@@ -86,7 +86,8 @@ func handleSession(c *gin.Context, sess string) {
 
 		log.E(`session has expired `, session.Session)
 		// 删除
-		c.SetCookie(middleware.UserSessionTag, "", -1, "/", "", true, true)
+		secure := c.Request.TLS != nil || c.GetHeader("X-Forwarded-Proto") == "https"
+		c.SetCookie(middleware.UserSessionTag, "", -1, "/", getHostName(c), secure, true)
 		// session.Clean(srv.orm)
 		c.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrSessionTimeout)
 		return
@@ -194,6 +195,12 @@ func getHostName(c *gin.Context) string {
 	if err != nil {
 		log.I(`区分端口失败： `, c.Request.Host)
 		host = c.Request.Host
+	}
+
+	// RFC 6265: cookie domain 不能是 IP 地址，否则浏览器行为不一致
+	// 对 IP 地址返回空字符串，让浏览器自动用精确 origin 匹配
+	if ip := net.ParseIP(host); ip != nil {
+		return ""
 	}
 
 	return host

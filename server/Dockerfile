@@ -58,7 +58,7 @@ VOLUME [ "/docs" ]
 VOLUME [ "/metadata" ]
 
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
-    CMD wget -q --spider http://localhost:8080/healthz || exit 1
+    CMD wget -q --spider http://localhost:80/healthz || exit 1
 
 USER omnigram
 
