@@ -46,8 +46,10 @@ COPY --from=gobuilder /build/ ./
 COPY --from=gobuilder /omnigram-server/docker-entrypoint.sh ./
 
 # 非 root 用户运行
+# 创建 /metadata 和 /docs 目录并设置权限，避免 anonymous volume / bind mount 时权限被 root 占用
 RUN addgroup -g 1000 omnigram && adduser -u 1000 -G omnigram -s /bin/sh -D omnigram && \
-    chown -R omnigram:omnigram /data /conf /bin
+    mkdir -p /metadata /docs && \
+    chown -R omnigram:omnigram /data /conf /bin /metadata /docs
 
 ENV CONFIG_FILE=/conf/conf.yaml
 

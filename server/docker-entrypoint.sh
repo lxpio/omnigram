@@ -17,6 +17,21 @@ _want_init() {
 
 CONTAINER_FIRST_STARTUP="CONTAINER_FIRST_STARTUP"
 
+# 检查 /metadata 目录可写（bind mount 时常见的权限问题）
+if [ ! -w /metadata ]; then
+    echo "=========================================="
+    echo "  ERROR: /metadata directory is not writable!"
+    echo "  The container runs as uid 1000 (omnigram)."
+    echo ""
+    echo "  If using a bind mount, fix host directory ownership:"
+    echo "    sudo chown -R 1000:1000 /path/to/your/data"
+    echo ""
+    echo "  If using a Docker named volume, fix it with:"
+    echo "    docker run --rm -v <volume_name>:/metadata alpine chown -R 1000:1000 /metadata"
+    echo "=========================================="
+    exit 1
+fi
+
 # 如果未设置用户名/密码，生成随机密码
 if [ -z "$OMNI_USER" ]; then
     export OMNI_USER="admin"
