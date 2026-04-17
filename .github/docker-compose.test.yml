@@ -13,9 +13,8 @@ services:
       DB_PASSWORD: omnigram
       DB_NAME: omnigram
       TTS_PROVIDER: edge
-      INIT_ADMIN: "true"
-      INIT_ADMIN_USER: testadmin
-      INIT_ADMIN_PASS: testpass123
+      OMNI_USER: testadmin
+      OMNI_PASSWORD: testpass123
     depends_on:
       db:
         condition: service_healthy
