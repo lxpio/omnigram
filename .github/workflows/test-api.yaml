@@ -17,6 +17,7 @@ on:
       - 'server/**'
       - 'app/lib/service/api/**'
       - 'app/lib/models/server/**'
+      - 'app/test/api/**'
       - 'app/integration_test/**'
       - '.github/docker-compose.test.yml'
 
@@ -83,7 +84,7 @@ jobs:
           flutter pub get
           flutter gen-l10n
           dart run build_runner build --delete-conflicting-outputs
-          flutter test -d linux integration_test/api_integration_test.dart --reporter expanded
+          flutter test test/api/api_integration_test.dart --reporter expanded
 
       - name: Run schemathesis fuzz (optional)
         if: always()
