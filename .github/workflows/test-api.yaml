@@ -83,7 +83,7 @@ jobs:
           flutter pub get
           flutter gen-l10n
           dart run build_runner build --delete-conflicting-outputs
-          dart test integration_test/api_integration_test.dart --reporter expanded
+          flutter test integration_test/api_integration_test.dart --reporter expanded
 
       - name: Run schemathesis fuzz (optional)
         if: always()
