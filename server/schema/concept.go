@@ -106,7 +106,7 @@ type ConceptTagWithLocalID struct {
 
 func UpsertConceptTagsWithMapping(db *gorm.DB, tags []ConceptTagWithLocalID) ([]TagMapping, error) {
 	if len(tags) == 0 {
-		return nil, nil
+		return []TagMapping{}, nil
 	}
 
 	// Extract local IDs in order, then batch upsert the underlying ConceptTags.
