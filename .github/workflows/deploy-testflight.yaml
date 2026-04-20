@@ -20,6 +20,10 @@ on:
         required: true
       IOS_CERTIFICATE_PASSWORD:
         required: true
+      IOS_PROVISION_PROFILE_BASE64:
+        required: true
+      IOS_SHARE_EXT_PROFILE_BASE64:
+        required: true
       ASC_KEY_ID:
         required: true
       ASC_ISSUER_ID:
@@ -74,6 +78,12 @@ jobs:
 
           # Verify the identity was imported correctly
           security find-identity -v -p codesigning "$KEYCHAIN_PATH"
+
+      - name: Install provisioning profiles
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/omnigram.mobileprovision
+          echo "${{ secrets.IOS_SHARE_EXT_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/shareext.mobileprovision
 
       - name: Create App Store Connect API key file
         run: |
