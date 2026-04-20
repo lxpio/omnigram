@@ -58,12 +58,21 @@ jobs:
           security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
 
-          # Import certificate
+          # Install Apple WWDR intermediate certificates (required for distribution cert chain)
+          curl -sL https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer -o $RUNNER_TEMP/AppleWWDRCAG3.cer
+          sudo security import $RUNNER_TEMP/AppleWWDRCAG3.cer -k /Library/Keychains/System.keychain -T /usr/bin/codesign
+          curl -sL https://www.apple.com/certificateauthority/AppleRootCA-G3.cer -o $RUNNER_TEMP/AppleRootCA-G3.cer
+          sudo security import $RUNNER_TEMP/AppleRootCA-G3.cer -k /Library/Keychains/System.keychain -T /usr/bin/codesign
+
+          # Import distribution certificate
           CERT_PATH=$RUNNER_TEMP/certificate.p12
           echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 --decode > "$CERT_PATH"
           security import "$CERT_PATH" -P "${{ secrets.IOS_CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
           security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
           security list-keychain -d user -s "$KEYCHAIN_PATH" login.keychain-db
+
+          # Verify the identity was imported correctly
+          security find-identity -v -p codesigning "$KEYCHAIN_PATH"
 
       - name: Create App Store Connect API key file
         run: |
