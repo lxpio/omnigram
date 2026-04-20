@@ -82,8 +82,9 @@ jobs:
       - name: Install provisioning profiles
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo "${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/omnigram.mobileprovision
-          echo "${{ secrets.IOS_SHARE_EXT_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/shareext.mobileprovision
+          # Files must be named {UUID}.mobileprovision for xcodebuild to find them
+          echo "${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/9c2c4458-4e80-415d-93c3-d5c049df0f68.mobileprovision
+          echo "${{ secrets.IOS_SHARE_EXT_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/c115e061-3135-4dc3-b54e-c5614437aabe.mobileprovision
 
       - name: Create App Store Connect API key file
         run: |
