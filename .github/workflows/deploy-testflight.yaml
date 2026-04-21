@@ -112,18 +112,17 @@ jobs:
       - name: Sign and export IPA
         run: |
           cd ios
-          # Archive with manual distribution signing (no cloud/automatic signing needed)
+          # Archive without code signing — exportArchive will re-sign with distribution cert
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -archivePath $RUNNER_TEMP/Runner.xcarchive \
             -sdk iphoneos \
             -configuration Release \
-            CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="Apple Distribution" \
-            PROVISIONING_PROFILE_SPECIFIER="com.lxpio.omnigram.ios" \
+            CODE_SIGN_IDENTITY=- \
+            CODE_SIGNING_ALLOWED=NO \
             archive
 
-          # Export IPA with manual signing
+          # Export and sign IPA using manual profiles specified in ExportOptions.plist
           xcodebuild -exportArchive \
             -archivePath $RUNNER_TEMP/Runner.xcarchive \
             -exportPath $RUNNER_TEMP/export \
