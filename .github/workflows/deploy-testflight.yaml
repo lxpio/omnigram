@@ -112,25 +112,22 @@ jobs:
       - name: Sign and export IPA
         run: |
           cd ios
+          # Archive with manual distribution signing (no cloud/automatic signing needed)
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -archivePath $RUNNER_TEMP/Runner.xcarchive \
             -sdk iphoneos \
             -configuration Release \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath ~/private_keys/AuthKey_${{ secrets.ASC_KEY_ID }}.p8 \
-            -authenticationKeyID ${{ secrets.ASC_KEY_ID }} \
-            -authenticationKeyIssuerID ${{ secrets.ASC_ISSUER_ID }} \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            PROVISIONING_PROFILE_SPECIFIER="com.lxpio.omnigram.ios" \
             archive
 
+          # Export IPA with manual signing
           xcodebuild -exportArchive \
             -archivePath $RUNNER_TEMP/Runner.xcarchive \
             -exportPath $RUNNER_TEMP/export \
-            -exportOptionsPlist ExportOptions.plist \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath ~/private_keys/AuthKey_${{ secrets.ASC_KEY_ID }}.p8 \
-            -authenticationKeyID ${{ secrets.ASC_KEY_ID }} \
-            -authenticationKeyIssuerID ${{ secrets.ASC_ISSUER_ID }}
+            -exportOptionsPlist ExportOptions.plist
 
       - name: Upload to TestFlight
         run: |
