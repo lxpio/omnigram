@@ -45,6 +45,9 @@ LABEL author="exppii" \
 COPY --from=gobuilder /build/ ./
 COPY --from=gobuilder /omnigram-server/docker-entrypoint.sh ./
 
+# ffmpeg: 用于 TTS 章节音频后处理（静音裁剪、LUFS 归一、ID3 标签嵌入）
+RUN apk add --no-cache ffmpeg
+
 # 非 root 用户运行
 # 创建 /metadata 和 /docs 目录并设置权限，避免 anonymous volume / bind mount 时权限被 root 占用
 RUN addgroup -g 1000 omnigram && adduser -u 1000 -G omnigram -s /bin/sh -D omnigram && \
