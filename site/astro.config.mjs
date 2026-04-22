@@ -18,6 +18,7 @@ export default defineConfig({
           items: [
             { label: 'Quick Start', slug: 'getting-started/quick-start' },
             { label: 'Installation', slug: 'getting-started/installation' },
+            { label: 'TTS Setup', slug: 'getting-started/tts-setup' },
           ],
         },
         {

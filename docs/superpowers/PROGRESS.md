@@ -338,6 +338,23 @@
 
 ---
 
+## Sprint 6 — TTS 完整链路 ✅
+
+> 设计：`specs/2026-04-22-tts-audiobook-gaps-design.md` · 计划：`plans/2026-04-22-tts-audiobook-gaps.md`
+
+| 功能 | 状态 | 关键文件 | 备注 |
+|------|------|----------|------|
+| **Server 有声书生成 pipeline** | ✅ 追溯登记 | `server/service/tts/audiobook_handler.go`, `worker.go`, `epub_extractor.go`, `text_chunker.go`, `audio_processor.go`, `schema/audiobook.go` | 代码已完工，此前漏登记 |
+| ├─ 整本/单章生成任务 | ✅ | `audiobook_handler.go` | `POST /tts/audiobook/:book_id[/chapter/:idx]` |
+| ├─ Worker + SSE 进度流 | ✅ | `worker.go`, `setup.go` | `GET /tts/tasks/:id/stream` |
+| └─ 存储 + 下载 + 删除 | ✅ | `audiobook_handler.go` | `/metadata/audiobooks/{bookId}/` |
+| **Server Docker 打包 ffmpeg** | ✅ | `server/Dockerfile` | `apk add ffmpeg`，启用章节静音裁剪+LUFS 归一+ID3 标签 |
+| **SidecarProvider 动态 voices** | ✅ | `server/service/tts/sidecar.go` + `sidecar_test.go` | 查询 `/v1/voices`，5min 缓存 + fallback，4 个单测通过 |
+| **客户端有声书 UI** | ✅ | `app/lib/widgets/book_detail/audiobook_button.dart`, `app/lib/page/audiobook/audiobook_page.dart`, `app/lib/providers/audiobook_provider.dart` | 书籍详情三态按钮（生成/进度/打开）+ SSE 实时进度 + 章节下载到本地 + 外部播放器 |
+| **Server 响应包装解包** | ✅ | `app/lib/service/api/tts_api.dart` | `/tts/audiobook/*` 返回 `{code,data:{task,chapters}}`，新增 `ServerAudiobookInfo` 组合模型 |
+
+---
+
 ## 跨层级功能（设计文档中已定义但尚未排期）
 
 | 功能 | 设计文档章节 | 状态 | 备注 |
@@ -482,6 +499,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-04-22 | **Sprint 6 · TTS 完整链路** ✅：Dockerfile `apk add ffmpeg`（启用章节静音裁剪+LUFS 归一+ID3 标签）、SidecarProvider 动态查询 `/v1/voices`（5min 缓存+fallback，4 单测通过）、客户端书籍详情页「生成有声书」三态按钮 + SSE 进度 + `AudiobookPage` 章节下载 + 外部播放器、追溯登记 server 端 audiobook pipeline（此前漏登记） |
 | 2026-04-13 | **CI 质量门禁 + Play Store 自动发布**：`test-app.yaml`（analyze+test PR 门禁）、`deploy-playstore.yaml`（fastlane supply → internal track）、`build-app.yaml` 接入自动发布（alpha/beta tag 触发） |
 | 2026-04-11 | **TTS 设置页重设计** ✅：声音优先 UX，VoiceCard 网格，自动切引擎，VoiceFullId 统一标识，旧配置迁移兼容 |
 | 2026-04-08 | **隐身书房 Phase 2 + Layer 5 完成** ✅：AI 隔离（独立 DB 天然实现）+ 快速锁定（LifecycleObserver auto-pop）+ iOS Keychain 重装清理。Layer 5 全部完成 |
