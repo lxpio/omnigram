@@ -45,3 +45,32 @@ abstract class ServerTtsHealth with _$ServerTtsHealth {
 
   factory ServerTtsHealth.fromJson(Map<String, dynamic> json) => _$ServerTtsHealthFromJson(json);
 }
+
+@freezed
+abstract class ServerAudiobookChapter with _$ServerAudiobookChapter {
+  const factory ServerAudiobookChapter({
+    @Default('') String id,
+    @JsonKey(name: 'task_id') @Default('') String taskId,
+    @JsonKey(name: 'book_id') @Default('') String bookId,
+    @JsonKey(name: 'chapter_index') @Default(0) int chapterIndex,
+    @JsonKey(name: 'chapter_title') @Default('') String chapterTitle,
+    @JsonKey(name: 'chapter_href') @Default('') String chapterHref,
+    @Default(0) int status,
+    @JsonKey(name: 'audio_size') @Default(0) int audioSize,
+    @JsonKey(name: 'audio_duration') @Default(0.0) double audioDuration,
+    @JsonKey(name: 'error_message') String? errorMessage,
+  }) = _ServerAudiobookChapter;
+
+  factory ServerAudiobookChapter.fromJson(Map<String, dynamic> json) => _$ServerAudiobookChapterFromJson(json);
+}
+
+/// Wraps the server's `{task, chapters}` payload under `/tts/audiobook/:id`.
+@freezed
+abstract class ServerAudiobookInfo with _$ServerAudiobookInfo {
+  const factory ServerAudiobookInfo({
+    required ServerAudiobookTask task,
+    @Default(<ServerAudiobookChapter>[]) List<ServerAudiobookChapter> chapters,
+  }) = _ServerAudiobookInfo;
+
+  factory ServerAudiobookInfo.fromJson(Map<String, dynamic> json) => _$ServerAudiobookInfoFromJson(json);
+}

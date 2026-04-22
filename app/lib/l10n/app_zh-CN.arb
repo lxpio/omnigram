@@ -1083,5 +1083,27 @@
   "ttsConfigure": "去配置",
   "ttsFetchFailed": "加载声音失败",
   "ttsRetry": "重试",
-  "ttsChangeVoice": "换"
+  "ttsChangeVoice": "换",
+  "audiobookGenerate": "生成有声书",
+  "audiobookGenerateConfirm": "开始生成",
+  "audiobookConfirmTitle": "生成有声书？",
+  "audiobookConfirmBody": "Omnigram 会使用伴侣的声音逐章合成。你可以继续阅读，合成在后台进行。",
+  "audiobookGenerating": "生成中 {percent}%",
+  "@audiobookGenerating": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "audiobookOpen": "打开有声书",
+  "audiobookNeedsServer": "连接服务器后可生成有声书",
+  "audiobookFetchFailed": "无法获取有声书状态",
+  "audiobookPageTitle": "有声书",
+  "audiobookChapterListen": "试听",
+  "audiobookChapterDownload": "下载",
+  "audiobookChapterDownloading": "下载中…",
+  "audiobookChapterReady": "打开",
+  "audiobookDeleteTitle": "删除有声书？",
+  "audiobookDeleteBody": "服务器上已生成的音频将被移除，不影响书籍本身。",
+  "audiobookDelete": "删除有声书",
+  "audiobookEmpty": "还没有章节就绪，正在生成中。"
 }

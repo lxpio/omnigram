@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -45,26 +47,25 @@ class TtsApi {
   // ── Audiobook Generation ────────────────────────────────────────
 
   /// Create audiobook for a book.
-  Future<ServerAudiobookTask> createAudiobook(String bookId) async {
-    return _api.post('/tts/audiobook/$bookId', fromJson: (data) => ServerAudiobookTask.fromJson(data));
+  ///
+  /// Server response: `{code, message, data: {task, chapters}}`.
+  Future<ServerAudiobookInfo> createAudiobook(String bookId) async {
+    return _api.post('/tts/audiobook/$bookId', fromJson: _unwrapInfo);
   }
 
   /// Create audiobook for a specific chapter.
-  Future<ServerAudiobookTask> createChapterAudio(String bookId, int chapterIndex) async {
-    return _api.post(
-      '/tts/audiobook/$bookId/chapter/$chapterIndex',
-      fromJson: (data) => ServerAudiobookTask.fromJson(data),
-    );
+  Future<ServerAudiobookInfo> createChapterAudio(String bookId, int chapterIndex) async {
+    return _api.post('/tts/audiobook/$bookId/chapter/$chapterIndex', fromJson: _unwrapInfo);
   }
 
-  /// Get task status.
-  Future<ServerAudiobookTask> getTaskStatus(String taskId) async {
-    return _api.get('/tts/tasks/$taskId', fromJson: (data) => ServerAudiobookTask.fromJson(data));
+  /// Get task status and chapter list.
+  Future<ServerAudiobookInfo> getTaskStatus(String taskId) async {
+    return _api.get('/tts/tasks/$taskId', fromJson: _unwrapInfo);
   }
 
-  /// Get audiobook info.
-  Future<ServerAudiobookTask> getAudiobook(String bookId) async {
-    return _api.get('/tts/audiobook/$bookId', fromJson: (data) => ServerAudiobookTask.fromJson(data));
+  /// Get audiobook info for a book.
+  Future<ServerAudiobookInfo> getAudiobook(String bookId) async {
+    return _api.get('/tts/audiobook/$bookId', fromJson: _unwrapInfo);
   }
 
   /// Download audiobook chapter.
@@ -76,4 +77,56 @@ class TtsApi {
   Future<void> deleteAudiobook(String bookId) async {
     await _api.delete('/tts/audiobook/$bookId');
   }
+
+  /// Subscribe to task progress via SSE.
+  ///
+  /// Server emits `data: {...task json...}\n\n` frames on `/tts/tasks/:id/stream`.
+  /// Stream terminates when the task reaches a terminal status or the
+  /// connection drops — callers handle resubscription if needed.
+  Stream<ServerAudiobookTask> streamTask(String taskId) async* {
+    final response = await _api.dio.get<ResponseBody>(
+      '/tts/tasks/$taskId/stream',
+      options: Options(
+        responseType: ResponseType.stream,
+        headers: {'Accept': 'text/event-stream'},
+      ),
+    );
+    final body = response.data;
+    if (body == null) return;
+
+    final buffer = StringBuffer();
+    await for (final chunk in body.stream) {
+      buffer.write(utf8.decode(chunk, allowMalformed: true));
+      while (true) {
+        final s = buffer.toString();
+        final sep = s.indexOf('\n\n');
+        if (sep < 0) break;
+        final event = s.substring(0, sep);
+        buffer
+          ..clear()
+          ..write(s.substring(sep + 2));
+
+        for (final line in event.split('\n')) {
+          if (!line.startsWith('data:')) continue;
+          final payload = line.substring(5).trim();
+          if (payload.isEmpty) continue;
+          try {
+            final map = jsonDecode(payload) as Map<String, dynamic>;
+            yield ServerAudiobookTask.fromJson(map);
+          } catch (_) {
+            // Ignore malformed frame, keep stream alive.
+          }
+        }
+      }
+    }
+  }
+}
+
+ServerAudiobookInfo _unwrapInfo(dynamic raw) {
+  if (raw is! Map<String, dynamic>) {
+    throw const FormatException('audiobook payload: expected object');
+  }
+  // Accept both wrapped ({code,message,data:{task,chapters}}) and bare ({task,chapters}).
+  final inner = raw['data'] is Map<String, dynamic> ? raw['data'] as Map<String, dynamic> : raw;
+  return ServerAudiobookInfo.fromJson(inner);
 }

@@ -14,6 +14,7 @@ import 'package:omnigram/utils/get_path/get_base_path.dart';
 import 'package:omnigram/utils/log/common.dart';
 import 'package:omnigram/utils/color/hash_color.dart';
 import 'package:omnigram/widgets/book_detail/ai_summary_section.dart';
+import 'package:omnigram/widgets/book_detail/audiobook_button.dart';
 import 'package:omnigram/widgets/book_detail/cover_header.dart';
 import 'package:omnigram/widgets/book_detail/notes_preview.dart';
 import 'package:omnigram/widgets/bookshelf/book_cover.dart';
@@ -147,6 +148,7 @@ class _BookDetailState extends ConsumerState<BookDetail> {
           ),
           SliverToBoxAdapter(child: _buildCoverArea()),
           SliverToBoxAdapter(child: _buildContinueButton(l10n)),
+          SliverToBoxAdapter(child: AudiobookButton(book: _book)),
           SliverToBoxAdapter(
             child: AiSummarySection(
               aiSummary: _aiSummary,

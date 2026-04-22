@@ -1088,5 +1088,27 @@
   "ttsConfigure": "Configure",
   "ttsFetchFailed": "Failed to load voices",
   "ttsRetry": "Retry",
-  "ttsChangeVoice": "Change"
+  "ttsChangeVoice": "Change",
+  "audiobookGenerate": "Generate audiobook",
+  "audiobookGenerateConfirm": "Start generating",
+  "audiobookConfirmTitle": "Generate audiobook?",
+  "audiobookConfirmBody": "Omnigram will synthesize each chapter with your companion's voice. You can keep reading while it runs.",
+  "audiobookGenerating": "Generating {percent}%",
+  "@audiobookGenerating": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "audiobookOpen": "Open audiobook",
+  "audiobookNeedsServer": "Connect to a server to generate audiobooks",
+  "audiobookFetchFailed": "Could not load audiobook status",
+  "audiobookPageTitle": "Audiobook",
+  "audiobookChapterListen": "Listen",
+  "audiobookChapterDownload": "Download",
+  "audiobookChapterDownloading": "Downloading…",
+  "audiobookChapterReady": "Open",
+  "audiobookDeleteTitle": "Delete audiobook?",
+  "audiobookDeleteBody": "Generated audio files will be removed from the server. The book itself is not affected.",
+  "audiobookDelete": "Delete audiobook",
+  "audiobookEmpty": "No chapters ready yet. Generation is in progress."
 }
