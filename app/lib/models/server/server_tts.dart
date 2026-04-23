@@ -74,3 +74,73 @@ abstract class ServerAudiobookInfo with _$ServerAudiobookInfo {
 
   factory ServerAudiobookInfo.fromJson(Map<String, dynamic> json) => _$ServerAudiobookInfoFromJson(json);
 }
+
+/// One sentence's mapping to its audio span.
+///
+/// Matches server's tts.SentenceAlignment — `start_ms`/`end_ms` are cumulative
+/// positions in the chapter MP3; `char_offset` is rune offset in the chapter's
+/// plain text (used for text-matching fallback against foliate-js output).
+@freezed
+abstract class SentenceAlignment with _$SentenceAlignment {
+  const factory SentenceAlignment({
+    @Default(0) int index,
+    @Default('') String text,
+    @JsonKey(name: 'start_ms') @Default(0) int startMs,
+    @JsonKey(name: 'end_ms') @Default(0) int endMs,
+    @JsonKey(name: 'char_offset') @Default(0) int charOffset,
+    @JsonKey(name: 'synth_failed') @Default(false) bool synthFailed,
+  }) = _SentenceAlignment;
+
+  factory SentenceAlignment.fromJson(Map<String, dynamic> json) => _$SentenceAlignmentFromJson(json);
+}
+
+/// Full chapter alignment file — loaded from
+/// `GET /tts/audiobook/:id/:chapter/alignment`.
+@freezed
+abstract class ChapterAlignment with _$ChapterAlignment {
+  const factory ChapterAlignment({
+    @JsonKey(name: 'schema_version') @Default(1) int schemaVersion,
+    @JsonKey(name: 'chapter_index') @Default(0) int chapterIndex,
+    @JsonKey(name: 'chapter_title') @Default('') String chapterTitle,
+    @JsonKey(name: 'audio_file') @Default('') String audioFile,
+    @JsonKey(name: 'audio_duration_ms') @Default(0) int audioDurationMs,
+    @Default('') String voice,
+    @Default('') String provider,
+    @JsonKey(name: 'generated_at') @Default(0) int generatedAt,
+    @Default(<SentenceAlignment>[]) List<SentenceAlignment> sentences,
+  }) = _ChapterAlignment;
+
+  factory ChapterAlignment.fromJson(Map<String, dynamic> json) => _$ChapterAlignmentFromJson(json);
+}
+
+/// Book-level audiobook manifest — from `GET /tts/audiobook/:id/index`.
+@freezed
+abstract class AudiobookIndex with _$AudiobookIndex {
+  const factory AudiobookIndex({
+    @JsonKey(name: 'schema_version') @Default(1) int schemaVersion,
+    @JsonKey(name: 'book_id') @Default('') String bookId,
+    @Default('') String voice,
+    @Default('') String provider,
+    @JsonKey(name: 'total_chapters') @Default(0) int totalChapters,
+    @JsonKey(name: 'done_chapters') @Default(0) int doneChapters,
+    @JsonKey(name: 'total_duration_ms') @Default(0) int totalDurationMs,
+    @Default(<AudiobookIndexChapter>[]) List<AudiobookIndexChapter> chapters,
+  }) = _AudiobookIndex;
+
+  factory AudiobookIndex.fromJson(Map<String, dynamic> json) => _$AudiobookIndexFromJson(json);
+}
+
+@freezed
+abstract class AudiobookIndexChapter with _$AudiobookIndexChapter {
+  const factory AudiobookIndexChapter({
+    @Default(0) int index,
+    @Default('') String title,
+    @JsonKey(name: 'audio_file') @Default('') String audioFile,
+    @JsonKey(name: 'align_file') @Default('') String alignFile,
+    @JsonKey(name: 'duration_ms') @Default(0) int durationMs,
+    @JsonKey(name: 'sentence_count') @Default(0) int sentenceCount,
+    @Default(0) int status,
+  }) = _AudiobookIndexChapter;
+
+  factory AudiobookIndexChapter.fromJson(Map<String, dynamic> json) => _$AudiobookIndexChapterFromJson(json);
+}

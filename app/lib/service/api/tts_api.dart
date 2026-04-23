@@ -73,6 +73,26 @@ class TtsApi {
     await _api.downloadFile('/tts/audiobook/$bookId/$chapter', savePath: savePath);
   }
 
+  /// Fetch chapter alignment (sentence timings) — Sprint 7+.
+  Future<ChapterAlignment> getChapterAlignment(String bookId, int chapter) async {
+    return _api.get(
+      '/tts/audiobook/$bookId/$chapter/alignment',
+      fromJson: (data) => ChapterAlignment.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
+  /// Fetch book-level audiobook manifest — Sprint 7+.
+  ///
+  /// Returns chapter list with durations and sentence counts; use before
+  /// pulling individual alignment files so the player can show an accurate
+  /// chapter strip / timeline.
+  Future<AudiobookIndex> getAudiobookIndex(String bookId) async {
+    return _api.get(
+      '/tts/audiobook/$bookId/index',
+      fromJson: (data) => AudiobookIndex.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
   /// Delete audiobook.
   Future<void> deleteAudiobook(String bookId) async {
     await _api.delete('/tts/audiobook/$bookId');
