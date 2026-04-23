@@ -65,8 +65,12 @@ func NewSidecarProviderWithAuth(name, baseURL, apiKey string, timeout time.Durat
 func (p *SidecarProvider) Name() string { return p.name }
 
 func (p *SidecarProvider) Synthesize(ctx context.Context, text string, opts SynthesisOptions) (io.ReadCloser, error) {
+	// OpenAI-compatible "model" field: `tts-1` is the universal legacy name
+	// that Kokoro FastAPI, Qwen3-TTS, and OpenAI all accept. Our provider
+	// `p.name` ("kokoro", "sidecar") is only used for internal identification
+	// and is not a valid model ID on Qwen3 / strict sidecars.
 	body := map[string]any{
-		"model":           p.name,
+		"model":           "tts-1",
 		"input":           text,
 		"voice":           opts.Voice,
 		"speed":           opts.Speed,
