@@ -5,6 +5,7 @@ import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/models/book.dart';
 import 'package:omnigram/models/server/server_tts.dart';
 import 'package:omnigram/page/audiobook/audiobook_page.dart';
+import 'package:omnigram/page/audiobook/sync_listening_page.dart';
 import 'package:omnigram/providers/audiobook_provider.dart';
 import 'package:omnigram/providers/server_connection_provider.dart';
 
@@ -202,6 +203,20 @@ class AudiobookButton extends ConsumerWidget {
   }
 
   void _openAudiobookPage(BuildContext context, String bookId) {
+    // The sync-listening page is the primary audiobook surface (Sprint 7):
+    // EPUB rendered with sentence-synced highlight + mini-player.
+    // The old chapter-list page is kept reachable via the 'alt' menu entry
+    // inside the new player (Phase 6 polish) for manual MP3 export use case.
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => SyncListeningPage(book: book)),
+    );
+  }
+
+  // Keep AudiobookPage import referenced so future code can route to the
+  // chapter-list view for direct-download scenarios (Phase 6 polish).
+  // ignore: unused_element
+  void _openChapterListPage(BuildContext context, String bookId) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => AudiobookPage(book: book)),
