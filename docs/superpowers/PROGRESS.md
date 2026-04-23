@@ -338,6 +338,22 @@
 
 ---
 
+## Sprint 7 — 句级同步听书 ✅
+
+> 设计：`specs/2026-04-23-sentence-sync-listening-design.md` · 计划：`plans/2026-04-23-sentence-sync-listening.md`
+
+| 功能 | 状态 | 关键文件 |
+|------|------|----------|
+| **Phase 1 · Server 句级抽取** | ✅ | `server/service/tts/sentence_splitter.go` (+ test, 12 用例) · `epub_extractor.go` Chapter.Sentences |
+| **Phase 2 · Worker 按句合成 + 对齐 JSON** | ✅ | `worker.go` per-sentence loop · `alignment.go` (SaveAlignment) · `audio_processor.go` ProbeDurationMs · silence fallback |
+| **Phase 3 · Alignment + index 端点** | ✅ | `GET /tts/audiobook/:id/:ch/alignment` · `GET /tts/audiobook/:id/index` · POST body 支持 client sentences 注入 |
+| **Phase 4 · AudiobookPlayer** | ✅ | `app/lib/service/audiobook/audiobook_player.dart` (audioplayers wrapper) + Dart alignment 模型 (freezed) |
+| **Phase 5 · SyncController 对齐匹配** | ✅ | `sync_controller.dart` · `sync_matcher.dart` (12 unit tests) · 二分查找 + bigram similarity 兜底 |
+| **Phase 6 · SyncListeningPage** | ✅ | `app/lib/page/audiobook/sync_listening_page.dart` · AudiobookButton 路由改为新页 |
+| **Phase 7 · Admin 批量生成** | ✅ | `POST /tts/audiobook/batch` + `GET /tts/audiobook/queue` · `AudiobookQueuePage.tsx` |
+
+---
+
 ## Sprint 6 — TTS 完整链路 ✅
 
 > 设计：`specs/2026-04-22-tts-audiobook-gaps-design.md` · 计划：`plans/2026-04-22-tts-audiobook-gaps.md`
@@ -499,6 +515,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-04-23 | **Sprint 7 · 句级同步听书** ✅：Audible 级核心体验。Server：`SplitSentences` 多语言切句 (12 单测) + worker 按句合成 + `chapter_NNN.align.json` + alignment/index 端点 + admin 批量生成 + client-injected sentences 模式。App：`AudiobookPlayer` + `AudiobookSyncController`（binary-search 时间→句→CFI 匹配，12 单测） + `SyncListeningPage`（EPUB+mini-player 同屏）。Web admin：`/admin/audiobooks` 队列监控 + 批量触发。Bug 修复：manager context 泄漏截断 body、worker nil-deref、sidecar 硬编码 model 名。Spec + 8-phase plan 落地 |
 | 2026-04-22 | **Sprint 6 · TTS 完整链路** ✅：Dockerfile `apk add ffmpeg`（启用章节静音裁剪+LUFS 归一+ID3 标签）、SidecarProvider 动态查询 `/v1/voices`（5min 缓存+fallback，4 单测通过）、客户端书籍详情页「生成有声书」三态按钮 + SSE 进度 + `AudiobookPage` 章节下载 + 外部播放器、追溯登记 server 端 audiobook pipeline（此前漏登记） |
 | 2026-04-13 | **CI 质量门禁 + Play Store 自动发布**：`test-app.yaml`（analyze+test PR 门禁）、`deploy-playstore.yaml`（fastlane supply → internal track）、`build-app.yaml` 接入自动发布（alpha/beta tag 触发） |
 | 2026-04-11 | **TTS 设置页重设计** ✅：声音优先 UX，VoiceCard 网格，自动切引擎，VoiceFullId 统一标识，旧配置迁移兼容 |
