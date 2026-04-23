@@ -63,10 +63,17 @@ func Initialize(ctx context.Context) {
 // Setup registers TTS HTTP routes.
 func Setup(router *gin.Engine) {
 	oauthMD := middleware.Get(middleware.OathMD)
+	adminMD := middleware.Get(middleware.AdminMD)
 
 	router.POST("/tts/synthesize", oauthMD, synthesizeHandler)
 	router.GET("/tts/voices", oauthMD, voicesHandler)
 	router.GET("/tts/health", oauthMD, healthHandler)
+
+	// Admin-only batch + queue monitoring. Registered BEFORE the
+	// `/tts/audiobook/:book_id` wildcard so gin routes `batch`/`queue`
+	// as literal segments rather than book IDs.
+	router.POST("/tts/audiobook/batch", oauthMD, adminMD, batchAudiobookHandler)
+	router.GET("/tts/audiobook/queue", oauthMD, adminMD, audiobookQueueHandler)
 
 	router.POST("/tts/audiobook/:book_id", oauthMD, createAudiobookHandler)
 	router.POST("/tts/audiobook/:book_id/chapter/:idx", oauthMD, createChapterHandler)

@@ -584,6 +584,54 @@ definitions:
       title:
         type: string
     type: object
+  tts.AudiobookQueueItem:
+    properties:
+      author:
+        type: string
+      book_id:
+        type: string
+      book_title:
+        type: string
+      ctime:
+        type: integer
+      done_chapters:
+        type: integer
+      error_message:
+        type: string
+      failed_chapters:
+        type: integer
+      progress_pct:
+        type: number
+      status:
+        type: integer
+      task_id:
+        type: string
+      total_chapters:
+        type: integer
+      utime:
+        type: integer
+      voice:
+        type: string
+    type: object
+  tts.AudiobookQueueResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/tts.AudiobookQueueItem'
+        type: array
+    type: object
+  tts.BatchAudiobookItem:
+    properties:
+      book_id:
+        type: string
+      error:
+        type: string
+      status:
+        description: '"queued", "exists", "error"'
+        type: string
+      task_id:
+        type: string
+    type: object
   tts.ChapterAlignment:
     properties:
       audio_duration_ms:
@@ -625,6 +673,28 @@ definitions:
         type: boolean
       text:
         type: string
+    type: object
+  tts.batchAudiobookRequest:
+    properties:
+      book_ids:
+        items:
+          type: string
+        type: array
+      speed:
+        type: number
+      voice:
+        type: string
+    required:
+    - book_ids
+    type: object
+  tts.batchAudiobookResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/tts.BatchAudiobookItem'
+        type: array
+      submitted:
+        type: integer
     type: object
   utils.Response:
     properties:
@@ -3492,6 +3562,49 @@ paths:
       security:
       - BearerAuth: []
       summary: Get audiobook manifest
+      tags:
+      - TTS
+  /tts/audiobook/batch:
+    post:
+      consumes:
+      - application/json
+      description: Queue audiobook generation for a list of book IDs using a
+      parameters:
+      - description: batch request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/tts.batchAudiobookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tts.batchAudiobookResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Batch-generate audiobooks (admin)
+      tags:
+      - TTS
+  /tts/audiobook/queue:
+    get:
+      description: Returns all current and recent audiobook tasks with per-
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tts.AudiobookQueueResponse'
+      security:
+      - BearerAuth: []
+      summary: List audiobook generation queue (admin)
       tags:
       - TTS
   /user/companion:

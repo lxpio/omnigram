@@ -574,3 +574,190 @@ type AudiobookIndexChapter struct {
 	SentenceCount int    `json:"sentence_count"`
 	Status        int    `json:"status"`
 }
+
+// batchAudiobookRequest is the admin-triggered multi-book generation payload.
+type batchAudiobookRequest struct {
+	BookIDs []string `json:"book_ids" binding:"required"`
+	Voice   string   `json:"voice"`
+	Speed   float64  `json:"speed"`
+}
+
+// BatchAudiobookItem describes one submission in the batch response.
+type BatchAudiobookItem struct {
+	BookID string `json:"book_id"`
+	TaskID string `json:"task_id,omitempty"`
+	Status string `json:"status"` // "queued", "exists", "error"
+	Error  string `json:"error,omitempty"`
+}
+
+// batchAudiobookResponse wraps per-book submission outcomes.
+type batchAudiobookResponse struct {
+	Submitted int                  `json:"submitted"`
+	Items     []BatchAudiobookItem `json:"items"`
+}
+
+// batchAudiobookHandler queues audiobook generation for multiple books.
+// Admin-only — lets a librarian pre-generate audio for a shelf / tag without
+// touching each book individually from the app.
+//
+// @Summary Batch-generate audiobooks (admin)
+// @Description Queue audiobook generation for a list of book IDs using a
+// shared voice. Each book that already has a task returns status="exists"
+// (no duplicate work). Use this from the web admin to pre-generate audio
+// for a curated shelf overnight.
+// @Tags TTS
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param body body batchAudiobookRequest true "batch request"
+// @Success 200 {object} batchAudiobookResponse
+// @Failure 400 {object} schema.ErrorResponse
+// @Router /tts/audiobook/batch [post]
+func batchAudiobookHandler(c *gin.Context) {
+	var req batchAudiobookRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ErrReqArgs.WithMessage(err.Error()))
+		return
+	}
+	if req.Voice == "" {
+		req.Voice = "af_sky"
+	}
+	if req.Speed <= 0 {
+		req.Speed = 1.0
+	}
+
+	userID := getUserID(c)
+	db := store.FileStore()
+	items := make([]BatchAudiobookItem, 0, len(req.BookIDs))
+	submitted := 0
+
+	for _, bookID := range req.BookIDs {
+		book, err := schema.FirstBookById(db, bookID)
+		if err != nil {
+			items = append(items, BatchAudiobookItem{BookID: bookID, Status: "error", Error: "book not found"})
+			continue
+		}
+		if book.FileType != schema.EPUB {
+			items = append(items, BatchAudiobookItem{BookID: bookID, Status: "error", Error: "only EPUB supported"})
+			continue
+		}
+		if existing, _ := schema.GetAudiobookTaskByBook(db, bookID, userID); existing != nil {
+			items = append(items, BatchAudiobookItem{BookID: bookID, TaskID: existing.ID, Status: "exists"})
+			continue
+		}
+
+		epubChapters, err := ExtractChapters(book.Path)
+		if err != nil {
+			items = append(items, BatchAudiobookItem{BookID: bookID, Status: "error", Error: "extract failed"})
+			continue
+		}
+
+		storagePath := filepath.Join(conf.GetConfig().MetaDataPath, "audiobooks", bookID)
+		taskID := schema.GenerateID()
+		task := &schema.AudiobookTask{
+			ID:            taskID,
+			BookID:        bookID,
+			UserID:        userID,
+			Status:        schema.TaskPending,
+			Voice:         req.Voice,
+			Speed:         req.Speed,
+			Provider:      "kokoro",
+			Format:        "mp3",
+			TotalChapters: len(epubChapters),
+			StoragePath:   storagePath,
+		}
+		task.Save(db)
+
+		for _, ch := range epubChapters {
+			ct := &schema.ChapterTask{
+				ID:           schema.GenerateID(),
+				TaskID:       taskID,
+				BookID:       bookID,
+				ChapterIndex: ch.Index,
+				ChapterTitle: ch.Title,
+				ChapterHref:  ch.Href,
+				Status:       schema.TaskPending,
+				TextLength:   len(ch.Text),
+			}
+			ct.Save(db)
+		}
+
+		worker.Submit(taskID)
+		items = append(items, BatchAudiobookItem{BookID: bookID, TaskID: taskID, Status: "queued"})
+		submitted++
+	}
+
+	c.JSON(http.StatusOK, batchAudiobookResponse{Submitted: submitted, Items: items})
+}
+
+// AudiobookQueueItem summarises one active or recent audiobook task.
+type AudiobookQueueItem struct {
+	TaskID         string  `json:"task_id"`
+	BookID         string  `json:"book_id"`
+	BookTitle      string  `json:"book_title"`
+	Author         string  `json:"author"`
+	Voice          string  `json:"voice"`
+	Status         int     `json:"status"`
+	TotalChapters  int     `json:"total_chapters"`
+	DoneChapters   int     `json:"done_chapters"`
+	FailedChapters int     `json:"failed_chapters"`
+	ProgressPct    float64 `json:"progress_pct"`
+	CTime          int64   `json:"ctime"`
+	UTime          int64   `json:"utime"`
+	ErrorMessage   string  `json:"error_message,omitempty"`
+}
+
+// AudiobookQueueResponse is returned by the admin queue GET.
+type AudiobookQueueResponse struct {
+	Items []AudiobookQueueItem `json:"items"`
+}
+
+// audiobookQueueHandler returns the list of recent/active audiobook tasks.
+// Admin-only — feeds the web admin page's queue monitor.
+//
+// @Summary List audiobook generation queue (admin)
+// @Description Returns all current and recent audiobook tasks with per-
+// book progress. Feeds the admin web UI's queue monitor.
+// @Tags TTS
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} AudiobookQueueResponse
+// @Router /tts/audiobook/queue [get]
+func audiobookQueueHandler(c *gin.Context) {
+	db := store.FileStore()
+	var tasks []schema.AudiobookTask
+	if err := db.Order("utime desc").Limit(100).Find(&tasks).Error; err != nil {
+		c.JSON(http.StatusOK, AudiobookQueueResponse{})
+		return
+	}
+
+	items := make([]AudiobookQueueItem, 0, len(tasks))
+	for _, t := range tasks {
+		book, _ := schema.FirstBookById(db, t.BookID)
+		title, author := "", ""
+		if book != nil {
+			title = book.Title
+			author = book.Author
+		}
+		pct := 0.0
+		if t.TotalChapters > 0 {
+			pct = float64(t.DoneChapters) * 100.0 / float64(t.TotalChapters)
+		}
+		items = append(items, AudiobookQueueItem{
+			TaskID:         t.ID,
+			BookID:         t.BookID,
+			BookTitle:      title,
+			Author:         author,
+			Voice:          t.Voice,
+			Status:         int(t.Status),
+			TotalChapters:  t.TotalChapters,
+			DoneChapters:   t.DoneChapters,
+			FailedChapters: t.FailedChapters,
+			ProgressPct:    pct,
+			CTime:          t.CTime,
+			UTime:          t.UTime,
+			ErrorMessage:   t.ErrorMessage,
+		})
+	}
+	c.JSON(http.StatusOK, AudiobookQueueResponse{Items: items})
+}

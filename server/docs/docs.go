@@ -4418,6 +4418,76 @@ const docTemplate = `{
                 }
             }
         },
+        "/tts/audiobook/batch": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Queue audiobook generation for a list of book IDs using a",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "TTS"
+                ],
+                "summary": "Batch-generate audiobooks (admin)",
+                "parameters": [
+                    {
+                        "description": "batch request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tts.batchAudiobookRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tts.batchAudiobookResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/tts/audiobook/queue": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns all current and recent audiobook tasks with per-",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "TTS"
+                ],
+                "summary": "List audiobook generation queue (admin)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tts.AudiobookQueueResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/tts/audiobook/{book_id}/index": {
             "get": {
                 "security": [
@@ -5489,6 +5559,79 @@ const docTemplate = `{
                 }
             }
         },
+        "tts.AudiobookQueueItem": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "book_id": {
+                    "type": "string"
+                },
+                "book_title": {
+                    "type": "string"
+                },
+                "ctime": {
+                    "type": "integer"
+                },
+                "done_chapters": {
+                    "type": "integer"
+                },
+                "error_message": {
+                    "type": "string"
+                },
+                "failed_chapters": {
+                    "type": "integer"
+                },
+                "progress_pct": {
+                    "type": "number"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "task_id": {
+                    "type": "string"
+                },
+                "total_chapters": {
+                    "type": "integer"
+                },
+                "utime": {
+                    "type": "integer"
+                },
+                "voice": {
+                    "type": "string"
+                }
+            }
+        },
+        "tts.AudiobookQueueResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tts.AudiobookQueueItem"
+                    }
+                }
+            }
+        },
+        "tts.BatchAudiobookItem": {
+            "type": "object",
+            "properties": {
+                "book_id": {
+                    "type": "string"
+                },
+                "error": {
+                    "type": "string"
+                },
+                "status": {
+                    "description": "\"queued\", \"exists\", \"error\"",
+                    "type": "string"
+                },
+                "task_id": {
+                    "type": "string"
+                }
+            }
+        },
         "tts.ChapterAlignment": {
             "type": "object",
             "properties": {
@@ -5545,6 +5688,40 @@ const docTemplate = `{
                 },
                 "text": {
                     "type": "string"
+                }
+            }
+        },
+        "tts.batchAudiobookRequest": {
+            "type": "object",
+            "required": [
+                "book_ids"
+            ],
+            "properties": {
+                "book_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "speed": {
+                    "type": "number"
+                },
+                "voice": {
+                    "type": "string"
+                }
+            }
+        },
+        "tts.batchAudiobookResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tts.BatchAudiobookItem"
+                    }
+                },
+                "submitted": {
+                    "type": "integer"
                 }
             }
         },

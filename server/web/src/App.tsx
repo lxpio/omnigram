@@ -8,6 +8,7 @@ import { LoginPage } from "@/pages/LoginPage";
 import { LibraryPage } from "@/pages/LibraryPage";
 import { BookPage } from "@/pages/BookPage";
 import { AdminPage } from "@/pages/AdminPage";
+import { AudiobookQueuePage } from "@/pages/AudiobookQueuePage";
 import { SettingsPage } from "@/pages/SettingsPage";
 import { ShelvesPage } from "@/pages/ShelvesPage";
 import { TagsPage } from "@/pages/TagsPage";
@@ -56,6 +57,7 @@ function AppLayout() {
             <Route path="/stats" element={<StatsPage />} />
             <Route path="/books/:bookId" element={<BookPage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/admin/audiobooks" element={<AudiobookQueuePage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
