@@ -73,7 +73,9 @@ func Setup(router *gin.Engine) {
 	router.GET("/tts/tasks/:id", oauthMD, getTaskHandler)
 	router.GET("/tts/tasks/:id/stream", oauthMD, streamTaskHandler)
 	router.GET("/tts/audiobook/:book_id", oauthMD, getAudiobookHandler)
+	router.GET("/tts/audiobook/:book_id/index", oauthMD, getAudiobookIndexHandler)
 	router.GET("/tts/audiobook/:book_id/:chapter", oauthMD, downloadChapterHandler)
+	router.GET("/tts/audiobook/:book_id/:chapter/alignment", oauthMD, getChapterAlignmentHandler)
 	router.DELETE("/tts/audiobook/:book_id", oauthMD, deleteAudiobookHandler)
 }
 

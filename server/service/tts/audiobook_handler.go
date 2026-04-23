@@ -24,6 +24,22 @@ type createAudiobookRequest struct {
 	Provider string  `json:"provider"`
 	Format   string  `json:"format"`
 	Chapters []int   `json:"chapters"`
+
+	// Sentences, when non-empty, overrides the server's built-in sentence
+	// splitter. Useful when a client (e.g. Flutter app via foliate-js) has
+	// already extracted authoritative sentence boundaries + CFIs and wants
+	// the server to synthesize that exact list rather than re-split.
+	// Server groups entries by chapter_index and feeds them to the worker.
+	Sentences []ClientSentence `json:"sentences,omitempty"`
+}
+
+// ClientSentence is one entry of the optional createAudiobookRequest.Sentences
+// list — only used by the "client injects sentences" path.
+type ClientSentence struct {
+	ChapterIndex int    `json:"chapter_index"`
+	Index        int    `json:"index"`
+	Text         string `json:"text"`
+	CharOffset   int    `json:"char_offset,omitempty"`
 }
 
 func getUserID(c *gin.Context) string {
@@ -97,17 +113,28 @@ func createAudiobookHandler(c *gin.Context) {
 	storagePath := filepath.Join(conf.GetConfig().MetaDataPath, "audiobooks", bookID)
 	taskID := schema.GenerateID()
 
+	// Serialise client-injected sentences (if any) for the worker to use
+	// instead of its own SplitSentences output.
+	var clientSentencesJSON string
+	if len(req.Sentences) > 0 {
+		raw, jerr := json.Marshal(req.Sentences)
+		if jerr == nil {
+			clientSentencesJSON = string(raw)
+		}
+	}
+
 	task := &schema.AudiobookTask{
-		ID:            taskID,
-		BookID:        bookID,
-		UserID:        userID,
-		Status:        schema.TaskPending,
-		Voice:         req.Voice,
-		Speed:         req.Speed,
-		Provider:      req.Provider,
-		Format:        req.Format,
-		TotalChapters: len(selectedChapters),
-		StoragePath:   storagePath,
+		ID:                  taskID,
+		BookID:              bookID,
+		UserID:              userID,
+		Status:              schema.TaskPending,
+		Voice:               req.Voice,
+		Speed:               req.Speed,
+		Provider:            req.Provider,
+		Format:              req.Format,
+		TotalChapters:       len(selectedChapters),
+		StoragePath:         storagePath,
+		ClientSentencesJSON: clientSentencesJSON,
 	}
 	task.Save(db)
 
@@ -403,4 +430,147 @@ func deleteAudiobookHandler(c *gin.Context) {
 	db.Where("id = ?", task.ID).Delete(&schema.AudiobookTask{})
 
 	c.JSON(http.StatusOK, utils.SUCCESS.WithData(nil))
+}
+
+// getChapterAlignmentHandler streams the chapter_NNN.align.json sidecar
+// for client-side sentence→audio-time lookup.
+//
+// @Summary Get chapter alignment (sentence timings)
+// @Description Returns the sentence-level alignment JSON for one chapter,
+// containing `sentences: [{index, text, start_ms, end_ms, char_offset}]`.
+// Drives karaoke-style sentence highlight in the client audiobook player.
+// @Tags TTS
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param book_id path string true "Book ID"
+// @Param chapter path int true "Chapter index (0-based)"
+// @Success 200 {object} ChapterAlignment
+// @Failure 404 {object} schema.ErrorResponse
+// @Router /tts/audiobook/{book_id}/{chapter}/alignment [get]
+func getChapterAlignmentHandler(c *gin.Context) {
+	bookID := c.Param("book_id")
+	userID := getUserID(c)
+	db := store.FileStore()
+
+	chapterIdx, err := strconv.Atoi(c.Param("chapter"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.ErrReqArgs.WithMessage("invalid chapter index"))
+		return
+	}
+
+	task, err := schema.GetAudiobookTaskByBook(db, bookID, userID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, utils.ErrNoFound.WithMessage("audiobook not found"))
+		return
+	}
+
+	chapters, _ := schema.GetChapterTasks(db, task.ID)
+	for _, ch := range chapters {
+		if ch.ChapterIndex != chapterIdx {
+			continue
+		}
+		if ch.AlignPath == "" {
+			c.JSON(http.StatusNotFound, utils.ErrNoFound.WithMessage("alignment not generated (pre-Sprint7 audiobook)"))
+			return
+		}
+		if _, err := os.Stat(ch.AlignPath); os.IsNotExist(err) {
+			c.JSON(http.StatusNotFound, utils.ErrNoFound.WithMessage("alignment file missing"))
+			return
+		}
+		c.File(ch.AlignPath)
+		return
+	}
+	c.JSON(http.StatusNotFound, utils.ErrNoFound.WithMessage("chapter not found"))
+}
+
+// getAudiobookIndexHandler returns a book-level manifest suitable for
+// bootstrapping the client player: per-chapter file names, durations,
+// sentence counts, without pulling the full alignment.
+//
+// @Summary Get audiobook manifest
+// @Description Per-chapter index of a generated audiobook — titles,
+// audio/alignment filenames, durations, sentence counts. Use this before
+// fetching individual alignment JSON files so the client can show a
+// chapter list with accurate durations.
+// @Tags TTS
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param book_id path string true "Book ID"
+// @Success 200 {object} AudiobookIndex
+// @Failure 404 {object} schema.ErrorResponse
+// @Router /tts/audiobook/{book_id}/index [get]
+func getAudiobookIndexHandler(c *gin.Context) {
+	bookID := c.Param("book_id")
+	userID := getUserID(c)
+	db := store.FileStore()
+
+	task, err := schema.GetAudiobookTaskByBook(db, bookID, userID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, utils.ErrNoFound.WithMessage("audiobook not found"))
+		return
+	}
+
+	chapters, _ := schema.GetChapterTasks(db, task.ID)
+	entries := make([]AudiobookIndexChapter, 0, len(chapters))
+	var totalMs int64
+	for _, ch := range chapters {
+		audioFile := ""
+		if ch.AudioPath != "" {
+			audioFile = filepath.Base(ch.AudioPath)
+		}
+		alignFile := ""
+		if ch.AlignPath != "" {
+			alignFile = filepath.Base(ch.AlignPath)
+		}
+		durMs := int64(ch.AudioDuration * 1000)
+		totalMs += durMs
+		entries = append(entries, AudiobookIndexChapter{
+			Index:         ch.ChapterIndex,
+			Title:         ch.ChapterTitle,
+			AudioFile:     audioFile,
+			AlignFile:     alignFile,
+			DurationMs:    durMs,
+			SentenceCount: ch.SentenceCount,
+			Status:        int(ch.Status),
+		})
+	}
+
+	idx := AudiobookIndex{
+		SchemaVersion:   AlignmentSchemaVersion,
+		BookID:          bookID,
+		Voice:           task.Voice,
+		Provider:        task.Provider,
+		TotalChapters:   task.TotalChapters,
+		DoneChapters:    task.DoneChapters,
+		TotalDurationMs: totalMs,
+		Chapters:        entries,
+	}
+	c.JSON(http.StatusOK, idx)
+}
+
+// AudiobookIndex is the shape returned by GET /tts/audiobook/:id/index.
+// It is returned unwrapped (no {code, data} envelope) — clients parse it
+// directly as the manifest.
+type AudiobookIndex struct {
+	SchemaVersion   int                     `json:"schema_version"`
+	BookID          string                  `json:"book_id"`
+	Voice           string                  `json:"voice"`
+	Provider        string                  `json:"provider"`
+	TotalChapters   int                     `json:"total_chapters"`
+	DoneChapters    int                     `json:"done_chapters"`
+	TotalDurationMs int64                   `json:"total_duration_ms"`
+	Chapters        []AudiobookIndexChapter `json:"chapters"`
+}
+
+// AudiobookIndexChapter is one row in AudiobookIndex.Chapters.
+type AudiobookIndexChapter struct {
+	Index         int    `json:"index"`
+	Title         string `json:"title"`
+	AudioFile     string `json:"audio_file,omitempty"`
+	AlignFile     string `json:"align_file,omitempty"`
+	DurationMs    int64  `json:"duration_ms"`
+	SentenceCount int    `json:"sentence_count"`
+	Status        int    `json:"status"`
 }

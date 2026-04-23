@@ -683,189 +683,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/m4t/tts/speakers": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Get available TTS voice speakers",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "TTS"
-                ],
-                "summary": "List TTS speakers",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "data": {
-                                    "type": "array"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/utils.Response"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Upload and register a new TTS speaker voice",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "TTS"
-                ],
-                "summary": "Add TTS speaker",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "data": {
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/utils.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/m4t/tts/speakers/{audio_id}": {
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Remove a TTS speaker voice",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "TTS"
-                ],
-                "summary": "Delete TTS speaker",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Speaker audio ID",
-                        "name": "audio_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "success": {
-                                    "type": "boolean"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/utils.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/utils.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/m4t/tts/stream": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Synthesize text to speech with streaming audio output",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/octet-stream"
-                ],
-                "tags": [
-                    "TTS"
-                ],
-                "summary": "Stream TTS synthesis",
-                "parameters": [
-                    {
-                        "description": "TTS request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "audio_id": {
-                                    "type": "string"
-                                },
-                                "format": {
-                                    "type": "integer"
-                                },
-                                "lang": {
-                                    "type": "string"
-                                },
-                                "text": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Audio stream",
-                        "schema": {
-                            "type": "file"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/utils.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/opds": {
             "get": {
                 "description": "Get the OPDS root catalog feed",
@@ -1106,6 +923,57 @@ const docTemplate = `{
                         "description": "OPDS Atom feed",
                         "schema": {
                             "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/reader/ai/cache/sync": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Upload multiple AI cache entries at once (client → server bulk sync)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AI"
+                ],
+                "summary": "Batch sync AI cache results",
+                "parameters": [
+                    {
+                        "description": "AI results array",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schema.AiResult"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "synced count",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
@@ -1560,6 +1428,151 @@ const docTemplate = `{
                 }
             }
         },
+        "/reader/books/{book_id}/ai": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns AI-generated metadata (tags, summary, category) for a specific book",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reader"
+                ],
+                "summary": "Get AI enhancement results for a book",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book ID",
+                        "name": "book_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/reader.BookAiResult"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/reader/books/{book_id}/ai/cache": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns AI-generated cached results for a specific book, with optional pagination",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AI"
+                ],
+                "summary": "List cached AI results for a book",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book ID",
+                        "name": "book_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Max results (1-500, default 100)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset for pagination (default 0)",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schema.AiResult"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create or update an AI cache entry (client → server sync)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AI"
+                ],
+                "summary": "Upsert an AI cache result",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book ID",
+                        "name": "book_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "AI result",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.AiResult"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/schema.AiResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/reader/books/{book_id}/annotations": {
             "get": {
                 "security": [
@@ -1567,7 +1580,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Get all annotations for a book",
+                "description": "Get all annotations for a book, with optional pagination",
                 "produces": [
                     "application/json"
                 ],
@@ -1582,6 +1595,18 @@ const docTemplate = `{
                         "name": "book_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Max results (1-500, default 100)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset for pagination (default 0)",
+                        "name": "offset",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1808,6 +1833,134 @@ const docTemplate = `{
                 }
             }
         },
+        "/reader/books/{book_id}/companion/chat": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns companion conversation messages for a specific book",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AI"
+                ],
+                "summary": "Get companion chat history for a book",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book ID",
+                        "name": "book_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Delta sync: only return records with ctime \u003e since (milliseconds)",
+                        "name": "since",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 50,
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Chat messages with server timestamp",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/schema.CompanionChat"
+                                    }
+                                },
+                                "server_time": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Bulk add companion chat messages (client → server sync)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AI"
+                ],
+                "summary": "Add companion chat messages",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book ID",
+                        "name": "book_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Chat messages",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schema.CompanionChat"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/reader/books/{book_id}/cover": {
             "put": {
                 "security": [
@@ -1867,6 +2020,126 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/reader/books/{book_id}/margin-notes": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns AI-generated margin notes (cross-book connections) for a chapter",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AI"
+                ],
+                "summary": "Get margin notes for a book chapter",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book ID",
+                        "name": "book_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Delta sync: only return records with utime \u003e since (milliseconds)",
+                        "name": "since",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Chapter name filter",
+                        "name": "chapter",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Margin notes with server timestamp",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/schema.MarginNote"
+                                    }
+                                },
+                                "server_time": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create or update margin notes (client → server sync)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AI"
+                ],
+                "summary": "Upsert margin notes",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book ID",
+                        "name": "book_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Margin notes",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schema.MarginNote"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/schema.ErrorResponse"
                         }
@@ -2161,6 +2434,247 @@ const docTemplate = `{
                 }
             }
         },
+        "/reader/knowledge": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns concept tags and edges for the current user's knowledge network",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reader"
+                ],
+                "summary": "Get knowledge graph data",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter by book ID",
+                        "name": "book_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Delta sync: only return records with ctime \u003e since (milliseconds)",
+                        "name": "since",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Knowledge graph with server timestamp",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "edges": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/schema.ConceptEdge"
+                                    }
+                                },
+                                "nodes": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/schema.ConceptTag"
+                                    }
+                                },
+                                "server_time": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/reader/knowledge/edges": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Bulk upsert concept edges from client",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reader"
+                ],
+                "summary": "Sync concept edges",
+                "parameters": [
+                    {
+                        "description": "Concept edges",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schema.ConceptEdge"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/reader/knowledge/tags": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Bulk upsert concept tags from client, returns server-assigned ID mappings",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reader"
+                ],
+                "summary": "Sync concept tags",
+                "parameters": [
+                    {
+                        "description": "Concept tags with optional local_id",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schema.ConceptTagWithLocalID"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sync result with ID mappings",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "mappings": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "local_id": {
+                                                "type": "integer"
+                                            },
+                                            "server_id": {
+                                                "type": "integer"
+                                            }
+                                        }
+                                    }
+                                },
+                                "status": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/reader/margin-notes/{note_id}": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mark a margin note as dismissed or helpful",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AI"
+                ],
+                "summary": "Update margin note feedback",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Note ID",
+                        "name": "note_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Feedback",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "dismissed": {
+                                    "type": "boolean"
+                                },
+                                "helpful": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/schema.MarginNote"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/reader/personal": {
             "get": {
                 "security": [
@@ -2244,7 +2758,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Search books with advanced filters and pagination",
+                "description": "Search books with advanced filters and pagination. Supports text (tsvector) and semantic (pgvector) modes.",
                 "produces": [
                     "application/json"
                 ],
@@ -2257,6 +2771,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Search query",
                         "name": "q",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "text",
+                        "description": "Search mode (text, semantic)",
+                        "name": "mode",
                         "in": "query"
                     },
                     {
@@ -2323,6 +2844,9 @@ const docTemplate = `{
                                     "items": {
                                         "$ref": "#/definitions/schema.Book"
                                     }
+                                },
+                                "mode": {
+                                    "type": "string"
                                 },
                                 "page": {
                                     "type": "integer"
@@ -3253,6 +3777,73 @@ const docTemplate = `{
                 }
             }
         },
+        "/sync/books/batch": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Push multiple book metadata updates in a single request (reduces N+1 HTTP calls)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Sync"
+                ],
+                "summary": "Batch push book metadata",
+                "parameters": [
+                    {
+                        "description": "Batch book updates",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "books": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "failed_indices": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "server_time": {
+                                    "type": "integer"
+                                },
+                                "synced": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/sync/delta": {
             "post": {
                 "security": [
@@ -3362,6 +3953,45 @@ const docTemplate = `{
                                     "items": {
                                         "$ref": "#/definitions/schema.Book"
                                     }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/sync/version": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns the server sync protocol version for client compatibility checking",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Sync"
+                ],
+                "summary": "Get sync protocol version",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "features": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "min_client_version": {
+                                    "type": "string"
+                                },
+                                "version": {
+                                    "type": "string"
                                 }
                             }
                         }
@@ -3587,13 +4217,16 @@ const docTemplate = `{
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "m4t_server_addr": {
-                                    "type": "string"
-                                },
                                 "openai_apikey": {
                                     "type": "string"
                                 },
                                 "openai_url": {
+                                    "type": "string"
+                                },
+                                "tts_provider": {
+                                    "type": "string"
+                                },
+                                "tts_sidecar_url": {
                                     "type": "string"
                                 }
                             }
@@ -3785,6 +4418,173 @@ const docTemplate = `{
                 }
             }
         },
+        "/tts/audiobook/{book_id}/index": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Per-chapter index of a generated audiobook — titles,",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "TTS"
+                ],
+                "summary": "Get audiobook manifest",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book ID",
+                        "name": "book_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tts.AudiobookIndex"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/tts/audiobook/{book_id}/{chapter}/alignment": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns the sentence-level alignment JSON for one chapter,",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "TTS"
+                ],
+                "summary": "Get chapter alignment (sentence timings)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book ID",
+                        "name": "book_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Chapter index (0-based)",
+                        "name": "chapter",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tts.ChapterAlignment"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/companion": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get the AI companion personality configuration for the current user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get companion profile",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/schema.CompanionProfile"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create or update the AI companion personality configuration",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update companion profile",
+                "parameters": [
+                    {
+                        "description": "Companion profile",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.CompanionProfile"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/schema.CompanionProfile"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/user/userinfo": {
             "get": {
                 "security": [
@@ -3833,6 +4633,9 @@ const docTemplate = `{
                 "base_url": {
                     "type": "string"
                 },
+                "embedding_model": {
+                    "type": "string"
+                },
                 "enabled": {
                     "type": "boolean"
                 },
@@ -3841,6 +4644,32 @@ const docTemplate = `{
                 },
                 "provider": {
                     "type": "string"
+                }
+            }
+        },
+        "reader.BookAiResult": {
+            "type": "object",
+            "properties": {
+                "book_id": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "language": {
+                    "type": "string"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -3860,6 +4689,35 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.AiResult": {
+            "type": "object",
+            "properties": {
+                "book_id": {
+                    "type": "string"
+                },
+                "cache_key": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "ctime": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "result_type": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "utime": {
                     "type": "integer"
                 }
             }
@@ -4047,6 +4905,169 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.CompanionChat": {
+            "type": "object",
+            "properties": {
+                "book_id": {
+                    "type": "string"
+                },
+                "cfi": {
+                    "type": "string"
+                },
+                "chapter": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "ctime": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.CompanionProfile": {
+            "type": "object",
+            "properties": {
+                "annotateHardWords": {
+                    "type": "boolean"
+                },
+                "autoChapterRecap": {
+                    "type": "boolean"
+                },
+                "autoKnowledgeGraph": {
+                    "type": "boolean"
+                },
+                "crossBookAlerts": {
+                    "type": "boolean"
+                },
+                "ctime": {
+                    "type": "integer"
+                },
+                "depth": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "postChapterQuestions": {
+                    "type": "boolean"
+                },
+                "preset_name": {
+                    "type": "string"
+                },
+                "proactivity": {
+                    "type": "integer"
+                },
+                "style": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "utime": {
+                    "type": "integer"
+                },
+                "voice": {
+                    "type": "string"
+                },
+                "warmth": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.ConceptEdge": {
+            "type": "object",
+            "properties": {
+                "ctime": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "source_id": {
+                    "type": "integer"
+                },
+                "target_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "weight": {
+                    "type": "number"
+                }
+            }
+        },
+        "schema.ConceptTag": {
+            "type": "object",
+            "properties": {
+                "book_id": {
+                    "type": "string"
+                },
+                "ctime": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "note_id": {
+                    "type": "integer"
+                },
+                "source": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.ConceptTagWithLocalID": {
+            "type": "object",
+            "properties": {
+                "book_id": {
+                    "type": "string"
+                },
+                "ctime": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "local_id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "note_id": {
+                    "type": "integer"
+                },
+                "source": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "schema.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -4081,6 +5102,53 @@ const docTemplate = `{
                 "MD",
                 "FB2"
             ]
+        },
+        "schema.MarginNote": {
+            "type": "object",
+            "properties": {
+                "book_id": {
+                    "type": "string"
+                },
+                "cfi": {
+                    "type": "string"
+                },
+                "chapter": {
+                    "type": "string"
+                },
+                "confidence": {
+                    "type": "number"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "ctime": {
+                    "type": "integer"
+                },
+                "dismissed": {
+                    "type": "boolean"
+                },
+                "helpful": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "related_book_id": {
+                    "type": "string"
+                },
+                "related_book_title": {
+                    "type": "string"
+                },
+                "related_highlight": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "utime": {
+                    "type": "integer"
+                }
+            }
         },
         "schema.ProgressBook": {
             "type": "object",
@@ -4360,6 +5428,123 @@ const docTemplate = `{
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "tts.AudiobookIndex": {
+            "type": "object",
+            "properties": {
+                "book_id": {
+                    "type": "string"
+                },
+                "chapters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tts.AudiobookIndexChapter"
+                    }
+                },
+                "done_chapters": {
+                    "type": "integer"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "schema_version": {
+                    "type": "integer"
+                },
+                "total_chapters": {
+                    "type": "integer"
+                },
+                "total_duration_ms": {
+                    "type": "integer"
+                },
+                "voice": {
+                    "type": "string"
+                }
+            }
+        },
+        "tts.AudiobookIndexChapter": {
+            "type": "object",
+            "properties": {
+                "align_file": {
+                    "type": "string"
+                },
+                "audio_file": {
+                    "type": "string"
+                },
+                "duration_ms": {
+                    "type": "integer"
+                },
+                "index": {
+                    "type": "integer"
+                },
+                "sentence_count": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "tts.ChapterAlignment": {
+            "type": "object",
+            "properties": {
+                "audio_duration_ms": {
+                    "type": "integer"
+                },
+                "audio_file": {
+                    "type": "string"
+                },
+                "chapter_index": {
+                    "type": "integer"
+                },
+                "chapter_title": {
+                    "type": "string"
+                },
+                "generated_at": {
+                    "type": "integer"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "schema_version": {
+                    "type": "integer"
+                },
+                "sentences": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tts.SentenceAlignment"
+                    }
+                },
+                "voice": {
+                    "type": "string"
+                }
+            }
+        },
+        "tts.SentenceAlignment": {
+            "type": "object",
+            "properties": {
+                "char_offset": {
+                    "type": "integer"
+                },
+                "end_ms": {
+                    "type": "integer"
+                },
+                "index": {
+                    "type": "integer"
+                },
+                "start_ms": {
+                    "type": "integer"
+                },
+                "synth_failed": {
+                    "description": "SynthFailed marks sentences that fell back to 1-second silence after\nexhausting retries. Client should not hide these — just expect\nsilence where they are.",
+                    "type": "boolean"
+                },
+                "text": {
+                    "type": "string"
                 }
             }
         },

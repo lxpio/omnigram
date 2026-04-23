@@ -38,6 +38,12 @@ type AudiobookTask struct {
 	StoragePath string `json:"storage_path" gorm:"type:varchar(500)"`
 	TotalSize   int64  `json:"total_size" gorm:"default:0"`
 
+	// ClientSentencesJSON is the raw JSON of ClientSentence[] passed at task
+	// creation when the caller wants to override the server's sentence
+	// splitter (e.g. app has foliate-js CFI data). Empty means "use server
+	// splitter". Worker parses it per chapter.
+	ClientSentencesJSON string `json:"-" gorm:"type:text"`
+
 	ErrorMessage string `json:"error_message,omitempty" gorm:"type:text"`
 
 	CTime int64 `json:"ctime" gorm:"column:ctime;autoCreateTime"`

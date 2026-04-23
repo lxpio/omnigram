@@ -2,6 +2,7 @@ package tts
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -139,6 +140,15 @@ func (w *AudiobookWorker) processTask(taskID string) {
 		task.ErrorMessage = "EPUB extraction failed: " + err.Error()
 		task.Save(db)
 		return
+	}
+
+	// Client-injected sentences override: if the caller attached a Sentences
+	// list at task creation, replace Chapter.Sentences with those entries
+	// (grouped by chapter_index, ordered by index). Keeps server and client
+	// on the exact same sentence list so post-hoc alignment ↔ foliate CFI
+	// matching is trivially index-equal.
+	if task.ClientSentencesJSON != "" {
+		applyClientSentences(chapters, task.ClientSentencesJSON)
 	}
 
 	// Process chapters one by one
@@ -474,4 +484,30 @@ func writeSilenceMp3(path string, durationMs int64) (int64, error) {
 		return 0, err
 	}
 	return durationMs, nil
+}
+
+// applyClientSentences replaces each chapter's Sentences slice with entries
+// from the client payload (grouped by chapter_index). Chapters not mentioned
+// in the payload keep their server-split sentences — this lets callers
+// override a subset without invalidating the rest.
+func applyClientSentences(chapters []Chapter, payload string) {
+	var entries []struct {
+		ChapterIndex int    `json:"chapter_index"`
+		Index        int    `json:"index"`
+		Text         string `json:"text"`
+		CharOffset   int    `json:"char_offset"`
+	}
+	if err := json.Unmarshal([]byte(payload), &entries); err != nil {
+		log.W("applyClientSentences: parse failed, falling back to server splitter: " + err.Error())
+		return
+	}
+	byChap := map[int][]Sentence{}
+	for _, e := range entries {
+		byChap[e.ChapterIndex] = append(byChap[e.ChapterIndex], Sentence{Text: e.Text, CharOffset: e.CharOffset})
+	}
+	for i := range chapters {
+		if s, ok := byChap[chapters[i].Index]; ok && len(s) > 0 {
+			chapters[i].Sentences = s
+		}
+	}
 }
