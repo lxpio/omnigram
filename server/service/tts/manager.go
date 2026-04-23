@@ -30,10 +30,14 @@ func NewTTSManager(primary, fallback TTSProvider, timeout time.Duration) *TTSMan
 }
 
 // Synthesize tries primary with retry, falls back on failure.
+//
+// NOTE: we intentionally do NOT wrap `ctx` with a local WithTimeout here.
+// Providers return an `io.ReadCloser` whose body is streamed by the caller
+// after Synthesize returns; a `defer cancel()` would cancel the context the
+// moment we return, truncating the response body mid-stream. Per-request
+// timeouts are enforced by the sidecar's own `http.Client.Timeout`, and the
+// caller (handler / worker) controls the overall deadline via its own ctx.
 func (m *TTSManager) Synthesize(ctx context.Context, text string, opts SynthesisOptions) (io.ReadCloser, error) {
-	ctx, cancel := context.WithTimeout(ctx, m.timeout)
-	defer cancel()
-
 	if m.breaker.allow() {
 		result, err := m.primary.Synthesize(ctx, text, opts)
 		if err != nil && isRetryable(err) {

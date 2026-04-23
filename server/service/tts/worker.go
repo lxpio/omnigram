@@ -155,8 +155,14 @@ func (w *AudiobookWorker) processTask(taskID string) {
 		task, _ = schema.GetAudiobookTask(db, taskID)
 	}
 
-	// Update final task status
-	task, _ = schema.GetAudiobookTask(db, taskID)
+	// Update final task status. The task may have been deleted out from under
+	// us (DELETE /tts/audiobook/:id) while we were generating chapters — in
+	// that case GetAudiobookTask returns (nil, err) and we exit silently.
+	task, err = schema.GetAudiobookTask(db, taskID)
+	if err != nil || task == nil {
+		log.I("audiobook task " + taskID + " disappeared mid-processing, abandoning")
+		return
+	}
 	if task.FailedChapters > 0 && task.DoneChapters == 0 {
 		task.Status = schema.TaskFailed
 	} else {
