@@ -11,10 +11,11 @@ import (
 
 // Chapter represents extracted chapter text from an EPUB.
 type Chapter struct {
-	Index int    // 0-based position in spine
-	Title string // extracted from <title> or <h1>-<h3>, or spine item href
-	Href  string // original spine item href
-	Text  string // cleaned plain text content
+	Index     int        // 0-based position in spine
+	Title     string     // extracted from <title> or <h1>-<h3>, or spine item href
+	Href      string     // original spine item href
+	Text      string     // cleaned plain text content
+	Sentences []Sentence // sentence-level split of Text with char offsets
 }
 
 // ExtractChapters opens an EPUB and extracts plain text for each spine item.
@@ -67,10 +68,11 @@ func ExtractChapters(epubPath string) ([]Chapter, error) {
 		}
 
 		chapters = append(chapters, Chapter{
-			Index: i,
-			Title: title,
-			Href:  item.Href,
-			Text:  text,
+			Index:     i,
+			Title:     title,
+			Href:      item.Href,
+			Text:      text,
+			Sentences: SplitSentences(text, DefaultSplitter()),
 		})
 	}
 
