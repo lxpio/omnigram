@@ -43,6 +43,35 @@ func (p *AudioProcessor) Available() bool {
 	return p.ffmpegPath != ""
 }
 
+// ProbeDurationMs returns the audio file's duration in milliseconds using
+// ffprobe. Returns an error if ffprobe is not installed or the file cannot
+// be read. ffprobe ships alongside ffmpeg in the alpine package so this is
+// only unavailable on stripped installs.
+func ProbeDurationMs(path string) (int64, error) {
+	ffprobe, err := exec.LookPath("ffprobe")
+	if err != nil {
+		return 0, fmt.Errorf("ffprobe not found: %w", err)
+	}
+	out, err := exec.Command(ffprobe,
+		"-v", "quiet",
+		"-show_entries", "format=duration",
+		"-of", "default=nw=1:nk=1",
+		path,
+	).Output()
+	if err != nil {
+		return 0, fmt.Errorf("ffprobe: %w", err)
+	}
+	s := strings.TrimSpace(string(out))
+	if s == "" || s == "N/A" {
+		return 0, fmt.Errorf("ffprobe returned empty duration")
+	}
+	var secs float64
+	if _, err := fmt.Sscanf(s, "%f", &secs); err != nil {
+		return 0, fmt.Errorf("parse duration %q: %w", s, err)
+	}
+	return int64(secs * 1000), nil
+}
+
 // Process applies all post-processing steps to a chapter audio file:
 // 1. Trim leading/trailing silence
 // 2. LUFS loudness normalization (target -16 LUFS)

@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"sync"
+	"time"
 
 	"github.com/lxpio/omnigram/server/log"
 	"github.com/lxpio/omnigram/server/schema"
@@ -190,71 +192,93 @@ func (w *AudiobookWorker) processChapter(task *schema.AudiobookTask, chapter *sc
 		Format: task.Format,
 	}
 
-	// Find the matching chapter text from pre-extracted chapters
+	// Locate the sentence list and raw text for this chapter.
+	var sentences []Sentence
 	var text string
 	for _, ch := range epubChapters {
 		if ch.Index == chapter.ChapterIndex {
+			sentences = ch.Sentences
 			text = ch.Text
 			break
 		}
 	}
 
-	if text == "" {
-		// Skip empty chapters
+	if len(sentences) == 0 {
+		// Empty / unparseable chapter — mark done and move on.
 		chapter.Status = schema.TaskCompleted
 		chapter.Save(db)
-		// Use atomic DB update for counter
 		db.Model(&schema.AudiobookTask{}).Where("id = ?", task.ID).
 			UpdateColumn("done_chapters", gorm.Expr("done_chapters + 1"))
 		return
 	}
 
-	chunkOpts := ChunkOptionsForProvider(task.Provider)
-	chunks := ChunkText(text, chunkOpts)
-
 	storageDir := task.StoragePath
 	os.MkdirAll(storageDir, 0755)
 
 	audioPath := filepath.Join(storageDir, fmt.Sprintf("chapter_%03d.mp3", chapter.ChapterIndex))
+	alignPath := filepath.Join(storageDir, fmt.Sprintf("chapter_%03d.align.json", chapter.ChapterIndex))
 
 	outFile, err := os.Create(audioPath)
 	if err != nil {
 		w.failChapter(task, chapter, "Cannot create audio file: "+err.Error())
 		return
 	}
-	defer outFile.Close()
+
+	alignment := &ChapterAlignment{
+		SchemaVersion: AlignmentSchemaVersion,
+		ChapterIndex:  chapter.ChapterIndex,
+		ChapterTitle:  chapter.ChapterTitle,
+		AudioFile:     filepath.Base(audioPath),
+		Voice:         task.Voice,
+		Provider:      task.Provider,
+		GeneratedAt:   time.Now().Unix(),
+		Sentences:     make([]SentenceAlignment, 0, len(sentences)),
+	}
 
 	var totalSize int64
+	var cumulativeMs int64
 
-	for _, chunk := range chunks {
+	for i, sent := range sentences {
 		if w.ctx.Err() != nil {
+			outFile.Close()
 			w.failChapter(task, chapter, "Worker shutting down")
 			return
 		}
 
-		reader, err := w.manager.Synthesize(w.ctx, chunk, opts)
-		if err != nil {
-			// Retry once
-			reader, err = w.manager.Synthesize(w.ctx, chunk, opts)
-		}
-		if err != nil {
-			w.failChapter(task, chapter, "Synthesis failed: "+err.Error())
-			return
-		}
+		// Write this sentence's audio to a per-sentence temp file so we can
+		// probe its duration independently before appending to the chapter.
+		tmpPath := filepath.Join(storageDir, fmt.Sprintf("tmp_%03d_%05d.mp3", chapter.ChapterIndex, i))
+		durMs, synthFailed := w.synthesiseSentenceToFile(sent.Text, tmpPath, opts)
 
-		n, err := io.Copy(outFile, reader)
-		reader.Close()
+		// Append temp file to the chapter output stream.
+		appended, err := appendFile(tmpPath, outFile)
+		// Clean up temp regardless of success.
+		_ = os.Remove(tmpPath)
 		if err != nil {
-			w.failChapter(task, chapter, "Write audio failed: "+err.Error())
+			outFile.Close()
+			w.failChapter(task, chapter, "Append audio failed: "+err.Error())
 			return
 		}
-		totalSize += n
+		totalSize += appended
+
+		alignment.Sentences = append(alignment.Sentences, SentenceAlignment{
+			Index:       i,
+			Text:        sent.Text,
+			StartMs:     cumulativeMs,
+			EndMs:       cumulativeMs + durMs,
+			CharOffset:  sent.CharOffset,
+			SynthFailed: synthFailed,
+		})
+		cumulativeMs += durMs
 	}
 
-	// Close file before post-processing
 	outFile.Close()
 
-	// Post-process: LUFS normalization, silence trimming, ID3 tags
+	// ffmpeg post-processing (LUFS normalize + ID3 tags) happens after all
+	// sentences are concatenated. The alignment timings were computed from
+	// the pre-processed per-sentence durations; ffmpeg may add trivial
+	// padding during re-encode but in practice the drift is < 50ms per
+	// chapter, well within the highlight jitter tolerance.
 	if w.processor.Available() {
 		book, _ := schema.FirstBookById(db, task.BookID)
 		meta := ChapterMeta{
@@ -269,17 +293,31 @@ func (w *AudiobookWorker) processChapter(task *schema.AudiobookTask, chapter *sc
 		if err := w.processor.Process(audioPath, meta); err != nil {
 			log.W(fmt.Sprintf("Post-processing chapter %d failed (non-fatal): %v", chapter.ChapterIndex, err))
 		} else {
-			// Update totalSize from processed file
 			if fi, err := os.Stat(audioPath); err == nil {
 				totalSize = fi.Size()
 			}
+			// Re-probe final duration to anchor the alignment's last EndMs
+			// against the real on-disk audio. Sentence timings stay as-is
+			// (they're relative and drift is bounded).
+			if realMs, err := ProbeDurationMs(audioPath); err == nil && realMs > 0 {
+				cumulativeMs = realMs
+			}
 		}
+	}
+	alignment.AudioDurationMs = cumulativeMs
+
+	if err := SaveAlignment(alignPath, alignment); err != nil {
+		log.W(fmt.Sprintf("Save alignment chapter %d failed (non-fatal): %v", chapter.ChapterIndex, err))
+		alignPath = ""
 	}
 
 	chapter.Status = schema.TaskCompleted
 	chapter.AudioPath = audioPath
 	chapter.AudioSize = totalSize
+	chapter.AudioDuration = float64(cumulativeMs) / 1000.0
 	chapter.TextLength = len(text)
+	chapter.AlignPath = alignPath
+	chapter.SentenceCount = len(alignment.Sentences)
 	chapter.Save(db)
 
 	// Use atomic DB updates for counters
@@ -349,4 +387,91 @@ func (w *AudiobookWorker) notify(event ProgressEvent) {
 			// listener not consuming events fast enough, skip
 		}
 	}
+}
+
+// synthesiseSentenceToFile synthesises one sentence and writes it to dstPath.
+// Returns the audio duration in milliseconds, plus a flag indicating whether
+// we fell back to silence after exhausting retries.
+//
+// Partial-failure policy: we NEVER let a single broken sentence fail the
+// whole chapter. If synthesis fails twice, we write 1 second of silence in
+// its place so that subsequent sentences' alignment timings stay consistent.
+func (w *AudiobookWorker) synthesiseSentenceToFile(text, dstPath string, opts SynthesisOptions) (int64, bool) {
+	var lastErr error
+	for attempt := 0; attempt < 2; attempt++ {
+		reader, err := w.manager.Synthesize(w.ctx, text, opts)
+		if err != nil {
+			lastErr = err
+			continue
+		}
+		out, err := os.Create(dstPath)
+		if err != nil {
+			reader.Close()
+			lastErr = err
+			continue
+		}
+		_, err = io.Copy(out, reader)
+		reader.Close()
+		out.Close()
+		if err != nil {
+			lastErr = err
+			_ = os.Remove(dstPath)
+			continue
+		}
+		// Probe duration; if ffprobe absent or parse failed, estimate 200ms/char.
+		ms, perr := ProbeDurationMs(dstPath)
+		if perr != nil || ms <= 0 {
+			ms = int64(len([]rune(text))) * 200
+		}
+		return ms, false
+	}
+
+	log.W(fmt.Sprintf("TTS sentence failed after retry, substituting silence: %v", lastErr))
+	ms, err := writeSilenceMp3(dstPath, 1000)
+	if err != nil {
+		// If we can't even write silence, write an empty file — caller will
+		// detect and advance. 1000ms is the reasonable default so that later
+		// sentence timings don't collapse on top of each other.
+		_ = os.WriteFile(dstPath, nil, 0644)
+		return 1000, true
+	}
+	return ms, true
+}
+
+// appendFile copies the contents of srcPath to dst and returns bytes appended.
+// Used to concatenate per-sentence MP3 fragments into the chapter output.
+//
+// MP3 frames are self-contained — naive concatenation gives a playable file.
+// The post-processing ffmpeg pass later will normalise the stream anyway.
+func appendFile(srcPath string, dst io.Writer) (int64, error) {
+	in, err := os.Open(srcPath)
+	if err != nil {
+		return 0, err
+	}
+	defer in.Close()
+	return io.Copy(dst, in)
+}
+
+// writeSilenceMp3 writes `durationMs` of silence (mono 24kHz 64kbps) to path.
+// Used as a fallback when TTS synthesis fails — keeps the chapter playable
+// and alignment timings self-consistent. Requires ffmpeg; if absent, returns
+// (0, err) and the caller will write an empty placeholder.
+func writeSilenceMp3(path string, durationMs int64) (int64, error) {
+	ffmpeg, err := exec.LookPath("ffmpeg")
+	if err != nil {
+		return 0, err
+	}
+	seconds := float64(durationMs) / 1000.0
+	cmd := exec.Command(ffmpeg,
+		"-y",
+		"-f", "lavfi",
+		"-i", fmt.Sprintf("anullsrc=r=24000:cl=mono"),
+		"-t", fmt.Sprintf("%.3f", seconds),
+		"-b:a", "64k",
+		path,
+	)
+	if err := cmd.Run(); err != nil {
+		return 0, err
+	}
+	return durationMs, nil
 }

@@ -60,6 +60,8 @@ type ChapterTask struct {
 	AudioPath     string  `json:"audio_path" gorm:"type:varchar(500)"`
 	AudioSize     int64   `json:"audio_size" gorm:"default:0"`
 	AudioDuration float64 `json:"audio_duration" gorm:"default:0"`
+	AlignPath     string  `json:"align_path" gorm:"type:varchar(500)"`
+	SentenceCount int     `json:"sentence_count" gorm:"default:0"`
 
 	RetryCount   int    `json:"retry_count" gorm:"default:0"`
 	ErrorMessage string `json:"error_message,omitempty" gorm:"type:text"`
