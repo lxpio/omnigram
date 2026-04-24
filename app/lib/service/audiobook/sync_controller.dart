@@ -87,6 +87,12 @@ class AudiobookSyncController {
     await _onPositionMs(positionMs);
   }
 
+  /// Resolve the foliate-js CFI for a server-side sentence index. Public
+  /// variant of the internal resolver — SyncListeningPage's auto-page-flip
+  /// hook uses it to ask foliate to scroll to the currently playing sentence
+  /// when it is off-screen.
+  Future<String?> resolveCfiForIndex(int index) => _resolveCfi(index);
+
   /// Find the server-side sentence index for a given foliate CFI. Used for
   /// tap-to-seek (user taps a sentence → map CFI → sentence → start_ms).
   /// Returns -1 if no match.

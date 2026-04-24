@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:omnigram/models/book.dart';
 import 'package:omnigram/models/server/server_tts.dart';
 import 'package:omnigram/page/book_player/epub_player.dart';
 import 'package:omnigram/providers/server_connection_provider.dart';
+import 'package:omnigram/service/api/tts_api.dart';
 import 'package:omnigram/service/audiobook/audiobook_player.dart';
 import 'package:omnigram/service/audiobook/sync_controller.dart';
 
@@ -111,7 +113,7 @@ class _SyncListeningPageState extends ConsumerState<SyncListeningPage> {
       await tts.downloadChapter(widget.book.id.toString(), chapterIdx, mp3Path);
     }
 
-    final alignment = await tts.getChapterAlignment(widget.book.id.toString(), chapterIdx);
+    final alignment = await _loadAlignment(bookDir, chapterIdx, tts);
 
     // Initialise sync controller lazily (first chapter): needs the epub state.
     final epubState = _epubKey.currentState;
@@ -119,10 +121,7 @@ class _SyncListeningPageState extends ConsumerState<SyncListeningPage> {
       _sync ??= AudiobookSyncController(player: _player, epubState: epubState);
       _sync!.setAlignment(alignment);
       _sync!.attach();
-      _sync!.onSentenceChange = (_, _) {
-        // Reserved for Phase 6 polish: auto-page-flip hook when sentence
-        // crosses the currently visible page range.
-      };
+      _sync!.onSentenceChange = _handleSentenceChange;
     }
 
     await _player.loadLocal(mp3Path);
@@ -134,8 +133,55 @@ class _SyncListeningPageState extends ConsumerState<SyncListeningPage> {
       });
     }
 
+    // Flip foliate-js into sync mode — taps now seek audio instead of
+    // turning the page. Idempotent; safe to re-run every chapter load.
+    if (epubState != null) {
+      try {
+        await epubState.setSyncListeningMode(true);
+      } catch (e) {
+        debugPrint('[SyncListening] setSyncListeningMode failed: $e');
+      }
+    }
+
     await _player.play();
     if (mounted) setState(() => _isPlaying = true);
+  }
+
+  /// Load alignment JSON with disk-first cache. Falls back to network, then
+  /// persists the result for next session. Never blocks on network when a
+  /// cached file exists.
+  Future<ChapterAlignment> _loadAlignment(
+    Directory bookDir,
+    int chapterIdx,
+    TtsApi tts,
+  ) async {
+    final cachePath =
+        '${bookDir.path}/chapter_${chapterIdx.toString().padLeft(3, '0')}.align.json';
+    final cached = File(cachePath);
+
+    if (cached.existsSync()) {
+      try {
+        final raw = await cached.readAsString();
+        final map = jsonDecode(raw) as Map<String, dynamic>;
+        return ChapterAlignment.fromJson(map);
+      } catch (e) {
+        // Corrupt cache — delete and fall through to network refetch.
+        debugPrint('[SyncListening] cached alignment parse failed: $e');
+        try {
+          await cached.delete();
+        } catch (_) {}
+      }
+    }
+
+    final fresh =
+        await tts.getChapterAlignment(widget.book.id.toString(), chapterIdx);
+    // Persist (best-effort; failure shouldn't block playback).
+    try {
+      await cached.writeAsString(jsonEncode(fresh.toJson()));
+    } catch (e) {
+      debugPrint('[SyncListening] cache write failed: $e');
+    }
+    return fresh;
   }
 
   Future<Directory> _bookDir() async {
@@ -154,6 +200,53 @@ class _SyncListeningPageState extends ConsumerState<SyncListeningPage> {
       return;
     }
     _loadChapter(_currentChapter + 1);
+  }
+
+  // ── Sync hooks ────────────────────────────────────────────────
+
+  /// Auto-page-flip — fires when the audio crosses into a new sentence.
+  /// Asks foliate-js to scroll the current page to the highlighted CFI if it
+  /// is off-screen. Throttled internally by SyncController (only called on
+  /// sentence boundary changes).
+  /// Tap-to-seek — fired by foliate-js (via EpubPlayer.onSyncTap) when the
+  /// user taps anywhere in the EPUB page while in sync-listening mode. Maps
+  /// the tapped CFI back to a server-side sentence index, then seeks the
+  /// audio to that sentence's start.
+  Future<void> _handleSyncTap(String cfi) async {
+    final sync = _sync;
+    if (sync == null) return;
+    final idx = await sync.findSentenceIndexByCfi(cfi);
+    if (idx < 0) {
+      debugPrint('[SyncListening] tap cfi had no match: $cfi');
+      return;
+    }
+    final align = _index?.chapters[_currentChapter];
+    if (align == null) return;
+
+    // Fetch the alignment (cheap — cached after first load) to look up
+    // sentence start_ms.
+    final tts = ref.read(serverConnectionProvider.notifier).tts;
+    if (tts == null) return;
+    final dir = await _bookDir();
+    final alignment = await _loadAlignment(dir, _currentChapter, tts);
+    if (idx >= alignment.sentences.length) return;
+    final startMs = alignment.sentences[idx].startMs;
+    await _player.seek(Duration(milliseconds: startMs));
+    await sync.highlightAt(startMs);
+  }
+
+  Future<void> _handleSentenceChange(int idx, SentenceAlignment sent) async {
+    final sync = _sync;
+    if (sync == null) return;
+    final cfi = await sync.resolveCfiForIndex(idx);
+    if (cfi == null) return;
+    final epub = _epubKey.currentState;
+    if (epub == null) return;
+    try {
+      await epub.ttsEnsureInView(cfi);
+    } catch (e) {
+      debugPrint('[SyncListening] ensure-in-view failed: $e');
+    }
   }
 
   // ── Controls ─────────────────────────────────────────────────────
@@ -203,8 +296,10 @@ class _SyncListeningPageState extends ConsumerState<SyncListeningPage> {
                     showOrHideAppBarAndBottomBar: (bool _) {},
                     onLoadEnd: () {
                       // Defer bootstrap to next frame so EpubPlayer state is ready.
-                      WidgetsBinding.instance.addPostFrameCallback((_) => _bootstrap());
+                      WidgetsBinding.instance
+                          .addPostFrameCallback((_) => _bootstrap());
                     },
+                    onSyncTap: _handleSyncTap,
                     initialThemes: const [],
                     updateParent: () {},
                   ),

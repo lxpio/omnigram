@@ -66,6 +66,12 @@ class EpubPlayer extends ConsumerStatefulWidget {
   final List<ReadTheme> initialThemes;
   final Function updateParent;
 
+  /// Sprint 7 — Sentence-sync listening mode. When non-null, a page tap is
+  /// dispatched here with the CFI of the tapped text node (instead of the
+  /// usual page-turn action). Enable from the host page by both passing
+  /// this callback AND calling `state.setSyncListeningMode(true)`.
+  final void Function(String cfi)? onSyncTap;
+
   const EpubPlayer(
       {super.key,
       required this.showOrHideAppBarAndBottomBar,
@@ -73,7 +79,8 @@ class EpubPlayer extends ConsumerStatefulWidget {
       this.cfi,
       required this.onLoadEnd,
       required this.initialThemes,
-      required this.updateParent});
+      required this.updateParent,
+      this.onSyncTap});
 
   @override
   ConsumerState<EpubPlayer> createState() => EpubPlayerState();
@@ -401,6 +408,38 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
   Future<void> ttsHighlightByCfi(String cfi) async {
     await webViewController.callAsyncJavaScript(
       functionBody: 'return ttsHighlightByCfi(${jsonEncode(cfi)})',
+    );
+  }
+
+  /// Sprint 7: scroll the paginator so [cfi] is visible on the current page.
+  /// Returns `true` if a navigation actually happened (i.e. the CFI was off-
+  /// screen and we moved to it); `false` when already in view. Used by the
+  /// audiobook sync controller for auto-page-flip when audio outpaces the
+  /// currently displayed page.
+  Future<bool> ttsEnsureInView(String cfi) async {
+    final result = await webViewController.callAsyncJavaScript(
+      functionBody: 'return await ttsEnsureInView(${jsonEncode(cfi)})',
+    );
+    return result?.value == true;
+  }
+
+  /// Sprint 7: resolve screen coordinates (in WebView coord space, same as
+  /// `onClick`'s `x`/`y`) to the CFI of the deepest text node at that point.
+  /// Returns null when the point is not over any text. Used for tap-to-seek.
+  Future<String?> ttsCfiFromPoint(double x, double y) async {
+    final result = await webViewController.callAsyncJavaScript(
+      functionBody: 'return ttsCfiFromPoint($x, $y)',
+    );
+    final value = result?.value;
+    return value is String && value.isNotEmpty ? value : null;
+  }
+
+  /// Sprint 7: toggle the foliate-js `_omniSyncMode` flag that tells
+  /// `#onClickView` to dispatch `onSyncTap(cfi)` instead of the regular
+  /// page-turn `onClick(x, y)` event.
+  Future<void> setSyncListeningMode(bool enabled) async {
+    await webViewController.evaluateJavascript(
+      source: 'window._omniSyncMode = ${enabled ? 'true' : 'false'};',
     );
   }
 
@@ -829,6 +868,20 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
         callback: (args) {
           Map<String, dynamic> location = args[0];
           onClick(location);
+        });
+    controller.addJavaScriptHandler(
+        handlerName: 'onSyncTap',
+        callback: (args) {
+          // Sprint 7: sent by foliate-js only when _omniSyncMode is true.
+          // Payload is {cfi: string}. The audiobook sync page uses this to
+          // seek the audio to the tapped sentence.
+          if (args.isEmpty) return;
+          final payload = args[0];
+          if (payload is! Map) return;
+          final cfi = payload['cfi'];
+          if (cfi is String && cfi.isNotEmpty) {
+            widget.onSyncTap?.call(cfi);
+          }
         });
     controller.addJavaScriptHandler(
       handlerName: 'onExternalLink',

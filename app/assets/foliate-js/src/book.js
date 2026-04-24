@@ -1189,6 +1189,18 @@ class Reader {
       return
     }
 
+    // Sprint 7 (Omnigram sentence-sync): when window._omniSyncMode is true,
+    // a tap is meant to seek the audio to the tapped sentence rather than
+    // turn the page. Resolve the CFI at the tap point and dispatch
+    // onSyncTap to Flutter; swallow the normal page-turn dispatch.
+    if (window._omniSyncMode && typeof window.ttsCfiFromPoint === 'function') {
+      const cfi = window.ttsCfiFromPoint(x, y)
+      if (cfi) {
+        onSyncTap(cfi)
+        return
+      }
+    }
+
     const coordinatesX = x / window.innerWidth
     const coordinatesY = y / window.innerHeight
     onClickView(coordinatesX, coordinatesY)
@@ -1610,6 +1622,10 @@ const onRelocated = (currentInfo) => {
 }
 
 const onAnnotationClick = (annotation) => callFlutter('onAnnotationClick', annotation)
+// Sprint 7: dispatched when a tap is captured in sentence-sync listening
+// mode; payload is just the CFI of the tapped text node. Flutter side
+// translates that to a server-side sentence index and seeks the audio.
+const onSyncTap = (cfi) => callFlutter('onSyncTap', { cfi })
 
 const onClickView = (x, y) => callFlutter('onClick', { x, y })
 
@@ -1749,6 +1765,93 @@ window.ttsCollectDetails = (count = 1, includeCurrent = false, offset = 1) => {
 window.ttsHighlightByCfi = cfi => {
   initTts()
   return reader.view.tts.highlightCfi(cfi)
+}
+
+// Sprint 7 (Omnigram sentence-sync listening) — three helpers that let the
+// Dart side keep the rendered page in step with an externally-driven audio
+// player. None of these exist upstream; remove when/if upstream folds them
+// into ttsHighlightByCfi's default behaviour.
+
+// Ensure the CFI is visible on the current page. If the target is off-screen
+// (e.g., audio has advanced past what the user is looking at), seek the
+// paginator to it via view.goTo. Returns true if a navigation happened,
+// false if the CFI was already in view or could not be resolved.
+window.ttsEnsureInView = async cfi => {
+  if (!cfi) return false
+  try {
+    const resolved = await reader.view.resolveNavigation(cfi)
+    if (!resolved) return false
+    const contents = reader.view.renderer.getContents()
+    const content =
+      contents.find(c => c.index === resolved.index) || contents[0]
+    if (!content || !content.doc) return false
+    const range =
+      typeof resolved.anchor === 'function'
+        ? resolved.anchor(content.doc)
+        : null
+    if (!range) return false
+    const rect = range.getBoundingClientRect()
+    const viewport = content.doc.defaultView
+    const vw = viewport ? viewport.innerWidth : window.innerWidth
+    const vh = viewport ? viewport.innerHeight : window.innerHeight
+    // "In view" = any part of the range rect intersects the viewport. Tight
+    // enough to catch a sentence straddling the page break.
+    const inView =
+      rect.bottom > 0 && rect.top < vh && rect.right > 0 && rect.left < vw
+    if (inView) return false
+    await reader.view.goTo(cfi)
+    return true
+  } catch (e) {
+    console.error('ttsEnsureInView failed', e)
+    return false
+  }
+}
+
+// Given screen coordinates (in the Flutter WebView's own coordinate space,
+// i.e. same as the pointerdown event's clientX/Y), return the CFI of the
+// deepest text node under that point. The paginator wraps each spine item
+// in an iframe whose document is accessed via getContents(); the (x, y) is
+// translated into that iframe's coords by subtracting its bounding rect.
+// Returns null when the point is not over any text.
+window.ttsCfiFromPoint = (x, y) => {
+  try {
+    const contents = reader.view.renderer.getContents()
+    for (const content of contents) {
+      if (!content || !content.doc) continue
+      const frame = content.doc.defaultView?.frameElement
+      if (!frame) continue
+      const frameRect = frame.getBoundingClientRect()
+      if (
+        x < frameRect.left ||
+        x > frameRect.right ||
+        y < frameRect.top ||
+        y > frameRect.bottom
+      ) {
+        continue
+      }
+      const docX = x - frameRect.left
+      const docY = y - frameRect.top
+      const pos = content.doc.caretPositionFromPoint
+        ? content.doc.caretPositionFromPoint(docX, docY)
+        : null
+      if (!pos || !pos.offsetNode) continue
+      const range = content.doc.createRange()
+      range.setStart(pos.offsetNode, pos.offset)
+      range.setEnd(pos.offsetNode, pos.offset)
+      return reader.view.getCFI(content.index, range)
+    }
+  } catch (e) {
+    console.error('ttsCfiFromPoint failed', e)
+  }
+  return null
+}
+
+// Collect all sentences for the currently loaded section with their CFIs.
+// Thin wrapper on ttsCollectDetails that returns everything — convenience
+// for the Dart SyncController so it can build its sentence list in one go.
+window.ttsAllSentencesInSection = () => {
+  initTts()
+  return reader.view.tts.collectDetails(99999, { includeCurrent: true, offset: 0 })
 }
 
 window.ttsNextSection = async () => {
