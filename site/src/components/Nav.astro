@@ -14,7 +14,7 @@ const prefix = lang === 'zh' ? '/zh' : '';
     </a>
     <div class="flex items-center gap-6">
       <a href={`${prefix}/features`} class="text-slate-400 hover:text-slate-100 text-sm transition">{ui.nav.features}</a>
-      <a href="/docs" class="text-slate-400 hover:text-slate-100 text-sm transition">{ui.nav.docs}</a>
+      <a href={`${prefix}/getting-started/quick-start/`} class="text-slate-400 hover:text-slate-100 text-sm transition">{ui.nav.docs}</a>
       <a href={`${prefix}/blog`} class="text-slate-400 hover:text-slate-100 text-sm transition">{ui.nav.blog}</a>
       <a href="https://github.com/lxpio/omnigram" target="_blank" class="text-slate-400 hover:text-slate-100 text-sm transition">{ui.nav.github}</a>
       <LanguageSwitch lang={lang} />
