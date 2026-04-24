@@ -37,7 +37,12 @@ jobs:
           dart run build_runner build --delete-conflicting-outputs
 
       - name: Analyze
-        run: flutter analyze lib/
+        # Gate on errors + warnings only. Info-level lints (use_null_aware_elements,
+        # deprecated_member_use from Flutter SDK churn, unnecessary_underscores, etc.)
+        # are cleanup noise, not merge blockers — the repo has ~80 of them from
+        # upstream Anx Reader heritage. Warnings stay fatal so real bugs like
+        # unused_element/unused_local_variable still block.
+        run: flutter analyze --no-fatal-infos lib/
 
       - name: Test
         run: flutter test --no-pub

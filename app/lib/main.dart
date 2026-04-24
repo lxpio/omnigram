@@ -11,7 +11,6 @@ import 'package:omnigram/page/migration_page.dart';
 import 'package:omnigram/service/book_player/book_player_server.dart';
 import 'package:omnigram/service/tts/tts_handler.dart';
 import 'package:omnigram/utils/get_path/macos_migration.dart';
-import 'package:omnigram/utils/color_scheme.dart';
 import 'package:omnigram/utils/error/common.dart';
 import 'package:omnigram/utils/get_path/get_base_path.dart';
 import 'package:omnigram/utils/log/common.dart';

@@ -255,12 +255,6 @@ class _AiProviderDetailPageState extends ConsumerState<AiProviderDetailPage> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final accent = colorScheme.secondary;
-    final summary = switch (_reasoningEffort) {
-      AiReasoningEffort.auto => l10n.settingsAiProviderReasoningEffortAuto,
-      AiReasoningEffort.low => l10n.settingsAiProviderReasoningEffortLow,
-      AiReasoningEffort.medium => l10n.settingsAiProviderReasoningEffortMedium,
-      AiReasoningEffort.high => l10n.settingsAiProviderReasoningEffortHigh,
-    };
 
     return FilledContainer(
       child: ExpansionTile(
