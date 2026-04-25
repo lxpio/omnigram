@@ -24,9 +24,12 @@ class OnlineTts extends BaseTts {
   OnlineTts._internal();
 
   // ============ Configuration ============
-  static const int _bufferCapacity = 10;
-  static const int _batchSize = 5; // Max concurrent fetches
-  static const int _fetchTimeoutSeconds = 10;
+  // Buffer/concurrency are sized for self-hosted CPU TTS where a single
+  // sentence can take 60–180s. Aggressive prefetch piles up requests faster
+  // than the server can drain and starves the foreground sentence.
+  static const int _bufferCapacity = 4;
+  static const int _batchSize = 2; // Max concurrent fetches
+  static const int _fetchTimeoutSeconds = 240;
   static const int _maxRetries = 2;
 
   // ============ Audio Player ============
@@ -361,6 +364,19 @@ class OnlineTts extends BaseTts {
     final audioPlayer = await _ensurePlayer();
 
     try {
+      // Cold-start gate: hold playback until enough sentences are queued so
+      // the gap after sentence #1 doesn't expose a still-fetching sentence #2.
+      // Times out after a few seconds so very short content still plays.
+      const initialFillTarget = 3;
+      const initialFillTimeoutMs = 8000;
+      final coldStart = DateTime.now();
+      while (!_shouldStop) {
+        final ready = _buffer.where((s) => s.isReady).length;
+        if (ready >= initialFillTarget) break;
+        if (DateTime.now().difference(coldStart).inMilliseconds >= initialFillTimeoutMs) break;
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+
       while (!_shouldStop) {
         // Wait for buffer to have a segment
         while (_buffer.isEmpty && !_shouldStop) {
@@ -393,15 +409,32 @@ class OnlineTts extends BaseTts {
           continue;
         }
 
-        // Play audio
+        // Play audio. BytesSource is unreliable on iOS — write to a temp
+        // file so AVAudioPlayer has a real URL to load.
         _playbackCompleter = Completer<void>();
-        final source = BytesSource(segment.audio!, mimeType: backend.audioMimeType);
+        final tmpDir = await getTemporaryDirectory();
+        final ext = backend.audioMimeType.contains('mpeg') || backend.audioMimeType.contains('mp3')
+            ? 'mp3'
+            : backend.audioMimeType.split('/').last;
+        final tmpFile = File('${tmpDir.path}/tts_seg_${DateTime.now().microsecondsSinceEpoch}.$ext');
+        await tmpFile.writeAsBytes(segment.audio!, flush: true);
+        AnxLog.info('[TTS-PLAY] start file=${tmpFile.path} bytes=${segment.audio!.length}');
+        final t0 = DateTime.now();
 
         try {
-          await audioPlayer.play(source);
+          await audioPlayer.play(DeviceFileSource(tmpFile.path));
+          AnxLog.info('[TTS-PLAY] play() returned, state=${audioPlayer.state}');
           await _playbackCompleter!.future;
+          final dur = DateTime.now().difference(t0).inMilliseconds;
+          AnxLog.info('[TTS-PLAY] complete after ${dur}ms');
         } catch (e) {
           AnxLog.severe('Playback error: $e');
+        } finally {
+          unawaited(Future(() async {
+            try {
+              await tmpFile.delete();
+            } catch (_) {}
+          }));
         }
 
         _playbackCompleter = null;
