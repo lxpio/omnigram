@@ -6,6 +6,7 @@ import 'package:omnigram/dao/ai_cache.dart';
 import 'package:omnigram/models/book.dart';
 import 'package:omnigram/models/empty_state_data.dart';
 import 'package:omnigram/providers/book_list.dart';
+import 'package:omnigram/page/search/search_page.dart';
 import 'package:omnigram/providers/empty_state_provider.dart';
 import 'package:omnigram/service/book.dart';
 import 'package:omnigram/widgets/library/ai_recommendation_card.dart';
@@ -81,58 +82,68 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
 
             final recentBooks = List<Book>.from(allBooks)..sort((a, b) => b.createTime.compareTo(a.createTime));
             final recent = recentBooks.take(10).toList();
+            final recentTitles = recent.map((b) => b.title).toList();
 
-            return ListView(
-              padding: const EdgeInsets.all(OmnigramTheme.pageHorizontalPadding),
-              children: [
-                const SizedBox(height: 16),
-                Text(L10n.of(context).libraryTitle, style: OmnigramTypography.displayLarge(context)),
-                const SizedBox(height: 16),
-                SearchBar(
-                  hintText: L10n.of(context).librarySearchHint,
-                  leading: const Icon(Icons.search),
-                  onTap: () {
-                    // TODO: navigate to search page
-                  },
-                ),
-                const SizedBox(height: 24),
-                AiRecommendationCard(recentBookTitles: allBooks.map((b) => b.title).toList()),
-                const SizedBox(height: 16),
-
-                // AI topic groups
-                if (_topicGroups != null && _topicGroups!.isNotEmpty)
-                  for (final group in _topicGroups!)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: TopicSection(
-                        title: group.key,
-                        count: group.value.length,
-                        books: group.value,
+            return CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: OmnigramTheme.pageHorizontalPadding),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      const SizedBox(height: 16),
+                      Text(L10n.of(context).libraryTitle, style: OmnigramTypography.displayLarge(context)),
+                      const SizedBox(height: 16),
+                      SearchBar(
+                        hintText: L10n.of(context).librarySearchHint,
+                        leading: const Icon(Icons.search),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const SearchPage()),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 24),
+                      AiRecommendationCard(recentBookTitles: recentTitles),
+                      const SizedBox(height: 16),
+                      if (_topicGroups != null && _topicGroups!.isNotEmpty)
+                        for (final group in _topicGroups!)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: TopicSection(
+                              title: group.key,
+                              count: group.value.length,
+                              books: group.value,
+                              onBookTap: (book) => _openBook(context, ref, book),
+                            ),
+                          ),
+                      TopicSection(
+                        title: L10n.of(context).libraryRecentlyAdded,
+                        count: recent.length,
+                        books: recent,
                         onBookTap: (book) => _openBook(context, ref, book),
                       ),
-                    ),
-
-                TopicSection(
-                  title: L10n.of(context).libraryRecentlyAdded,
-                  count: recent.length,
-                  books: recent,
-                  onBookTap: (book) => _openBook(context, ref, book),
-                ),
-                const SizedBox(height: 24),
-                Text(L10n.of(context).libraryAllBooks(allBooks.length), style: OmnigramTypography.titleMedium(context)),
-                const SizedBox(height: 8),
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    childAspectRatio: 0.65,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
+                      const SizedBox(height: 24),
+                      Text(L10n.of(context).libraryAllBooks(allBooks.length), style: OmnigramTypography.titleMedium(context)),
+                      const SizedBox(height: 8),
+                    ]),
                   ),
-                  itemCount: allBooks.length,
-                  itemBuilder: (_, i) => BookGridItem(book: allBooks[i], onTap: () => _openBook(context, ref, allBooks[i])),
                 ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: OmnigramTheme.pageHorizontalPadding),
+                  sliver: SliverGrid(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 0.65,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (_, i) => BookGridItem(book: allBooks[i], onTap: () => _openBook(context, ref, allBooks[i])),
+                      childCount: allBooks.length,
+                    ),
+                  ),
+                ),
+                const SliverPadding(padding: EdgeInsets.only(bottom: 16)),
               ],
             );
           },

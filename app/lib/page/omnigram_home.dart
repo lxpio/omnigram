@@ -31,17 +31,42 @@ class _OmnigramHomeState extends ConsumerState<OmnigramHome> {
     setState(() => _showOnboarding = false);
   }
 
-  Widget _buildPage() {
-    switch (_currentTab) {
-      case OmnigramTab.reading:
-        return const DeskPage();
-      case OmnigramTab.bookshelf:
-        return const LibraryPage();
-      case OmnigramTab.insights:
-        return const InsightsPage();
-      case OmnigramTab.settings:
-        return const omnigram.SettingsPage();
+  // Pages built lazily on first visit, then kept alive across tab switches.
+  final List<Widget?> _pageCache = List.filled(OmnigramTab.values.length, null);
+
+  Widget _pageAt(int index) {
+    var page = _pageCache[index];
+    if (page == null) {
+      switch (OmnigramTab.values[index]) {
+        case OmnigramTab.reading:
+          page = const DeskPage();
+          break;
+        case OmnigramTab.bookshelf:
+          page = const LibraryPage();
+          break;
+        case OmnigramTab.insights:
+          page = const InsightsPage();
+          break;
+        case OmnigramTab.settings:
+          page = const omnigram.SettingsPage();
+          break;
+      }
+      _pageCache[index] = page;
     }
+    return page;
+  }
+
+  Widget _buildBody() {
+    return IndexedStack(
+      index: _currentTab.index,
+      children: [
+        for (int i = 0; i < OmnigramTab.values.length; i++)
+          // Offstage avoids laying out / painting un-visited tabs until they are activated.
+          _pageCache[i] == null && i != _currentTab.index
+              ? const SizedBox.shrink()
+              : _pageAt(i),
+      ],
+    );
   }
 
   @override
@@ -79,14 +104,14 @@ class _OmnigramHomeState extends ConsumerState<OmnigramHome> {
                   .toList(),
             ),
             const VerticalDivider(thickness: 1, width: 1),
-            Expanded(child: _buildPage()),
+            Expanded(child: _buildBody()),
           ],
         ),
       );
     }
 
     return Scaffold(
-      body: _buildPage(),
+      body: _buildBody(),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentTab.index,
         onDestinationSelected: (i) => setState(() => _currentTab = OmnigramTab.values[i]),
