@@ -22,6 +22,14 @@ class AzureTtsProvider extends TtsServiceProvider {
   TtsService get service => TtsService.azure;
 
   @override
+  bool get isConfigured {
+    final c = getConfig();
+    final key = c['key']?.toString() ?? '';
+    final region = c['region']?.toString() ?? '';
+    return key.isNotEmpty && region.isNotEmpty;
+  }
+
+  @override
   String getLabel(BuildContext context) =>
       L10n.of(context).settingsNarrateAzureTts;
 

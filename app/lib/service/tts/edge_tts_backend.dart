@@ -22,6 +22,12 @@ class EdgeTtsProvider extends TtsServiceProvider {
   @override
   TtsService get service => TtsService.edge;
 
+  // Microsoft now requires a Sec-MS-GEC signature on the unofficial endpoint;
+  // requests without it 403. Treat Edge as unconfigured so it disappears from
+  // the voice picker until the signing scheme is implemented.
+  @override
+  bool get isConfigured => false;
+
   @override
   String getLabel(BuildContext context) => 'Edge TTS ⚠️ Non-official API';
 

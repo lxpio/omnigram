@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:path_provider/path_provider.dart';
 import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/page/reading_page.dart';
 import 'package:omnigram/service/tts/base_tts.dart';
@@ -126,8 +128,31 @@ class OnlineTts extends BaseTts {
   }
 
   // ============ Audio Player Management ============
+  static bool _audioContextConfigured = false;
+
   Future<AudioPlayer> _ensurePlayer() async {
     if (_player != null) return _player!;
+
+    if (!_audioContextConfigured) {
+      // Without an explicit playback context, iOS routes our audio to the
+      // ambient session and the simulator silences it. Set this once globally.
+      await AudioPlayer.global.setAudioContext(
+        AudioContext(
+          iOS: AudioContextIOS(
+            category: AVAudioSessionCategory.playback,
+            options: const {AVAudioSessionOptions.mixWithOthers},
+          ),
+          android: AudioContextAndroid(
+            isSpeakerphoneOn: false,
+            stayAwake: false,
+            contentType: AndroidContentType.speech,
+            usageType: AndroidUsageType.media,
+            audioFocus: AndroidAudioFocus.gain,
+          ),
+        ),
+      );
+      _audioContextConfigured = true;
+    }
 
     _player = AudioPlayer();
     await _player!.setReleaseMode(ReleaseMode.stop);
@@ -472,13 +497,26 @@ class OnlineTts extends BaseTts {
 
   /// For testing a specific voice in settings
   Future<void> speakWithVoice(String content, String voice) async {
+    AnxLog.info('[TTS] speakWithVoice voice=$voice backend=${backend.serviceId} text=${content.length}');
     await stop();
     final audioPlayer = await _ensurePlayer();
 
     final bytes = await backend.speak(content, voice, rate, pitch);
-    if (bytes.isNotEmpty) {
-      final source = BytesSource(bytes, mimeType: backend.audioMimeType);
-      await audioPlayer.play(source);
+    AnxLog.info('[TTS] received bytes=${bytes.length} mime=${backend.audioMimeType}');
+    if (bytes.isEmpty) return;
+    final tmpDir = await getTemporaryDirectory();
+    final ext = backend.audioMimeType.contains('mpeg') || backend.audioMimeType.contains('mp3')
+        ? 'mp3'
+        : (backend.audioMimeType.split('/').last);
+    final file = File('${tmpDir.path}/tts_preview_${DateTime.now().millisecondsSinceEpoch}.$ext');
+    await file.writeAsBytes(bytes, flush: true);
+    AnxLog.info('[TTS] wrote ${file.path}, exists=${file.existsSync()} size=${file.lengthSync()}');
+    try {
+      await audioPlayer.play(DeviceFileSource(file.path));
+      AnxLog.info('[TTS] play() returned, state=${audioPlayer.state}');
+    } catch (e, st) {
+      AnxLog.severe('[TTS] play() failed: $e\n$st');
+      rethrow;
     }
   }
 

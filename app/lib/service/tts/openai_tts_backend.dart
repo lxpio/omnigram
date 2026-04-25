@@ -26,6 +26,12 @@ class OpenAiTtsProvider extends TtsServiceProvider {
   TtsService get service => TtsService.openai;
 
   @override
+  bool get isConfigured {
+    final key = getConfig()['key']?.toString() ?? '';
+    return key.isNotEmpty;
+  }
+
+  @override
   String getLabel(BuildContext context) =>
       L10n.of(context).settingsNarrateOpenAiTts;
 

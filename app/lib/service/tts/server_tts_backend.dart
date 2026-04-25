@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/service/tts/models/tts_voice.dart';
 import 'package:omnigram/service/tts/tts_service.dart';
@@ -18,6 +19,12 @@ class ServerTtsProvider extends TtsServiceProvider {
   ServerTtsProvider._internal();
 
   static const String _defaultUrl = 'http://localhost:8080';
+  // Keys mirror those in providers/server_connection_provider.dart so we can
+  // reuse the logged-in connection without asking the user to retype them.
+  static const String _kServerUrlPref = 'omnigram_server_url';
+  static const String _kAccessTokenSecure = 'omnigram_access_token';
+
+  static const FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
   @override
   TtsService get service => TtsService.server;
@@ -27,48 +34,34 @@ class ServerTtsProvider extends TtsServiceProvider {
 
   @override
   List<ConfigItem> getConfigItems(BuildContext context) {
-    return [
-      ConfigItem(
-        key: 'url',
-        label: 'Server URL',
-        description: 'Omnigram Server address (e.g. http://192.168.1.100:8080)',
-        type: ConfigItemType.text,
-        defaultValue: _defaultUrl,
-      ),
-      ConfigItem(
-        key: 'token',
-        label: 'Auth Token',
-        description: 'OAuth Bearer token (optional)',
-        type: ConfigItemType.password,
-        defaultValue: '',
-      ),
-    ];
+    // URL/token come from the logged-in server connection — no manual fields.
+    return const [];
   }
 
   @override
   Map<String, dynamic> getConfig() {
-    final config = Prefs().getOnlineTtsConfig(serviceId);
-    if (config.isEmpty) {
-      return {'url': _defaultUrl, 'token': ''};
-    }
-    return {'url': config['url'] ?? _defaultUrl, 'token': config['token'] ?? ''};
+    return {'url': _loggedInUrl() ?? _defaultUrl};
   }
 
   @override
   void saveConfig(Map<String, dynamic> config) {
-    Prefs().saveOnlineTtsConfig(serviceId, config);
+    // Nothing to save; config is sourced from the active server connection.
   }
 
-  String _baseUrl() {
-    final config = getConfig();
-    final url = config['url']?.toString().trim() ?? _defaultUrl;
+  String? _loggedInUrl() {
+    final url = Prefs().prefs.getString(_kServerUrlPref)?.trim();
+    if (url == null || url.isEmpty) return null;
     return url.endsWith('/') ? url.substring(0, url.length - 1) : url;
   }
 
-  Map<String, String> _headers() {
-    final config = getConfig();
-    final token = config['token']?.toString() ?? '';
-    return {'Content-Type': 'application/json', if (token.isNotEmpty) 'Authorization': 'Bearer $token'};
+  String _baseUrl() => _loggedInUrl() ?? _defaultUrl;
+
+  Future<Map<String, String>> _headers() async {
+    final token = await _secureStorage.read(key: _kAccessTokenSecure) ?? '';
+    return {
+      'Content-Type': 'application/json',
+      if (token.isNotEmpty) 'Authorization': 'Bearer $token',
+    };
   }
 
   @override
@@ -78,7 +71,7 @@ class ServerTtsProvider extends TtsServiceProvider {
 
     final response = await http.post(
       Uri.parse('$baseUrl/tts/synthesize'),
-      headers: _headers(),
+      headers: await _headers(),
       body: jsonEncode({'text': text, 'voice': resolvedVoice, 'speed': rate, 'format': 'mp3'}),
     );
 
@@ -93,7 +86,7 @@ class ServerTtsProvider extends TtsServiceProvider {
   Future<List<TtsVoice>> getVoices() async {
     final baseUrl = _baseUrl();
 
-    final response = await http.get(Uri.parse('$baseUrl/tts/voices'), headers: _headers());
+    final response = await http.get(Uri.parse('$baseUrl/tts/voices'), headers: await _headers());
 
     if (response.statusCode != 200) {
       throw Exception('Server TTS voices failed: ${response.statusCode} ${response.body}');

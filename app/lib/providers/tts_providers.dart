@@ -1,4 +1,5 @@
 import 'package:omnigram/config/shared_preference_provider.dart';
+import 'package:omnigram/providers/server_connection_provider.dart';
 import 'package:omnigram/service/tts/models/tts_voice.dart';
 import 'package:omnigram/service/tts/tts_factory.dart';
 import 'package:omnigram/service/tts/tts_service.dart' as tts_svc;
@@ -6,6 +7,31 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'tts_providers.g.dart';
+
+/// Status of the Omnigram Server's TTS service from the app's perspective.
+enum OmnigramServerTtsStatus {
+  /// User is not logged in to any Omnigram Server.
+  notLoggedIn,
+
+  /// Logged in, but the server isn't running TTS (minimal deployment / sidecar missing).
+  serviceUnavailable,
+
+  /// Logged in and TTS is reachable.
+  available,
+}
+
+@riverpod
+Future<OmnigramServerTtsStatus> omnigramServerTtsStatus(Ref ref) async {
+  final conn = ref.watch(serverConnectionProvider);
+  if (!conn.isConnected) return OmnigramServerTtsStatus.notLoggedIn;
+  try {
+    final voices = await tts_svc.TtsService.server.provider.getVoices();
+    if (voices.isEmpty) return OmnigramServerTtsStatus.serviceUnavailable;
+    return OmnigramServerTtsStatus.available;
+  } catch (_) {
+    return OmnigramServerTtsStatus.serviceUnavailable;
+  }
+}
 
 /// Voice data tagged with its source service for the unified voice grid.
 class TaggedVoice {
@@ -77,40 +103,23 @@ Future<Map<String, List<TaggedVoice>>> allVoicesGrouped(Ref ref) async {
     }
   } catch (_) {}
 
-  // Online
-  final online = <TaggedVoice>[];
+  // Per-source online groups. Skip cloud services without credentials so users
+  // aren't drowned in voices they can't actually use.
+  Future<void> addSource(tts_svc.TtsService svc, String source, String label) async {
+    final provider = svc.provider;
+    if (!provider.isConfigured) return;
+    try {
+      final voices = await provider.getVoices();
+      if (voices.isEmpty) return;
+      result[source] = voices.map((v) => TaggedVoice(source: source, voice: v, sourceLabel: label)).toList();
+    } catch (_) {}
+  }
 
-  // Edge (always available)
-  try {
-    final edgeVoices = await tts_svc.TtsService.edge.provider.getVoices();
-    online.addAll(edgeVoices.map((v) => TaggedVoice(source: 'edge', voice: v, sourceLabel: 'Edge')));
-  } catch (_) {}
-
-  // Server (if configured — getVoices returns [] or throws if not configured)
-  try {
-    final serverVoices = await tts_svc.TtsService.server.provider.getVoices();
-    online.addAll(serverVoices.map((v) => TaggedVoice(source: 'server', voice: v, sourceLabel: 'Server')));
-  } catch (_) {}
-
-  // Azure
-  try {
-    final azureVoices = await tts_svc.TtsService.azure.provider.getVoices();
-    online.addAll(azureVoices.map((v) => TaggedVoice(source: 'azure', voice: v, sourceLabel: 'Azure')));
-  } catch (_) {}
-
-  // OpenAI
-  try {
-    final openaiVoices = await tts_svc.TtsService.openai.provider.getVoices();
-    online.addAll(openaiVoices.map((v) => TaggedVoice(source: 'openai', voice: v, sourceLabel: 'OpenAI')));
-  } catch (_) {}
-
-  // Aliyun
-  try {
-    final aliyunVoices = await tts_svc.TtsService.aliyun.provider.getVoices();
-    online.addAll(aliyunVoices.map((v) => TaggedVoice(source: 'aliyun', voice: v, sourceLabel: 'Aliyun')));
-  } catch (_) {}
-
-  if (online.isNotEmpty) result['online'] = online;
+  // Order matters — Server first when available, then paid clouds.
+  await addSource(tts_svc.TtsService.server, 'server', 'Omnigram Server');
+  await addSource(tts_svc.TtsService.azure, 'azure', 'Azure');
+  await addSource(tts_svc.TtsService.openai, 'openai', 'OpenAI');
+  await addSource(tts_svc.TtsService.aliyun, 'aliyun', 'Aliyun');
 
   // System
   try {

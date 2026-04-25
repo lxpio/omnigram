@@ -62,6 +62,11 @@ abstract class TtsServiceProvider extends ServiceProvider<dynamic> {
     Prefs().setTtsVoiceModel(serviceId, voice);
   }
 
+  /// Whether the user has supplied the credentials this service needs to function.
+  /// Defaults to true for services that don't require user-provided credentials
+  /// (e.g. Edge, System). Override for paid cloud services.
+  bool get isConfigured => true;
+
   /// Resolve the voice to use, optionally overriding the saved selection.
   String resolveVoice(String? voiceOverride) {
     if (voiceOverride != null && voiceOverride.isNotEmpty) {

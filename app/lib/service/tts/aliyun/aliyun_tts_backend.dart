@@ -37,6 +37,15 @@ class AliyunTtsProvider extends TtsServiceProvider {
   TtsService get service => TtsService.aliyun;
 
   @override
+  bool get isConfigured {
+    final c = getConfig();
+    final appkey = c['appkey']?.toString() ?? '';
+    final id = c['accessKeyId']?.toString() ?? '';
+    final secret = c['accessKeySecret']?.toString() ?? '';
+    return appkey.isNotEmpty && id.isNotEmpty && secret.isNotEmpty;
+  }
+
+  @override
   String getLabel(BuildContext context) =>
       L10n.of(context).settingsNarrateAliyunTts;
 

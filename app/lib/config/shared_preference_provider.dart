@@ -447,9 +447,8 @@ class Prefs extends ChangeNotifier {
       selectedVoiceFullId = fullId;
       return fullId;
     }
-    const defaultId = 'edge:zh-CN-XiaoxiaoNeural';
-    selectedVoiceFullId = defaultId;
-    return defaultId;
+    // No default — user picks a voice from the available services.
+    return '';
   }
 
   set pageTurnStyle(PageTurn style) {

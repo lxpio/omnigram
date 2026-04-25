@@ -1,6 +1,8 @@
 import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/l10n/generated/L10n.dart';
+import 'package:omnigram/page/settings_page/server_connection_page.dart';
 import 'package:omnigram/providers/tts_providers.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:omnigram/service/tts/model_manager.dart' as tts_mm;
 import 'package:omnigram/service/tts/online_tts.dart';
 import 'package:omnigram/service/tts/system_tts.dart';
@@ -195,11 +197,61 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings> {
           error: (e, _) => Text('Error: $e'),
         ),
 
+        // Omnigram Server status banner — guides user to log in or enable TTS.
+        const SizedBox(height: 16),
+        _buildOmnigramServerStatusBanner(),
+
         const SizedBox(height: 24),
 
         // 4. Advanced settings
         _buildAdvancedSection(l10n),
       ],
+    );
+  }
+
+  Widget _buildOmnigramServerStatusBanner() {
+    final statusAsync = ref.watch(omnigramServerTtsStatusProvider);
+    return statusAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
+      data: (status) {
+        switch (status) {
+          case OmnigramServerTtsStatus.available:
+            return const SizedBox.shrink();
+          case OmnigramServerTtsStatus.notLoggedIn:
+            return Card(
+              color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.4),
+              child: ListTile(
+                leading: const Icon(Icons.cloud_off),
+                title: const Text('Omnigram Server'),
+                subtitle: const Text('登录服务器后即可使用 Omnigram Server 的高级语音'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const ServerConnectionPage()),
+                  );
+                },
+              ),
+            );
+          case OmnigramServerTtsStatus.serviceUnavailable:
+            return Card(
+              color: Theme.of(context).colorScheme.errorContainer.withValues(alpha: 0.4),
+              child: ListTile(
+                leading: const Icon(Icons.warning_amber_rounded),
+                title: const Text('Omnigram Server 未启用 TTS'),
+                subtitle: const Text('当前服务器未运行 TTS 服务，点此查看部署文档'),
+                trailing: const Icon(Icons.open_in_new),
+                onTap: () {
+                  final locale = Localizations.localeOf(context);
+                  final url = locale.languageCode == 'zh'
+                      ? 'https://omnigram.lxpio.com/docs/zh/getting-started/tts-setup/'
+                      : 'https://omnigram.lxpio.com/docs/getting-started/tts-setup/';
+                  launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                },
+              ),
+            );
+        }
+      },
     );
   }
 
@@ -263,42 +315,48 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings> {
 
   Widget _buildVoiceSections(
       Map<String, List<TaggedVoice>> groups, L10n l10n) {
+    Widget? sectionFor(String key, String title, IconData icon) {
+      final voices = groups[key];
+      if (voices == null || voices.isEmpty) return null;
+      return VoiceSection(
+        title: title,
+        icon: icon,
+        voices: voices,
+        selectedFullId: _selectedFullId,
+        playingFullId: _playingFullId,
+        onSelect: _selectVoice,
+        onPreview: _previewVoice,
+      );
+    }
+
+    final children = <Widget>[
+      // Local — shown even when empty so the download CTA is visible.
+      VoiceSection(
+        title: l10n.ttsLocalOffline,
+        icon: Icons.smartphone,
+        voices: groups['local'] ?? [],
+        selectedFullId: _selectedFullId,
+        playingFullId: _playingFullId,
+        onSelect: _selectVoice,
+        onPreview: _previewVoice,
+        emptyState: _buildLocalEmptyState(l10n),
+      ),
+      // Online services — Server first when available, then paid clouds
+      // (only those with credentials).
+      ?sectionFor('server', 'Omnigram Server', Icons.dns),
+      ?sectionFor('azure', 'Azure', Icons.cloud_outlined),
+      ?sectionFor('openai', 'OpenAI', Icons.cloud_outlined),
+      ?sectionFor('aliyun', 'Aliyun', Icons.cloud_outlined),
+      ?sectionFor('system', l10n.ttsSystemVoice, Icons.phone_android),
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Local
-        VoiceSection(
-          title: l10n.ttsLocalOffline,
-          icon: Icons.smartphone,
-          voices: groups['local'] ?? [],
-          selectedFullId: _selectedFullId,
-          playingFullId: _playingFullId,
-          onSelect: _selectVoice,
-          onPreview: _previewVoice,
-          emptyState: _buildLocalEmptyState(l10n),
-        ),
-        const SizedBox(height: 16),
-        // Online
-        VoiceSection(
-          title: l10n.ttsOnline,
-          icon: Icons.cloud_outlined,
-          voices: groups['online'] ?? [],
-          selectedFullId: _selectedFullId,
-          playingFullId: _playingFullId,
-          onSelect: _selectVoice,
-          onPreview: _previewVoice,
-        ),
-        const SizedBox(height: 16),
-        // System
-        VoiceSection(
-          title: l10n.ttsSystemVoice,
-          icon: Icons.phone_android,
-          voices: groups['system'] ?? [],
-          selectedFullId: _selectedFullId,
-          playingFullId: _playingFullId,
-          onSelect: _selectVoice,
-          onPreview: _previewVoice,
-        ),
+        for (int i = 0; i < children.length; i++) ...[
+          if (i > 0) const SizedBox(height: 16),
+          children[i],
+        ],
       ],
     );
   }
