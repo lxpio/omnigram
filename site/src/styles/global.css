@@ -38,6 +38,12 @@ starlight-theme-select {
 :root,
 :root[data-theme='light'],
 [data-theme='light'] {
+  /* Starlight uses --sl-color-white/black directly for headings and sidebar
+   * group labels. In its light theme these tokens are *inverted* (white
+   * becomes near-black), which renders headings invisible against our
+   * forced-dark background. Pin them to true dark-theme values. */
+  --sl-color-white: #ffffff;
+  --sl-color-black: #17181c;
   --sl-color-bg: #0b1221;
   --sl-color-bg-nav: #0b1221;
   --sl-color-bg-sidebar: #0b1221;

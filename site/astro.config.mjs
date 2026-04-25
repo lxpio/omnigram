@@ -15,7 +15,7 @@ export default defineConfig({
         {
           tag: 'script',
           content:
-            "document.documentElement.setAttribute('data-theme','dark');",
+            "try{localStorage.setItem('starlight-theme','dark')}catch(e){}document.documentElement.setAttribute('data-theme','dark');",
         },
       ],
       locales: {
