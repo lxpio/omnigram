@@ -4,7 +4,7 @@ import 'package:omnigram/utils/get_path/get_cache_dir.dart';
 import 'package:omnigram/utils/platform_utils.dart';
 
 import 'package:omnigram/config/shared_preference_provider.dart';
-import 'package:omnigram/dao/book.dart';
+import 'package:omnigram/models/book.dart';
 import 'package:omnigram/service/book.dart';
 import 'package:omnigram/utils/get_path/get_base_path.dart';
 import 'package:omnigram/utils/get_path/databases_path.dart';
@@ -468,13 +468,14 @@ class DBHelper {
       case 3:
         // remove former book style
         Prefs().removeBookStyle();
-        bookDao.selectBooks().then((books) {
-          for (var book in books) {
-            if (!File(book.coverFullPath).existsSync()) {
-              resetBookCover(book);
-            }
+        // Use db directly to avoid reentrant lock during onUpgrade.
+        final rows = await db.query('tb_books');
+        for (final row in rows) {
+          final book = Book.fromDb(row);
+          if (!File(book.coverFullPath).existsSync()) {
+            unawaited(resetBookCover(book));
           }
-        });
+        }
         continue case4;
       case4:
       case 4:

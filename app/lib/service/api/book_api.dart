@@ -17,13 +17,13 @@ class BookApi {
   }) async {
     const batchSize = 100;
     final allBooks = <ServerBook>[];
-    var page = 1;
+    var page = 0;
 
     while (true) {
       final result = await _api.get<Map<String, dynamic>>(
         '/reader/books',
         queryParameters: {
-          'page': page,
+          'page_num': page,
           'page_size': batchSize,
           if (query != null) 'q': query,
           if (author != null) 'author': author,
