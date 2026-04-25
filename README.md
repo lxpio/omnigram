@@ -1,16 +1,9 @@
 #
 
-<picture>
-  <source
-    srcset="./assets/img/logo_with_letter_dark.svg"
-    media="(prefers-color-scheme: dark)"
-  />
-  <source
-    srcset="./assets/img/logo_with_letter_white.svg"
-    media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
-  />
-  <img src="./assets/img/logo_with_letter_white.svg" />
-</picture>
+<p align="center">
+  <img src="./assets/img/android-chrome-512x512.png" width="160" alt="Omnigram" />
+</p>
+<h1 align="center">Omnigram</h1>
 
 <div style="font-size: 1.5rem;">
   <a href="./README.md">English</a> | <a href="./README.zh.md">中文</a>
