@@ -6,4 +6,54 @@
   body {
     @apply bg-brand-bg text-slate-100 antialiased;
   }
+
+  /* Force dark theme everywhere. Landing, blog, and Starlight docs all
+   * share the same brand-dark visual language; we don't ship a light
+   * variant of the marketing surface. Without this lock, Starlight
+   * switches to its light theme on OS-light-mode machines while the
+   * landing pages stay brand-dark, producing a half-light/half-dark
+   * mess (sidebar white, content pane dark — reported in production).
+   *
+   * Starlight reads `[data-theme]` on <html>; pin to dark so all of
+   * Starlight's CSS variables resolve to the dark palette.
+   */
+  html {
+    color-scheme: dark;
+  }
+}
+
+/* Hide Starlight's theme picker — there's only one theme, no choice. */
+starlight-theme-select {
+  display: none !important;
+}
+
+/* When the user's OS prefers light, Starlight applies [data-theme='light']
+ * to <html> and re-binds the SL variables to the light palette. Override
+ * those bindings with our dark equivalents so the docs surface matches
+ * the brand wrapping (nav + landing) regardless of OS preference.
+ *
+ * The few variables below are the surface tokens that visibly mismatch
+ * in the half-light render: page bg, sidebar bg, text, hairline, accents.
+ */
+:root,
+:root[data-theme='light'],
+[data-theme='light'] {
+  --sl-color-bg: #0b1221;
+  --sl-color-bg-nav: #0b1221;
+  --sl-color-bg-sidebar: #0b1221;
+  --sl-color-bg-inline-code: #1a2236;
+  --sl-color-text: #e2e8f0;
+  --sl-color-text-accent: #818cf8;
+  --sl-color-text-invert: #0b1221;
+  --sl-color-hairline: #1f2a44;
+  --sl-color-hairline-light: #1f2a44;
+  --sl-color-hairline-shade: #1f2a44;
+  --sl-color-gray-1: #f1f5f9;
+  --sl-color-gray-2: #cbd5e1;
+  --sl-color-gray-3: #94a3b8;
+  --sl-color-gray-4: #64748b;
+  --sl-color-gray-5: #475569;
+  --sl-color-gray-6: #334155;
+  --sl-color-gray-7: #1e293b;
+  color-scheme: dark;
 }

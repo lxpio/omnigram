@@ -8,6 +8,16 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'Omnigram',
+      // Pin to dark; the marketing pages have no light variant. Without
+      // this, OS-light-mode visitors see a half-light Starlight sidebar
+      // bleeding into the brand-dark surrounding nav.
+      head: [
+        {
+          tag: 'script',
+          content:
+            "document.documentElement.setAttribute('data-theme','dark');",
+        },
+      ],
       locales: {
         root: { label: 'English', lang: 'en' },
         zh: { label: '中文', lang: 'zh' },
