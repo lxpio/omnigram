@@ -44,6 +44,29 @@ class TtsApi {
     return _api.get('/tts/health', fromJson: (data) => ServerTtsHealth.fromJson(data));
   }
 
+  /// Run a synthesis probe; server returns first-byte latency + RTF for the
+  /// voice. Throws on non-2xx so callers can mark capability NA on failure.
+  Future<ProbeResult> probe({
+    required String voice,
+    String? language,
+    double speed = 1.0,
+  }) async {
+    return _api.post(
+      '/tts/probe',
+      data: {
+        'voice': voice,
+        'speed': speed,
+        if (language != null) 'language': language,
+      },
+      fromJson: (raw) {
+        final inner = (raw is Map && raw['data'] is Map<String, dynamic>)
+            ? raw['data'] as Map<String, dynamic>
+            : raw as Map<String, dynamic>;
+        return ProbeResult.fromJson(inner);
+      },
+    );
+  }
+
   // ── Audiobook Generation ────────────────────────────────────────
 
   /// Create audiobook for a book.

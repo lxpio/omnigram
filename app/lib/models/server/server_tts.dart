@@ -4,6 +4,21 @@ part 'server_tts.freezed.dart';
 part 'server_tts.g.dart';
 
 @freezed
+abstract class ProbeResult with _$ProbeResult {
+  const factory ProbeResult({
+    @JsonKey(name: 'first_byte_ms') @Default(0) int firstByteMs,
+    @JsonKey(name: 'total_ms') @Default(0) int totalMs,
+    @JsonKey(name: 'audio_duration_ms') @Default(0) int audioDurationMs,
+    @Default(0.0) double rtf,
+    @Default('') String voice,
+    @Default('') String provider,
+    @JsonKey(name: 'server_build') @Default('') String serverBuild,
+  }) = _ProbeResult;
+
+  factory ProbeResult.fromJson(Map<String, dynamic> json) => _$ProbeResultFromJson(json);
+}
+
+@freezed
 abstract class ServerVoice with _$ServerVoice {
   const factory ServerVoice({
     @Default('') String id,
