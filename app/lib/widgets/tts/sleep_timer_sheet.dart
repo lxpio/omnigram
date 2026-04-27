@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/providers/tts_player_session_provider.dart';
 
 class SleepTimerSheet extends ConsumerStatefulWidget {
@@ -31,12 +32,14 @@ class _SleepTimerSheetState extends ConsumerState<SleepTimerSheet> {
       ref.read(ttsPlayerSessionControllerProvider.notifier).pause();
     });
     final messenger = ScaffoldMessenger.of(context);
+    final msg = L10n.of(context).nowPlayingSleepArmed(d.inMinutes);
     Navigator.pop(context);
-    messenger.showSnackBar(SnackBar(content: Text('${d.inMinutes} 分钟后停止')));
+    messenger.showSnackBar(SnackBar(content: Text(msg)));
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -45,11 +48,11 @@ class _SleepTimerSheetState extends ConsumerState<SleepTimerSheet> {
           children: [
             for (final m in const [10, 15, 30, 45, 60])
               ListTile(
-                title: Text('$m 分钟'),
+                title: Text(l10n.nowPlayingSleepMinutes(m)),
                 onTap: () => _arm(Duration(minutes: m)),
               ),
             ListTile(
-              title: const Text('取消定时'),
+              title: Text(l10n.nowPlayingSleepCancel),
               onTap: () {
                 _SleepTimerHolder.cancel();
                 Navigator.pop(context);

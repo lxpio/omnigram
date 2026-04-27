@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/models/tts/playback_state.dart';
 import 'package:omnigram/providers/tts_player_session_provider.dart';
 import 'package:omnigram/service/tts/tts_router.dart';
@@ -16,7 +17,8 @@ class ServerStatusPill extends ConsumerWidget {
     if (s.mode != PlaybackMode.localFallback) return const SizedBox.shrink();
 
     final scheme = Theme.of(context).colorScheme;
-    final (bg, fg, label) = _styleFor(s, scheme);
+    final l10n = L10n.of(context);
+    final (bg, fg, label) = _styleFor(s, scheme, l10n);
     return InkWell(
       borderRadius: BorderRadius.circular(20),
       onTap: () {
@@ -40,21 +42,17 @@ class ServerStatusPill extends ConsumerWidget {
     );
   }
 
-  (Color, Color, String) _styleFor(PlaybackState s, ColorScheme scheme) {
+  (Color, Color, String) _styleFor(PlaybackState s, ColorScheme scheme, L10n l10n) {
     if (s.serverReadyForCurrentChapter) {
-      return (Colors.green.shade100, Colors.green.shade900, '🟢 高质量版本就绪');
+      return (Colors.green.shade100, Colors.green.shade900, l10n.pillServerReady);
     }
     if (s.serverProgressPercent > 0) {
       return (
         scheme.primaryContainer,
         scheme.onPrimaryContainer,
-        '🔵 服务器生成中 · ${s.serverProgressPercent}%',
+        l10n.pillServerProgress(s.serverProgressPercent),
       );
     }
-    return (
-      Colors.amber.shade100,
-      Colors.amber.shade900,
-      '🟡 本地声音 · 服务器准备中',
-    );
+    return (Colors.amber.shade100, Colors.amber.shade900, l10n.pillLocalQueued);
   }
 }

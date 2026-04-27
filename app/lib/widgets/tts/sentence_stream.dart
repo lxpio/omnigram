@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/providers/tts_player_session_provider.dart';
 
 /// Apple Music-style three-line sentence view: prev / current / next, where
@@ -14,10 +15,11 @@ class SentenceStream extends ConsumerWidget {
     final theme = Theme.of(context);
 
     if (!s.hasAlignment) {
+      final l10n = L10n.of(context);
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
         child: Text(
-          s.chapterTitle.isEmpty ? '现在播放：第 ${s.chapterIndex + 1} 章' : s.chapterTitle,
+          s.chapterTitle.isEmpty ? l10n.sentenceStreamPlayingChapter(s.chapterIndex + 1) : s.chapterTitle,
           style: theme.textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),

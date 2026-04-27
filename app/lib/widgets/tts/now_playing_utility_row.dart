@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/providers/tts_player_session_provider.dart';
 import 'package:omnigram/widgets/tts/sleep_timer_sheet.dart';
 
@@ -12,24 +13,25 @@ class NowPlayingUtilityRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final s = ref.watch(ttsPlayerSessionControllerProvider);
     final ctl = ref.read(ttsPlayerSessionControllerProvider.notifier);
+    final l10n = L10n.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           PopupMenuButton<double>(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [Text('${s.speed}×')],
-            ),
             onSelected: ctl.setSpeed,
             itemBuilder: (_) => _speeds
                 .map((v) => PopupMenuItem(value: v, child: Text('${v}×')))
                 .toList(),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [Text('${s.speed}×')],
+            ),
           ),
           TextButton.icon(
             icon: const Icon(Icons.bedtime_outlined),
-            label: const Text('睡眠'),
+            label: Text(l10n.nowPlayingSleep),
             onPressed: () {
               showModalBottomSheet(
                 context: context,
@@ -39,7 +41,7 @@ class NowPlayingUtilityRow extends ConsumerWidget {
           ),
           TextButton.icon(
             icon: const Icon(Icons.list),
-            label: const Text('章节'),
+            label: Text(l10n.nowPlayingChapters),
             onPressed: () => Navigator.maybePop(context),
           ),
         ],
