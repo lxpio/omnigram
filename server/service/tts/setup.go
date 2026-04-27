@@ -68,6 +68,7 @@ func Setup(router *gin.Engine) {
 	router.POST("/tts/synthesize", oauthMD, synthesizeHandler)
 	router.GET("/tts/voices", oauthMD, voicesHandler)
 	router.GET("/tts/health", oauthMD, healthHandler)
+	router.POST("/tts/probe", oauthMD, probeHandler)
 
 	// Admin-only batch + queue monitoring. Registered BEFORE the
 	// `/tts/audiobook/:book_id` wildcard so gin routes `batch`/`queue`
