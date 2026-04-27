@@ -1,15 +1,14 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/models/book.dart';
 import 'package:omnigram/models/server/server_tts.dart';
+import 'package:omnigram/page/now_playing/now_playing_page.dart';
 import 'package:omnigram/providers/audiobook_provider.dart';
-import 'package:omnigram/providers/server_connection_provider.dart';
+import 'package:omnigram/providers/tts_player_session_provider.dart';
+import 'package:omnigram/service/tts/tts_router.dart';
+import 'package:omnigram/widgets/audiobook/chapter_status_dot.dart';
 
 /// Lists chapters of an audiobook and lets the user download each to the
 /// device, then open in the system player (no in-app playback — simpler and
@@ -78,6 +77,11 @@ class _AudiobookPageState extends ConsumerState<AudiobookPage> {
     final ready = chapter.status == 2 || chapter.audioSize > 0; // 2 = completed in server TaskStatus
     final downloading = _downloading[chapter.chapterIndex];
     final progress = downloading;
+    final status = switch (chapter.status) {
+      2 => ChapterAudioStatus.ready,
+      1 => ChapterAudioStatus.generating,
+      _ => ChapterAudioStatus.notGenerated,
+    };
 
     return ListTile(
       title: Text(
@@ -85,7 +89,13 @@ class _AudiobookPageState extends ConsumerState<AudiobookPage> {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
-      subtitle: Text(_chapterSubtitle(l10n, chapter)),
+      subtitle: Row(
+        children: [
+          ChapterStatusDot(status: status),
+          const SizedBox(width: 8),
+          Expanded(child: Text(_chapterSubtitle(l10n, chapter))),
+        ],
+      ),
       trailing: progress != null
           ? SizedBox(
               width: 32,
@@ -97,9 +107,9 @@ class _AudiobookPageState extends ConsumerState<AudiobookPage> {
             )
           : ready
               ? IconButton(
-                  icon: const Icon(Icons.download_outlined),
+                  icon: const Icon(Icons.play_arrow),
                   tooltip: l10n.audiobookChapterDownload,
-                  onPressed: () => _downloadAndOpen(chapter),
+                  onPressed: () => _playInNowPlaying(chapter),
                 )
               : const Icon(Icons.hourglass_empty, color: Colors.grey),
     );
@@ -117,36 +127,17 @@ class _AudiobookPageState extends ConsumerState<AudiobookPage> {
     return '—';
   }
 
-  Future<void> _downloadAndOpen(ServerAudiobookChapter chapter) async {
-    final l10n = L10n.of(context);
-    final tts = ref.read(serverConnectionProvider.notifier).tts;
-    if (tts == null) return;
-
-    setState(() => _downloading[chapter.chapterIndex] = 0.0);
-    try {
-      final dir = await getApplicationDocumentsDirectory();
-      final bookDir = Directory('${dir.path}/audiobooks/$_bookId');
-      if (!bookDir.existsSync()) bookDir.createSync(recursive: true);
-      final savePath = '${bookDir.path}/${chapter.chapterIndex}.mp3';
-
-      await tts.downloadChapter(_bookId, chapter.chapterIndex, savePath);
-
-      if (!mounted) return;
-      setState(() => _downloading.remove(chapter.chapterIndex));
-
-      final uri = Uri.file(savePath);
-      final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
-      if (!opened && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.audiobookChapterReady)),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() => _downloading.remove(chapter.chapterIndex));
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));
-      }
-    }
+  Future<void> _playInNowPlaying(ServerAudiobookChapter chapter) async {
+    await ref
+        .read(ttsPlayerSessionControllerProvider.notifier)
+        .startSession(book: widget.book, chapterIndex: chapter.chapterIndex);
+    if (!mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (_) => const NowPlayingPage(),
+      ),
+    );
   }
 
   Future<void> _confirmDelete(BuildContext context, L10n l10n) async {

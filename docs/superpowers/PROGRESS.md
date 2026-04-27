@@ -338,6 +338,34 @@
 
 ---
 
+## Sprint 8 — TTS 自适应路由（Plan 1 of 2）✅
+
+> 设计：`specs/2026-04-27-tts-adaptive-degradation-design.md` · 计划：`plans/2026-04-27-tts-adaptive-routing.md`
+>
+> 解决"服务器实时合成跟不上"导致听书卡顿的核心 UX 问题。Plan 1 落实路由骨架；Plan 2（Mini Bar + Now-Playing + Pill）后续接续。
+
+| 功能 | 状态 | 关键文件 |
+|------|------|----------|
+| Server `/tts/probe` 端点 | ✅ | `server/service/tts/probe_handler.go` + `probe_text.go` + `schema/tts.go` (ProbeResult) — 2 单测 |
+| App `TtsCapability` 模型 + 7 天缓存 | ✅ | `app/lib/models/tts/tts_capability.dart` · 6 单测（classify + isExpired） |
+| `TtsCapabilityCache` Provider + 登录后自动体检 | ✅ | `app/lib/providers/tts_capability_provider.dart`（`ref.listen` on serverConnectionProvider） |
+| `TtsRouter` 决策矩阵 | ✅ | `app/lib/service/tts/tts_router.dart` — 17 单测覆盖 §6 矩阵 + 4 种 override + prefetch |
+| 三种 `TtsAudioSource` 实现 | ✅ | `live_server_source.dart`（流式 mp3→file→audioplayers）· `pregen_server_source.dart`（一次下载缓存）· `local_fallback_source.dart`（sherpa-onnx isolate） |
+| `ttsPlaybackMode` Provider + Prefetch | ✅ | `app/lib/providers/tts_playback_mode_provider.dart` |
+| 设置页"声音体检"卡 + 默认模式 + 实验开关 | ✅ | `app/lib/page/settings_page/narrate.dart` + 新 ARB keys |
+| `ChapterStatusDot` 章节状态点 | ✅ | `app/lib/widgets/audiobook/chapter_status_dot.dart` · 接入 `AudiobookPage` |
+| 灰度 feature flag | ✅ | `experimentalTtsAdaptiveRouting` prefs key · 新装默认 ON · 升级保持 OFF |
+| Plan 2 · `TtsPlayerSession` 编排器 | ✅ | `app/lib/service/tts/tts_player_session.dart` · 9 单测覆盖句索引 + 升档触发 |
+| Plan 2 · `ttsPlayerSessionController` Provider | ✅ | `app/lib/providers/tts_player_session_provider.dart` · SSE-driven server-ready 信号 + 章节边界自动升档 |
+| Plan 2 · `ServerStatusPill` + `PillDetailSheet` | ✅ | `app/lib/widgets/tts/server_status_pill.dart` · `pill_detail_sheet.dart` |
+| Plan 2 · `SentenceStream`（Apple Music 三句滚动） | ✅ | `app/lib/widgets/tts/sentence_stream.dart` |
+| Plan 2 · `MiniPlayerBar` + 全屏 `NowPlayingPage` | ✅ | `app/lib/widgets/tts/mini_player_bar.dart` · `app/lib/page/now_playing/now_playing_page.dart` |
+| Plan 2 · Transport / Utility row / Sleep timer | ✅ | `now_playing_transport.dart` · `now_playing_utility_row.dart` · `sleep_timer_sheet.dart` |
+| Plan 2 · `AudiobookPage` 接入 + `OmnigramHome` mini bar 挂载 | ✅ | `audiobook_page.dart` · `omnigram_home.dart` |
+| Plan 2 · 阅读器章节抽屉状态点 | ⏳ DONE_WITH_CONCERNS | TOC 操作在 EPUB href 空间，缺 href↔chapterIndex 映射，留作后续小独立任务 |
+
+---
+
 ## Sprint 7 — 句级同步听书 ✅
 
 > 设计：`specs/2026-04-23-sentence-sync-listening-design.md` · 计划：`plans/2026-04-23-sentence-sync-listening.md`
@@ -515,6 +543,8 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-04-27 | **Sprint 8 · TTS Now-Playing Plan 2** ✅：`TtsPlayerSession` 编排器（章节边界自动升档、SSE 升档信号、句级位置追踪、二分查找句索引），`ttsPlayerSessionController` Riverpod 单例，`MiniPlayerBar` 应用全局常驻于底部导航之上，全屏 `NowPlayingPage`（封面 + 三句滚动 + 完整 transport + 速度 0.75/1.0/1.25/1.5/2.0 + 睡眠 10/15/30/45/60min），`ServerStatusPill` 周边可见（默认状态隐藏，本地兜底显示）+ Pill detail sheet plain-language 解释，`AudiobookPage` 章节点击改为内置播放器（取代下载+外部播放），i18n 全覆盖 14 keys。已知 limitation：阅读器章节抽屉的状态点未做（href↔index 映射缺失，留独立任务）。 |
+| 2026-04-27 | **Sprint 8 · TTS 自适应路由 Plan 1** ✅：登录后静默 `/tts/probe` 体检（GREEN/YELLOW/RED/NA），缓存 7 天；`TtsRouter` 纯函数决策矩阵（17 单测）；三种 `TtsAudioSource`（LiveServer / PregenServer / LocalFallback sherpa-onnx）；`ttsPlaybackMode` Provider 综合 capability + chapter status + override；设置页加"服务器声音体检"卡 + 默认模式 segmented + 实验开关；`AudiobookPage` 章节状态点 ●/◐/○/◌；`experimentalTtsAdaptiveRouting` 灰度 flag（新装 ON / 升级 OFF）。Plan 2（Now-Playing UX）待开工。 |
 | 2026-04-23 | **Sprint 7 · 句级同步听书** ✅：Audible 级核心体验。Server：`SplitSentences` 多语言切句 (12 单测) + worker 按句合成 + `chapter_NNN.align.json` + alignment/index 端点 + admin 批量生成 + client-injected sentences 模式。App：`AudiobookPlayer` + `AudiobookSyncController`（binary-search 时间→句→CFI 匹配，12 单测） + `SyncListeningPage`（EPUB+mini-player 同屏）。Web admin：`/admin/audiobooks` 队列监控 + 批量触发。Bug 修复：manager context 泄漏截断 body、worker nil-deref、sidecar 硬编码 model 名。Spec + 8-phase plan 落地 |
 | 2026-04-22 | **Sprint 6 · TTS 完整链路** ✅：Dockerfile `apk add ffmpeg`（启用章节静音裁剪+LUFS 归一+ID3 标签）、SidecarProvider 动态查询 `/v1/voices`（5min 缓存+fallback，4 单测通过）、客户端书籍详情页「生成有声书」三态按钮 + SSE 进度 + `AudiobookPage` 章节下载 + 外部播放器、追溯登记 server 端 audiobook pipeline（此前漏登记） |
 | 2026-04-13 | **CI 质量门禁 + Play Store 自动发布**：`test-app.yaml`（analyze+test PR 门禁）、`deploy-playstore.yaml`（fastlane supply → internal track）、`build-app.yaml` 接入自动发布（alpha/beta tag 触发） |

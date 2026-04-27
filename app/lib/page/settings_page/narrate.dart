@@ -1,7 +1,11 @@
 import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/l10n/generated/L10n.dart';
+import 'package:omnigram/models/tts/tts_capability.dart';
 import 'package:omnigram/page/settings_page/server_connection_page.dart';
+import 'package:omnigram/providers/server_connection_provider.dart';
+import 'package:omnigram/providers/tts_capability_provider.dart';
 import 'package:omnigram/providers/tts_providers.dart';
+import 'package:omnigram/service/tts/tts_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:omnigram/service/tts/model_manager.dart' as tts_mm;
 import 'package:omnigram/service/tts/online_tts.dart';
@@ -200,6 +204,14 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings> {
         // Omnigram Server status banner — guides user to log in or enable TTS.
         const SizedBox(height: 16),
         _buildOmnigramServerStatusBanner(),
+
+        // Adaptive routing surfaces — only meaningful for server-backed voices.
+        const SizedBox(height: 16),
+        _buildCapabilityCard(l10n),
+        const SizedBox(height: 12),
+        _buildDefaultModeSegmented(l10n),
+        const SizedBox(height: 12),
+        _buildExperimentalToggle(l10n),
 
         const SizedBox(height: 24),
 
@@ -620,6 +632,99 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings> {
             contentPadding: EdgeInsets.zero,
           ),
         ],
+      ),
+    );
+  }
+
+  // ── Adaptive routing surfaces ──────────────────────────────────────
+
+  Widget _buildCapabilityCard(L10n l10n) {
+    final voiceFullId = Prefs().selectedVoiceFullId;
+    final serverUrl = ref.watch(serverConnectionProvider).serverUrl ?? '';
+    final cap = ref.watch(ttsCapabilityCacheProvider)['$serverUrl::$voiceFullId'];
+    final canProbe = serverUrl.isNotEmpty && voiceFullId.startsWith('server:');
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.ttsCapabilityCardTitle, style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 8),
+            Text(_capabilityLine(l10n, cap)),
+            const SizedBox(height: 12),
+            OutlinedButton(
+              onPressed: !canProbe
+                  ? null
+                  : () async {
+                      final cache = ref.read(ttsCapabilityCacheProvider.notifier);
+                      await cache.probe(serverUrl: serverUrl, voiceFullId: voiceFullId);
+                      if (mounted) setState(() {});
+                    },
+              child: Text(l10n.ttsCapabilityRecheck),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _capabilityLine(L10n l10n, TtsCapability? cap) {
+    if (cap == null) return l10n.ttsCapabilityNeverProbed;
+    final tier = switch (cap.tier) {
+      TtsCapabilityTier.green => l10n.ttsCapabilityTierGreen,
+      TtsCapabilityTier.yellow => l10n.ttsCapabilityTierYellow,
+      TtsCapabilityTier.red => l10n.ttsCapabilityTierRed,
+      TtsCapabilityTier.na => l10n.ttsCapabilityTierNa,
+    };
+    return l10n.ttsCapabilityLastProbed(
+      cap.probedAt.toLocal().toString().split('.').first,
+      tier,
+      cap.firstByteMs,
+      cap.rtf.toStringAsFixed(2),
+    );
+  }
+
+  Widget _buildDefaultModeSegmented(L10n l10n) {
+    final mode = TtsDefaultModeCodec.fromPref(Prefs().ttsDefaultMode);
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.ttsDefaultModeTitle, style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 12),
+            SegmentedButton<TtsDefaultMode>(
+              segments: [
+                ButtonSegment(value: TtsDefaultMode.auto, label: Text(l10n.ttsDefaultModeAuto)),
+                ButtonSegment(value: TtsDefaultMode.alwaysLive, label: Text(l10n.ttsDefaultModeAlwaysLive)),
+                ButtonSegment(value: TtsDefaultMode.alwaysPregen, label: Text(l10n.ttsDefaultModeAlwaysPregen)),
+                ButtonSegment(value: TtsDefaultMode.alwaysLocal, label: Text(l10n.ttsDefaultModeAlwaysLocal)),
+              ],
+              selected: {mode},
+              onSelectionChanged: (s) {
+                Prefs().ttsDefaultMode = s.first.prefValue;
+                setState(() {});
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExperimentalToggle(L10n l10n) {
+    return Card(
+      child: SwitchListTile(
+        title: Text(l10n.ttsExperimentalAdaptiveTitle),
+        subtitle: Text(l10n.ttsExperimentalAdaptiveSubtitle),
+        value: Prefs().experimentalTtsAdaptiveRouting ?? false,
+        onChanged: (v) {
+          Prefs().experimentalTtsAdaptiveRouting = v;
+          setState(() {});
+        },
       ),
     );
   }

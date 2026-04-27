@@ -4575,6 +4575,57 @@
                 }
             }
         },
+        "/tts/probe": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Synchronously synthesize a fixed neutral text and report\nfirst-byte latency + RTF. The client uses these to classify\nthe server into GREEN/YELLOW/RED/NA tiers and decide whether\nto play live, pre-generate, or fall back to on-device TTS.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "TTS"
+                ],
+                "summary": "TTS capability probe",
+                "parameters": [
+                    {
+                        "description": "Probe request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tts.probeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ProbeResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user/companion": {
             "get": {
                 "security": [
@@ -5214,6 +5265,32 @@
                 }
             }
         },
+        "schema.ProbeResult": {
+            "type": "object",
+            "properties": {
+                "audio_duration_ms": {
+                    "type": "integer"
+                },
+                "first_byte_ms": {
+                    "type": "integer"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "rtf": {
+                    "type": "number"
+                },
+                "server_build": {
+                    "type": "string"
+                },
+                "total_ms": {
+                    "type": "integer"
+                },
+                "voice": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.ProgressBook": {
             "type": "object",
             "properties": {
@@ -5716,6 +5793,23 @@
                 },
                 "submitted": {
                     "type": "integer"
+                }
+            }
+        },
+        "tts.probeRequest": {
+            "type": "object",
+            "required": [
+                "voice"
+            ],
+            "properties": {
+                "language": {
+                    "type": "string"
+                },
+                "speed": {
+                    "type": "number"
+                },
+                "voice": {
+                    "type": "string"
                 }
             }
         },

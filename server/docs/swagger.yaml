@@ -358,6 +358,23 @@ definitions:
       utime:
         type: integer
     type: object
+  schema.ProbeResult:
+    properties:
+      audio_duration_ms:
+        type: integer
+      first_byte_ms:
+        type: integer
+      provider:
+        type: string
+      rtf:
+        type: number
+      server_build:
+        type: string
+      total_ms:
+        type: integer
+      voice:
+        type: string
+    type: object
   schema.ProgressBook:
     properties:
       asin:
@@ -695,6 +712,17 @@ definitions:
         type: array
       submitted:
         type: integer
+    type: object
+  tts.probeRequest:
+    properties:
+      language:
+        type: string
+      speed:
+        type: number
+      voice:
+        type: string
+    required:
+    - voice
     type: object
   utils.Response:
     properties:
@@ -3605,6 +3633,42 @@ paths:
       security:
       - BearerAuth: []
       summary: List audiobook generation queue (admin)
+      tags:
+      - TTS
+  /tts/probe:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Synchronously synthesize a fixed neutral text and report
+        first-byte latency + RTF. The client uses these to classify
+        the server into GREEN/YELLOW/RED/NA tiers and decide whether
+        to play live, pre-generate, or fall back to on-device TTS.
+      parameters:
+      - description: Probe request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/tts.probeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.ProbeResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: TTS capability probe
       tags:
       - TTS
   /user/companion:

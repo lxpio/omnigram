@@ -222,6 +222,12 @@ class Prefs extends ChangeNotifier {
     String? beginDate = prefs.getString('beginDate');
     if (beginDate == null) {
       prefs.setString('beginDate', DateTime.now().toIso8601String());
+      // Fresh install — opt into adaptive TTS routing by default. Upgrade
+      // installs (where beginDate already exists) leave the flag null and
+      // can opt in via Settings → Read Aloud → Experimental.
+      if (experimentalTtsAdaptiveRouting == null) {
+        experimentalTtsAdaptiveRouting = true;
+      }
     }
   }
 
@@ -435,6 +441,34 @@ class Prefs extends ChangeNotifier {
   /// New unified voice identifier (source:voiceId format).
   String get selectedVoiceFullId => prefs.getString('selectedVoiceFullId') ?? '';
   set selectedVoiceFullId(String id) => prefs.setString('selectedVoiceFullId', id);
+
+  /// JSON-encoded map keyed by "${serverUrl}::${voiceFullId}" → TtsCapability.toJson().
+  String? get ttsCapabilityCacheJson => prefs.getString('tts_capability_cache_json');
+  set ttsCapabilityCacheJson(String? v) {
+    if (v == null) {
+      prefs.remove('tts_capability_cache_json');
+    } else {
+      prefs.setString('tts_capability_cache_json', v);
+    }
+  }
+
+  /// One of: "auto", "always_live", "always_pregen", "always_local".
+  String get ttsDefaultMode => prefs.getString('tts_default_mode') ?? 'auto';
+  set ttsDefaultMode(String v) => prefs.setString('tts_default_mode', v);
+
+  /// Master kill-switch for adaptive TTS routing. `null` means unset
+  /// (treated as off for upgrade installs); fresh installs seed it to true.
+  bool? get experimentalTtsAdaptiveRouting {
+    if (!prefs.containsKey('experimental_tts_adaptive_routing')) return null;
+    return prefs.getBool('experimental_tts_adaptive_routing');
+  }
+  set experimentalTtsAdaptiveRouting(bool? v) {
+    if (v == null) {
+      prefs.remove('experimental_tts_adaptive_routing');
+    } else {
+      prefs.setBool('experimental_tts_adaptive_routing', v);
+    }
+  }
 
   /// Migrate old ttsService + voice config to new VoiceFullId format.
   String migrateToVoiceFullId() {
