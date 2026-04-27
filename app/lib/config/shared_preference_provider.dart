@@ -222,6 +222,12 @@ class Prefs extends ChangeNotifier {
     String? beginDate = prefs.getString('beginDate');
     if (beginDate == null) {
       prefs.setString('beginDate', DateTime.now().toIso8601String());
+      // Fresh install — opt into adaptive TTS routing by default. Upgrade
+      // installs (where beginDate already exists) leave the flag null and
+      // can opt in via Settings → Read Aloud → Experimental.
+      if (experimentalTtsAdaptiveRouting == null) {
+        experimentalTtsAdaptiveRouting = true;
+      }
     }
   }
 
