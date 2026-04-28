@@ -5,9 +5,10 @@ import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/models/book.dart';
 import 'package:omnigram/models/server/server_tts.dart';
 import 'package:omnigram/page/audiobook/audiobook_page.dart';
-import 'package:omnigram/page/audiobook/sync_listening_page.dart';
+import 'package:omnigram/page/now_playing/now_playing_page.dart';
 import 'package:omnigram/providers/audiobook_provider.dart';
 import 'package:omnigram/providers/server_connection_provider.dart';
+import 'package:omnigram/providers/tts_player_session_provider.dart';
 
 /// Tri-state audiobook control rendered beneath the continue-reading button.
 ///
@@ -66,11 +67,14 @@ class AudiobookButton extends ConsumerWidget {
     if (task.status == 'completed' || task.status == 'done') {
       return SizedBox(
         width: double.infinity,
-        child: OutlinedButton.icon(
-          onPressed: () => _openAudiobookPage(context, bookId),
-          icon: const Icon(Icons.headphones),
-          label: Text(l10n.audiobookOpen),
-          style: _shape(),
+        child: GestureDetector(
+          onLongPress: () => _openChapterListPage(context, bookId),
+          child: OutlinedButton.icon(
+            onPressed: () => _openAudiobookPage(context, ref, bookId),
+            icon: const Icon(Icons.headphones),
+            label: Text(l10n.audiobookOpen),
+            style: _shape(),
+          ),
         ),
       );
     }
@@ -81,7 +85,7 @@ class AudiobookButton extends ConsumerWidget {
     return SizedBox(
       width: double.infinity,
       child: FilledButton.tonalIcon(
-        onPressed: () => _openAudiobookPage(context, bookId),
+        onPressed: () => _openAudiobookPage(context, ref, bookId),
         icon: SizedBox(
           width: 18,
           height: 18,
@@ -202,20 +206,38 @@ class AudiobookButton extends ConsumerWidget {
     }
   }
 
-  void _openAudiobookPage(BuildContext context, String bookId) {
-    // The sync-listening page is the primary audiobook surface (Sprint 7):
-    // EPUB rendered with sentence-synced highlight + mini-player.
-    // The old chapter-list page is kept reachable via the 'alt' menu entry
-    // inside the new player (Phase 6 polish) for manual MP3 export use case.
+  /// Primary listen entry — starts a session at chapter 0 (or the next
+  /// unfinished one if the audiobook task has progress) and pushes the
+  /// Now-Playing surface. Long-press goes to the chapter list for explicit
+  /// chapter pick; the sync-listening (read-along) page is reachable from
+  /// inside the chapter list.
+  void _openAudiobookPage(BuildContext context, WidgetRef ref, String bookId) {
+    final info = ref.read(audiobookProvider(bookId)).valueOrNull;
+    final startChapter = _pickStartChapter(info);
+    ref.read(ttsPlayerSessionControllerProvider.notifier).startSession(
+          book: book,
+          chapterIndex: startChapter,
+        );
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => SyncListeningPage(book: book)),
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (_) => const NowPlayingPage(),
+      ),
     );
   }
 
-  // Keep AudiobookPage import referenced so future code can route to the
-  // chapter-list view for direct-download scenarios (Phase 6 polish).
-  // ignore: unused_element
+  /// Pick the resume point: first non-completed chapter (status != 2) so the
+  /// user lands on the next thing to listen to, falling back to 0.
+  int _pickStartChapter(ServerAudiobookInfo? info) {
+    if (info == null) return 0;
+    for (final c in info.chapters) {
+      if (c.status != 2) return c.chapterIndex;
+    }
+    return 0;
+  }
+
+  /// Chapter list / read-along — long-press affordance on the listen button.
   void _openChapterListPage(BuildContext context, String bookId) {
     Navigator.push(
       context,
