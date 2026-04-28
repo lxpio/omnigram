@@ -41,6 +41,16 @@ class NowPlayingPage extends ConsumerWidget {
           onPressed: () => Navigator.maybePop(context),
         ),
         title: Text(s.bookTitle ?? ''),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.stop_circle_outlined),
+            tooltip: '停止',
+            onPressed: () {
+              ref.read(ttsPlayerSessionControllerProvider.notifier).stop();
+              Navigator.maybePop(context);
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: Column(

@@ -77,6 +77,9 @@ class MiniPlayerBar extends ConsumerWidget {
               const ServerStatusPill(),
               const SizedBox(width: 4),
               IconButton(
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints.tightFor(width: 36, height: 36),
                 icon: Icon(s.isPlaying ? Icons.pause : Icons.play_arrow),
                 onPressed: () {
                   final ctl = ref.read(ttsPlayerSessionControllerProvider.notifier);
@@ -84,12 +87,11 @@ class MiniPlayerBar extends ConsumerWidget {
                 },
               ),
               IconButton(
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints.tightFor(width: 36, height: 36),
                 icon: const Icon(Icons.skip_next),
                 onPressed: () => ref.read(ttsPlayerSessionControllerProvider.notifier).nextChapter(),
-              ),
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => ref.read(ttsPlayerSessionControllerProvider.notifier).stop(),
               ),
             ],
           ),

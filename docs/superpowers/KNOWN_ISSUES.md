@@ -57,9 +57,36 @@
 
 ---
 
+---
+
+## 🟡 待办 — Now-Playing UX
+
+### KI-5: Now-Playing 章节按钮接 AudiobookPage
+
+**影响范围：** Sprint 8 Plan 2
+
+**现状：** `NowPlayingPage` 底部 utility row 的"章节"按钮当前只是 `Navigator.maybePop(context)`（收回播放器），没有 chapter 列表入口。Spec §8.2 要求"☰ 章节"按钮打开章节列表。
+
+**待做：** 改 `app/lib/widgets/tts/now_playing_utility_row.dart` 里"章节"按钮 → push `AudiobookPage` 或弹 bottom sheet 列表。需要在 `PlaybackState` 持有 `Book` 引用（或在 session start 时缓存）以便构建 AudiobookPage。
+
+**优先级：** 中。当前用户可通过书详情长按"听书"绕路进 AudiobookPage。
+
+### KI-6: 阅读器"跟读模式"入口缺失
+
+**影响范围：** Sprint 8 Plan 2
+
+**现状：** Plan 2 把阅读器底部耳机图标、书详情"听书"、AudiobookPage 章节 ▶ 三处都重定向到 Now-Playing 之后，`SyncListeningPage`（Sprint 7 的 EPUB+音频同步页）已无可达入口。
+
+**待做：** 阅读器顶栏菜单或 Now-Playing 页面里加"跟读模式"按钮 → `SyncListeningPage`。
+
+**优先级：** 低。是次要使用模式。
+
+---
+
 ## 更新记录
 
 | 日期 | 更新 |
 |------|------|
+| 2026-04-28 | 新增 KI-5（Now-Playing 章节按钮 → AudiobookPage）+ KI-6（跟读模式入口） |
 | 2026-04-04 | KI-1/KI-3/KI-4 已修复：AI 数据双向同步完成 |
 | 2026-03-23 | 初始创建，记录 Sprint 4 代码审查遗留问题 |
