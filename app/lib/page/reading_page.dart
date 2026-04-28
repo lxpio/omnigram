@@ -13,6 +13,9 @@ import 'package:omnigram/models/book.dart';
 import 'package:omnigram/models/read_theme.dart';
 import 'package:omnigram/page/book_detail.dart';
 import 'package:omnigram/page/book_player/epub_player.dart';
+import 'package:omnigram/page/now_playing/now_playing_page.dart';
+import 'package:omnigram/providers/audiobook_provider.dart';
+import 'package:omnigram/providers/tts_player_session_provider.dart';
 import 'package:omnigram/service/ai/index.dart';
 import 'package:omnigram/service/ai/prompt_generate.dart';
 import 'package:omnigram/utils/toast/common.dart';
@@ -23,7 +26,6 @@ import 'package:omnigram/widgets/reading_page/notes_widget.dart';
 import 'package:omnigram/models/reading_time.dart';
 import 'package:omnigram/widgets/reading_page/progress_widget.dart';
 import 'package:omnigram/widgets/reading_page/tts_fab.dart';
-import 'package:omnigram/widgets/reading_page/tts_widget.dart';
 import 'package:omnigram/widgets/reading_page/style_widget.dart';
 import 'package:omnigram/widgets/reading_page/toc_widget.dart';
 import 'package:omnigram/widgets/common/axis_flex.dart';
@@ -390,10 +392,34 @@ class ReadingPageState extends ConsumerState<ReadingPage> with WidgetsBindingObs
   }
 
   Future<void> ttsHandler() async {
-    setState(() {
-      _currentPage = TtsWidget(epubPlayerKey: epubPlayerKey);
-    });
+    // Route to the new Now-Playing surface (Plan 2). The legacy in-reader
+    // TtsWidget remains in the codebase for the read-along path but is no
+    // longer the headphones-button entry. Long-press on the bottom-bar TTS
+    // icon falls back to the legacy widget for users who want the
+    // sentence-by-sentence read-from-current-position flow.
+    final info = ref.read(audiobookProvider(_book.id.toString())).valueOrNull;
+    int start = 0;
+    if (info != null) {
+      for (final c in info.chapters) {
+        if (c.status != 2) {
+          start = c.chapterIndex;
+          break;
+        }
+      }
+    }
+    await ref.read(ttsPlayerSessionControllerProvider.notifier).startSession(
+          book: _book,
+          chapterIndex: start,
+        );
+    if (!mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (_) => const NowPlayingPage(),
+      ),
+    );
   }
+
 
   double _aiChatMaxWidth(BuildContext context) {
     final totalWidth = MediaQuery.of(context).size.width;
