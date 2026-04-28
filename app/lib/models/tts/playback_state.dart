@@ -24,7 +24,7 @@ abstract class PlaybackState with _$PlaybackState {
     ChapterAlignment? alignment,
     @Default(0) int serverProgressPercent,
     @Default(false) bool serverReadyForCurrentChapter,
-    @Default(1.0) double speed,
+    @Default(1.2) double speed,
     String? errorMessage,
   }) = _PlaybackState;
 
