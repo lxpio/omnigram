@@ -17,6 +17,7 @@ import 'package:omnigram/utils/log/common.dart';
 import 'package:omnigram/utils/window_position_validator.dart';
 import 'package:omnigram/providers/server_connection_provider.dart';
 import 'package:omnigram/service/sync/sync_manager.dart';
+import 'package:omnigram/widgets/tts/mini_player_bar.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -185,7 +186,21 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver, Wind
               // },
             ),
             navigatorObservers: [FlutterSmartDialog.observer, heroineController],
-            builder: FlutterSmartDialog.init(),
+            builder: (ctx, child) {
+              final wrapped = FlutterSmartDialog.init()(ctx, child);
+              // Pin the mini player bar across every route so users always see
+              // they have an audiobook session running, regardless of which
+              // page they navigated to. SizedBox.shrink when no session.
+              return Material(
+                type: MaterialType.transparency,
+                child: Column(
+                  children: [
+                    Expanded(child: wrapped),
+                    const SafeArea(top: false, child: MiniPlayerBar()),
+                  ],
+                ),
+              );
+            },
             navigatorKey: navigatorKey,
             locale: prefsNotifier.locale,
             localeListResolutionCallback: _resolveLocale,

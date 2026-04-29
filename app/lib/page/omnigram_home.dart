@@ -7,7 +7,6 @@ import 'package:omnigram/page/home/insights_page.dart';
 import 'package:omnigram/page/home/settings_page.dart' as omnigram;
 import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/page/onboarding_flow.dart';
-import 'package:omnigram/widgets/tts/mini_player_bar.dart';
 
 enum OmnigramTab { reading, bookshelf, insights, settings }
 
@@ -113,18 +112,12 @@ class _OmnigramHomeState extends ConsumerState<OmnigramHome> {
 
     return Scaffold(
       body: _buildBody(),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const MiniPlayerBar(),
-          NavigationBar(
-            selectedIndex: _currentTab.index,
-            onDestinationSelected: (i) => setState(() => _currentTab = OmnigramTab.values[i]),
-            destinations: destinations
-                .map((d) => NavigationDestination(icon: Icon(d.icon), selectedIcon: Icon(d.selectedIcon), label: d.label))
-                .toList(),
-          ),
-        ],
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _currentTab.index,
+        onDestinationSelected: (i) => setState(() => _currentTab = OmnigramTab.values[i]),
+        destinations: destinations
+            .map((d) => NavigationDestination(icon: Icon(d.icon), selectedIcon: Icon(d.selectedIcon), label: d.label))
+            .toList(),
       ),
     );
   }

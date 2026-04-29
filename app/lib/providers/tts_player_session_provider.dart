@@ -183,6 +183,8 @@ class TtsPlayerSessionController extends _$TtsPlayerSessionController {
   Future<void> seekToSentence(int idx) => _holder.session?.seekToSentence(idx) ?? Future.value();
   Future<void> nextChapter() => _holder.session?.nextChapter() ?? Future.value();
   Future<void> prevChapter() => _holder.session?.prevChapter() ?? Future.value();
+  Future<void> jumpToChapter(int chapterIndex) =>
+      _holder.session?.start(chapterIndex: chapterIndex) ?? Future.value();
   Future<void> setSpeed(double s) => _holder.session?.setSpeed(s) ?? Future.value();
   Future<void> upgradeNow() => _holder.session?.upgradeNow() ?? Future.value();
 
