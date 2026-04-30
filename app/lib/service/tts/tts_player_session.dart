@@ -2,11 +2,17 @@ import 'dart:async';
 
 import 'package:omnigram/models/server/server_tts.dart';
 import 'package:omnigram/models/tts/playback_state.dart';
+import 'package:omnigram/service/tts/sentence_splitter.dart';
 import 'package:omnigram/service/tts/tts_audio_source.dart';
 import 'package:omnigram/service/tts/tts_router.dart';
 
-typedef AudioSourceFactory = TtsAudioSource Function(PlaybackMode mode);
-typedef ChapterTitleFetcher = Future<String> Function(int chapterIndex);
+typedef AudioSourceFactory = TtsAudioSource Function({
+  required PlaybackMode mode,
+  required int chapterIndex,
+  required List<Sentence> sentences,
+  ChapterAlignment? alignment,
+});
+typedef ChapterTextFetcher = Future<String> Function(int chapterIndex);
 typedef ChapterAlignmentFetcher = Future<ChapterAlignment?> Function(int chapterIndex);
 typedef ModeResolver = PlaybackMode Function({required int chapterIndex});
 typedef PrefetchHook = void Function(int chapterIndex);
@@ -20,8 +26,8 @@ class TtsPlayerSession {
     required this.bookId,
     required this.bookTitle,
     required this.coverUrl,
-    required this.totalChapters,
-    required this.fetchChapterTitle,
+    required this.chapterTitles,
+    required this.fetchChapterText,
     required this.fetchChapterAlignment,
     required this.audioSourceFactory,
     required this.modeResolver,
@@ -32,16 +38,25 @@ class TtsPlayerSession {
   final String bookId;
   final String bookTitle;
   final String? coverUrl;
-  final int totalChapters;
-  final ChapterTitleFetcher fetchChapterTitle;
+  final List<String> chapterTitles;
+  final ChapterTextFetcher fetchChapterText;
   final ChapterAlignmentFetcher fetchChapterAlignment;
   final AudioSourceFactory audioSourceFactory;
   final ModeResolver modeResolver;
   final PrefetchHook prefetchHook;
   final UpgradeToast upgradeToast;
 
+  int get totalChapters => chapterTitles.length;
+
+  String _titleAt(int idx) {
+    if (idx < 0 || idx >= chapterTitles.length) return '#${idx + 1}';
+    final t = chapterTitles[idx];
+    return t.isEmpty ? '#${idx + 1}' : t;
+  }
+
   TtsAudioSource? _source;
   StreamSubscription<Duration>? _posSub;
+  StreamSubscription<int>? _idxSub;
   StreamSubscription<void>? _completeSub;
 
   final _stateController = StreamController<PlaybackState>.broadcast();
@@ -63,7 +78,9 @@ class TtsPlayerSession {
       bookTitle: bookTitle,
       coverUrl: coverUrl,
       totalChapters: totalChapters,
+      chapterTitles: chapterTitles,
       chapterIndex: chapterIndex,
+      chapterTitle: _titleAt(chapterIndex),
       mode: mode,
       isPreparing: true,
       isPlaying: false,
@@ -77,23 +94,51 @@ class TtsPlayerSession {
     if (chapterIndex + 1 < totalChapters) prefetchHook(chapterIndex + 1);
     if (chapterIndex + 2 < totalChapters) prefetchHook(chapterIndex + 2);
 
-    final title = await fetchChapterTitle(chapterIndex);
-    final alignment = await fetchChapterAlignment(chapterIndex);
+    // Local-first: pull plain chapter text from the book, split into sentences
+    // app-side, then drive whichever source matches the resolved mode. Pre-gen
+    // additionally needs the server's alignment (for position → sentence
+    // index mapping inside the chapter mp3); the other modes synthesise per
+    // sentence and don't use it.
+    final text = await fetchChapterText(chapterIndex);
+    final sentences = splitSentences(text);
+    if (sentences.isEmpty) {
+      _emit(_state.copyWith(
+        isPreparing: false,
+        errorMessage: 'Chapter has no readable text',
+      ));
+      return;
+    }
 
-    final source = audioSourceFactory(mode);
+    final alignment = mode == PlaybackMode.pregenServer
+        ? await fetchChapterAlignment(chapterIndex)
+        : null;
+    if (mode == PlaybackMode.pregenServer && alignment == null) {
+      _emit(_state.copyWith(
+        isPreparing: false,
+        errorMessage: 'Pre-gen alignment missing',
+      ));
+      return;
+    }
+
+    final source = audioSourceFactory(
+      mode: mode,
+      chapterIndex: chapterIndex,
+      sentences: sentences,
+      alignment: alignment,
+    );
     _source = source;
     try {
-      await source.prepare(chapterIndex: chapterIndex);
+      await source.prepare();
     } catch (e) {
       _emit(_state.copyWith(isPreparing: false, errorMessage: e.toString()));
       return;
     }
 
+    _idxSub = source.sentenceIndexStream.listen(_onSentenceIndex);
     _posSub = source.positionStream.listen(_onPosition);
     _completeSub = source.completionStream.listen((_) => _onChapterComplete());
 
     _emit(_state.copyWith(
-      chapterTitle: title,
       alignment: alignment,
       isPreparing: false,
       isPlaying: true,
@@ -119,17 +164,13 @@ class TtsPlayerSession {
     final s = _source;
     if (s == null) return;
     await s.seek(position);
-    _emit(_state.copyWith(
-      position: position,
-      sentenceIndex: sentenceIndexFor(alignment: _state.alignment, position: position),
-    ));
+    _emit(_state.copyWith(position: position));
   }
 
   Future<void> seekToSentence(int sentenceIdx) async {
-    final a = _state.alignment;
-    if (a == null || sentenceIdx < 0 || sentenceIdx >= a.sentences.length) return;
-    final ms = a.sentences[sentenceIdx].startMs;
-    await seek(Duration(milliseconds: ms));
+    final s = _source;
+    if (s == null) return;
+    await s.seekToSentence(sentenceIdx);
   }
 
   Future<void> nextChapter() async {
@@ -166,8 +207,12 @@ class TtsPlayerSession {
   }
 
   void _onPosition(Duration p) {
-    final idx = sentenceIndexFor(alignment: _state.alignment, position: p);
-    _emit(_state.copyWith(position: p, sentenceIndex: idx));
+    _emit(_state.copyWith(position: p));
+  }
+
+  void _onSentenceIndex(int idx) {
+    if (idx == _state.sentenceIndex) return;
+    _emit(_state.copyWith(sentenceIndex: idx));
   }
 
   Future<void> _onChapterComplete() async {
@@ -186,6 +231,7 @@ class TtsPlayerSession {
 
   Future<void> _teardownSource() async {
     await _posSub?.cancel();
+    await _idxSub?.cancel();
     await _completeSub?.cancel();
     final s = _source;
     _source = null;

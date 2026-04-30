@@ -1075,6 +1075,7 @@
   "ttsDownloadRecommended": "下载 Kokoro v1.0（推荐）",
   "ttsMoreModels": "更多模型请在高级设置中查看",
   "nowPlayingChapters": "章节",
+  "nowPlayingChaptersEmpty": "暂无章节列表 —— 请先在阅读器中打开本书。",
   "nowPlayingSleep": "睡眠",
   "nowPlayingSleepArmed": "{minutes} 分钟后停止",
   "@nowPlayingSleepArmed": {"placeholders": {"minutes": {"type": "int"}}},

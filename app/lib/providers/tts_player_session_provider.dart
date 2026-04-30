@@ -4,11 +4,14 @@ import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/models/book.dart';
 import 'package:omnigram/models/server/server_tts.dart';
 import 'package:omnigram/models/tts/playback_state.dart';
+import 'package:omnigram/providers/local_chapters_provider.dart';
 import 'package:omnigram/providers/server_connection_provider.dart';
 import 'package:omnigram/providers/tts_playback_mode_provider.dart';
+import 'package:omnigram/service/local_book/local_epub_chapters.dart';
 import 'package:omnigram/service/tts/live_server_source.dart';
 import 'package:omnigram/service/tts/local_fallback_source.dart';
 import 'package:omnigram/service/tts/pregen_server_source.dart';
+import 'package:omnigram/service/tts/sentence_splitter.dart';
 import 'package:omnigram/service/tts/tts_audio_source.dart';
 import 'package:omnigram/service/tts/tts_player_session.dart';
 import 'package:omnigram/service/tts/tts_router.dart';
@@ -60,29 +63,31 @@ class TtsPlayerSessionController extends _$TtsPlayerSessionController {
     final bookId = book.id.toString();
     final serverUrl = conn.serverUrl!;
 
+    // Authoritative chapter list comes from the local EPUB. The server's
+    // audiobook task is queried separately (best effort) only for upgrade
+    // tracking via SSE — its chapter array is no longer the source of truth.
+    final List<EpubChapter> chapters;
+    try {
+      chapters = await ref.read(localChaptersProvider(book.fileFullPath).future);
+    } catch (e) {
+      state = state.copyWith(errorMessage: 'Cannot read book: $e');
+      return;
+    }
+    if (chapters.isEmpty) {
+      state = state.copyWith(errorMessage: 'No chapters in book');
+      return;
+    }
+
     ServerAudiobookInfo? info;
     try {
       info = await api.getAudiobook(bookId);
     } catch (_) {
       info = null;
     }
-    final totalChapters = info?.task.totalChapters ?? info?.chapters.length ?? 1;
 
     Future<String> fetchChapterText(int idx) async {
-      try {
-        final align = await api.getChapterAlignment(bookId, idx);
-        return align.sentences.map((s) => s.text).join('\n');
-      } catch (_) {
-        return '';
-      }
-    }
-
-    Future<String> fetchTitle(int idx) async {
-      if (info == null) return '#${idx + 1}';
-      for (final c in info.chapters) {
-        if (c.chapterIndex == idx) return c.chapterTitle;
-      }
-      return '#${idx + 1}';
+      if (idx < 0 || idx >= chapters.length) return '';
+      return chapters[idx].plainText;
     }
 
     Future<ChapterAlignment?> fetchAlignment(int idx) async {
@@ -93,23 +98,35 @@ class TtsPlayerSessionController extends _$TtsPlayerSessionController {
       }
     }
 
-    TtsAudioSource sourceFor(PlaybackMode mode) {
+    TtsAudioSource sourceFor({
+      required PlaybackMode mode,
+      required int chapterIndex,
+      required List<Sentence> sentences,
+      ChapterAlignment? alignment,
+    }) {
       switch (mode) {
         case PlaybackMode.liveServer:
           return LiveServerSource(
             api: omni,
             bookId: bookId,
+            chapterIndex: chapterIndex,
             voice: voiceId,
             language: null,
-            fetchChapterText: fetchChapterText,
+            sentences: sentences,
           );
         case PlaybackMode.pregenServer:
-          return PregenServerSource(api: api, bookId: bookId);
+          return PregenServerSource(
+            api: api,
+            bookId: bookId,
+            chapterIndex: chapterIndex,
+            alignment: alignment!,
+          );
         case PlaybackMode.localFallback:
           return LocalFallbackSource(
             bookId: bookId,
+            chapterIndex: chapterIndex,
             voice: voiceId,
-            fetchChapterText: fetchChapterText,
+            sentences: sentences,
           );
       }
     }
@@ -135,12 +152,17 @@ class TtsPlayerSessionController extends _$TtsPlayerSessionController {
     await _holder.stateSub?.cancel();
     await _holder.session?.dispose();
 
+    final chapterTitles = [
+      for (var i = 0; i < chapters.length; i++)
+        chapters[i].title.isEmpty ? '#${i + 1}' : chapters[i].title,
+    ];
+
     final s = TtsPlayerSession(
       bookId: bookId,
       bookTitle: book.title,
       coverUrl: book.coverFullPath,
-      totalChapters: totalChapters,
-      fetchChapterTitle: fetchTitle,
+      chapterTitles: chapterTitles,
+      fetchChapterText: fetchChapterText,
       fetchChapterAlignment: fetchAlignment,
       audioSourceFactory: sourceFor,
       modeResolver: resolveMode,

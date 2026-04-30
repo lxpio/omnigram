@@ -1,27 +1,46 @@
 import 'dart:async';
 
-/// Common surface for the three playback modes; the player provider talks
-/// to one of these without caring which mode is active.
+/// Common surface for the three playback modes; the player provider talks to
+/// one of these without caring which mode is active.
+///
+/// The session asks the source for one chapter's worth of audio. Sources are
+/// constructed already knowing which chapter they will play (sentence list
+/// for sentence-driven sources, chapter mp3 for pregen) and dropped at the
+/// next chapter boundary — the session creates a fresh one each `start()`.
+///
+/// All three modes converge on the same observable surface:
+///
+/// - `sentenceIndexStream` — current sentence index (drives highlight). Pregen
+///   derives it from playback position + alignment; sentence-queue sources
+///   emit on each transition.
+/// - `positionStream` / `duration` — pregen uses chapter cumulative time;
+///   sentence-queue uses current sentence's elapsed/total. UI is sentence-
+///   centric so the difference is acceptable.
+/// - `completionStream` — fires once when the last unit of the chapter ends.
 abstract class TtsAudioSource {
-  /// Begin streaming/loading audio for the given chapter index.
-  /// Returns when first audio sample is buffered (i.e., playback can start).
-  Future<void> prepare({required int chapterIndex});
+  /// Begin loading audio. Returns when the first audio chunk is buffered and
+  /// `play()` will produce sound immediately.
+  Future<void> prepare();
 
-  /// Start or resume playback.
   Future<void> play();
-
-  /// Pause without releasing resources.
   Future<void> pause();
 
-  /// Seek within the current chapter.
+  /// Seek within the current sentence (for fine-grained scrubbing in pregen).
+  /// Sentence-queue sources may treat this as a no-op when the position is
+  /// outside the current sentence.
   Future<void> seek(Duration position);
 
-  /// Stop and release any buffered audio.
+  /// Jump to a given sentence (re-prepare if needed).
+  Future<void> seekToSentence(int sentenceIndex);
+
   Future<void> dispose();
 
-  /// Position stream — drives sentence highlight.
+  /// Index of the currently playing sentence. -1 when nothing is playing yet.
+  Stream<int> get sentenceIndexStream;
+
+  /// Position within the current playback unit (sentence or chapter mp3).
   Stream<Duration> get positionStream;
 
-  /// Fires once when current chapter finishes naturally.
+  /// Fires once when the chapter ends.
   Stream<void> get completionStream;
 }

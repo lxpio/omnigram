@@ -15,6 +15,7 @@ abstract class PlaybackState with _$PlaybackState {
     @Default(0) int chapterIndex,
     @Default('') String chapterTitle,
     @Default(0) int totalChapters,
+    @Default(<String>[]) List<String> chapterTitles,
     @Default(PlaybackMode.liveServer) PlaybackMode mode,
     @Default(false) bool isPlaying,
     @Default(false) bool isPreparing,
