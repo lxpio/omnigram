@@ -81,15 +81,9 @@
 
 **修复：** 新增 `app/lib/service/tts/audio_cache.dart` —— 删书时清 `<docs>/audiobooks/{bookId}/`（含 LocalFallback wav + server pre-gen mp3）；session stop 时清 `<temp>/live-tts/{bookId}/`；app 启动时全清 `<temp>/live-tts/` 兜底崩溃残留。LocalFallback wav 故意保留以便复播即时。
 
-### KI-9: 句子边界有可闻 gap
+### ✅ KI-9: 句间 gap（已修复 2026-05-07）
 
-**影响范围：** LocalFallback / LiveServer 模式
-
-**现状：** `SentenceQueueSource` 一句一个文件，audioplayers `setSource` 切下一句时有几十毫秒加载延迟，听感像是"逗号停顿过长"。预取保证了文件已就绪，但 setSource 自己是同步调用。
-
-**待做：** 改 gapless 方案 —— 拼 PCM、用 native playlist API、或换 just_audio 的 ConcatenatingAudioSource。
-
-**优先级：** 低。听书场景下逐句节奏感反而符合预期。
+**修复：** `SentenceQueueSource` 改双 player ping-pong：A 在播时 B 在后台 setSource 下一句文件，A 完成时直接 swap 角色 + resume，跳过 setSource 路径开销。冷路径（合成没赶上）退化为旧逻辑、有 gap 但只这一次。`app/lib/service/tts/sentence_queue_source.dart`。
 
 ---
 
@@ -97,7 +91,7 @@
 
 | 日期 | 更新 |
 |------|------|
-| 2026-05-07 | KI-6/KI-7/KI-8 已修复（跟读模式入口 + splitter parity fixtures + 逐句缓存清理）+ upgradeToast 接通 |
+| 2026-05-07 | KI-6/KI-7/KI-8/KI-9 全部修复 + upgradeToast 接通 |
 
 | 2026-05-06 | 新增 KI-7/8/9（splitter parity / 缓存清理 / 句间 gap） |
 | 2026-04-28 | 新增 KI-5（Now-Playing 章节按钮 → AudiobookPage）+ KI-6（跟读模式入口） |
