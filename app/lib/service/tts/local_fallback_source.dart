@@ -62,5 +62,7 @@ class LocalFallbackSource implements TtsAudioSource {
   @override
   Stream<Duration> get positionStream => _inner.positionStream;
   @override
+  Stream<Duration> get durationStream => _inner.durationStream;
+  @override
   Stream<void> get completionStream => _inner.completionStream;
 }

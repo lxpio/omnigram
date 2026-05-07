@@ -41,6 +41,7 @@ class SentenceQueueSource implements TtsAudioSource {
 
   final _sentenceIndexController = StreamController<int>.broadcast();
   final _positionController = StreamController<Duration>.broadcast();
+  final _durationController = StreamController<Duration>.broadcast();
   final _completionController = StreamController<void>.broadcast();
 
   /// Path cache survives chapter — going back/forward to a prior sentence
@@ -53,6 +54,7 @@ class SentenceQueueSource implements TtsAudioSource {
   double _speed = 1.0;
 
   StreamSubscription<Duration>? _activePosSub;
+  StreamSubscription<Duration>? _activeDurSub;
   StreamSubscription<void>? _activeCompleteSub;
 
   @override
@@ -82,20 +84,30 @@ class SentenceQueueSource implements TtsAudioSource {
   @override
   Future<void> setSpeed(double speed) async {
     _speed = speed;
-    // Both players must agree so the swap doesn't reset rate.
-    await _playerA.setPlaybackRate(speed);
-    await _playerB.setPlaybackRate(speed);
+    // Only the active player has a loaded source — calling setPlaybackRate
+    // on a player without a source throws on iOS. The idle player gets the
+    // rate applied later, in _preloadIdle / cold-path setSource, both of
+    // which read _speed after attaching the file.
+    try {
+      await _active.setPlaybackRate(speed);
+    } catch (_) {
+      // Ignore — happens if active hasn't loaded yet (e.g., setSpeed called
+      // before the very first prepare). _seekToInternal will re-apply rate
+      // once the source is set.
+    }
   }
 
   @override
   Future<void> dispose() async {
     _disposed = true;
     await _activePosSub?.cancel();
+    await _activeDurSub?.cancel();
     await _activeCompleteSub?.cancel();
     await _playerA.dispose();
     await _playerB.dispose();
     await _sentenceIndexController.close();
     await _positionController.close();
+    await _durationController.close();
     await _completionController.close();
   }
 
@@ -104,6 +116,9 @@ class SentenceQueueSource implements TtsAudioSource {
 
   @override
   Stream<Duration> get positionStream => _positionController.stream;
+
+  @override
+  Stream<Duration> get durationStream => _durationController.stream;
 
   @override
   Stream<void> get completionStream => _completionController.stream;
@@ -131,8 +146,10 @@ class SentenceQueueSource implements TtsAudioSource {
   /// don't leak into the public streams.
   void _bindActive() {
     _activePosSub?.cancel();
+    _activeDurSub?.cancel();
     _activeCompleteSub?.cancel();
     _activePosSub = _active.onPositionChanged.listen(_positionController.add);
+    _activeDurSub = _active.onDurationChanged.listen(_durationController.add);
     _activeCompleteSub = _active.onPlayerComplete.listen((_) => _onActiveComplete());
   }
 

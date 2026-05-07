@@ -87,6 +87,9 @@ class PregenServerSource implements TtsAudioSource {
   Stream<Duration> get positionStream => _player.onPositionChanged;
 
   @override
+  Stream<Duration> get durationStream => _player.onDurationChanged;
+
+  @override
   Stream<void> get completionStream => _player.onPlayerComplete;
 
   int _indexForMs(int ms) {

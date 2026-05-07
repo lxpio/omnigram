@@ -56,6 +56,7 @@ class TtsPlayerSession {
 
   TtsAudioSource? _source;
   StreamSubscription<Duration>? _posSub;
+  StreamSubscription<Duration>? _durSub;
   StreamSubscription<int>? _idxSub;
   StreamSubscription<void>? _completeSub;
 
@@ -120,6 +121,11 @@ class TtsPlayerSession {
       return;
     }
 
+    // Plain-text sentences feed the live SentenceStream view (no alignment
+    // required); pregen will additionally feed `alignment` for time-stamped
+    // index lookup, but the displayed text is the local split either way.
+    _emit(_state.copyWith(sentences: [for (final s in sentences) s.text]));
+
     final source = audioSourceFactory(
       mode: mode,
       chapterIndex: chapterIndex,
@@ -136,10 +142,15 @@ class TtsPlayerSession {
 
     _idxSub = source.sentenceIndexStream.listen(_onSentenceIndex);
     _posSub = source.positionStream.listen(_onPosition);
+    _durSub = source.durationStream.listen(_onDuration);
     _completeSub = source.completionStream.listen((_) => _onChapterComplete());
 
     if (_state.speed != 1.0) {
-      await source.setSpeed(_state.speed);
+      // Best-effort — sources should fail silently rather than break the
+      // whole chapter switch over a rate setter glitch.
+      try {
+        await source.setSpeed(_state.speed);
+      } catch (_) {}
     }
 
     _emit(_state.copyWith(
@@ -212,6 +223,11 @@ class TtsPlayerSession {
     _emit(_state.copyWith(position: p));
   }
 
+  void _onDuration(Duration d) {
+    if (d == _state.duration) return;
+    _emit(_state.copyWith(duration: d));
+  }
+
   void _onSentenceIndex(int idx) {
     if (idx == _state.sentenceIndex) return;
     _emit(_state.copyWith(sentenceIndex: idx));
@@ -233,6 +249,7 @@ class TtsPlayerSession {
 
   Future<void> _teardownSource() async {
     await _posSub?.cancel();
+    await _durSub?.cancel();
     await _idxSub?.cancel();
     await _completeSub?.cancel();
     final s = _source;

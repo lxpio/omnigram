@@ -14,7 +14,7 @@ import 'package:omnigram/models/read_theme.dart';
 import 'package:omnigram/page/book_detail.dart';
 import 'package:omnigram/page/book_player/epub_player.dart';
 import 'package:omnigram/page/now_playing/now_playing_page.dart';
-import 'package:omnigram/providers/audiobook_provider.dart';
+import 'package:omnigram/providers/local_chapters_provider.dart';
 import 'package:omnigram/providers/tts_player_session_provider.dart';
 import 'package:omnigram/service/ai/index.dart';
 import 'package:omnigram/service/ai/prompt_generate.dart';
@@ -392,19 +392,30 @@ class ReadingPageState extends ConsumerState<ReadingPage> with WidgetsBindingObs
   }
 
   Future<void> ttsHandler() async {
-    // Route to the new Now-Playing surface (Plan 2). The legacy in-reader
-    // TtsWidget remains in the codebase for the read-along path but is no
-    // longer the headphones-button entry. Long-press on the bottom-bar TTS
-    // icon falls back to the legacy widget for users who want the
-    // sentence-by-sentence read-from-current-position flow.
-    final info = ref.read(audiobookProvider(_book.id.toString())).valueOrNull;
+    // Route to the new Now-Playing surface (Plan 2). Start at whatever
+    // chapter the reader is currently rendering — that's what the user
+    // expects when they tap "Listen" mid-book. We resolve the reader's
+    // chapterHref against our local EPUB spine; falls back to chapter 0
+    // if the reader isn't ready or the href doesn't match.
     int start = 0;
-    if (info != null) {
-      for (final c in info.chapters) {
-        if (c.status != 2) {
-          start = c.chapterIndex;
-          break;
+    final epubState = epubPlayerKey.currentState;
+    final currentHref = epubState?.chapterHref ?? '';
+    if (currentHref.isNotEmpty) {
+      try {
+        final chapters = await ref.read(
+          localChaptersProvider(_book.fileFullPath).future,
+        );
+        final basePath = currentHref.split('#').first;
+        for (var i = 0; i < chapters.length; i++) {
+          final ch = chapters[i].href.split('#').first;
+          if (ch == basePath || basePath.endsWith(ch) || ch.endsWith(basePath)) {
+            start = i;
+            break;
+          }
         }
+      } catch (_) {
+        // Local parse failed — keep start=0; the session will surface its
+        // own error if the EPUB is unreadable.
       }
     }
     await ref.read(ttsPlayerSessionControllerProvider.notifier).startSession(

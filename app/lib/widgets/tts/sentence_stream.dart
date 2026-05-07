@@ -14,7 +14,10 @@ class SentenceStream extends ConsumerWidget {
     final s = ref.watch(ttsPlayerSessionControllerProvider);
     final theme = Theme.of(context);
 
-    if (!s.hasAlignment) {
+    // Plain-text sentences are populated for ALL modes (local fallback /
+    // live server / pregen), so we render off `state.sentences` rather than
+    // `state.alignment` (which is only set for pregen).
+    if (!s.hasSentences) {
       final l10n = L10n.of(context);
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
@@ -26,10 +29,10 @@ class SentenceStream extends ConsumerWidget {
       );
     }
 
-    final sentences = s.alignment!.sentences;
+    final sentences = s.sentences;
     final cur = s.sentenceIndex.clamp(0, sentences.length - 1);
-    final prev = cur > 0 ? sentences[cur - 1] : null;
-    final next = cur + 1 < sentences.length ? sentences[cur + 1] : null;
+    final prevText = cur > 0 ? sentences[cur - 1] : null;
+    final nextText = cur + 1 < sentences.length ? sentences[cur + 1] : null;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -37,26 +40,26 @@ class SentenceStream extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (prev != null)
+          if (prevText != null)
             _line(
               ref,
-              prev.index,
-              prev.text,
+              cur - 1,
+              prevText,
               style: theme.textTheme.titleSmall?.copyWith(color: theme.disabledColor),
             ),
           const SizedBox(height: 12),
           _line(
             ref,
-            sentences[cur].index,
-            sentences[cur].text,
+            cur,
+            sentences[cur],
             style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
-          if (next != null)
+          if (nextText != null)
             _line(
               ref,
-              next.index,
-              next.text,
+              cur + 1,
+              nextText,
               style: theme.textTheme.titleSmall?.copyWith(color: theme.disabledColor),
             ),
         ],

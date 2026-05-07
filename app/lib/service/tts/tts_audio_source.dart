@@ -46,6 +46,10 @@ abstract class TtsAudioSource {
   /// Position within the current playback unit (sentence or chapter mp3).
   Stream<Duration> get positionStream;
 
+  /// Total duration of the current playback unit. Drives the scrubber.
+  /// Sentence-queue sources emit per-sentence; pregen emits chapter total.
+  Stream<Duration> get durationStream;
+
   /// Fires once when the chapter ends.
   Stream<void> get completionStream;
 }

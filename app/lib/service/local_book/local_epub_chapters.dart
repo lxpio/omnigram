@@ -52,9 +52,12 @@ Future<List<EpubChapter>> readEpubChapters(String filePath) async {
   }
   final opfStr = _utf8(opfFile);
 
+  // Match `<item ... />` and `<item ...>`. The attribute span must allow
+  // forward slashes inside values (e.g., media-type="application/xhtml+xml")
+  // — only the closing angle bracket terminates an opening tag.
   final manifest = <String, String>{};
   for (final m
-      in RegExp(r'<item\b([^/>]*)/?>', dotAll: true).allMatches(opfStr)) {
+      in RegExp(r'<item\s([^>]*?)/?>', dotAll: true).allMatches(opfStr)) {
     final attrs = m.group(1)!;
     final id = RegExp(r'id="([^"]+)"').firstMatch(attrs)?.group(1);
     final href = RegExp(r'href="([^"]+)"').firstMatch(attrs)?.group(1);
@@ -62,7 +65,7 @@ Future<List<EpubChapter>> readEpubChapters(String filePath) async {
   }
 
   final spineIds = <String>[];
-  for (final m in RegExp(r'<itemref\b([^/>]*)/?>').allMatches(opfStr)) {
+  for (final m in RegExp(r'<itemref\s([^>]*?)/?>').allMatches(opfStr)) {
     final attrs = m.group(1)!;
     final idref = RegExp(r'idref="([^"]+)"').firstMatch(attrs)?.group(1);
     if (idref == null) continue;

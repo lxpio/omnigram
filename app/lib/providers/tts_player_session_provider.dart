@@ -49,13 +49,13 @@ class TtsPlayerSessionController extends _$TtsPlayerSessionController {
     required Book book,
     required int chapterIndex,
   }) async {
+    // Local-first: a missing server connection is *not* fatal — we can still
+    // run LocalFallback (sherpa-onnx on-device synth). The router resolves
+    // PlaybackMode per chapter; if it picks live/pregen the source factory
+    // will surface a clearer error than blocking the whole session here.
     final conn = ref.read(serverConnectionProvider);
     final api = ref.read(serverConnectionProvider.notifier).tts;
     final omni = ref.read(serverConnectionProvider.notifier).api;
-    if (api == null || omni == null || conn.serverUrl == null) {
-      state = state.copyWith(errorMessage: 'Not connected to server');
-      return;
-    }
     final voiceFullId = Prefs().selectedVoiceFullId;
     if (voiceFullId.isEmpty) {
       state = state.copyWith(errorMessage: 'No voice selected');
@@ -66,7 +66,7 @@ class TtsPlayerSessionController extends _$TtsPlayerSessionController {
         : voiceFullId;
 
     final bookId = book.id.toString();
-    final serverUrl = conn.serverUrl!;
+    final serverUrl = conn.serverUrl ?? '';
 
     // Authoritative chapter list comes from the local EPUB. The server's
     // audiobook task is queried separately (best effort) only for upgrade
@@ -84,10 +84,12 @@ class TtsPlayerSessionController extends _$TtsPlayerSessionController {
     }
 
     ServerAudiobookInfo? info;
-    try {
-      info = await api.getAudiobook(bookId);
-    } catch (_) {
-      info = null;
+    if (api != null) {
+      try {
+        info = await api.getAudiobook(bookId);
+      } catch (_) {
+        info = null;
+      }
     }
 
     Future<String> fetchChapterText(int idx) async {
@@ -96,6 +98,7 @@ class TtsPlayerSessionController extends _$TtsPlayerSessionController {
     }
 
     Future<ChapterAlignment?> fetchAlignment(int idx) async {
+      if (api == null) return null;
       try {
         return await api.getChapterAlignment(bookId, idx);
       } catch (_) {
@@ -111,6 +114,16 @@ class TtsPlayerSessionController extends _$TtsPlayerSessionController {
     }) {
       switch (mode) {
         case PlaybackMode.liveServer:
+          // Router shouldn't pick liveServer if omni is null, but defensively
+          // fall back to local on-device synth if it does.
+          if (omni == null) {
+            return LocalFallbackSource(
+              bookId: bookId,
+              chapterIndex: chapterIndex,
+              voice: voiceId,
+              sentences: sentences,
+            );
+          }
           return LiveServerSource(
             api: omni,
             bookId: bookId,
@@ -121,7 +134,7 @@ class TtsPlayerSessionController extends _$TtsPlayerSessionController {
           );
         case PlaybackMode.pregenServer:
           return PregenServerSource(
-            api: api,
+            api: api!,
             bookId: bookId,
             chapterIndex: chapterIndex,
             alignment: alignment!,
@@ -146,6 +159,7 @@ class TtsPlayerSessionController extends _$TtsPlayerSessionController {
     }
 
     void prefetch(int idx) {
+      if (api == null) return;
       // Only enqueue server pre-gen if the routing decision says local
       // fallback for this chapter (i.e. server isn't already serving it).
       final mode = resolveMode(chapterIndex: idx);
@@ -215,9 +229,10 @@ class TtsPlayerSessionController extends _$TtsPlayerSessionController {
     });
 
     // Re-subscribe SSE so the session sees server progress and ready signals.
+    // Only meaningful when a server task exists; offline sessions skip this.
     await _sseSub?.cancel();
     final task = info?.task;
-    if (task != null && task.id.isNotEmpty) {
+    if (api != null && task != null && task.id.isNotEmpty) {
       _sseSub = api.streamTask(task.id).listen((updated) {
         final pct = updated.totalChapters == 0
             ? 0

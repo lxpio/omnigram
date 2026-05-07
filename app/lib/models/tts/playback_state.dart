@@ -16,6 +16,7 @@ abstract class PlaybackState with _$PlaybackState {
     @Default('') String chapterTitle,
     @Default(0) int totalChapters,
     @Default(<String>[]) List<String> chapterTitles,
+    @Default(<String>[]) List<String> sentences,
     @Default(PlaybackMode.liveServer) PlaybackMode mode,
     @Default(false) bool isPlaying,
     @Default(false) bool isPreparing,
@@ -33,4 +34,5 @@ abstract class PlaybackState with _$PlaybackState {
 
   bool get hasSession => bookId != null;
   bool get hasAlignment => alignment != null && alignment!.sentences.isNotEmpty;
+  bool get hasSentences => sentences.isNotEmpty;
 }
