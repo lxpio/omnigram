@@ -1077,6 +1077,7 @@
   "nowPlayingChapters": "章节",
   "nowPlayingChaptersEmpty": "暂无章节列表 —— 请先在阅读器中打开本书。",
   "nowPlayingReadAlong": "跟读模式",
+  "nowPlayingUpgraded": "已切换到高质量声音",
   "nowPlayingSleep": "睡眠",
   "nowPlayingSleepArmed": "{minutes} 分钟后停止",
   "@nowPlayingSleepArmed": {"placeholders": {"minutes": {"type": "int"}}},

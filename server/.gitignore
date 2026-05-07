@@ -5,6 +5,7 @@ build
 *.log
 testdata
 !service/ai/testdata/
+!service/tts/testdata/
 .DS_Store
 apidoc
 *.wav

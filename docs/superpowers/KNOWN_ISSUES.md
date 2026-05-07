@@ -73,15 +73,9 @@
 
 ## 🟡 待办 — TTS 工程债
 
-### KI-7: Splitter parity 没有 CI 跨语言对照测试
+### ✅ KI-7: Splitter parity（已修复 2026-05-07）
 
-**影响范围：** Pre-gen 模式 sentence index 对齐
-
-**现状：** Dart `app/lib/service/tts/sentence_splitter.dart` 是 Go `server/service/tts/sentence_splitter.go` 的手工镜像。两边切句结果靠"作者保持一致"维持对齐 —— 任一边改了算法另一边没跟，pre-gen alignment 和客户端 sentences[] 长度不一致就会报错。
-
-**待做：** CI 跑共享 fixture 输入，跨语言比对输出 hash。
-
-**优先级：** 中。当前两边都不常改，但每动一次都是隐患。
+**修复：** `server/service/tts/testdata/splitter_parity.json` 共享 fixture，Go 和 Dart 各跑一份对照测试（`sentence_splitter_parity_test.go` / `sentence_splitter_parity_test.dart`）。任一边算法改动会先在自己语言挂掉，迫使更新 fixture，另一边的测试紧接着挂 → 两边算法被钉在一起。
 
 ### ✅ KI-8: 逐句缓存清理（已修复 2026-05-07）
 
@@ -103,7 +97,8 @@
 
 | 日期 | 更新 |
 |------|------|
-| 2026-05-07 | KI-6/KI-8 已修复（跟读模式入口 + 逐句缓存清理） |
+| 2026-05-07 | KI-6/KI-7/KI-8 已修复（跟读模式入口 + splitter parity fixtures + 逐句缓存清理）+ upgradeToast 接通 |
+
 | 2026-05-06 | 新增 KI-7/8/9（splitter parity / 缓存清理 / 句间 gap） |
 | 2026-04-28 | 新增 KI-5（Now-Playing 章节按钮 → AudiobookPage）+ KI-6（跟读模式入口） |
 | 2026-04-04 | KI-1/KI-3/KI-4 已修复：AI 数据双向同步完成 |

@@ -1082,6 +1082,7 @@
   "nowPlayingChapters": "Chapters",
   "nowPlayingChaptersEmpty": "No chapters available — open this book in the reader first.",
   "nowPlayingReadAlong": "Read along",
+  "nowPlayingUpgraded": "Switched to higher-quality voice",
   "nowPlayingSleep": "Sleep",
   "nowPlayingSleepArmed": "Stops in {minutes} min",
   "@nowPlayingSleepArmed": {"placeholders": {"minutes": {"type": "int"}}},

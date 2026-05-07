@@ -1,0 +1,67 @@
+{
+  "_comment": "Shared fixture for the Go and Dart sentence splitters. Both sides MUST produce identical output for these inputs. Default Splitter (minChars=4, maxChars=200) unless 'splitter' is specified. charOffset is in runes (matching both Go []rune indexing and Dart String.runes).",
+  "cases": [
+    {
+      "name": "english two sentences",
+      "input": "Hello world. Goodbye.",
+      "expected": [
+        {"text": "Hello world.", "charOffset": 0},
+        {"text": "Goodbye.", "charOffset": 13}
+      ]
+    },
+    {
+      "name": "chinese three sentences",
+      "input": "今天天气真好。我们去公园玩吧!你觉得呢?",
+      "expected": [
+        {"text": "今天天气真好。", "charOffset": 0},
+        {"text": "我们去公园玩吧!", "charOffset": 7},
+        {"text": "你觉得呢?", "charOffset": 15}
+      ]
+    },
+    {
+      "name": "decimal not a terminator",
+      "input": "Pi is 3.14 approximately.",
+      "expected": [
+        {"text": "Pi is 3.14 approximately.", "charOffset": 0}
+      ]
+    },
+    {
+      "name": "abbreviation not a terminator",
+      "input": "Mr. Smith went home. He was tired.",
+      "expected": [
+        {"text": "Mr. Smith went home.", "charOffset": 0},
+        {"text": "He was tired.", "charOffset": 21}
+      ]
+    },
+    {
+      "name": "closing mark sticks to sentence",
+      "input": "\"Hello.\" She smiled.",
+      "expected": [
+        {"text": "\"Hello.\"", "charOffset": 0},
+        {"text": "She smiled.", "charOffset": 9}
+      ]
+    },
+    {
+      "name": "paragraph break",
+      "input": "First.\n\nSecond.",
+      "expected": [
+        {"text": "First.", "charOffset": 0},
+        {"text": "Second.", "charOffset": 8}
+      ]
+    },
+    {
+      "name": "merge numeric bullet into next",
+      "input": "1. First real sentence here.",
+      "expected": [
+        {"text": "1. First real sentence here.", "charOffset": 0}
+      ]
+    },
+    {
+      "name": "merge short fragment into previous",
+      "input": "This is a real sentence. OK.",
+      "expected": [
+        {"text": "This is a real sentence. OK.", "charOffset": 0}
+      ]
+    }
+  ]
+}

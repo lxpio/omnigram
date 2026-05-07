@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:omnigram/config/shared_preference_provider.dart';
-import 'package:omnigram/main.dart' show audioHandler;
+import 'package:omnigram/main.dart' show audioHandler, navigatorKey;
 import 'package:omnigram/models/book.dart';
 import 'package:omnigram/models/server/server_tts.dart';
 import 'package:omnigram/models/tts/playback_state.dart';
@@ -18,6 +18,8 @@ import 'package:omnigram/service/tts/tts_audio_source.dart';
 import 'package:omnigram/service/tts/tts_handler.dart';
 import 'package:omnigram/service/tts/tts_player_session.dart';
 import 'package:omnigram/service/tts/tts_router.dart';
+import 'package:omnigram/utils/toast/common.dart';
+import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'tts_player_session_provider.g.dart';
@@ -171,7 +173,9 @@ class TtsPlayerSessionController extends _$TtsPlayerSessionController {
       modeResolver: resolveMode,
       prefetchHook: prefetch,
       upgradeToast: () {
-        // No-op here — UI watches state and surfaces toast when serverReady flips.
+        final ctx = navigatorKey.currentContext;
+        if (ctx == null) return;
+        AnxToast.show(L10n.of(ctx).nowPlayingUpgraded);
       },
     );
     _holder.session = s;
