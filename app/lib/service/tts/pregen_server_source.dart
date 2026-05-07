@@ -71,6 +71,9 @@ class PregenServerSource implements TtsAudioSource {
   }
 
   @override
+  Future<void> setSpeed(double speed) => _player.setPlaybackRate(speed);
+
+  @override
   Future<void> dispose() async {
     await _posSub?.cancel();
     await _player.dispose();

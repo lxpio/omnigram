@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:omnigram/config/shared_preference_provider.dart';
+import 'package:omnigram/main.dart' show audioHandler;
 import 'package:omnigram/models/book.dart';
 import 'package:omnigram/models/server/server_tts.dart';
 import 'package:omnigram/models/tts/playback_state.dart';
@@ -13,6 +14,7 @@ import 'package:omnigram/service/tts/local_fallback_source.dart';
 import 'package:omnigram/service/tts/pregen_server_source.dart';
 import 'package:omnigram/service/tts/sentence_splitter.dart';
 import 'package:omnigram/service/tts/tts_audio_source.dart';
+import 'package:omnigram/service/tts/tts_handler.dart';
 import 'package:omnigram/service/tts/tts_player_session.dart';
 import 'package:omnigram/service/tts/tts_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -172,7 +174,40 @@ class TtsPlayerSessionController extends _$TtsPlayerSessionController {
       },
     );
     _holder.session = s;
-    _holder.stateSub = s.stream.listen((newState) => state = newState);
+
+    // Bridge to system control-center / lock-screen via the shared
+    // AudioHandler. While the session is alive the handler delegates all
+    // transport actions back to this controller.
+    final handler = audioHandler;
+    if (handler is TtsHandler) {
+      handler.bindNowPlaying(NowPlayingBinding(
+        onPlay: play,
+        onPause: pause,
+        onStop: stop,
+        onSkipNext: nextChapter,
+        onSkipPrev: prevChapter,
+        onSeek: seek,
+      ));
+    }
+
+    _holder.stateSub = s.stream.listen((newState) {
+      state = newState;
+      if (handler is TtsHandler) {
+        handler.updateNowPlayingMediaItem(
+          id: newState.bookId ?? bookId,
+          title: newState.chapterTitle.isEmpty
+              ? newState.bookTitle ?? ''
+              : newState.chapterTitle,
+          album: newState.bookTitle ?? '',
+          artist: book.author,
+          coverPath: newState.coverUrl,
+        );
+        handler.updateNowPlayingPlaybackState(
+          playing: newState.isPlaying,
+          position: newState.position,
+        );
+      }
+    });
 
     // Re-subscribe SSE so the session sees server progress and ready signals.
     await _sseSub?.cancel();
@@ -217,6 +252,8 @@ class TtsPlayerSessionController extends _$TtsPlayerSessionController {
     _holder.stateSub = null;
     await _holder.session?.dispose();
     _holder.session = null;
+    final handler = audioHandler;
+    if (handler is TtsHandler) handler.unbindNowPlaying();
     state = const PlaybackState();
   }
 }

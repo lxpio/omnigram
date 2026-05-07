@@ -54,6 +54,8 @@ class LocalFallbackSource implements TtsAudioSource {
   @override
   Future<void> seekToSentence(int sentenceIndex) => _inner.seekToSentence(sentenceIndex);
   @override
+  Future<void> setSpeed(double speed) => _inner.setSpeed(speed);
+  @override
   Future<void> dispose() => _inner.dispose();
   @override
   Stream<int> get sentenceIndexStream => _inner.sentenceIndexStream;

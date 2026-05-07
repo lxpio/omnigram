@@ -33,6 +33,11 @@ abstract class TtsAudioSource {
   /// Jump to a given sentence (re-prepare if needed).
   Future<void> seekToSentence(int sentenceIndex);
 
+  /// Adjust playback rate. 1.0 = normal. Sources persist this across sentence
+  /// transitions so the queue keeps the user-chosen speed after each file
+  /// swap.
+  Future<void> setSpeed(double speed);
+
   Future<void> dispose();
 
   /// Index of the currently playing sentence. -1 when nothing is playing yet.

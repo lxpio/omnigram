@@ -40,6 +40,7 @@ class SentenceQueueSource implements TtsAudioSource {
 
   int _currentIndex = -1;
   bool _disposed = false;
+  double _speed = 1.0;
   StreamSubscription<void>? _completeSub;
 
   @override
@@ -67,6 +68,12 @@ class SentenceQueueSource implements TtsAudioSource {
   }
 
   @override
+  Future<void> setSpeed(double speed) async {
+    _speed = speed;
+    await _player.setPlaybackRate(speed);
+  }
+
+  @override
   Future<void> dispose() async {
     _disposed = true;
     await _completeSub?.cancel();
@@ -91,6 +98,10 @@ class SentenceQueueSource implements TtsAudioSource {
     final path = await _ensureSynth(idx);
     if (_disposed) return;
     await _player.setSource(DeviceFileSource(path));
+    // setSource resets playback rate on iOS — re-apply user's chosen speed.
+    if (_speed != 1.0) {
+      await _player.setPlaybackRate(_speed);
+    }
     _sentenceIndexController.add(idx);
 
     // Wire chapter completion to advance into the next sentence (or close

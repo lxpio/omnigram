@@ -138,6 +138,10 @@ class TtsPlayerSession {
     _posSub = source.positionStream.listen(_onPosition);
     _completeSub = source.completionStream.listen((_) => _onChapterComplete());
 
+    if (_state.speed != 1.0) {
+      await source.setSpeed(_state.speed);
+    }
+
     _emit(_state.copyWith(
       alignment: alignment,
       isPreparing: false,
@@ -184,9 +188,7 @@ class TtsPlayerSession {
   }
 
   Future<void> setSpeed(double speed) async {
-    // The TtsAudioSource interface does not yet expose a rate setter; Plan 2
-    // tracks speed in state for the UI, real audio rate plumbing is a
-    // follow-up that extends the interface.
+    await _source?.setSpeed(speed);
     _emit(_state.copyWith(speed: speed));
   }
 

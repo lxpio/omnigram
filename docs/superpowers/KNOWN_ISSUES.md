@@ -77,10 +77,45 @@
 
 ---
 
+## 🟡 待办 — TTS 工程债
+
+### KI-7: Splitter parity 没有 CI 跨语言对照测试
+
+**影响范围：** Pre-gen 模式 sentence index 对齐
+
+**现状：** Dart `app/lib/service/tts/sentence_splitter.dart` 是 Go `server/service/tts/sentence_splitter.go` 的手工镜像。两边切句结果靠"作者保持一致"维持对齐 —— 任一边改了算法另一边没跟，pre-gen alignment 和客户端 sentences[] 长度不一致就会报错。
+
+**待做：** CI 跑共享 fixture 输入，跨语言比对输出 hash。
+
+**优先级：** 中。当前两边都不常改，但每动一次都是隐患。
+
+### KI-8: 逐句缓存从不清理
+
+**影响范围：** `SentenceQueueSource` 缓存目录
+
+**现状：** LocalFallback 把每句 wav 存到 `audiobooks/{book}/local/chapter_X/sent_Y.wav`，LiveServer 存到 temp dir。session 切书 / 删书 / 卸载都不清。一本大书听一轮可能堆几十 MB。
+
+**待做：** 删书时清对应目录；启动时扫一遍 temp 老文件。
+
+**优先级：** 中。
+
+### KI-9: 句子边界有可闻 gap
+
+**影响范围：** LocalFallback / LiveServer 模式
+
+**现状：** `SentenceQueueSource` 一句一个文件，audioplayers `setSource` 切下一句时有几十毫秒加载延迟，听感像是"逗号停顿过长"。预取保证了文件已就绪，但 setSource 自己是同步调用。
+
+**待做：** 改 gapless 方案 —— 拼 PCM、用 native playlist API、或换 just_audio 的 ConcatenatingAudioSource。
+
+**优先级：** 低。听书场景下逐句节奏感反而符合预期。
+
+---
+
 ## 更新记录
 
 | 日期 | 更新 |
 |------|------|
+| 2026-05-06 | 新增 KI-7/8/9（splitter parity / 缓存清理 / 句间 gap） |
 | 2026-04-28 | 新增 KI-5（Now-Playing 章节按钮 → AudiobookPage）+ KI-6（跟读模式入口） |
 | 2026-04-04 | KI-1/KI-3/KI-4 已修复：AI 数据双向同步完成 |
 | 2026-03-23 | 初始创建，记录 Sprint 4 代码审查遗留问题 |

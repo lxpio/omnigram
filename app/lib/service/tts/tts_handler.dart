@@ -6,6 +6,28 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 
+/// Delegate from `TtsPlayerSessionController` to `TtsHandler` so the system
+/// lock-screen / control-center / Bluetooth headset transport keys forward
+/// into the active Now-Playing session. The handler holds a reference while
+/// the session is alive and falls back to legacy in-reader TTS behaviour
+/// when there is no binding.
+class NowPlayingBinding {
+  const NowPlayingBinding({
+    required this.onPlay,
+    required this.onPause,
+    required this.onStop,
+    required this.onSkipNext,
+    required this.onSkipPrev,
+    required this.onSeek,
+  });
+  final Future<void> Function() onPlay;
+  final Future<void> Function() onPause;
+  final Future<void> Function() onStop;
+  final Future<void> Function() onSkipNext;
+  final Future<void> Function() onSkipPrev;
+  final Future<void> Function(Duration position) onSeek;
+}
+
 class TtsHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
   final TtsFactory _ttsFactory = TtsFactory();
 
@@ -20,6 +42,66 @@ class TtsHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
   }
 
   BaseTts get tts => _ttsFactory.current;
+
+  NowPlayingBinding? _nowPlayingBinding;
+
+  /// Switch the handler into Now-Playing delegating mode. While bound, all
+  /// transport callbacks (play/pause/stop/skipNext/skipPrev/seek) forward to
+  /// the supplied callbacks instead of the legacy in-reader TTS path.
+  void bindNowPlaying(NowPlayingBinding binding) {
+    _nowPlayingBinding = binding;
+  }
+
+  void unbindNowPlaying() {
+    _nowPlayingBinding = null;
+    queue.add(const []);
+    playbackState.add(playbackState.value.copyWith(
+      controls: const [],
+      queueIndex: null,
+      processingState: AudioProcessingState.idle,
+      playing: false,
+    ));
+  }
+
+  /// Push current Now-Playing metadata into system control-center.
+  void updateNowPlayingMediaItem({
+    required String id,
+    required String title,
+    required String album,
+    String? artist,
+    String? coverPath,
+  }) {
+    final item = MediaItem(
+      id: id,
+      title: title,
+      album: album,
+      artist: artist,
+      duration: const Duration(milliseconds: -1),
+      artUri: (coverPath != null && coverPath.isNotEmpty)
+          ? Uri.tryParse('file://$coverPath')
+          : null,
+    );
+    queue.add([item]);
+    mediaItem.add(item);
+  }
+
+  void updateNowPlayingPlaybackState({
+    required bool playing,
+    Duration position = Duration.zero,
+  }) {
+    playbackState.add(playbackState.value.copyWith(
+      controls: [
+        MediaControl.skipToPrevious,
+        playing ? MediaControl.pause : MediaControl.play,
+        MediaControl.stop,
+        MediaControl.skipToNext,
+      ],
+      processingState: AudioProcessingState.ready,
+      playing: playing,
+      queueIndex: queue.value.isNotEmpty ? 0 : null,
+      updatePosition: position,
+    ));
+  }
 
   Function? _getCurrentText;
   Function? _getNextText;
@@ -79,6 +161,71 @@ class TtsHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
 
   @override
   Future<void> play() async {
+    final binding = _nowPlayingBinding;
+    if (binding != null) {
+      await AudioSession.instance.then((s) => s.setActive(true));
+      await binding.onPlay();
+      return;
+    }
+    await _playLegacy();
+  }
+
+  @override
+  Future<void> pause() async {
+    final binding = _nowPlayingBinding;
+    if (binding != null) {
+      await binding.onPause();
+      return;
+    }
+    await _pauseLegacy();
+  }
+
+  @override
+  Future<void> stop() async {
+    final binding = _nowPlayingBinding;
+    if (binding != null) {
+      await binding.onStop();
+      return;
+    }
+    await _stopLegacy();
+  }
+
+  @override
+  Future<void> skipToNext() async {
+    final binding = _nowPlayingBinding;
+    if (binding != null) {
+      await binding.onSkipNext();
+      return;
+    }
+    await playNext();
+  }
+
+  @override
+  Future<void> skipToPrevious() async {
+    final binding = _nowPlayingBinding;
+    if (binding != null) {
+      await binding.onSkipPrev();
+      return;
+    }
+    await playPrevious();
+  }
+
+  @override
+  Future<void> seek(Duration position) async {
+    final binding = _nowPlayingBinding;
+    if (binding != null) {
+      await binding.onSeek(position);
+      return;
+    }
+    return super.seek(position);
+  }
+
+  Future<void> _playLegacy() async {
+    final epubState = epubPlayerKey.currentState;
+    if (epubState == null) {
+      // No reader open and no Now-Playing binding — nothing to drive.
+      return;
+    }
     final session = await AudioSession.instance;
     if (await session.setActive(true)) {
       playbackState.add(playbackState.value.copyWith(
@@ -89,17 +236,14 @@ class TtsHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
     }
 
     final item = MediaItem(
-      id: epubPlayerKey.currentState!.chapterTitle,
-      title: epubPlayerKey.currentState!.chapterTitle,
-      album: epubPlayerKey.currentState!.book.title,
-      artist: epubPlayerKey.currentState!.book.author,
-      // Use -1 to tell system not to render a progress bar.
+      id: epubState.chapterTitle,
+      title: epubState.chapterTitle,
+      album: epubState.book.title,
+      artist: epubState.book.author,
       duration: const Duration(milliseconds: -1),
-      artUri: Uri.tryParse(
-          'file://${epubPlayerKey.currentState!.book.coverFullPath}'),
+      artUri: Uri.tryParse('file://${epubState.book.coverFullPath}'),
     );
 
-    // Ensure system receives queue + active index for control center metadata.
     queue.add([item]);
     mediaItem.add(item);
     playbackState.add(playbackState.value.copyWith(
@@ -124,8 +268,7 @@ class TtsHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
     }
   }
 
-  @override
-  Future<void> pause() async {
+  Future<void> _pauseLegacy() async {
     playbackState.add(playbackState.value.copyWith(
       controls: [MediaControl.play, MediaControl.stop],
       queueIndex: queue.value.isNotEmpty ? 0 : null,
@@ -137,8 +280,7 @@ class TtsHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
     tts.updateTtsState(TtsStateEnum.paused);
   }
 
-  @override
-  Future<void> stop() async {
+  Future<void> _stopLegacy() async {
     playbackState.add(playbackState.value.copyWith(
       controls: [],
       queueIndex: null,
@@ -149,16 +291,6 @@ class TtsHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
     tts.updateTtsState(TtsStateEnum.stopped);
     await tts.stop();
     epubPlayerKey.currentState?.ttsStop();
-  }
-
-  @override
-  Future<void> skipToNext() async {
-    await playNext();
-  }
-
-  @override
-  Future<void> skipToPrevious() async {
-    await playPrevious();
   }
 
   Future<void> playPrevious() async {
