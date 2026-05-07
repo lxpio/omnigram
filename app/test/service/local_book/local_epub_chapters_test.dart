@@ -147,6 +147,52 @@ void main() {
     expect(chapters[0].href, 'ch1.html');
   });
 
+  test('falls back to first short paragraph as chapter title (no h1/h2)', () async {
+    // Real-world Epubor exports don't put chapter titles in heading tags —
+    // they're styled `<p>`s. Without a fallback the chapter list shows nothing
+    // but #1 / #2.
+    final epubPath = p.join(tmpRoot, 'sample.epub');
+    _buildEpub(epubPath, chapters: [
+      (
+        href: 'ch1.html',
+        title: '',
+        body: '<p>五　治伤</p><p>仪琳和那女童到了厅外，问道：好长的一段正文。</p>',
+      ),
+    ]);
+    // strip <h1> from the body the helper inserted by writing a custom one.
+    // Easiest: rebuild without _buildEpub's auto-h1.
+    final archive = Archive();
+    archive.add(
+        ArchiveFile('mimetype', 20, utf8.encode('application/epub+zip')));
+    const container = '''<?xml version="1.0"?>
+<container xmlns="urn:oasis:names:tc:opendocument:xmlns:container" version="1.0">
+  <rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles>
+</container>''';
+    archive.add(ArchiveFile(
+        'META-INF/container.xml', container.length, utf8.encode(container)));
+    const opf = '''<?xml version="1.0"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="2.0" unique-identifier="bid">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:identifier id="bid">x</dc:identifier>
+    <dc:title>x</dc:title>
+  </metadata>
+  <manifest>
+    <item href="ch1.html" id="ch1" media-type="application/xhtml+xml"/>
+  </manifest>
+  <spine><itemref idref="ch1"/></spine>
+</package>''';
+    archive
+        .add(ArchiveFile('OEBPS/content.opf', opf.length, utf8.encode(opf)));
+    const ch1 =
+        '<html><head><title></title></head><body><p>五　治伤</p><p>正文很长，仪琳和那女童到了厅外，问道：哎呀这是一句完整的话。</p></body></html>';
+    archive.add(ArchiveFile('OEBPS/ch1.html', ch1.length, utf8.encode(ch1)));
+    File(epubPath).writeAsBytesSync(ZipEncoder().encode(archive));
+
+    final chapters = await readEpubChapters(epubPath);
+    expect(chapters, hasLength(1));
+    expect(chapters[0].title, '五　治伤');
+  });
+
   test('extracts paragraph breaks for sentence splitter to consume', () async {
     final epubPath = p.join(tmpRoot, 'sample.epub');
     _buildEpub(epubPath, chapters: [

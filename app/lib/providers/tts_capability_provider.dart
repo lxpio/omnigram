@@ -106,7 +106,11 @@ class TtsCapabilityCache extends _$TtsCapabilityCache {
   Future<void> _probeOnLogin(String serverUrl) async {
     final voiceFullId = Prefs().selectedVoiceFullId;
     if (voiceFullId.isEmpty || !voiceFullId.startsWith('server:')) return;
-    if (get(serverUrl, voiceFullId) != null) return;
+    // A cached NA result usually means a prior probe ran while the server
+    // was unreachable — once the user is back online we should retry rather
+    // than indefinitely treat the server as unmeasured.
+    final cached = get(serverUrl, voiceFullId);
+    if (cached != null && cached.tier != TtsCapabilityTier.na) return;
     await probe(serverUrl: serverUrl, voiceFullId: voiceFullId);
   }
 }

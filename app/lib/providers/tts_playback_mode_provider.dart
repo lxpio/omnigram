@@ -40,7 +40,22 @@ PlaybackMode ttsPlaybackMode(
   );
 
   final override = TtsDefaultModeCodec.fromPref(Prefs().ttsDefaultMode);
-  return TtsRouter.decide(tier: tier, status: status, override: override);
+
+  // Router's NA → localFallback rule is right when "we don't know" means
+  // no signal at all. But once the user has logged in and selected a
+  // server voice, NA in practice usually means "probe hasn't finished
+  // yet" — defaulting against the user's explicit server choice is a
+  // worse UX than trying the server and surfacing failure if it actually
+  // breaks. Treat (NA + auto + server voice) as if probe were GREEN so
+  // we route to liveServer; the live source will report errors loud and
+  // clear if the server isn't reachable after all.
+  final effectiveTier = (tier == TtsCapabilityTier.na &&
+          override == TtsDefaultMode.auto &&
+          voiceFullId.startsWith('server:'))
+      ? TtsCapabilityTier.green
+      : tier;
+  return TtsRouter.decide(
+      tier: effectiveTier, status: status, override: override);
 }
 
 ChapterAudioStatus _statusFor(ServerAudiobookInfo? info, int chapterIndex) {

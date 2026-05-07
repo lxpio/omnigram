@@ -111,6 +111,26 @@ String _extractTitle(dom.Document doc) {
     final text = el?.text.trim();
     if (text != null && text.isNotEmpty) return text;
   }
+  // Many EPUBs (e.g., Epubor exports) don't use heading tags — the chapter
+  // title is just the first short `<p>` styled to look like a heading.
+  // Heuristic: first paragraph whose trimmed text is non-empty and short
+  // enough to plausibly be a title (<= 40 chars, no terminal punctuation).
+  for (final p in doc.querySelectorAll('p')) {
+    final t = p.text.trim();
+    if (t.isEmpty) continue;
+    if (t.length > 40) return '';
+    // Skip if it ends in sentence punctuation — those are body sentences.
+    final last = t.runes.last;
+    if (last == 0x3002 /* 。 */ ||
+        last == 0xFF01 /* ！ */ ||
+        last == 0xFF1F /* ？ */ ||
+        last == 0x2E /* . */ ||
+        last == 0x21 /* ! */ ||
+        last == 0x3F /* ? */) {
+      return '';
+    }
+    return t;
+  }
   return '';
 }
 

@@ -46,6 +46,7 @@ class SentenceStream extends ConsumerWidget {
               cur - 1,
               prevText,
               style: theme.textTheme.titleSmall?.copyWith(color: theme.disabledColor),
+              maxLines: 1,
             ),
           const SizedBox(height: 12),
           _line(
@@ -53,6 +54,7 @@ class SentenceStream extends ConsumerWidget {
             cur,
             sentences[cur],
             style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+            maxLines: 3,
           ),
           const SizedBox(height: 12),
           if (nextText != null)
@@ -61,18 +63,25 @@ class SentenceStream extends ConsumerWidget {
               cur + 1,
               nextText,
               style: theme.textTheme.titleSmall?.copyWith(color: theme.disabledColor),
+              maxLines: 1,
             ),
         ],
       ),
     );
   }
 
-  Widget _line(WidgetRef ref, int sentenceIndex, String text, {TextStyle? style}) {
+  Widget _line(WidgetRef ref, int sentenceIndex, String text,
+      {TextStyle? style, required int maxLines}) {
     return InkWell(
       onTap: () => ref.read(ttsPlayerSessionControllerProvider.notifier).seekToSentence(sentenceIndex),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Text(text, style: style),
+        child: Text(
+          text,
+          style: style,
+          maxLines: maxLines,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
     );
   }
