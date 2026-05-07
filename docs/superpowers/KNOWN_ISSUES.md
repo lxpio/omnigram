@@ -65,15 +65,9 @@
 
 **修复：** 改用 `DraggableScrollableSheet` 内嵌章节列表 — 直接复用 `audiobookProvider(bookId)` 的数据，不需要 Book 引用。当前章高亮 + ChapterStatusDot 显示就绪/生成中/未生成状态，tap 章节调 `jumpToChapter`（新增到 controller）。`app/lib/widgets/tts/now_playing_utility_row.dart`。
 
-### KI-6: 阅读器"跟读模式"入口缺失
+### ✅ KI-6: 阅读器"跟读模式"入口（已修复 2026-05-07）
 
-**影响范围：** Sprint 8 Plan 2
-
-**现状：** Plan 2 把阅读器底部耳机图标、书详情"听书"、AudiobookPage 章节 ▶ 三处都重定向到 Now-Playing 之后，`SyncListeningPage`（Sprint 7 的 EPUB+音频同步页）已无可达入口。
-
-**待做：** 阅读器顶栏菜单或 Now-Playing 页面里加"跟读模式"按钮 → `SyncListeningPage`。
-
-**优先级：** 低。是次要使用模式。
+**修复：** Now-Playing 页 utility row 加"跟读模式"按钮 → `SyncListeningPage`。仅在当前章节 `pregenServer` 模式下可点击（其它模式没有 alignment，无法在 EPUB 渲染里跟随高亮），灰显时按钮 disabled。`app/lib/widgets/tts/now_playing_utility_row.dart`。
 
 ---
 
@@ -89,15 +83,9 @@
 
 **优先级：** 中。当前两边都不常改，但每动一次都是隐患。
 
-### KI-8: 逐句缓存从不清理
+### ✅ KI-8: 逐句缓存清理（已修复 2026-05-07）
 
-**影响范围：** `SentenceQueueSource` 缓存目录
-
-**现状：** LocalFallback 把每句 wav 存到 `audiobooks/{book}/local/chapter_X/sent_Y.wav`，LiveServer 存到 temp dir。session 切书 / 删书 / 卸载都不清。一本大书听一轮可能堆几十 MB。
-
-**待做：** 删书时清对应目录；启动时扫一遍 temp 老文件。
-
-**优先级：** 中。
+**修复：** 新增 `app/lib/service/tts/audio_cache.dart` —— 删书时清 `<docs>/audiobooks/{bookId}/`（含 LocalFallback wav + server pre-gen mp3）；session stop 时清 `<temp>/live-tts/{bookId}/`；app 启动时全清 `<temp>/live-tts/` 兜底崩溃残留。LocalFallback wav 故意保留以便复播即时。
 
 ### KI-9: 句子边界有可闻 gap
 
@@ -115,6 +103,7 @@
 
 | 日期 | 更新 |
 |------|------|
+| 2026-05-07 | KI-6/KI-8 已修复（跟读模式入口 + 逐句缓存清理） |
 | 2026-05-06 | 新增 KI-7/8/9（splitter parity / 缓存清理 / 句间 gap） |
 | 2026-04-28 | 新增 KI-5（Now-Playing 章节按钮 → AudiobookPage）+ KI-6（跟读模式入口） |
 | 2026-04-04 | KI-1/KI-3/KI-4 已修复：AI 数据双向同步完成 |

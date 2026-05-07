@@ -9,6 +9,7 @@ import 'package:omnigram/providers/book_list.dart';
 import 'package:omnigram/service/convert_to_epub/txt/convert_from_txt.dart';
 import 'package:omnigram/service/md5_service.dart';
 import 'package:omnigram/service/book.dart';
+import 'package:omnigram/service/tts/audio_cache.dart';
 import 'package:omnigram/utils/get_path/get_base_path.dart';
 import 'package:omnigram/utils/share_file.dart';
 import 'package:omnigram/utils/toast/common.dart';
@@ -51,6 +52,9 @@ class BookBottomSheet extends ConsumerWidget {
       ref.read(bookListProvider.notifier).refresh();
       File(book.fileFullPath).delete();
       File(book.coverFullPath).delete();
+      // Drop any cached audiobook (server pre-gen mp3 + on-device per-
+      // sentence wav). Otherwise the orphan dir lingers forever.
+      cleanBookAudioCache(book.id.toString());
     }
 
     void handleDetail(BuildContext context) {

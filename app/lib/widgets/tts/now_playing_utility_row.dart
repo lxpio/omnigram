@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:omnigram/dao/book.dart';
 import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/models/toc_item.dart';
+import 'package:omnigram/page/audiobook/sync_listening_page.dart';
 import 'package:omnigram/providers/audiobook_provider.dart';
 import 'package:omnigram/providers/book_toc.dart';
 import 'package:omnigram/providers/tts_player_session_provider.dart';
@@ -49,8 +51,30 @@ class NowPlayingUtilityRow extends ConsumerWidget {
             label: Text(l10n.nowPlayingChapters),
             onPressed: () => _openChapterSheet(context),
           ),
+          // Read-along ("跟读模式") only makes sense when the chapter is
+          // actually playing pre-gen mp3 — that's the only mode that has
+          // word-level timestamps (alignment) needed to highlight inside
+          // the EPUB renderer. In live/local-fallback we'd just be playing
+          // chunked TTS without per-word timing, so the button stays muted.
+          TextButton.icon(
+            icon: const Icon(Icons.menu_book_outlined),
+            label: Text(l10n.nowPlayingReadAlong),
+            onPressed: s.mode == PlaybackMode.pregenServer && s.bookId != null
+                ? () => _openReadAlong(context, s.bookId!)
+                : null,
+          ),
         ],
       ),
+    );
+  }
+
+  Future<void> _openReadAlong(BuildContext context, String bookId) async {
+    final id = int.tryParse(bookId);
+    if (id == null) return;
+    final book = await BookDao().selectBookById(id);
+    if (!context.mounted) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => SyncListeningPage(book: book)),
     );
   }
 

@@ -9,6 +9,7 @@ import 'package:omnigram/providers/local_chapters_provider.dart';
 import 'package:omnigram/providers/server_connection_provider.dart';
 import 'package:omnigram/providers/tts_playback_mode_provider.dart';
 import 'package:omnigram/service/local_book/local_epub_chapters.dart';
+import 'package:omnigram/service/tts/audio_cache.dart';
 import 'package:omnigram/service/tts/live_server_source.dart';
 import 'package:omnigram/service/tts/local_fallback_source.dart';
 import 'package:omnigram/service/tts/pregen_server_source.dart';
@@ -246,6 +247,7 @@ class TtsPlayerSessionController extends _$TtsPlayerSessionController {
   Future<void> upgradeNow() => _holder.session?.upgradeNow() ?? Future.value();
 
   Future<void> stop() async {
+    final lastBookId = state.bookId;
     await _sseSub?.cancel();
     _sseSub = null;
     await _holder.stateSub?.cancel();
@@ -255,5 +257,11 @@ class TtsPlayerSessionController extends _$TtsPlayerSessionController {
     final handler = audioHandler;
     if (handler is TtsHandler) handler.unbindNowPlaying();
     state = const PlaybackState();
+    // Drop the live-server scratch dir for the book we just stopped on so
+    // the temp dir doesn't grow unbounded across sessions. LocalFallback
+    // wav is kept (intentional cache for next play).
+    if (lastBookId != null) {
+      cleanLiveServerCache(bookId: lastBookId);
+    }
   }
 }

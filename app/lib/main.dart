@@ -9,6 +9,7 @@ import 'package:omnigram/page/omnigram_home.dart';
 import 'package:omnigram/theme/omnigram_theme.dart';
 import 'package:omnigram/page/migration_page.dart';
 import 'package:omnigram/service/book_player/book_player_server.dart';
+import 'package:omnigram/service/tts/audio_cache.dart';
 import 'package:omnigram/service/tts/tts_handler.dart';
 import 'package:omnigram/utils/get_path/macos_migration.dart';
 import 'package:omnigram/utils/error/common.dart';
@@ -58,6 +59,11 @@ Future<void> main() async {
   }
 
   Server().start();
+
+  // Sweep any live-server per-sentence scratch left over from a prior run
+  // that didn't get to clean up (crash mid-session, force quit, etc.).
+  // Fire-and-forget; main() shouldn't block on temp IO.
+  cleanLiveServerCache();
 
   audioHandler = await AudioService.init(
     builder: () => TtsHandler(),

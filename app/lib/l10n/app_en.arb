@@ -1081,6 +1081,7 @@
   "ttsMoreModels": "More models in Advanced Settings",
   "nowPlayingChapters": "Chapters",
   "nowPlayingChaptersEmpty": "No chapters available — open this book in the reader first.",
+  "nowPlayingReadAlong": "Read along",
   "nowPlayingSleep": "Sleep",
   "nowPlayingSleepArmed": "Stops in {minutes} min",
   "@nowPlayingSleepArmed": {"placeholders": {"minutes": {"type": "int"}}},
