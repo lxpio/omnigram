@@ -34,12 +34,17 @@ class SentenceStream extends ConsumerWidget {
     final prevText = cur > 0 ? sentences[cur - 1] : null;
     final nextText = cur + 1 < sentences.length ? sentences[cur + 1] : null;
 
+    // Wrap in SingleChildScrollView so a long current sentence doesn't push
+    // prev/next off-screen with a renderflex overflow — the column gets a
+    // bounded height from `Expanded` in NowPlayingPage and a single 3-line
+    // sentence at headlineSmall + 1-line prev/next + paddings can exceed it.
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
           if (prevText != null)
             _line(
               ref,
@@ -65,7 +70,8 @@ class SentenceStream extends ConsumerWidget {
               style: theme.textTheme.titleSmall?.copyWith(color: theme.disabledColor),
               maxLines: 1,
             ),
-        ],
+          ],
+        ),
       ),
     );
   }
