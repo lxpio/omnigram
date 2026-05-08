@@ -11,13 +11,6 @@ import 'package:omnigram/widgets/tts/server_status_pill.dart';
 class NowPlayingPage extends ConsumerWidget {
   const NowPlayingPage({super.key});
 
-  String _format(Duration d) {
-    final m = d.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final ss = d.inSeconds.remainder(60).toString().padLeft(2, '0');
-    final h = d.inHours;
-    return h > 0 ? '$h:$m:$ss' : '$m:$ss';
-  }
-
   Widget _cover(String? path) {
     if (path == null || path.isEmpty) {
       return const SizedBox(width: 220, height: 220);
@@ -82,24 +75,41 @@ class NowPlayingPage extends ConsumerWidget {
             const SizedBox(height: 12),
             const Expanded(child: SentenceStream()),
             const SizedBox(height: 8),
+            // Chapter-level progress: scrubber tracks sentence index across
+            // the whole chapter (`i + frac` of `total`) instead of resetting
+            // to zero each sentence — which felt like the bar was "snapping
+            // back" every couple of seconds. Tap/drag rounds to a sentence
+            // boundary and uses seekToSentence.
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
                 children: [
-                  Text(_format(s.position), style: theme.textTheme.bodySmall),
+                  Text(
+                    s.sentences.isEmpty ? '0' : '${(s.sentenceIndex + 1).clamp(1, s.sentences.length)}',
+                    style: theme.textTheme.bodySmall,
+                  ),
                   Expanded(
                     child: Slider(
                       min: 0,
-                      max: s.duration.inMilliseconds.toDouble().clamp(1.0, double.infinity),
-                      value: s.position.inMilliseconds
-                          .toDouble()
-                          .clamp(0.0, s.duration.inMilliseconds.toDouble().clamp(1.0, double.infinity)),
+                      max: s.sentences.isEmpty ? 1 : s.sentences.length.toDouble(),
+                      value: () {
+                        if (s.sentences.isEmpty) return 0.0;
+                        final dur = s.duration.inMilliseconds;
+                        final frac = dur > 0
+                            ? (s.position.inMilliseconds / dur).clamp(0.0, 1.0)
+                            : 0.0;
+                        final base = s.sentenceIndex < 0 ? 0 : s.sentenceIndex;
+                        return (base + frac).clamp(0.0, s.sentences.length.toDouble());
+                      }(),
                       onChanged: (v) => ref
                           .read(ttsPlayerSessionControllerProvider.notifier)
-                          .seek(Duration(milliseconds: v.round())),
+                          .seekToSentence(v.round().clamp(0, s.sentences.length - 1)),
                     ),
                   ),
-                  Text(_format(s.duration), style: theme.textTheme.bodySmall),
+                  Text(
+                    s.sentences.isEmpty ? '0' : '${s.sentences.length}',
+                    style: theme.textTheme.bodySmall,
+                  ),
                 ],
               ),
             ),

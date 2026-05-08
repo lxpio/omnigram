@@ -38,6 +38,20 @@ class SentenceStream extends ConsumerWidget {
     // prev/next off-screen with a renderflex overflow — the column gets a
     // bounded height from `Expanded` in NowPlayingPage and a single 3-line
     // sentence at headlineSmall + 1-line prev/next + paddings can exceed it.
+    // Lyric-style: current sentence is just slightly larger and full-opacity;
+    // prev/next dim and same size. Avoids the "headline shouting at you"
+    // feel of a 600-weight headlineSmall jumping every couple of seconds.
+    final muted = theme.colorScheme.onSurface.withValues(alpha: 0.45);
+    final currentStyle = theme.textTheme.titleMedium?.copyWith(
+      fontWeight: FontWeight.w600,
+      height: 1.5,
+    );
+    final neighbourStyle = theme.textTheme.titleMedium?.copyWith(
+      color: muted,
+      fontWeight: FontWeight.w400,
+      height: 1.5,
+    );
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       child: SingleChildScrollView(
@@ -45,31 +59,31 @@ class SentenceStream extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-          if (prevText != null)
+            if (prevText != null)
+              _line(
+                ref,
+                cur - 1,
+                prevText,
+                style: neighbourStyle,
+                maxLines: 1,
+              ),
+            const SizedBox(height: 8),
             _line(
               ref,
-              cur - 1,
-              prevText,
-              style: theme.textTheme.titleSmall?.copyWith(color: theme.disabledColor),
-              maxLines: 1,
+              cur,
+              sentences[cur],
+              style: currentStyle,
+              maxLines: 4,
             ),
-          const SizedBox(height: 12),
-          _line(
-            ref,
-            cur,
-            sentences[cur],
-            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
-            maxLines: 3,
-          ),
-          const SizedBox(height: 12),
-          if (nextText != null)
-            _line(
-              ref,
-              cur + 1,
-              nextText,
-              style: theme.textTheme.titleSmall?.copyWith(color: theme.disabledColor),
-              maxLines: 1,
-            ),
+            const SizedBox(height: 8),
+            if (nextText != null)
+              _line(
+                ref,
+                cur + 1,
+                nextText,
+                style: neighbourStyle,
+                maxLines: 1,
+              ),
           ],
         ),
       ),
@@ -79,7 +93,9 @@ class SentenceStream extends ConsumerWidget {
   Widget _line(WidgetRef ref, int sentenceIndex, String text,
       {TextStyle? style, required int maxLines}) {
     return InkWell(
-      onTap: () => ref.read(ttsPlayerSessionControllerProvider.notifier).seekToSentence(sentenceIndex),
+      onTap: () => ref
+          .read(ttsPlayerSessionControllerProvider.notifier)
+          .seekToSentence(sentenceIndex),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 6),
         child: Text(
