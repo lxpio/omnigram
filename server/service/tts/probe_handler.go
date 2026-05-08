@@ -17,11 +17,10 @@ type probeRequest struct {
 	Language string  `json:"language"`
 }
 
-// probeAssumedAudioMs is the rough audio duration of the locale fixtures
-// produced by ProbeText at speed 1.0×. We avoid parsing audio headers and
-// instead use this fixed estimate to compute RTF; clients only need a
-// coarse tier classification (GREEN/YELLOW/RED), not exact timing.
-const probeAssumedAudioMs = 5000
+// probeAssumedAudioMs is the rough audio duration produced by the single
+// short sentence in probe_text.go. Used to compute RTF = totalSynthMs /
+// audioMs — values < 1.0 mean the server can keep ahead of playback.
+const probeAssumedAudioMs = 1500
 
 // probeHandler measures real-time synthesis cost for the user's voice and
 // returns first-byte latency, total time, and an RTF estimate so the client

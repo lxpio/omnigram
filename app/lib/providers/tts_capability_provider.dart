@@ -25,6 +25,16 @@ class TtsCapabilityCache extends _$TtsCapabilityCache {
         unawaited(_probeOnLogin(next.serverUrl!));
       }
     });
+    // ref.listen only fires on transitions, not initial state. After hot
+    // restart the connection is often already "connected" by the time this
+    // provider rebuilds, so we'd never re-probe a stale RED/NA. Schedule
+    // an initial probe alongside the listener so the verdict refreshes on
+    // every app start. Defer with microtask: _probeOnLogin reads `state`,
+    // which the framework hasn't initialised until build() returns.
+    final initial = ref.read(serverConnectionProvider);
+    if (initial.isConnected && initial.serverUrl != null) {
+      Future.microtask(() => _probeOnLogin(initial.serverUrl!));
+    }
     return _readFromPrefs();
   }
 
@@ -106,11 +116,17 @@ class TtsCapabilityCache extends _$TtsCapabilityCache {
   Future<void> _probeOnLogin(String serverUrl) async {
     final voiceFullId = Prefs().selectedVoiceFullId;
     if (voiceFullId.isEmpty || !voiceFullId.startsWith('server:')) return;
-    // A cached NA result usually means a prior probe ran while the server
-    // was unreachable — once the user is back online we should retry rather
-    // than indefinitely treat the server as unmeasured.
+    // Cached NA / RED results are usually transients — NA from a probe
+    // attempted while the server was unreachable, RED from a probe that
+    // happened to catch the sidecar mid-cold-start. Retry on every login
+    // event to confirm the verdict; only GREEN/YELLOW classifications are
+    // trusted across reconnects.
     final cached = get(serverUrl, voiceFullId);
-    if (cached != null && cached.tier != TtsCapabilityTier.na) return;
+    if (cached != null &&
+        cached.tier != TtsCapabilityTier.na &&
+        cached.tier != TtsCapabilityTier.red) {
+      return;
+    }
     await probe(serverUrl: serverUrl, voiceFullId: voiceFullId);
   }
 }

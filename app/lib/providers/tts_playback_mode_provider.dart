@@ -41,16 +41,23 @@ PlaybackMode ttsPlaybackMode(
 
   final override = TtsDefaultModeCodec.fromPref(Prefs().ttsDefaultMode);
 
-  // Router's NA → localFallback rule is right when "we don't know" means
-  // no signal at all. But once the user has logged in and selected a
-  // server voice, NA in practice usually means "probe hasn't finished
-  // yet" — defaulting against the user's explicit server choice is a
-  // worse UX than trying the server and surfacing failure if it actually
-  // breaks. Treat (NA + auto + server voice) as if probe were GREEN so
-  // we route to liveServer; the live source will report errors loud and
-  // clear if the server isn't reachable after all.
-  final effectiveTier = (tier == TtsCapabilityTier.na &&
-          override == TtsDefaultMode.auto &&
+  // The router's tier-based fallback is sensible when "auto" really means
+  // "pick whatever works best given current conditions". But in practice
+  // users who pick a `server:` voice want the server's voice — falling
+  // back to on-device sherpa-onnx silently is worse UX than trying the
+  // server and surfacing actual failures.
+  //
+  // Concrete example that motivated this: Qwen3-TTS doesn't stream — it
+  // synthesises the whole input before responding. The probe, which used
+  // to use a 120-char paragraph, measured 25s "first byte" and got
+  // classified RED. But our LiveServerSource sends per-sentence chunks
+  // (~20 chars each), each of which finishes in 1-2s. The server is fine
+  // for actual playback; the probe was unrepresentative.
+  //
+  // Treat any (auto + server voice) as GREEN regardless of probe tier.
+  // The user explicitly opted into the server voice; if the server is
+  // truly unreachable, LiveServerSource will throw a real error.
+  final effectiveTier = (override == TtsDefaultMode.auto &&
           voiceFullId.startsWith('server:'))
       ? TtsCapabilityTier.green
       : tier;

@@ -17,6 +17,7 @@ import 'package:omnigram/utils/get_path/get_base_path.dart';
 import 'package:omnigram/utils/log/common.dart';
 import 'package:omnigram/utils/window_position_validator.dart';
 import 'package:omnigram/providers/server_connection_provider.dart';
+import 'package:omnigram/providers/tts_capability_provider.dart';
 import 'package:omnigram/service/sync/sync_manager.dart';
 import 'package:omnigram/widgets/tts/mini_player_bar.dart';
 import 'package:audio_service/audio_service.dart';
@@ -175,6 +176,11 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver, Wind
         debugPrint('[Main] Starting sync...');
         ref.read(syncManagerProvider.notifier).sync();
         ref.read(syncManagerProvider.notifier).startAutoSync();
+        // Force-instantiate the capability cache so its own listener can
+        // fire — without this, the provider stays cold until the TTS UI
+        // first renders, by which time the connection transition has
+        // already passed and the probe never runs on app start.
+        ref.read(ttsCapabilityCacheProvider);
       }
     });
 
