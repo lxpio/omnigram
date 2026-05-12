@@ -31,6 +31,7 @@ import 'package:omnigram/widgets/reading_page/toc_widget.dart';
 import 'package:omnigram/widgets/common/axis_flex.dart';
 import 'package:omnigram/widgets/reader/companion_panel.dart';
 import 'package:omnigram/widgets/reader/reader_chrome.dart';
+import 'package:omnigram/widgets/tts/mini_player_bar.dart';
 import 'package:omnigram/providers/current_reading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -120,6 +121,13 @@ class ReadingPageState extends ConsumerState<ReadingPage> with WidgetsBindingObs
     }
 
     WidgetsBinding.instance.addObserver(this);
+    // Suppress the global pinned MiniPlayerBar while inside the immersive
+    // reader. The reader has its own TTS surface (FAB + chrome panel), and
+    // an extra bar in the app-level Column would compress the reader's
+    // locked viewport and clip the page content.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ref.read(readerActiveProvider.notifier).state = true;
+    });
     _readTimeWatch.start();
     _sessionStart = DateTime.now();
     setAwakeTimer(Prefs().awakeTime);
@@ -164,6 +172,7 @@ class ReadingPageState extends ConsumerState<ReadingPage> with WidgetsBindingObs
     // }
     _readerFocusNode.dispose();
     _chromeAnimController.dispose();
+    ref.read(readerActiveProvider.notifier).state = false;
     super.dispose();
   }
 

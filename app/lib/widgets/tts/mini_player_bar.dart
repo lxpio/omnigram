@@ -6,6 +6,12 @@ import 'package:omnigram/page/now_playing/now_playing_page.dart';
 import 'package:omnigram/providers/tts_player_session_provider.dart';
 import 'package:omnigram/widgets/tts/server_status_pill.dart';
 
+/// True while the immersive reader page is on top. The global pinned
+/// MiniPlayerBar hides itself in this state because the reader page locks
+/// its own viewport to the full screen height (via FittedBox+SizedBox), so
+/// any extra bar in the global Column would compress / misalign the reader.
+final readerActiveProvider = StateProvider<bool>((_) => false);
+
 /// Pinned to scaffold bottom while a session is active. Tap to expand to
 /// Now-Playing.
 class MiniPlayerBar extends ConsumerWidget {
@@ -26,6 +32,7 @@ class MiniPlayerBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final s = ref.watch(ttsPlayerSessionControllerProvider);
     if (!s.hasSession) return const SizedBox.shrink();
+    if (ref.watch(readerActiveProvider)) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
     final currentSentence = s.hasAlignment &&
