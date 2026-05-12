@@ -3,6 +3,7 @@ package sys
 
 import (
 	"context"
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -117,9 +118,23 @@ func (m *Scanner) scanFiles(books <-chan *schema.Book) {
 				m.Count++
 				// log.D(`开始解析: `, book.Path, ` 到数据库`)
 
-				if err := book.GetMetadataFromFile(); err != nil {
-					log.E(`获取图书基本元素失败 `, err.Error())
-					errs = append(errs, `文件：`+book.Path+` 解析失败：`+err.Error())
+				// Isolate per-file parsing in a closure with recover so a
+				// corrupt EPUB (which can panic deep inside archive/zip via
+				// github.com/nexptr/epub) only fails that file, not the
+				// entire scan.
+				var metaErr error
+				func() {
+					defer func() {
+						if r := recover(); r != nil {
+							log.E(`解析文件触发 panic：`, book.Path, ` => `, r)
+							metaErr = fmt.Errorf("panic during parse: %v", r)
+						}
+					}()
+					metaErr = book.GetMetadataFromFile()
+				}()
+				if metaErr != nil {
+					log.E(`获取图书基本元素失败 `, metaErr.Error())
+					errs = append(errs, `文件：`+book.Path+` 解析失败：`+metaErr.Error())
 				} else {
 					warnings, err := book.Save(m.ctx)
 					for _, w := range warnings {

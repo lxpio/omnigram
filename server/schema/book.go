@@ -457,13 +457,18 @@ func (book *Book) getEpubMetadata() error {
 		fp, err := e.OpenItem(book.CoverURL)
 
 		if err != nil {
-			log.E(`解析文件,`, book.Path, `失败：`, err.Error())
-			return err
+			log.W(`封面解析失败，跳过封面：`, book.Path, ` href=`, book.CoverURL, ` err=`, err.Error())
+			book.CoverURL = ``
+			return nil
 		}
 		defer fp.Close()
 
 		buf := new(bytes.Buffer)
-		buf.ReadFrom(fp)
+		if _, err := buf.ReadFrom(fp); err != nil || buf.Len() == 0 {
+			log.W(`封面字节读取为空，跳过封面：`, book.Path, ` href=`, book.CoverURL)
+			book.CoverURL = ``
+			return nil
+		}
 
 		book.coverData = buf.Bytes()
 	}
@@ -1003,6 +1008,16 @@ func (m *Book) Save(ctx context.Context) ([]string, error) {
 	// Save cover image to filesystem
 	coverData := m.GetCoverData()
 	if len(coverData) == 0 || m.CoverURL == "" {
+		// Defensive: if upsert wrote a non-empty bad cover_url but we have no
+		// real bytes to back it up, clear the DB column so app clients don't
+		// hit 404 storms trying to download a phantom cover.
+		// NB: must filter by identifier, not m.ID — on ON CONFLICT upsert,
+		// m.ID is the freshly generated value that was discarded; the DB row
+		// keeps its original ID.
+		if m.CoverURL != "" {
+			m.CoverURL = ""
+			db.Model(&Book{}).Where("identifier = ?", m.Identifier).Update("cover_url", "")
+		}
 		return warnings, nil
 	}
 
@@ -1018,11 +1033,15 @@ func (m *Book) Save(ctx context.Context) ([]string, error) {
 		return warnings, nil
 	}
 
-	// Update cover_url to identifier-based path
+	// Update cover_url to identifier-based path.
+	// NB: must filter by identifier, not m.ID — on ON CONFLICT upsert the
+	// existing row keeps its original ID, while m.ID still holds the freshly
+	// generated value (discarded by the upsert). Updating by m.ID would
+	// silently affect 0 rows.
 	coverURL := m.Identifier + ".jpg"
 	if m.CoverURL != coverURL {
 		m.CoverURL = coverURL
-		db.Model(m).Update("cover_url", coverURL)
+		db.Model(&Book{}).Where("identifier = ?", m.Identifier).Update("cover_url", coverURL)
 	}
 	return warnings, nil
 }
