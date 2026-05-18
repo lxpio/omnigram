@@ -7,6 +7,10 @@ import 'package:omnigram/page/home/insights_page.dart';
 import 'package:omnigram/page/home/settings_page.dart' as omnigram;
 import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/page/onboarding_flow.dart';
+import 'package:omnigram/page/search/search_page.dart';
+import 'package:omnigram/providers/desk_provider.dart';
+import 'package:omnigram/service/book.dart';
+import 'package:omnigram/theme/liquid_glass/glass_action_pill.dart';
 import 'package:omnigram/theme/liquid_glass/glass_tab_bar.dart';
 import 'package:omnigram/theme/liquid_glass/performance_mode.dart';
 
@@ -144,10 +148,39 @@ class _OmnigramHomeState extends ConsumerState<OmnigramHome> {
               GlassTabItem(icon: Icons.insights_outlined, label: l10n.insights),
               GlassTabItem(icon: Icons.settings_outlined, label: l10n.settings),
             ],
+            trailing: _trailingForTab(context, ref, quality),
           );
         },
       ),
     );
+  }
+
+  Widget? _trailingForTab(BuildContext context, WidgetRef ref, GlassQuality quality) {
+    switch (_currentTab) {
+      case OmnigramTab.reading:
+        final desk = ref.watch(deskDataProvider).valueOrNull;
+        final book = desk?.currentBook;
+        if (book == null) return null;
+        return GlassActionPill(
+          quality: quality,
+          icon: Icons.play_arrow_rounded,
+          label: book.title,
+          tinted: true,
+          onPressed: () => pushToReadingPage(ref, context, book),
+        );
+      case OmnigramTab.bookshelf:
+        return GlassActionPill(
+          quality: quality,
+          icon: Icons.search,
+          label: '搜索',
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const SearchPage()),
+          ),
+        );
+      case OmnigramTab.insights:
+      case OmnigramTab.settings:
+        return null;
+    }
   }
 }
 

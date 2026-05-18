@@ -61,6 +61,7 @@ class GlassTabBar extends StatelessWidget {
     required this.items,
     required this.currentIndex,
     required this.onTap,
+    this.trailing,
   });
 
   final GlassQuality quality;
@@ -68,6 +69,10 @@ class GlassTabBar extends StatelessWidget {
   final List<GlassTabItem> items;
   final int currentIndex;
   final ValueChanged<int> onTap;
+
+  /// Optional contextual capsule rendered to the right of the tab bar
+  /// (e.g. GlassActionPill). Hidden when the bar is collapsed.
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -80,48 +85,58 @@ class GlassTabBar extends StatelessWidget {
         // unbounded and produces a giant blank area below the icons.
         const barContentHeight = 56.0;
         final safeBottom = MediaQuery.of(context).padding.bottom;
+        final tabCapsule = DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(
+              (collapsed ? GlassTokens.radiusCapsule : GlassTokens.radiusBar) * 2.2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.08),
+                blurRadius: 18,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: GlassSurface(
+            quality: quality,
+            borderRadius:
+                collapsed ? GlassTokens.radiusCapsule : GlassTokens.radiusBar,
+            blurSigma: GlassTokens.blurSigmaThick,
+            child: collapsed
+                ? _CollapsedCapsule(
+                    item: items[currentIndex],
+                    onTap: controller.expand,
+                  )
+                : _ExpandedRow(
+                    items: items,
+                    currentIndex: currentIndex,
+                    onTap: onTap,
+                  ),
+          ),
+        );
+
         return SizedBox(
           height: barContentHeight + 16 + safeBottom,
           child: SafeArea(
             top: false,
             child: Align(
               alignment: collapsed ? Alignment.bottomRight : Alignment.bottomCenter,
-              child: AnimatedContainer(
-                duration: GlassTokens.tabCollapse,
-                curve: Curves.easeOutCubic,
-                margin: EdgeInsets.only(
+              child: Padding(
+                padding: EdgeInsets.only(
                   right: collapsed ? 16 : 0,
                   bottom: collapsed ? 8 : 16,
                 ),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                      (collapsed ? GlassTokens.radiusCapsule : GlassTokens.radiusBar) * 2.2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.08),
-                        blurRadius: 18,
-                        offset: const Offset(0, 6),
-                      ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    tabCapsule,
+                    if (!collapsed && trailing != null) ...[
+                      const SizedBox(width: 8),
+                      trailing!,
                     ],
-                  ),
-                  child: GlassSurface(
-                    quality: quality,
-                    borderRadius:
-                        collapsed ? GlassTokens.radiusCapsule : GlassTokens.radiusBar,
-                    blurSigma: GlassTokens.blurSigmaThick,
-                    child: collapsed
-                        ? _CollapsedCapsule(
-                            item: items[currentIndex],
-                            onTap: controller.expand,
-                          )
-                        : _ExpandedRow(
-                            items: items,
-                            currentIndex: currentIndex,
-                            onTap: onTap,
-                          ),
-                  ),
+                  ],
                 ),
               ),
             ),
