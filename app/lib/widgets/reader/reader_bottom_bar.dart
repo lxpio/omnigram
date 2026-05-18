@@ -1,10 +1,15 @@
 // app/lib/widgets/reader/reader_bottom_bar.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:omnigram/theme/liquid_glass/glass_surface.dart';
+import 'package:omnigram/theme/liquid_glass/glass_tokens.dart';
+import 'package:omnigram/theme/liquid_glass/performance_mode.dart';
 import 'package:omnigram/theme/typography.dart';
 
 /// Omnigram-styled reader bottom bar.
 /// Two layers: progress indicator on top, action buttons below.
-class ReaderBottomBar extends StatelessWidget {
+/// Renders on GlassSurface using readerGlassQualityProvider (auto step-down).
+class ReaderBottomBar extends ConsumerWidget {
   final double progress;
   final int currentPage;
   final int totalPages;
@@ -31,23 +36,17 @@ class ReaderBottomBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+  Widget build(BuildContext context, WidgetRef ref) {
     final pct = (progress * 100).round();
+    final quality = ref.watch(readerGlassQualityProvider);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.08),
-            blurRadius: 8,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: SafeArea(
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+      child: GlassSurface(
+        quality: quality,
+        borderRadius: 0,
+        blurSigma: GlassTokens.blurSigmaThick,
+        child: SafeArea(
         top: false,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -78,6 +77,7 @@ class ReaderBottomBar extends StatelessWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }
