@@ -91,7 +91,19 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
                       const SizedBox(height: 16),
-                      Text(L10n.of(context).libraryTitle, style: OmnigramTypography.displayLarge(context)),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(L10n.of(context).libraryTitle,
+                                style: OmnigramTypography.displayLarge(context)),
+                          ),
+                          IconButton(
+                            tooltip: 'Import',
+                            icon: const Icon(Icons.add),
+                            onPressed: () => _importBooks(context, ref),
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: 16),
                       SearchBar(
                         hintText: L10n.of(context).librarySearchHint,
@@ -148,10 +160,6 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
             );
           },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _importBooks(context, ref),
-        child: const Icon(Icons.add),
       ),
     );
   }

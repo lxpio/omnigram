@@ -35,16 +35,24 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton.small(
-        onPressed: () => _recordThought(),
-        child: const Icon(Icons.edit_note),
-      ),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(OmnigramTheme.pageHorizontalPadding),
           children: [
             const SizedBox(height: 16),
-            Text(L10n.of(context).insightsTitle, style: OmnigramTypography.displayLarge(context)),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(L10n.of(context).insightsTitle,
+                      style: OmnigramTypography.displayLarge(context)),
+                ),
+                IconButton(
+                  tooltip: 'Record thought',
+                  icon: const Icon(Icons.edit_note),
+                  onPressed: () => _recordThought(),
+                ),
+              ],
+            ),
             const SizedBox(height: 16),
             TimePeriodSelector(
               selected: _period,
