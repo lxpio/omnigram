@@ -286,7 +286,13 @@ class SherpaOnnxProvider extends TtsServiceProvider {
       throw Exception('No model selected – download one in Settings → TTS');
     }
 
-    final speakerId = int.tryParse(config['speaker_id']?.toString() ?? '0') ?? 0;
+    // Prefer the voice the caller captured at session start. Prefs is shared
+    // mutable state — a user opening Settings mid-playback to tweak voices
+    // must not flip the speaker on the next sentence. Fall back to Prefs
+    // only when the caller didn't supply a voice (preview / setup paths).
+    final speakerId = int.tryParse(voice ?? '') ??
+        int.tryParse(config['speaker_id']?.toString() ?? '0') ??
+        0;
 
     await _ensureModel(modelId);
 

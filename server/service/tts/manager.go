@@ -38,6 +38,7 @@ func NewTTSManager(primary, fallback TTSProvider, timeout time.Duration) *TTSMan
 // timeouts are enforced by the sidecar's own `http.Client.Timeout`, and the
 // caller (handler / worker) controls the overall deadline via its own ctx.
 func (m *TTSManager) Synthesize(ctx context.Context, text string, opts SynthesisOptions) (io.ReadCloser, error) {
+	var primaryErr error
 	if m.breaker.allow() {
 		result, err := m.primary.Synthesize(ctx, text, opts)
 		if err != nil && isRetryable(err) {
@@ -48,13 +49,44 @@ func (m *TTSManager) Synthesize(ctx context.Context, text string, opts Synthesis
 			return result, nil
 		}
 		m.breaker.fail()
-		log.W("primary TTS failed, falling back: " + err.Error())
+		primaryErr = err
+		log.W("primary TTS failed (voice=" + opts.Voice + "): " + err.Error())
+	} else {
+		primaryErr = errors.New("primary unavailable (circuit breaker open)")
 	}
 
-	if m.fallback != nil {
+	// Only fall back if the fallback provider can actually honour the
+	// requested voice. Otherwise the listener hears a totally different
+	// voice for the affected sentences — much worse UX than surfacing a
+	// transient error and letting the caller retry.
+	if m.fallback != nil && providerSupportsVoice(m.fallback, opts.Voice) {
+		log.W("falling back to " + m.fallback.Name() + " for voice " + opts.Voice)
 		return m.fallback.Synthesize(ctx, text, opts)
 	}
+	if m.fallback != nil {
+		log.W("skipping fallback " + m.fallback.Name() + ": voice '" + opts.Voice + "' not in its voice list")
+	}
+	if primaryErr != nil {
+		return nil, primaryErr
+	}
 	return nil, errors.New("all TTS providers unavailable")
+}
+
+// providerSupportsVoice returns true when the voice is empty (provider may
+// substitute its own default) or when the voice id appears in the provider's
+// Voices() list. We deliberately do exact-id matching: a Kokoro voice like
+// `af_sky` should never silently become an Edge voice like
+// `zh-CN-XiaoxiaoNeural`.
+func providerSupportsVoice(p TTSProvider, voice string) bool {
+	if voice == "" {
+		return true
+	}
+	for _, v := range p.Voices() {
+		if v.ID == voice {
+			return true
+		}
+	}
+	return false
 }
 
 // HealthCheck checks primary provider health.
