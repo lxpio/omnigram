@@ -74,34 +74,55 @@ class GlassTabBar extends StatelessWidget {
       animation: controller,
       builder: (context, _) {
         final collapsed = quality.hasMotion && controller.collapsed;
-        return SafeArea(
-          top: false,
-          child: AnimatedAlign(
-            duration: GlassTokens.tabCollapse,
-            curve: Curves.easeOutCubic,
-            alignment: collapsed ? Alignment.bottomRight : Alignment.bottomCenter,
-            child: AnimatedContainer(
-              duration: GlassTokens.tabCollapse,
-              curve: Curves.easeOutCubic,
-              margin: EdgeInsets.only(
-                left: collapsed ? 0 : 16,
-                right: 16,
-                bottom: collapsed ? 24 : 16,
-              ),
-              child: GlassSurface(
-                quality: quality,
-                borderRadius: collapsed ? GlassTokens.radiusCapsule : GlassTokens.radiusBar,
-                blurSigma: GlassTokens.blurSigmaThick,
-                child: collapsed
-                    ? _CollapsedCapsule(
-                        item: items[currentIndex],
-                        onTap: controller.expand,
-                      )
-                    : _ExpandedRow(
-                        items: items,
-                        currentIndex: currentIndex,
-                        onTap: onTap,
+        // Fixed total height = bar content + bottom margin + safe area inset.
+        // Without this, Align in the bottomNavigationBar slot expands
+        // unbounded and produces a giant blank area below the icons.
+        const barContentHeight = 72.0;
+        final safeBottom = MediaQuery.of(context).padding.bottom;
+        return SizedBox(
+          height: barContentHeight + 16 + safeBottom,
+          child: SafeArea(
+            top: false,
+            child: Align(
+              alignment: collapsed ? Alignment.bottomRight : Alignment.bottomCenter,
+              child: AnimatedContainer(
+                duration: GlassTokens.tabCollapse,
+                curve: Curves.easeOutCubic,
+                margin: EdgeInsets.only(
+                  left: collapsed ? 0 : 16,
+                  right: 16,
+                  bottom: collapsed ? 8 : 16,
+                ),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      (collapsed ? GlassTokens.radiusCapsule : GlassTokens.radiusBar) * 2.2,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 18,
+                        offset: const Offset(0, 6),
                       ),
+                    ],
+                  ),
+                  child: GlassSurface(
+                    quality: quality,
+                    borderRadius:
+                        collapsed ? GlassTokens.radiusCapsule : GlassTokens.radiusBar,
+                    blurSigma: GlassTokens.blurSigmaThick,
+                    child: collapsed
+                        ? _CollapsedCapsule(
+                            item: items[currentIndex],
+                            onTap: controller.expand,
+                          )
+                        : _ExpandedRow(
+                            items: items,
+                            currentIndex: currentIndex,
+                            onTap: onTap,
+                          ),
+                  ),
+                ),
               ),
             ),
           ),
