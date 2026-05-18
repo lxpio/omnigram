@@ -78,7 +78,7 @@ class GlassTabBar extends StatelessWidget {
         // Fixed total height = bar content + bottom margin + safe area inset.
         // Without this, Align in the bottomNavigationBar slot expands
         // unbounded and produces a giant blank area below the icons.
-        const barContentHeight = 64.0;
+        const barContentHeight = 56.0;
         final safeBottom = MediaQuery.of(context).padding.bottom;
         return SizedBox(
           height: barContentHeight + 16 + safeBottom,
@@ -151,7 +151,7 @@ class _ExpandedRow extends StatelessWidget {
       builder: (context, constraints) {
         final tabWidth = constraints.maxWidth / items.length;
         return SizedBox(
-          height: 64,
+          height: 56,
           child: Stack(
             children: [
               // Sliding indicator pill — soft, low-contrast, drifts between tabs.
@@ -215,33 +215,25 @@ class _TabButtonState extends State<_TabButton> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final activeColor = scheme.primary;
-    final inactiveColor = scheme.onSurfaceVariant;
-    final color = widget.selected ? activeColor : inactiveColor;
+    final color = widget.selected ? scheme.primary : scheme.onSurfaceVariant;
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTapDown: (_) => setState(() => _pressed = true),
-      onTapUp: (_) => setState(() => _pressed = false),
-      onTapCancel: () => setState(() => _pressed = false),
-      onTap: _handleTap,
-      child: AnimatedScale(
-        scale: _pressed ? 0.92 : 1.0,
-        duration: const Duration(milliseconds: 120),
-        curve: Curves.easeOut,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(widget.item.icon, size: 22, color: color),
-            const SizedBox(height: 2),
-            Text(
-              widget.item.label,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: color,
-                    fontWeight: widget.selected ? FontWeight.w600 : FontWeight.w400,
-                  ),
-            ),
-          ],
+    return Semantics(
+      label: widget.item.label,
+      selected: widget.selected,
+      button: true,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: (_) => setState(() => _pressed = true),
+        onTapUp: (_) => setState(() => _pressed = false),
+        onTapCancel: () => setState(() => _pressed = false),
+        onTap: _handleTap,
+        child: AnimatedScale(
+          scale: _pressed ? 0.88 : 1.0,
+          duration: const Duration(milliseconds: 120),
+          curve: Curves.easeOut,
+          child: Center(
+            child: Icon(widget.item.icon, size: 26, color: color),
+          ),
         ),
       ),
     );
