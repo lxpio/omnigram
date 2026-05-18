@@ -21,6 +21,8 @@ import 'package:omnigram/widgets/common/empty_state.dart';
 import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/theme/omnigram_theme.dart';
 import 'package:omnigram/theme/typography.dart';
+import 'package:omnigram/theme/liquid_glass/glass_icon_button.dart';
+import 'package:omnigram/theme/liquid_glass/performance_mode.dart';
 
 class InsightsPage extends ConsumerStatefulWidget {
   const InsightsPage({super.key});
@@ -46,9 +48,10 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
                   child: Text(L10n.of(context).insightsTitle,
                       style: OmnigramTypography.displayLarge(context)),
                 ),
-                IconButton(
+                GlassIconButton(
+                  quality: ref.watch(glassQualityControllerProvider).valueOrNull ?? GlassQuality.medium,
                   tooltip: 'Record thought',
-                  icon: const Icon(Icons.edit_note),
+                  icon: Icons.edit_note,
                   onPressed: () => _recordThought(),
                 ),
               ],

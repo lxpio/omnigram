@@ -16,6 +16,8 @@ import 'package:omnigram/widgets/common/empty_state.dart';
 import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/theme/omnigram_theme.dart';
 import 'package:omnigram/theme/typography.dart';
+import 'package:omnigram/theme/liquid_glass/glass_icon_button.dart';
+import 'package:omnigram/theme/liquid_glass/performance_mode.dart';
 
 class LibraryPage extends ConsumerStatefulWidget {
   const LibraryPage({super.key});
@@ -97,9 +99,10 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
                             child: Text(L10n.of(context).libraryTitle,
                                 style: OmnigramTypography.displayLarge(context)),
                           ),
-                          IconButton(
+                          GlassIconButton(
+                            quality: ref.watch(glassQualityControllerProvider).valueOrNull ?? GlassQuality.medium,
                             tooltip: 'Import',
-                            icon: const Icon(Icons.add),
+                            icon: Icons.add,
                             onPressed: () => _importBooks(context, ref),
                           ),
                         ],
