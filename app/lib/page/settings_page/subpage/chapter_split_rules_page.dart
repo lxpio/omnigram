@@ -4,6 +4,7 @@ import 'package:omnigram/models/chapter_split_presets.dart';
 import 'package:omnigram/models/chapter_split_rule.dart';
 import 'package:omnigram/widgets/common/container/filled_container.dart';
 import 'package:flutter/material.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 
 class ChapterSplitRulesPage extends StatefulWidget {
   const ChapterSplitRulesPage({super.key});
@@ -276,7 +277,7 @@ class _ChapterSplitRulesPageState extends State<ChapterSplitRulesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppGlassAppBar(
         title: Text(L10n.of(context).chapterSplitting),
       ),
       body: ListView(
@@ -460,7 +461,7 @@ class _ChapterSplitRuleEditorPageState
     final evaluation = _evaluation;
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppGlassAppBar(
         title: Text(widget.rule == null
             ? L10n.of(context).newCustomRule
             : L10n.of(context).editCustomRule),

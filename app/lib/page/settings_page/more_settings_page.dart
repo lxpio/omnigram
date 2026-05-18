@@ -15,6 +15,7 @@ import 'package:omnigram/widgets/settings/about.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 
 class MoreSettings extends StatelessWidget {
   const MoreSettings({super.key});
@@ -60,7 +61,7 @@ class _SubMoreSettingsState extends State<SubMoreSettings> {
       builder: (context, _) {
         final showDeveloperEntry = Prefs().developerOptionsEnabled;
         return Scaffold(
-          appBar: AppBar(
+          appBar: AppGlassAppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:omnigram/service/sync/sync_manager.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 
 /// Manual conflict resolution page (U-3).
 ///
@@ -15,7 +16,7 @@ class SyncConflictsPage extends ConsumerWidget {
     final conflicts = syncState.conflicts;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('同步冲突')),
+      appBar: AppGlassAppBar(title: const Text('同步冲突')),
       body: conflicts.isEmpty
           ? const Center(
               child: Column(

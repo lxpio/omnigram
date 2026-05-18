@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:uuid/uuid.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 
 class AiProviderDetailPage extends ConsumerStatefulWidget {
   final String? providerId; // null for new provider
@@ -79,7 +80,7 @@ class _AiProviderDetailPageState extends ConsumerState<AiProviderDetailPage> {
         : null;
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppGlassAppBar(
         title: Text(widget.providerId == null
             ? l10n.settingsAiProvidersAdd
             : l10n.settingsAiProviderName),

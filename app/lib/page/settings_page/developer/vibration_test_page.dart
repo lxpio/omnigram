@@ -1,5 +1,6 @@
 import 'package:omnigram/service/vibration_service.dart';
 import 'package:flutter/material.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 
 class VibrationTestPage extends StatefulWidget {
   const VibrationTestPage({super.key});
@@ -36,7 +37,7 @@ class _VibrationTestPageState extends State<VibrationTestPage> {
     final caps = _capabilities;
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppGlassAppBar(
         title: const Text('Vibration Test'),
         actions: [
           IconButton(

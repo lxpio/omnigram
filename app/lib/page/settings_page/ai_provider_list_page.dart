@@ -5,6 +5,7 @@ import 'package:omnigram/providers/ai_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 
 class AiProviderListPage extends ConsumerWidget {
   const AiProviderListPage({super.key});
@@ -17,7 +18,7 @@ class AiProviderListPage extends ConsumerWidget {
         ref.watch(aiProvidersProvider.notifier).getSelectedProvider()?.id;
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppGlassAppBar(
         title: Text(l10n.settingsAiProviders),
         actions: [
           IconButton(

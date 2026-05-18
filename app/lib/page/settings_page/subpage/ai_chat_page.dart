@@ -2,6 +2,7 @@ import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/widgets/ai/ai_chat_stream.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 
 class AiChatPage extends ConsumerWidget {
   const AiChatPage({super.key});
@@ -9,7 +10,7 @@ class AiChatPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppGlassAppBar(
         title: Text(L10n.of(context).aiChat),
       ),
       body: const SafeArea(

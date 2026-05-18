@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:omnigram/providers/fonts.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:omnigram/l10n/generated/L10n.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 
 class FontsSettingPage extends ConsumerWidget {
   const FontsSettingPage({super.key});
@@ -14,7 +15,7 @@ class FontsSettingPage extends ConsumerWidget {
     final fontList = ref.watch(fontsProvider);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppGlassAppBar(
         title: Text(L10n.of(context).downloadFonts),
       ),
       body: fontList.when(

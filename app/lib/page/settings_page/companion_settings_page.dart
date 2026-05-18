@@ -9,6 +9,7 @@ import 'package:omnigram/theme/typography.dart';
 import 'package:omnigram/theme/omnigram_theme.dart';
 import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/widgets/common/omnigram_card.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 
 class CompanionSettingsPage extends ConsumerStatefulWidget {
   const CompanionSettingsPage({super.key});
@@ -38,7 +39,7 @@ class _CompanionSettingsPageState extends ConsumerState<CompanionSettingsPage> {
     final notifier = ref.read(companionProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(title: Text(L10n.of(context).companionTitle)),
+      appBar: AppGlassAppBar(title: Text(L10n.of(context).companionTitle)),
       body: ListView(
         padding: const EdgeInsets.all(OmnigramTheme.pageHorizontalPadding),
         children: [

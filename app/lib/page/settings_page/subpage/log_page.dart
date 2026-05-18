@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 
 import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/utils/save_file_to_download.dart';
@@ -34,7 +35,7 @@ class _LogPageState extends State<LogPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppGlassAppBar(
         title: Text(L10n.of(context).settingsAdvancedLog),
         actions: [
           IconButton(

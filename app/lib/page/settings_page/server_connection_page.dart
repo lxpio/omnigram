@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 
 import '../../providers/server_connection_provider.dart';
 import '../../service/sync/sync_manager.dart';
@@ -36,7 +37,7 @@ class _ServerConnectionPageState extends ConsumerState<ServerConnectionPage> {
     final connectionState = ref.watch(serverConnectionProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Omnigram 服务器')),
+      appBar: AppGlassAppBar(title: const Text('Omnigram 服务器')),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(OmnigramTheme.pageHorizontalPadding),

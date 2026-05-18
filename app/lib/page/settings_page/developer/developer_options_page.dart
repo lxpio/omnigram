@@ -2,6 +2,7 @@ import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/page/settings_page/developer/vibration_test_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 
 class DeveloperOptionsPage extends StatelessWidget {
   const DeveloperOptionsPage({super.key});
@@ -9,7 +10,7 @@ class DeveloperOptionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppGlassAppBar(
         title: const Text('Developer Options'),
       ),
       body: AnimatedBuilder(

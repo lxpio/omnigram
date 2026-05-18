@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 
 /// Keys for selective sync preferences (B-3).
 class SyncFilterKeys {
@@ -50,7 +51,7 @@ class _SelectiveSyncPageState extends ConsumerState<SelectiveSyncPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('选择性同步')),
+      appBar: AppGlassAppBar(title: const Text('选择性同步')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
