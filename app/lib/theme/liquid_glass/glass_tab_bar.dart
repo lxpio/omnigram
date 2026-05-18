@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'glass_surface.dart';
 import 'glass_tokens.dart';
 import 'performance_mode.dart';
@@ -77,7 +78,7 @@ class GlassTabBar extends StatelessWidget {
         // Fixed total height = bar content + bottom margin + safe area inset.
         // Without this, Align in the bottomNavigationBar slot expands
         // unbounded and produces a giant blank area below the icons.
-        const barContentHeight = 72.0;
+        const barContentHeight = 64.0;
         final safeBottom = MediaQuery.of(context).padding.bottom;
         return SizedBox(
           height: barContentHeight + 16 + safeBottom,
@@ -111,22 +112,16 @@ class GlassTabBar extends StatelessWidget {
                     borderRadius:
                         collapsed ? GlassTokens.radiusCapsule : GlassTokens.radiusBar,
                     blurSigma: GlassTokens.blurSigmaThick,
-                    // Material(transparency) hosts the ink splashes locally,
-                    // so ripples clip to the GlassSurface's ContinuousRectangle
-                    // instead of bleeding onto the ancestor Scaffold Material.
-                    child: Material(
-                      type: MaterialType.transparency,
-                      child: collapsed
-                          ? _CollapsedCapsule(
-                              item: items[currentIndex],
-                              onTap: controller.expand,
-                            )
-                          : _ExpandedRow(
-                              items: items,
-                              currentIndex: currentIndex,
-                              onTap: onTap,
-                            ),
-                    ),
+                    child: collapsed
+                        ? _CollapsedCapsule(
+                            item: items[currentIndex],
+                            onTap: controller.expand,
+                          )
+                        : _ExpandedRow(
+                            items: items,
+                            currentIndex: currentIndex,
+                            onTap: onTap,
+                          ),
                   ),
                 ),
               ),
@@ -151,59 +146,144 @@ class _ExpandedRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          for (var i = 0; i < items.length; i++)
-            InkResponse(
-              onTap: () => onTap(i),
-              radius: 36,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      items[i].icon,
-                      color: i == currentIndex
-                          ? Theme.of(context).colorScheme.primary
-                          : null,
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      items[i].label,
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: i == currentIndex
-                                ? Theme.of(context).colorScheme.primary
-                                : null,
-                          ),
-                    ),
-                  ],
+    final scheme = Theme.of(context).colorScheme;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final tabWidth = constraints.maxWidth / items.length;
+        return SizedBox(
+          height: 64,
+          child: Stack(
+            children: [
+              // Sliding indicator pill — soft, low-contrast, drifts between tabs.
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 280),
+                curve: Curves.easeOutCubic,
+                left: tabWidth * currentIndex + 6,
+                top: 6,
+                bottom: 6,
+                width: tabWidth - 12,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: scheme.primary.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(GlassTokens.radiusButton * 1.6),
+                  ),
                 ),
               ),
+              Row(
+                children: [
+                  for (var i = 0; i < items.length; i++)
+                    Expanded(
+                      child: _TabButton(
+                        item: items[i],
+                        selected: i == currentIndex,
+                        onTap: () => onTap(i),
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _TabButton extends StatefulWidget {
+  const _TabButton({
+    required this.item,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final GlassTabItem item;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  State<_TabButton> createState() => _TabButtonState();
+}
+
+class _TabButtonState extends State<_TabButton> {
+  bool _pressed = false;
+
+  void _handleTap() {
+    HapticFeedback.selectionClick();
+    widget.onTap();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final activeColor = scheme.primary;
+    final inactiveColor = scheme.onSurfaceVariant;
+    final color = widget.selected ? activeColor : inactiveColor;
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapDown: (_) => setState(() => _pressed = true),
+      onTapUp: (_) => setState(() => _pressed = false),
+      onTapCancel: () => setState(() => _pressed = false),
+      onTap: _handleTap,
+      child: AnimatedScale(
+        scale: _pressed ? 0.92 : 1.0,
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOut,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(widget.item.icon, size: 22, color: color),
+            const SizedBox(height: 2),
+            Text(
+              widget.item.label,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: color,
+                    fontWeight: widget.selected ? FontWeight.w600 : FontWeight.w400,
+                  ),
             ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-class _CollapsedCapsule extends StatelessWidget {
+class _CollapsedCapsule extends StatefulWidget {
   const _CollapsedCapsule({required this.item, required this.onTap});
 
   final GlassTabItem item;
   final VoidCallback onTap;
 
   @override
+  State<_CollapsedCapsule> createState() => _CollapsedCapsuleState();
+}
+
+class _CollapsedCapsuleState extends State<_CollapsedCapsule> {
+  bool _pressed = false;
+
+  @override
   Widget build(BuildContext context) {
-    return InkResponse(
-      onTap: onTap,
-      radius: 32,
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Icon(item.icon, size: 24, color: Theme.of(context).colorScheme.primary),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapDown: (_) => setState(() => _pressed = true),
+      onTapUp: (_) => setState(() => _pressed = false),
+      onTapCancel: () => setState(() => _pressed = false),
+      onTap: () {
+        HapticFeedback.selectionClick();
+        widget.onTap();
+      },
+      child: AnimatedScale(
+        scale: _pressed ? 0.92 : 1.0,
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOut,
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Icon(
+            widget.item.icon,
+            size: 24,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
       ),
     );
   }
