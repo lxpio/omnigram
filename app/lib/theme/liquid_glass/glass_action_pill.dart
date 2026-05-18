@@ -13,16 +13,20 @@ class GlassActionPill extends StatefulWidget {
   const GlassActionPill({
     super.key,
     required this.icon,
-    required this.label,
+    this.label,
     required this.onPressed,
     required this.quality,
     this.tinted = false,
+    this.tooltip,
   });
 
   final IconData icon;
-  final String label;
+
+  /// When null, renders as a square icon-only pill matching tab-cell height.
+  final String? label;
   final VoidCallback onPressed;
   final GlassQuality quality;
+  final String? tooltip;
 
   /// When true, fill with primary-container color (CTA emphasis).
   final bool tinted;
@@ -49,28 +53,36 @@ class _GlassActionPillState extends State<GlassActionPill> {
           )
         : null;
 
-    final body = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(widget.icon, size: 20, color: contentColor),
-          const SizedBox(width: 6),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 140),
-            child: Text(
-              widget.label,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: contentColor,
-                    fontWeight: FontWeight.w600,
-                  ),
+    final body = widget.label == null
+        ? SizedBox(
+            width: 56,
+            height: 56,
+            child: Center(
+              child: Icon(widget.icon, size: 24, color: contentColor),
             ),
-          ),
-        ],
-      ),
-    );
+          )
+        : Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(widget.icon, size: 20, color: contentColor),
+                const SizedBox(width: 6),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 140),
+                  child: Text(
+                    widget.label!,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: contentColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                ),
+              ],
+            ),
+          );
 
     final pill = DecoratedBox(
       decoration: BoxDecoration(
@@ -96,7 +108,7 @@ class _GlassActionPillState extends State<GlassActionPill> {
       ),
     );
 
-    return GestureDetector(
+    final gesture = GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapDown: (_) => setState(() => _pressed = true),
       onTapUp: (_) => setState(() => _pressed = false),
@@ -111,5 +123,9 @@ class _GlassActionPillState extends State<GlassActionPill> {
             )
           : pill,
     );
+    if (widget.tooltip != null) {
+      return Tooltip(message: widget.tooltip!, child: gesture);
+    }
+    return gesture;
   }
 }

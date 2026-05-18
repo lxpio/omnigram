@@ -8,8 +8,10 @@ import 'package:omnigram/page/home/settings_page.dart' as omnigram;
 import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/page/onboarding_flow.dart';
 import 'package:omnigram/page/search/search_page.dart';
+import 'package:omnigram/page/settings_page/companion_settings_page.dart';
 import 'package:omnigram/providers/desk_provider.dart';
 import 'package:omnigram/service/book.dart';
+import 'package:omnigram/widgets/insights/record_thought_sheet.dart';
 import 'package:omnigram/theme/liquid_glass/glass_action_pill.dart';
 import 'package:omnigram/theme/liquid_glass/glass_tab_bar.dart';
 import 'package:omnigram/theme/liquid_glass/performance_mode.dart';
@@ -164,22 +166,35 @@ class _OmnigramHomeState extends ConsumerState<OmnigramHome> {
         return GlassActionPill(
           quality: quality,
           icon: Icons.play_arrow_rounded,
-          label: book.title,
           tinted: true,
+          tooltip: book.title,
           onPressed: () => pushToReadingPage(ref, context, book),
         );
       case OmnigramTab.bookshelf:
         return GlassActionPill(
           quality: quality,
           icon: Icons.search,
-          label: '搜索',
+          tooltip: 'Search',
           onPressed: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const SearchPage()),
           ),
         );
       case OmnigramTab.insights:
+        return GlassActionPill(
+          quality: quality,
+          icon: Icons.edit_note,
+          tooltip: 'Record thought',
+          onPressed: () => showRecordThoughtSheet(context),
+        );
       case OmnigramTab.settings:
-        return null;
+        return GlassActionPill(
+          quality: quality,
+          icon: Icons.face_retouching_natural,
+          tooltip: 'Reading companion',
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const CompanionSettingsPage()),
+          ),
+        );
     }
   }
 }

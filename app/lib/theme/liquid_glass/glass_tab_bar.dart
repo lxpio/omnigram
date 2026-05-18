@@ -83,7 +83,7 @@ class GlassTabBar extends StatelessWidget {
         // Fixed total height = bar content + bottom margin + safe area inset.
         // Without this, Align in the bottomNavigationBar slot expands
         // unbounded and produces a giant blank area below the icons.
-        const barContentHeight = 56.0;
+        const barContentHeight = 60.0;
         final safeBottom = MediaQuery.of(context).padding.bottom;
         final tabCapsule = DecoratedBox(
           decoration: BoxDecoration(
@@ -158,9 +158,9 @@ class _ExpandedRow extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
 
-  // Compact tab: each cell is a small square, bar wraps content.
-  static const double _tabWidth = 52.0;
-  static const double _barHeight = 56.0;
+  // Compact tab: cell holds icon + small label, bar wraps content.
+  static const double _tabWidth = 60.0;
+  static const double _barHeight = 60.0;
   static const double _innerPadding = 6.0;
 
   @override
@@ -251,8 +251,23 @@ class _TabButtonState extends State<_TabButton> {
           scale: _pressed ? 0.88 : 1.0,
           duration: const Duration(milliseconds: 120),
           curve: Curves.easeOut,
-          child: Center(
-            child: Icon(widget.item.icon, size: 26, color: color),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(widget.item.icon, size: 22, color: color),
+              const SizedBox(height: 2),
+              Text(
+                widget.item.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 10,
+                  height: 1.0,
+                  fontWeight: widget.selected ? FontWeight.w600 : FontWeight.w500,
+                  color: color,
+                ),
+              ),
+            ],
           ),
         ),
       ),
