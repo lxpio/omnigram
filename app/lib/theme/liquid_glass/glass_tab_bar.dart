@@ -111,16 +111,22 @@ class GlassTabBar extends StatelessWidget {
                     borderRadius:
                         collapsed ? GlassTokens.radiusCapsule : GlassTokens.radiusBar,
                     blurSigma: GlassTokens.blurSigmaThick,
-                    child: collapsed
-                        ? _CollapsedCapsule(
-                            item: items[currentIndex],
-                            onTap: controller.expand,
-                          )
-                        : _ExpandedRow(
-                            items: items,
-                            currentIndex: currentIndex,
-                            onTap: onTap,
-                          ),
+                    // Material(transparency) hosts the ink splashes locally,
+                    // so ripples clip to the GlassSurface's ContinuousRectangle
+                    // instead of bleeding onto the ancestor Scaffold Material.
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: collapsed
+                          ? _CollapsedCapsule(
+                              item: items[currentIndex],
+                              onTap: controller.expand,
+                            )
+                          : _ExpandedRow(
+                              items: items,
+                              currentIndex: currentIndex,
+                              onTap: onTap,
+                            ),
+                    ),
                   ),
                 ),
               ),
