@@ -73,6 +73,7 @@ class GlassQualityController extends _$GlassQualityController {
   Future<void> setOverride(GlassQualityOverride override) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_kOverrideKey, override.name);
+    ref.invalidate(glassQualityOverrideProvider);
     ref.invalidateSelf();
   }
 
@@ -106,5 +107,15 @@ GlassQuality readerGlassQuality(Ref ref) {
   return globalAsync.maybeWhen(
     data: (q) => q.steppedDownForReader(),
     orElse: () => GlassQuality.low,
+  );
+}
+
+@Riverpod(keepAlive: true)
+Future<GlassQualityOverride> glassQualityOverride(Ref ref) async {
+  final prefs = await SharedPreferences.getInstance();
+  final name = prefs.getString(_kOverrideKey) ?? GlassQualityOverride.auto.name;
+  return GlassQualityOverride.values.firstWhere(
+    (e) => e.name == name,
+    orElse: () => GlassQualityOverride.auto,
   );
 }
