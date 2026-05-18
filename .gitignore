@@ -60,3 +60,6 @@ server/conf/conf2.yaml
 
 # Internal deployment configs (contains VPS details, not for public)
 deploy/
+
+# Git worktrees (isolated workspaces, not tracked)
+.worktrees/
