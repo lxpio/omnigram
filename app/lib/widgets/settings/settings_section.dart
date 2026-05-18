@@ -1,4 +1,7 @@
-import 'package:omnigram/widgets/common/container/filled_container.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:omnigram/theme/liquid_glass/glass_surface.dart';
+import 'package:omnigram/theme/liquid_glass/glass_tokens.dart';
+import 'package:omnigram/theme/liquid_glass/performance_mode.dart';
 import 'package:omnigram/widgets/settings/settings_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -50,10 +53,16 @@ class SettingsSection extends AbstractSettingsSection {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: FilledContainer(
-            padding: EdgeInsetsGeometry.zero,
-            child: tileList,
-          ),
+          child: Consumer(builder: (context, ref, _) {
+            final q = ref.watch(glassQualityControllerProvider).valueOrNull ??
+                GlassQuality.medium;
+            return GlassSurface(
+              quality: q,
+              borderRadius: GlassTokens.radiusBar,
+              blurSigma: GlassTokens.blurSigmaThin,
+              child: tileList,
+            );
+          }),
         ),
       ],
     );
