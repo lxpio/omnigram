@@ -90,8 +90,7 @@ class GlassTabBar extends StatelessWidget {
                 duration: GlassTokens.tabCollapse,
                 curve: Curves.easeOutCubic,
                 margin: EdgeInsets.only(
-                  left: collapsed ? 0 : 16,
-                  right: 16,
+                  right: collapsed ? 16 : 0,
                   bottom: collapsed ? 8 : 16,
                 ),
                 child: DecoratedBox(
@@ -144,47 +143,53 @@ class _ExpandedRow extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
 
+  // Compact tab: each cell is a small square, bar wraps content.
+  static const double _tabWidth = 52.0;
+  static const double _barHeight = 56.0;
+  static const double _innerPadding = 6.0;
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final tabWidth = constraints.maxWidth / items.length;
-        return SizedBox(
-          height: 56,
-          child: Stack(
-            children: [
-              // Sliding indicator pill — soft, low-contrast, drifts between tabs.
-              AnimatedPositioned(
-                duration: const Duration(milliseconds: 280),
-                curve: Curves.easeOutCubic,
-                left: tabWidth * currentIndex + 6,
-                top: 6,
-                bottom: 6,
-                width: tabWidth - 12,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: scheme.primary.withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(GlassTokens.radiusButton * 1.6),
-                  ),
+    return SizedBox(
+      width: _tabWidth * items.length + _innerPadding * 2,
+      height: _barHeight,
+      child: Padding(
+        padding: const EdgeInsets.all(_innerPadding),
+        child: Stack(
+          children: [
+            // Sliding indicator pill — drifts between tab cells.
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 280),
+              curve: Curves.easeOutCubic,
+              left: _tabWidth * currentIndex,
+              top: 0,
+              bottom: 0,
+              width: _tabWidth,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: scheme.primary.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(GlassTokens.radiusButton * 1.6),
                 ),
               ),
-              Row(
-                children: [
-                  for (var i = 0; i < items.length; i++)
-                    Expanded(
-                      child: _TabButton(
-                        item: items[i],
-                        selected: i == currentIndex,
-                        onTap: () => onTap(i),
-                      ),
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var i = 0; i < items.length; i++)
+                  SizedBox(
+                    width: _tabWidth,
+                    child: _TabButton(
+                      item: items[i],
+                      selected: i == currentIndex,
+                      onTap: () => onTap(i),
                     ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
