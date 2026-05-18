@@ -7,6 +7,8 @@ import 'package:omnigram/page/home/insights_page.dart';
 import 'package:omnigram/page/home/settings_page.dart' as omnigram;
 import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/page/onboarding_flow.dart';
+import 'package:omnigram/theme/liquid_glass/glass_tab_bar.dart';
+import 'package:omnigram/theme/liquid_glass/performance_mode.dart';
 
 enum OmnigramTab { reading, bookshelf, insights, settings }
 
@@ -20,11 +22,18 @@ class OmnigramHome extends ConsumerStatefulWidget {
 class _OmnigramHomeState extends ConsumerState<OmnigramHome> {
   OmnigramTab _currentTab = OmnigramTab.reading;
   late bool _showOnboarding;
+  final _tabBarController = GlassTabBarController();
 
   @override
   void initState() {
     super.initState();
     _showOnboarding = Prefs().lastAppVersion == null;
+  }
+
+  @override
+  void dispose() {
+    _tabBarController.dispose();
+    super.dispose();
   }
 
   void _onOnboardingComplete() {
@@ -57,15 +66,23 @@ class _OmnigramHomeState extends ConsumerState<OmnigramHome> {
   }
 
   Widget _buildBody() {
-    return IndexedStack(
-      index: _currentTab.index,
-      children: [
-        for (int i = 0; i < OmnigramTab.values.length; i++)
-          // Offstage avoids laying out / painting un-visited tabs until they are activated.
-          _pageCache[i] == null && i != _currentTab.index
-              ? const SizedBox.shrink()
-              : _pageAt(i),
-      ],
+    return NotificationListener<ScrollUpdateNotification>(
+      onNotification: (n) {
+        if (n.metrics.axis == Axis.vertical) {
+          _tabBarController.handleScrollDelta(n.scrollDelta ?? 0);
+        }
+        return false;
+      },
+      child: IndexedStack(
+        index: _currentTab.index,
+        children: [
+          for (int i = 0; i < OmnigramTab.values.length; i++)
+            // Offstage avoids laying out / painting un-visited tabs until they are activated.
+            _pageCache[i] == null && i != _currentTab.index
+                ? const SizedBox.shrink()
+                : _pageAt(i),
+        ],
+      ),
     );
   }
 
@@ -111,13 +128,24 @@ class _OmnigramHomeState extends ConsumerState<OmnigramHome> {
     }
 
     return Scaffold(
+      extendBody: true,
       body: _buildBody(),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentTab.index,
-        onDestinationSelected: (i) => setState(() => _currentTab = OmnigramTab.values[i]),
-        destinations: destinations
-            .map((d) => NavigationDestination(icon: Icon(d.icon), selectedIcon: Icon(d.selectedIcon), label: d.label))
-            .toList(),
+      bottomNavigationBar: Consumer(
+        builder: (context, ref, _) {
+          final quality = ref.watch(glassQualityControllerProvider).valueOrNull ?? GlassQuality.medium;
+          return GlassTabBar(
+            quality: quality,
+            controller: _tabBarController,
+            currentIndex: _currentTab.index,
+            onTap: (i) => setState(() => _currentTab = OmnigramTab.values[i]),
+            items: [
+              GlassTabItem(icon: Icons.auto_stories_outlined, label: l10n.reading),
+              GlassTabItem(icon: Icons.library_books_outlined, label: l10n.bookshelf),
+              GlassTabItem(icon: Icons.insights_outlined, label: l10n.insights),
+              GlassTabItem(icon: Icons.settings_outlined, label: l10n.settings),
+            ],
+          );
+        },
       ),
     );
   }
