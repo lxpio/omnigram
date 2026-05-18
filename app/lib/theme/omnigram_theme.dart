@@ -1,6 +1,7 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'colors.dart';
+import 'typography.dart';
 
 class OmnigramTheme {
   OmnigramTheme._();
@@ -18,6 +19,7 @@ class OmnigramTheme {
         surface: OmnigramColors.surfaceLight,
       ),
       useMaterial3: true,
+      fontFamily: systemFontFamily(),
       appBarStyle: FlexAppBarStyle.surface,
       subThemesData: const FlexSubThemesData(
         cardRadius: cardRadius,
@@ -38,6 +40,7 @@ class OmnigramTheme {
       ),
       useMaterial3: true,
       darkIsTrueBlack: false,
+      fontFamily: systemFontFamily(),
       appBarStyle: FlexAppBarStyle.surface,
       subThemesData: const FlexSubThemesData(
         cardRadius: cardRadius,
