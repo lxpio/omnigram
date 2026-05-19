@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:omnigram/providers/server_connection_provider.dart';
+import 'package:omnigram/service/sync/sync_manager.dart';
 import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
+import 'package:omnigram/theme/liquid_glass/glass_surface.dart';
+import 'package:omnigram/theme/liquid_glass/glass_tokens.dart';
+import 'package:omnigram/theme/liquid_glass/performance_mode.dart';
+import 'package:omnigram/theme/typography.dart';
+import 'package:omnigram/widgets/settings/settings_section.dart';
+import 'package:omnigram/widgets/settings/settings_tile.dart';
 
-import '../../providers/server_connection_provider.dart';
-import '../../service/sync/sync_manager.dart';
-import '../../theme/omnigram_theme.dart';
-import '../../theme/typography.dart';
-
-/// Server connection setup and management page.
+/// Server connection setup and management. Liquid Glass layout per
+/// docs/superpowers/specs/2026-05-19-settings-visual-contract.md
+/// Phase 4 — rich form page wrapped in glass section cards.
 class ServerConnectionPage extends ConsumerStatefulWidget {
   const ServerConnectionPage({super.key});
 
   @override
-  ConsumerState<ServerConnectionPage> createState() => _ServerConnectionPageState();
+  ConsumerState<ServerConnectionPage> createState() =>
+      _ServerConnectionPageState();
 }
 
 class _ServerConnectionPageState extends ConsumerState<ServerConnectionPage> {
@@ -34,54 +40,58 @@ class _ServerConnectionPageState extends ConsumerState<ServerConnectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    final connectionState = ref.watch(serverConnectionProvider);
+    final state = ref.watch(serverConnectionProvider);
 
     return Scaffold(
-      appBar: AppGlassAppBar(title: const Text('Omnigram 服务器')),
+      appBar: const AppGlassAppBar(title: Text('Omnigram 服务器')),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(OmnigramTheme.pageHorizontalPadding),
-          children: [if (connectionState.isConnected) _buildConnectedView(connectionState) else _buildLoginForm()],
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          children: state.isConnected
+              ? _connectedSlivers(state)
+              : _loginSlivers(),
         ),
       ),
     );
   }
 
-  Widget _buildConnectedView(ServerConnectionState connectionState) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Server status card
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
-            children: [
-              Icon(Icons.cloud_done, size: 48, color: Theme.of(context).colorScheme.primary),
-              const SizedBox(height: 12),
-              Text('已连接', style: OmnigramTypography.titleLarge(context)),
-              const SizedBox(height: 4),
-              Text(connectionState.serverUrl ?? '', style: OmnigramTypography.caption(context)),
-            ],
-          ),
+  // -------- connected view --------
+
+  List<Widget> _connectedSlivers(ServerConnectionState state) {
+    return [
+      _StatusHero(
+        icon: Icons.cloud_done,
+        title: '已连接',
+        subtitle: state.serverUrl ?? '',
+      ),
+      const SizedBox(height: 16),
+      if (state.user != null)
+        SettingsSection(
+          title: const Text('账户信息'),
+          tiles: [
+            SettingsTile(
+              leading: const Icon(Icons.person_outline),
+              title: const Text('用户'),
+              value: Text(state.user!.name),
+            ),
+            if (state.user!.email.isNotEmpty)
+              SettingsTile(
+                leading: const Icon(Icons.email_outlined),
+                title: const Text('邮箱'),
+                value: Text(state.user!.email),
+              ),
+            SettingsTile(
+              leading: const Icon(Icons.badge_outlined),
+              title: const Text('角色'),
+              value:
+                  Text(state.user!.roleId == 1 ? '管理员' : '用户'),
+            ),
+          ],
         ),
-        const SizedBox(height: 24),
-
-        // User info
-        if (connectionState.user != null) ...[
-          _InfoTile(icon: Icons.person, label: '用户', value: connectionState.user!.name),
-          if (connectionState.user!.email.isNotEmpty)
-            _InfoTile(icon: Icons.email, label: '邮箱', value: connectionState.user!.email),
-          _InfoTile(icon: Icons.badge, label: '角色', value: connectionState.user!.roleId == 1 ? '管理员' : '用户'),
-        ],
-
-        const SizedBox(height: 32),
-
-        // Disconnect button
-        SizedBox(
+      const SizedBox(height: 24),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
             onPressed: _disconnect,
@@ -94,92 +104,113 @@ class _ServerConnectionPageState extends ConsumerState<ServerConnectionPage> {
             ),
           ),
         ),
-      ],
-    );
+      ),
+    ];
   }
 
-  Widget _buildLoginForm() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Header
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
-            children: [
-              Icon(Icons.dns_outlined, size: 48, color: Theme.of(context).colorScheme.primary),
-              const SizedBox(height: 12),
-              Text('连接到 Omnigram 服务器', style: OmnigramTypography.titleLarge(context)),
-              const SizedBox(height: 4),
-              Text('连接后，书籍、笔记和阅读进度将自动同步', style: OmnigramTypography.caption(context), textAlign: TextAlign.center),
-            ],
-          ),
-        ),
-        const SizedBox(height: 24),
+  // -------- login form --------
 
-        // Server URL
-        TextField(
-          controller: _urlController,
-          decoration: InputDecoration(
-            labelText: '服务器地址',
-            hintText: 'http://192.168.1.100:8080',
-            prefixIcon: const Icon(Icons.link),
-            suffixIcon: _serverVersion != null
-                ? Tooltip(
-                    message: 'Omnigram v$_serverVersion',
-                    child: Icon(Icons.check_circle, color: Theme.of(context).colorScheme.primary),
-                  )
-                : IconButton(icon: const Icon(Icons.search), onPressed: _testConnection, tooltip: '测试连接'),
-            border: const OutlineInputBorder(),
-          ),
-          keyboardType: TextInputType.url,
-          onChanged: (_) => setState(() => _serverVersion = null),
-        ),
-        const SizedBox(height: 16),
-
-        // Account
-        TextField(
-          controller: _accountController,
-          decoration: const InputDecoration(
-            labelText: '账号',
-            hintText: '用户名或邮箱',
-            prefixIcon: Icon(Icons.person_outline),
-            border: OutlineInputBorder(),
-          ),
-          keyboardType: TextInputType.emailAddress,
-        ),
-        const SizedBox(height: 16),
-
-        // Password
-        TextField(
-          controller: _passwordController,
-          decoration: InputDecoration(
-            labelText: '密码',
-            prefixIcon: const Icon(Icons.lock_outline),
-            suffixIcon: IconButton(
-              icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
-              onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+  List<Widget> _loginSlivers() {
+    return [
+      const _StatusHero(
+        icon: Icons.dns_outlined,
+        title: '连接到 Omnigram 服务器',
+        subtitle: '连接后，书籍、笔记和阅读进度将自动同步',
+      ),
+      const SizedBox(height: 16),
+      SettingsSection(
+        title: const Text('服务器'),
+        tiles: [
+          CustomSettingsTile(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: TextField(
+                controller: _urlController,
+                decoration: InputDecoration(
+                  labelText: '服务器地址',
+                  hintText: 'http://192.168.1.100:8080',
+                  prefixIcon: const Icon(Icons.link),
+                  suffixIcon: _serverVersion != null
+                      ? Tooltip(
+                          message: 'Omnigram v$_serverVersion',
+                          child: Icon(Icons.check_circle,
+                              color: Theme.of(context).colorScheme.primary),
+                        )
+                      : IconButton(
+                          icon: const Icon(Icons.search),
+                          onPressed: _testConnection,
+                          tooltip: '测试连接',
+                        ),
+                  border: const OutlineInputBorder(),
+                  isDense: true,
+                ),
+                keyboardType: TextInputType.url,
+                onChanged: (_) => setState(() => _serverVersion = null),
+              ),
             ),
-            border: const OutlineInputBorder(),
           ),
-          obscureText: _obscurePassword,
+        ],
+      ),
+      const SizedBox(height: 12),
+      SettingsSection(
+        title: const Text('账户'),
+        tiles: [
+          CustomSettingsTile(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: TextField(
+                controller: _accountController,
+                decoration: const InputDecoration(
+                  labelText: '账号',
+                  hintText: '用户名或邮箱',
+                  prefixIcon: Icon(Icons.person_outline),
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                ),
+                keyboardType: TextInputType.emailAddress,
+              ),
+            ),
+          ),
+          CustomSettingsTile(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: TextField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: '密码',
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(_obscurePassword
+                        ? Icons.visibility_off
+                        : Icons.visibility),
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
+                  ),
+                  border: const OutlineInputBorder(),
+                  isDense: true,
+                ),
+                obscureText: _obscurePassword,
+              ),
+            ),
+          ),
+        ],
+      ),
+      if (_errorMessage != null)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+          child: Text(
+            _errorMessage!,
+            style:
+                TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 13),
+          ),
         ),
-        const SizedBox(height: 8),
-
-        // Error message
-        if (_errorMessage != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Text(_errorMessage!, style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 13)),
-          ),
-        const SizedBox(height: 24),
-
-        // Connect button
-        SizedBox(
+      const SizedBox(height: 24),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: SizedBox(
           width: double.infinity,
           child: FilledButton.icon(
             onPressed: _isConnecting ? null : _connect,
@@ -187,23 +218,29 @@ class _ServerConnectionPageState extends ConsumerState<ServerConnectionPage> {
                 ? SizedBox(
                     width: 18,
                     height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: Theme.of(context).colorScheme.onPrimary),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
                   )
                 : const Icon(Icons.login),
             label: Text(_isConnecting ? '连接中...' : '连接'),
-            style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 14)),
+            style: FilledButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+            ),
           ),
         ),
-
-        const SizedBox(height: 24),
-        // Help text
-        Text(
+      ),
+      const SizedBox(height: 24),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Text(
           '提示：确保你的 Omnigram 服务器已启动。'
           '通常地址格式为 http://IP:端口',
           style: OmnigramTypography.caption(context),
         ),
-      ],
-    );
+      ),
+    ];
   }
 
   Future<void> _testConnection() async {
@@ -215,7 +252,9 @@ class _ServerConnectionPageState extends ConsumerState<ServerConnectionPage> {
       _serverVersion = null;
     });
 
-    final health = await ref.read(serverConnectionProvider.notifier).testConnection(url);
+    final health = await ref
+        .read(serverConnectionProvider.notifier)
+        .testConnection(url);
 
     if (health != null && health.status == 'ok') {
       setState(() => _serverVersion = health.version ?? 'unknown');
@@ -246,11 +285,11 @@ class _ServerConnectionPageState extends ConsumerState<ServerConnectionPage> {
     setState(() {
       _isConnecting = false;
       if (!success) {
-        _errorMessage = ref.read(serverConnectionProvider).errorMessage ?? '连接失败，请检查账号密码';
+        _errorMessage =
+            ref.read(serverConnectionProvider).errorMessage ?? '连接失败，请检查账号密码';
       }
     });
 
-    // Trigger sync after successful login
     if (success) {
       ref.read(syncManagerProvider.notifier).sync();
       ref.read(syncManagerProvider.notifier).startAutoSync();
@@ -262,25 +301,47 @@ class _ServerConnectionPageState extends ConsumerState<ServerConnectionPage> {
   }
 }
 
-class _InfoTile extends StatelessWidget {
-  const _InfoTile({required this.icon, required this.label, required this.value});
+/// Hero card at the top of the page — large icon + title + subtitle on
+/// a glass surface.
+class _StatusHero extends ConsumerWidget {
+  const _StatusHero({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
 
   final IconData icon;
-  final String label;
-  final String value;
+  final String title;
+  final String subtitle;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scheme = Theme.of(context).colorScheme;
+    final q = ref.watch(glassQualityControllerProvider).valueOrNull ??
+        GlassQuality.medium;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: Theme.of(context).colorScheme.outline),
-          const SizedBox(width: 12),
-          Text(label, style: OmnigramTypography.caption(context)),
-          const Spacer(),
-          Text(value, style: OmnigramTypography.bodyMedium(context)),
-        ],
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: GlassSurface(
+        quality: q,
+        borderRadius: GlassTokens.radiusBar,
+        blurSigma: GlassTokens.blurSigmaThin,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: Column(
+          children: [
+            Icon(icon, size: 44, color: scheme.primary),
+            const SizedBox(height: 12),
+            Text(title,
+                style: OmnigramTypography.titleLarge(context)
+                    .copyWith(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 4),
+            Text(
+              subtitle,
+              style: OmnigramTypography.caption(context)
+                  .copyWith(color: scheme.onSurfaceVariant),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

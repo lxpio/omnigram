@@ -1,12 +1,23 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/models/ai_provider.dart';
 import 'package:omnigram/page/settings_page/ai_provider_detail_page.dart';
 import 'package:omnigram/providers/ai_providers.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
+import 'package:omnigram/widgets/settings/settings_section.dart';
+import 'package:omnigram/widgets/settings/settings_tile.dart'
+    show AbstractSettingsTile, SettingsTile;
 
+/// AI provider list — Liquid Glass layout per Phase 4 of
+/// docs/superpowers/specs/2026-05-19-settings-visual-contract.md.
+///
+/// Each provider is one SettingsTile row with leading logo, title,
+/// inline URL as subtitle, enable switch on the right. Tap to edit,
+/// long-press to delete (built-ins not deletable). Default provider
+/// gets a check mark; tap any inactive provider trailing icon to
+/// promote it as default.
 class AiProviderListPage extends ConsumerWidget {
   const AiProviderListPage({super.key});
 
@@ -23,112 +34,45 @@ class AiProviderListPage extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () => _addProvider(context, ref),
+            onPressed: () => _addProvider(context),
             tooltip: l10n.settingsAiProvidersAdd,
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: providers.length,
-        itemBuilder: (context, index) {
-          final provider = providers[index];
-          final isSelected = provider.id == selectedId;
-          final hasValidKey = provider.hasValidKey;
-
-          return ListTile(
-            leading: _buildProviderLogo(provider),
-            title: Text(provider.title),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  provider.url,
-                  style: Theme.of(context).textTheme.bodySmall,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (!hasValidKey)
-                  Text(
-                    l10n.settingsAiProviderNoValidKeys,
-                    style: TextTheme.of(context).bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                  ),
-              ],
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (isSelected)
-                  Chip(
-                    label: Text(l10n.settingsAiProviderDefault),
-                    labelStyle: TextTheme.of(context).labelSmall,
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                  )
-                else
-                  TextButton(
-                    onPressed: () {
-                      ref
-                          .read(aiProvidersProvider.notifier)
-                          .setSelectedProvider(provider.id);
-                    },
-                    child: Text(l10n.settingsAiProviderSetDefault),
-                  ),
-                const SizedBox(width: 8),
-                Switch(
-                  value: provider.enabled,
-                  onChanged: (value) {
-                    ref
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          children: [
+            SettingsSection(
+              title: Text(l10n.settingsAiProviders),
+              tiles: [
+                for (final p in providers)
+                  _ProviderTile(
+                    provider: p,
+                    isDefault: p.id == selectedId,
+                    onSetDefault: () => ref
                         .read(aiProvidersProvider.notifier)
-                        .toggleProvider(provider.id, value);
-                  },
-                ),
+                        .setSelectedProvider(p.id),
+                    onToggle: (v) => ref
+                        .read(aiProvidersProvider.notifier)
+                        .toggleProvider(p.id, v),
+                    onDelete: p.isBuiltin
+                        ? null
+                        : () => _deleteProvider(context, ref, p),
+                  ),
               ],
             ),
-            onTap: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      AiProviderDetailPage(providerId: provider.id),
-                ),
-              );
-            },
-            onLongPress: provider.isBuiltin
-                ? null
-                : () => _deleteProvider(context, ref, provider),
-          );
-        },
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildProviderLogo(AiProvider provider) {
-    if (provider.logoAsset != null) {
-      return Image.asset(
-        provider.logoAsset!,
-        width: 32,
-        height: 32,
-        errorBuilder: (context, error, stackTrace) =>
-            _buildFallbackAvatar(provider),
-      );
-    }
-    return _buildFallbackAvatar(provider);
-  }
-
-  Widget _buildFallbackAvatar(AiProvider provider) {
-    return CircleAvatar(
-      child: Text(
-        provider.title.isNotEmpty ? provider.title[0].toUpperCase() : '?',
-      ),
-    );
-  }
-
-  Future<void> _addProvider(BuildContext context, WidgetRef ref) async {
+  Future<void> _addProvider(BuildContext context) async {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const AiProviderDetailPage(providerId: null),
+        builder: (_) => const AiProviderDetailPage(providerId: null),
       ),
     );
   }
@@ -140,9 +84,8 @@ class AiProviderListPage extends ConsumerWidget {
   ) async {
     final l10n = L10n.of(context);
     bool confirmed = false;
-
     await SmartDialog.show(
-      builder: (dialogContext) => AlertDialog(
+      builder: (_) => AlertDialog(
         title: Text(l10n.commonConfirm),
         content: Text(l10n.settingsAiProviderDeleteConfirm),
         actions: [
@@ -167,5 +110,81 @@ class AiProviderListPage extends ConsumerWidget {
     if (confirmed && context.mounted) {
       ref.read(aiProvidersProvider.notifier).deleteProvider(provider.id);
     }
+  }
+}
+
+class _ProviderTile extends AbstractSettingsTile {
+  const _ProviderTile({
+    required this.provider,
+    required this.isDefault,
+    required this.onSetDefault,
+    required this.onToggle,
+    required this.onDelete,
+  });
+
+  final AiProvider provider;
+  final bool isDefault;
+  final VoidCallback onSetDefault;
+  final ValueChanged<bool> onToggle;
+  final VoidCallback? onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
+    final hasValidKey = provider.hasValidKey;
+    final scheme = Theme.of(context).colorScheme;
+
+    return SettingsTile.navigation(
+      leading: _logo(),
+      title: Text(provider.title),
+      description: Text(
+        hasValidKey ? provider.url : l10n.settingsAiProviderNoValidKeys,
+        style: TextStyle(
+          color: hasValidKey ? scheme.onSurfaceVariant : scheme.error,
+        ),
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (isDefault)
+            Icon(Icons.check_circle_rounded, color: scheme.primary, size: 20)
+          else
+            IconButton(
+              icon: Icon(Icons.circle_outlined,
+                  color: scheme.outlineVariant, size: 20),
+              tooltip: l10n.settingsAiProviderSetDefault,
+              onPressed: onSetDefault,
+            ),
+          const SizedBox(width: 4),
+          Switch(value: provider.enabled, onChanged: onToggle),
+        ],
+      ),
+      onPressed: (_) => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => AiProviderDetailPage(providerId: provider.id),
+        ),
+      ),
+      onLongPress: onDelete,
+    );
+  }
+
+  Widget _logo() {
+    if (provider.logoAsset != null) {
+      return Image.asset(
+        provider.logoAsset!,
+        width: 22,
+        height: 22,
+        errorBuilder: (_, _, _) => _fallback(),
+      );
+    }
+    return _fallback();
+  }
+
+  Widget _fallback() {
+    return Text(
+      provider.title.isNotEmpty ? provider.title[0].toUpperCase() : '?',
+      style: const TextStyle(fontWeight: FontWeight.w600),
+    );
   }
 }
