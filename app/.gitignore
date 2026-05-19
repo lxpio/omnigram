@@ -71,3 +71,5 @@ google_service_account.json
 # FVM Version Cache
 .fvm/
 .fvmrc
+# Golden test failure artifacts
+**/failures/

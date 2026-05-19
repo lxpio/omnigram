@@ -38,7 +38,11 @@ Widget _wrap({
   return ProviderScope(
     child: MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(brightness: brightness, useMaterial3: true),
+      theme: ThemeData(
+        brightness: brightness,
+        useMaterial3: true,
+        fontFamily: 'Roboto', // matches flutter_test_config.dart preload
+      ),
       home: Scaffold(
         backgroundColor: bg,
         body: Center(
