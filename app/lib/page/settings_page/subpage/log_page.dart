@@ -108,40 +108,64 @@ class _LogPageState extends State<LogPage> {
 
 Widget logItem(String logStr, BuildContext context) {
   final log = AnxLog.parse(logStr);
+  final scheme = Theme.of(context).colorScheme;
   return SelectionArea(
-      child: Container(
-    padding: const EdgeInsets.all(20),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.fromLTRB(8, 1, 8, 1),
-          decoration: BoxDecoration(
-            color: log.color,
-            borderRadius: BorderRadius.circular(100),
+    child: Padding(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                decoration: BoxDecoration(
+                  color: log.color,
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Text(
+                  log.level.name,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                log.time.toString(),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
+              ),
+            ],
           ),
-          child: Text(log.level.name,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold)),
-        ),
-        Text(log.time.toString()),
-        const SizedBox(height: 5),
-        Text(log.message),
-        Row(
-          children: [
-            const Spacer(),
-            TextButton(
+          const SizedBox(height: 6),
+          Text(
+            log.message,
+            // monospace so log alignment / stack frames stay readable
+            style: const TextStyle(
+              fontFamily: 'monospace',
+              fontSize: 13,
+              height: 1.4,
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
               onPressed: () {
                 Clipboard.setData(ClipboardData(text: logStr));
               },
               child: Text(L10n.of(context).commonCopy),
             ),
-          ],
-        ),
-        const Divider(),
-      ],
+          ),
+          Divider(
+            height: 8,
+            color: scheme.outlineVariant.withValues(alpha: 0.3),
+          ),
+        ],
+      ),
     ),
-  ));
+  );
 }

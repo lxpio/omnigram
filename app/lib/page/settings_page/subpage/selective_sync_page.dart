@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
+import 'package:omnigram/theme/liquid_glass/glass_chip.dart';
+import 'package:omnigram/theme/liquid_glass/performance_mode.dart';
+import 'package:omnigram/theme/typography.dart';
+import 'package:omnigram/widgets/settings/settings_section.dart';
+import 'package:omnigram/widgets/settings/settings_tile.dart';
 
 /// Keys for selective sync preferences (B-3).
 class SyncFilterKeys {
@@ -10,10 +15,9 @@ class SyncFilterKeys {
   static const syncAll = 'sync_filter_all';
 }
 
-/// Selective sync settings page (B-3).
-///
-/// Allows users to choose which shelves/tags to sync,
-/// reducing bandwidth and storage on secondary devices.
+/// Selective sync settings page (B-3) — Liquid Glass layout per
+/// docs/superpowers/specs/2026-05-19-settings-visual-contract.md
+/// Phase 5.
 class SelectiveSyncPage extends ConsumerStatefulWidget {
   const SelectiveSyncPage({super.key});
 
@@ -36,7 +40,8 @@ class _SelectiveSyncPageState extends ConsumerState<SelectiveSyncPage> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _syncAll = prefs.getBool(SyncFilterKeys.syncAll) ?? true;
-      _enabledShelves = prefs.getStringList(SyncFilterKeys.enabledShelves) ?? [];
+      _enabledShelves =
+          prefs.getStringList(SyncFilterKeys.enabledShelves) ?? [];
       _enabledTags = prefs.getStringList(SyncFilterKeys.enabledTags) ?? [];
     });
   }
@@ -50,94 +55,127 @@ class _SelectiveSyncPageState extends ConsumerState<SelectiveSyncPage> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppGlassAppBar(title: const Text('选择性同步')),
+      appBar: const AppGlassAppBar(title: Text('选择性同步')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         children: [
-          Card(
-            child: SwitchListTile(
-              title: const Text('同步全部书籍'),
-              subtitle: const Text('关闭后可按书架/标签筛选同步内容'),
-              value: _syncAll,
-              onChanged: (v) {
-                setState(() => _syncAll = v);
-                _savePrefs();
-              },
-            ),
+          SettingsSection(
+            tiles: [
+              SettingsTile.switchTile(
+                leading: const Icon(Icons.cloud_sync_outlined),
+                title: const Text('同步全部书籍'),
+                description: const Text('关闭后可按书架 / 标签筛选同步内容'),
+                initialValue: _syncAll,
+                onToggle: (v) {
+                  setState(() => _syncAll = v);
+                  _savePrefs();
+                },
+              ),
+            ],
           ),
           if (!_syncAll) ...[
-            const SizedBox(height: 16),
-            Text('同步书架', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: _enabledShelves.isEmpty
-                    ? const Text('暂无书架筛选，同步时将包含所有书架', style: TextStyle(color: Colors.grey))
-                    : Wrap(
-                        spacing: 8,
-                        children: _enabledShelves
-                            .map(
-                              (s) => Chip(
-                                label: Text(s),
-                                onDeleted: () {
-                                  setState(() => _enabledShelves.remove(s));
-                                  _savePrefs();
-                                },
-                              ),
-                            )
-                            .toList(),
-                      ),
-              ),
+            const SizedBox(height: 12),
+            SettingsSection(
+              title: const Text('同步书架'),
+              tiles: [
+                CustomSettingsTile(
+                  child: _ChipWrap(
+                    labels: _enabledShelves,
+                    emptyHint: '暂无书架筛选，同步时将包含所有书架',
+                    onDelete: (s) {
+                      setState(() => _enabledShelves.remove(s));
+                      _savePrefs();
+                    },
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            Text('同步标签', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: _enabledTags.isEmpty
-                    ? const Text('暂无标签筛选，同步时将包含所有标签', style: TextStyle(color: Colors.grey))
-                    : Wrap(
-                        spacing: 8,
-                        children: _enabledTags
-                            .map(
-                              (t) => Chip(
-                                label: Text(t),
-                                onDeleted: () {
-                                  setState(() => _enabledTags.remove(t));
-                                  _savePrefs();
-                                },
-                              ),
-                            )
-                            .toList(),
-                      ),
-              ),
+            const SizedBox(height: 12),
+            SettingsSection(
+              title: const Text('同步标签'),
+              tiles: [
+                CustomSettingsTile(
+                  child: _ChipWrap(
+                    labels: _enabledTags,
+                    emptyHint: '暂无标签筛选，同步时将包含所有标签',
+                    onDelete: (t) {
+                      setState(() => _enabledTags.remove(t));
+                      _savePrefs();
+                    },
+                  ),
+                ),
+              ],
             ),
           ],
           const SizedBox(height: 24),
-          const Card(
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.info_outline, size: 18, color: Colors.blue),
-                      SizedBox(width: 8),
-                      Text('说明', style: TextStyle(fontWeight: FontWeight.bold)),
-                    ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.info_outline,
+                    size: 16, color: scheme.onSurfaceVariant),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    '选择性同步仅影响从服务端拉取的数据范围。本地所有书籍仍会推送到服务端。',
+                    style: OmnigramTypography.caption(context)
+                        .copyWith(color: scheme.onSurfaceVariant),
                   ),
-                  SizedBox(height: 8),
-                  Text('选择性同步仅影响从服务端拉取的数据范围。\n本地所有书籍仍会推送到服务端。', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ChipWrap extends StatelessWidget {
+  const _ChipWrap({
+    required this.labels,
+    required this.emptyHint,
+    required this.onDelete,
+  });
+
+  final List<String> labels;
+  final String emptyHint;
+  final ValueChanged<String> onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    if (labels.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        child: Text(
+          emptyHint,
+          style: OmnigramTypography.caption(context).copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Consumer(builder: (context, ref, _) {
+        final q = ref.watch(glassQualityControllerProvider).valueOrNull ??
+            GlassQuality.medium;
+        return Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: labels
+              .map((s) => GlassChip(
+                    quality: q,
+                    label: s,
+                    selected: true,
+                    onTap: () => onDelete(s),
+                  ))
+              .toList(),
+        );
+      }),
     );
   }
 }
