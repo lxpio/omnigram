@@ -15,7 +15,9 @@ class GlassTokens {
   // black just darkens it and makes glass cards disappear into the
   // background. Keep alpha low (~10-14 %) to preserve "still see
   // through" feel.
-  static const double tintLightAlpha = 0.55;
+  // Light mode: high-alpha white tint so the card surface reads as
+  // near-pure white over the slightly grey background.
+  static const double tintLightAlpha = 0.85;
   static const double tintDarkAlpha  = 0.12;
 
   static Color tintLight() => Colors.white.withValues(alpha: tintLightAlpha);

@@ -16,7 +16,11 @@ class OmnigramColors {
   static const Color cardBlue = Color(0xFFE3F2FD);
 
   // Surface colors
-  static const Color surfaceLight = Color(0xFFF7F6F3);
+  // surfaceLight: warm light grey — slightly darker than card tint so
+  // GlassSurface cards in light mode can sit visibly *whiter* than the
+  // page background (matches the iOS systemGroupedBackground / card
+  // pattern: light grey bg + near-white cards).
+  static const Color surfaceLight = Color(0xFFECEAE3);
   static const Color surfaceDark = Color(0xFF1A1A1A);
 
   // Reading-specific
