@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:omnigram/theme/liquid_glass/glass_surface.dart';
 import 'package:omnigram/theme/liquid_glass/glass_tokens.dart';
 import 'package:omnigram/theme/liquid_glass/performance_mode.dart';
+import 'package:omnigram/theme/typography.dart';
 import 'package:omnigram/widgets/settings/settings_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -27,11 +28,14 @@ class SettingsSection extends AbstractSettingsSection {
   }
 
   Widget buildSectionBody(BuildContext context) {
-    const scaleFactor = 0.5;
     final tileList = buildTileList();
+    final scheme = Theme.of(context).colorScheme;
 
     if (title == null) {
-      return tileList;
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: _glassWrap(tileList),
+      );
     }
 
     return Column(
@@ -39,33 +43,41 @@ class SettingsSection extends AbstractSettingsSection {
       children: [
         Padding(
           padding: const EdgeInsetsDirectional.only(
-            top: 24 * scaleFactor,
-            bottom: 10 * scaleFactor,
+            top: 22,
+            bottom: 10,
             start: 24,
             end: 24,
           ),
           child: DefaultTextStyle(
-            style: TextStyle(
-              color: Theme.of(context).primaryColor,
+            style: OmnigramTypography.titleMedium(context).copyWith(
+              color: scheme.onSurface,
+              fontWeight: FontWeight.w600,
             ),
             child: title!,
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Consumer(builder: (context, ref, _) {
-            final q = ref.watch(glassQualityControllerProvider).valueOrNull ??
-                GlassQuality.medium;
-            return GlassSurface(
-              quality: q,
-              borderRadius: GlassTokens.radiusBar,
-              blurSigma: GlassTokens.blurSigmaThin,
-              child: tileList,
-            );
-          }),
+          child: _glassWrap(tileList),
         ),
       ],
     );
+  }
+
+  Widget _glassWrap(Widget child) {
+    return Consumer(builder: (context, ref, _) {
+      final q = ref.watch(glassQualityControllerProvider).valueOrNull ??
+          GlassQuality.medium;
+      return GlassSurface(
+        quality: q,
+        borderRadius: GlassTokens.radiusBar,
+        blurSigma: GlassTokens.blurSigmaThin,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: child,
+        ),
+      );
+    });
   }
 
   Widget buildTileList() {
