@@ -18,6 +18,7 @@ import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -37,7 +38,9 @@ class SyncSetting extends ConsumerStatefulWidget {
 class _SyncSettingState extends ConsumerState<SyncSetting> {
   @override
   Widget build(BuildContext context) {
-    return settingsSections(
+    return Scaffold(
+      appBar: AppGlassAppBar(title: Text(L10n.of(context).settingsSync)),
+      body: settingsSections(
       sections: [
         SettingsSection(
           title: Text(L10n.of(context).restoreBackup),
@@ -71,6 +74,7 @@ class _SyncSettingState extends ConsumerState<SyncSetting> {
           ],
         ),
       ],
+    ),
     );
   }
 

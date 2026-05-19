@@ -6,6 +6,7 @@ import 'package:omnigram/widgets/settings/settings_title.dart';
 import 'package:omnigram/widgets/settings/simple_dialog.dart';
 import 'package:omnigram/widgets/settings/theme_mode.dart';
 import 'package:flutter/material.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
 import 'package:omnigram/widgets/settings/settings_section.dart';
@@ -55,7 +56,9 @@ class _AppearanceSettingState extends State<AppearanceSetting> {
             .keys
             .first;
 
-    return settingsSections(
+    return Scaffold(
+      appBar: AppGlassAppBar(title: Text(L10n.of(context).settingsAppearance)),
+      body: settingsSections(
       sections: [
         SettingsSection(
           title: Text(L10n.of(context).settingsAppearanceTheme),
@@ -269,6 +272,7 @@ class _AppearanceSettingState extends State<AppearanceSetting> {
           ],
         ),
       ],
+    ),
     );
   }
 }

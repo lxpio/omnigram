@@ -14,6 +14,7 @@ import 'package:omnigram/widgets/settings/settings_tile.dart';
 import 'package:omnigram/widgets/settings/settings_title.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 import 'package:omnigram/main.dart';
 
 class AdvancedSetting extends StatefulWidget {
@@ -44,7 +45,9 @@ class _AdvancedSettingState extends State<AdvancedSetting> {
 
   @override
   Widget build(BuildContext context) {
-    return settingsSections(
+    return Scaffold(
+      appBar: AppGlassAppBar(title: Text(L10n.of(context).settingsAdvanced)),
+      body: settingsSections(
       sections: [
         SettingsSection(
           title: Text(L10n.of(context).eBookProcess),
@@ -189,6 +192,7 @@ class _AdvancedSettingState extends State<AdvancedSetting> {
           ],
         ),
       ],
+    ),
     );
   }
 

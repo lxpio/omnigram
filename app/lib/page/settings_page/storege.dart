@@ -15,6 +15,7 @@ import 'package:omnigram/widgets/settings/settings_tile.dart';
 import 'package:omnigram/widgets/settings/settings_title.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class StorageSettings extends ConsumerStatefulWidget {
@@ -185,7 +186,9 @@ class _StorageSettingsState extends ConsumerState<StorageSettings>
       );
     }
 
-    return settingsSections(sections: [
+    return Scaffold(
+      appBar: AppGlassAppBar(title: Text(L10n.of(context).storage)),
+      body: settingsSections(sections: [
       SettingsSection(
         title: Text(L10n.of(context).storageInfo),
         tiles: [
@@ -437,7 +440,8 @@ class _StorageSettingsState extends ConsumerState<StorageSettings>
               ),
             ),
           ])
-    ]);
+    ]),
+    );
   }
 }
 

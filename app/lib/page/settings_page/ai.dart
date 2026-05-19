@@ -15,6 +15,7 @@ import 'package:omnigram/widgets/settings/settings_section.dart';
 import 'package:omnigram/widgets/settings/settings_tile.dart';
 import 'package:omnigram/widgets/settings/settings_title.dart';
 import 'package:flutter/material.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -210,7 +211,9 @@ class _AISettingsState extends ConsumerState<AISettings> {
       ),
     );
 
-    return settingsSections(sections: [
+    return Scaffold(
+      appBar: AppGlassAppBar(title: Text(L10n.of(context).settingsAi)),
+      body: settingsSections(sections: [
       SettingsSection(
         title: Text(L10n.of(context).settingsAiServices),
         tiles: [
@@ -333,7 +336,8 @@ class _AISettingsState extends ConsumerState<AISettings> {
               }),
         ],
       ),
-    ]);
+    ]),
+    );
   }
 
   // Build description showing current selected provider
