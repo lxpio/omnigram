@@ -6,7 +6,6 @@ import 'package:omnigram/dao/ai_cache.dart';
 import 'package:omnigram/models/book.dart';
 import 'package:omnigram/models/empty_state_data.dart';
 import 'package:omnigram/providers/book_list.dart';
-import 'package:omnigram/page/search/search_page.dart';
 import 'package:omnigram/providers/empty_state_provider.dart';
 import 'package:omnigram/service/book.dart';
 import 'package:omnigram/widgets/library/ai_recommendation_card.dart';
@@ -108,16 +107,6 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
                         ],
                       ),
                       const SizedBox(height: 16),
-                      SearchBar(
-                        hintText: L10n.of(context).librarySearchHint,
-                        leading: const Icon(Icons.search),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => const SearchPage()),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 24),
                       AiRecommendationCard(recentBookTitles: recentTitles),
                       const SizedBox(height: 16),
                       if (_topicGroups != null && _topicGroups!.isNotEmpty)
