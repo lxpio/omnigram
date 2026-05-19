@@ -9,9 +9,13 @@ void main() {
       expect(GlassTokens.blurSigmaThick, lessThan(GlassTokens.blurSigmaUltra));
     });
 
-    test('tint alpha never exceeds 0.7', () {
-      expect(GlassTokens.tintLightAlpha, lessThanOrEqualTo(0.7));
-      expect(GlassTokens.tintDarkAlpha, lessThanOrEqualTo(0.7));
+    test('tint alphas stay within visual budget', () {
+      // Light mode uses a high-alpha white tint so cards lift clearly
+      // above the warm-grey surface (iOS systemGroupedBackground feel).
+      // Dark mode uses a thin white overlay so cards lift over the dark
+      // surface without "blacking out" the page.
+      expect(GlassTokens.tintLightAlpha, inInclusiveRange(0.5, 0.95));
+      expect(GlassTokens.tintDarkAlpha, inInclusiveRange(0.05, 0.25));
     });
 
     test('radius scale is monotonic button < menu < bar < sheet', () {
