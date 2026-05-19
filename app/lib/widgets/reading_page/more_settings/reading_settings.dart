@@ -13,7 +13,9 @@ import 'package:omnigram/page/settings_page/subpage/fonts.dart';
 import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 import 'package:omnigram/widgets/common/anx_segmented_button.dart';
 import 'package:omnigram/widgets/settings/choice_picker_page.dart';
+import 'package:omnigram/widgets/settings/settings_section.dart';
 import 'package:omnigram/widgets/settings/settings_tile.dart';
+import 'package:omnigram/widgets/settings/slider_detail_page.dart';
 
 /// Reader preferences — top section under "阅读" on the settings page.
 ///
@@ -83,8 +85,9 @@ class _ReadingMoreSettingsState extends State<ReadingMoreSettings> {
           )
         : TranslationModeEnum.off;
 
-    return Column(
-      children: [
+    return SettingsSection(
+      title: Text(l10n.readingPageReading),
+      tiles: [
         SettingsTile.navigation(
           leading: const Icon(Icons.font_download_outlined),
           title: Text(l10n.downloadFonts),
@@ -209,7 +212,7 @@ class _ReadingMoreSettingsState extends State<ReadingMoreSettings> {
           onPressed: (_) => Navigator.push<void>(
             context,
             MaterialPageRoute(
-              builder: (_) => _SliderDetailPage(
+              builder: (_) => SliderDetailPage(
                 title: l10n.readingPageColumnThreshold,
                 helpText: l10n.readingPageColumnThresholdTip,
                 initial: bookStyle.columnThreshold,
@@ -294,82 +297,6 @@ class _ReadingMoreSettingsState extends State<ReadingMoreSettings> {
 // ---------------------------------------------------------------
 // Detail pages
 // ---------------------------------------------------------------
-
-class _SliderDetailPage extends StatefulWidget {
-  const _SliderDetailPage({
-    required this.title,
-    required this.initial,
-    required this.min,
-    required this.max,
-    required this.divisions,
-    required this.onChanged,
-    this.helpText,
-    this.unitSuffix = '',
-  });
-
-  final String title;
-  final String? helpText;
-  final double initial;
-  final double min;
-  final double max;
-  final int divisions;
-  final String unitSuffix;
-  final ValueChanged<double> onChanged;
-
-  @override
-  State<_SliderDetailPage> createState() => _SliderDetailPageState();
-}
-
-class _SliderDetailPageState extends State<_SliderDetailPage> {
-  late double _value = widget.initial;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Scaffold(
-      appBar: AppGlassAppBar(title: Text(widget.title)),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${_value.toInt()}${widget.unitSuffix}',
-                style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                      color: scheme.primary,
-                      fontWeight: FontWeight.w600,
-                    ),
-              ),
-              const SizedBox(height: 8),
-              Slider(
-                value: _value,
-                min: widget.min,
-                max: widget.max,
-                divisions: widget.divisions,
-                label: '${_value.toInt()}${widget.unitSuffix}',
-                onChanged: (v) {
-                  setState(() => _value = v);
-                  widget.onChanged(v);
-                },
-              ),
-              if (widget.helpText != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: Text(
-                    widget.helpText!,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class CodeHighlightDetailPage extends StatefulWidget {
   const CodeHighlightDetailPage({super.key, required this.onChanged});

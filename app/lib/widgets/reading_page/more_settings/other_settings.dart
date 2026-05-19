@@ -1,16 +1,21 @@
-import 'package:omnigram/utils/platform_utils.dart';
-
+import 'package:flutter/material.dart';
 import 'package:omnigram/config/shared_preference_provider.dart';
 import 'package:omnigram/enums/page_turn_mode.dart';
 import 'package:omnigram/l10n/generated/L10n.dart';
 import 'package:omnigram/page/reading_page.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
+import 'package:omnigram/utils/platform_utils.dart';
 import 'package:omnigram/utils/ui/status_bar.dart';
 import 'package:omnigram/widgets/common/anx_segmented_button.dart';
 import 'package:omnigram/widgets/reading_page/more_settings/page_turning/diagram.dart';
 import 'package:omnigram/widgets/reading_page/more_settings/page_turning/page_turn_dropdown.dart';
 import 'package:omnigram/widgets/reading_page/more_settings/page_turning/types_and_icons.dart';
-import 'package:flutter/material.dart';
+import 'package:omnigram/widgets/settings/settings_section.dart';
+import 'package:omnigram/widgets/settings/settings_tile.dart';
+import 'package:omnigram/widgets/settings/slider_detail_page.dart';
 
+/// Reader "其他" preferences, split into 3 Liquid Glass cards:
+///   翻页 / 屏幕 / AI 辅助.
 class OtherSettings extends StatefulWidget {
   const OtherSettings({super.key});
 
@@ -21,122 +26,216 @@ class OtherSettings extends StatefulWidget {
 class _OtherSettingsState extends State<OtherSettings> {
   @override
   Widget build(BuildContext context) {
-    Widget screenTimeout() {
-      return ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text(
-          L10n.of(context).readingPageScreenTimeout,
-          style: Theme.of(context).textTheme.titleMedium,
+    final l10n = L10n.of(context);
+    return Column(
+      children: [
+        // ---------------- 翻页 ----------------
+        SettingsSection(
+          title: const Text('翻页'),
+          tiles: [
+            SettingsTile.navigation(
+              leading: const Icon(Icons.swap_horiz_outlined),
+              title: Text(l10n.readingPagePageTurningMethod),
+              onPressed: (_) => Navigator.push<void>(
+                context,
+                MaterialPageRoute(builder: (_) => const _PageTurnDetailPage()),
+              ).then((_) => setState(() {})),
+            ),
+            if (AnxPlatform.isAndroid)
+              SettingsTile.switchTile(
+                leading: const Icon(Icons.add_box_outlined),
+                title: Text(l10n.readingPageVolumeKeyTurnPage),
+                initialValue: Prefs().volumeKeyTurnPage,
+                onToggle: (v) =>
+                    setState(() => Prefs().volumeKeyTurnPage = v),
+              ),
+            SettingsTile.switchTile(
+              leading: const Icon(Icons.swap_horizontal_circle_outlined),
+              title: Text(l10n.readingPageSwapPageTurnArea),
+              description: Text(l10n.readingPageSwapPageTurnAreaTips),
+              initialValue: Prefs().swapPageTurnArea,
+              onToggle: (v) =>
+                  setState(() => Prefs().swapPageTurnArea = v),
+            ),
+            SettingsTile.switchTile(
+              leading: const Icon(Icons.touch_app_outlined),
+              title: Text(l10n.readingPageShowMenuOnHover),
+              description: Text(l10n.readingPageShowMenuOnHoverTips),
+              initialValue: Prefs().showMenuOnHover,
+              onToggle: (v) => setState(() => Prefs().showMenuOnHover = v),
+            ),
+            if (AnxPlatform.isDesktop)
+              SettingsTile.switchTile(
+                leading: const Icon(Icons.keyboard_outlined),
+                title: Text(l10n.readingPageKeyboardShortcutTurnPage),
+                description:
+                    Text(l10n.readingPageKeyboardShortcutTurnPageTips),
+                initialValue: Prefs().keyboardShortcutTurnPage,
+                onToggle: (v) =>
+                    setState(() => Prefs().keyboardShortcutTurnPage = v),
+              ),
+          ],
         ),
-        leadingAndTrailingTextStyle: TextStyle(
-          fontSize: 16,
-          color: Theme.of(context).textTheme.bodyLarge!.color,
-        ),
-        subtitle: Row(
-          children: [
-            Text(L10n.of(context).commonMinutes(Prefs().awakeTime)),
-            Expanded(
-              child: Slider(
-                  min: 0,
-                  max: 60,
-                  label: Prefs().awakeTime.toString(),
-                  value: Prefs().awakeTime.toDouble(),
-                  onChangeEnd: (value) => setState(() {
-                        readingPageKey.currentState
-                            ?.setAwakeTimer(value.toInt());
-                      }),
-                  onChanged: (value) => setState(() {
-                        Prefs().awakeTime = value.toInt();
-                      })),
+        const SizedBox(height: 12),
+
+        // ---------------- 屏幕 ----------------
+        SettingsSection(
+          title: const Text('屏幕'),
+          tiles: [
+            SettingsTile.switchTile(
+              leading: const Icon(Icons.fullscreen),
+              title: Text(l10n.readingPageFullScreen),
+              initialValue: Prefs().hideStatusBar,
+              onToggle: (v) {
+                setState(() {
+                  Prefs().saveHideStatusBar(v);
+                  v ? hideStatusBar() : showStatusBar();
+                });
+              },
+            ),
+            SettingsTile.navigation(
+              leading: const Icon(Icons.timer_outlined),
+              title: Text(l10n.readingPageScreenTimeout),
+              value: Text(l10n.commonMinutes(Prefs().awakeTime)),
+              onPressed: (_) => Navigator.push<void>(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => SliderDetailPage(
+                    title: l10n.readingPageScreenTimeout,
+                    initial: Prefs().awakeTime.toDouble(),
+                    min: 0,
+                    max: 60,
+                    divisions: 60,
+                    unitSuffix: ' 分钟',
+                    onChanged: (v) {
+                      Prefs().awakeTime = v.toInt();
+                      readingPageKey.currentState
+                          ?.setAwakeTimer(v.toInt());
+                    },
+                  ),
+                ),
+              ).then((_) => setState(() {})),
+            ),
+            SettingsTile.switchTile(
+              leading: const Icon(Icons.brightness_auto_outlined),
+              title: Text(l10n.readingPageAutoAdjustReadingTheme),
+              description:
+                  Text(l10n.readingPageAutoAdjustReadingThemeTips),
+              initialValue: Prefs().autoAdjustReadingTheme,
+              onToggle: (v) =>
+                  setState(() => Prefs().autoAdjustReadingTheme = v),
             ),
           ],
         ),
-      );
-    }
+        const SizedBox(height: 12),
 
-    ListTile fullScreen() {
-      return ListTile(
-        contentPadding: EdgeInsets.zero,
-        trailing: Switch(
-            value: Prefs().hideStatusBar,
-            onChanged: (bool? value) => setState(() {
-                  Prefs().saveHideStatusBar(value!);
-                  if (value) {
-                    hideStatusBar();
-                  } else {
-                    showStatusBar();
-                  }
-                })),
-        title: Text(L10n.of(context).readingPageFullScreen),
-      );
-    }
+        // ---------------- AI 辅助 ----------------
+        SettingsSection(
+          title: const Text('AI 辅助'),
+          tiles: [
+            SettingsTile.switchTile(
+              leading: const Icon(Icons.translate_outlined),
+              title: Text(l10n.readingPageAutoTranslateSelection),
+              initialValue: Prefs().autoTranslateSelection,
+              onToggle: (v) =>
+                  setState(() => Prefs().autoTranslateSelection = v),
+            ),
+            SettingsTile.switchTile(
+              leading: const Icon(Icons.bookmark_outline),
+              title: Text(l10n.readingPageAutoMarkSelection),
+              description: Text(l10n.readingPageAutoMarkSelectionTips),
+              initialValue: Prefs().autoMarkSelection,
+              onToggle: (v) =>
+                  setState(() => Prefs().autoMarkSelection = v),
+            ),
+            SettingsTile.switchTile(
+              leading: const Icon(Icons.short_text),
+              title: Text(l10n.readingPageAutoSummaryPreviousContent),
+              initialValue: Prefs().autoSummaryPreviousContent,
+              onToggle: (v) =>
+                  setState(() => Prefs().autoSummaryPreviousContent = v),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
 
-    Widget pageTurningControl() {
-      int currentType = Prefs().pageTurningType;
-      ScrollController scrollController = ScrollController();
-      PageTurnMode currentMode = PageTurnMode.fromCode(Prefs().pageTurnMode);
+// ---------------------------------------------------------------
+// 翻页方式 detail page (segmented + diagram or 3×3 dropdown grid)
+// ---------------------------------------------------------------
 
-      return StatefulBuilder(builder: (
-        BuildContext context,
-        void Function(void Function()) setState,
-      ) {
-        void onTap(int index) {
-          setState(() {
-            Prefs().pageTurningType = index;
-            currentType = index;
-          });
-        }
+class _PageTurnDetailPage extends StatefulWidget {
+  const _PageTurnDetailPage();
 
-        void onModeChanged(Set<PageTurnMode> selected) {
-          setState(() {
-            currentMode = selected.first;
-            Prefs().pageTurnMode = selected.first.code;
-          });
-        }
+  @override
+  State<_PageTurnDetailPage> createState() => _PageTurnDetailPageState();
+}
 
-        void onCustomConfigChanged(int index, PageTurningType type) {
-          List<int> config = Prefs().customPageTurnConfig;
-          config[index] = type.index;
-          Prefs().customPageTurnConfig = config;
-        }
+class _PageTurnDetailPageState extends State<_PageTurnDetailPage> {
+  late int _currentType = Prefs().pageTurningType;
+  late PageTurnMode _currentMode = PageTurnMode.fromCode(Prefs().pageTurnMode);
+  final _scrollController = ScrollController();
 
-        return ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Row(
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onTypeTap(int index) {
+    setState(() {
+      Prefs().pageTurningType = index;
+      _currentType = index;
+    });
+  }
+
+  void _onModeChanged(Set<PageTurnMode> selected) {
+    setState(() {
+      _currentMode = selected.first;
+      Prefs().pageTurnMode = selected.first.code;
+    });
+  }
+
+  void _onCustomConfigChanged(int index, PageTurningType type) {
+    final config = Prefs().customPageTurnConfig;
+    config[index] = type.index;
+    Prefs().customPageTurnConfig = config;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
+    return Scaffold(
+      appBar: AppGlassAppBar(title: Text(l10n.readingPagePageTurningMethod)),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                L10n.of(context).readingPagePageTurningMethod,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const Spacer(),
               AnxSegmentedButton<PageTurnMode>(
                 segments: [
                   SegmentButtonItem(
                     value: PageTurnMode.simple,
-                    label: L10n.of(context).pageTurnModeSimple,
+                    label: l10n.pageTurnModeSimple,
                   ),
                   SegmentButtonItem(
                     value: PageTurnMode.custom,
-                    label: L10n.of(context).pageTurnModeCustom,
+                    label: l10n.pageTurnModeCustom,
                   ),
                 ],
-                selected: {currentMode},
-                onSelectionChanged: onModeChanged,
+                selected: {_currentMode},
+                onSelectionChanged: _onModeChanged,
               ),
-            ],
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 12),
-              if (currentMode == PageTurnMode.simple) ...[
+              const SizedBox(height: 16),
+              if (_currentMode == PageTurnMode.simple)
                 SizedBox(
-                  height: 120,
+                  height: 140,
                   child: ListView.builder(
-                    controller: scrollController,
+                    controller: _scrollController,
                     itemCount: pageTurningTypes.length,
-                    shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       return Padding(
@@ -145,195 +244,50 @@ class _OtherSettingsState extends State<OtherSettings> {
                           context,
                           pageTurningTypes[index],
                           pageTurningIcons[index],
-                          currentType == index,
-                          () {
-                            onTap(index);
-                          },
+                          _currentType == index,
+                          () => _onTypeTap(index),
                         ),
                       );
                     },
                   ),
-                ),
-              ] else ...[
-                Text(
-                  L10n.of(context).customPageTurnConfig,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
+                )
+              else ...[
+                Text(l10n.customPageTurnConfig,
+                    style: Theme.of(context).textTheme.bodyMedium),
                 const SizedBox(height: 8),
-                Column(
-                  children: [
-                    for (int row = 0; row < 3; row++)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Row(
-                          children: [
-                            for (int col = 0; col < 3; col++)
-                              Expanded(
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                    right: col < 2 ? 8.0 : 0,
-                                  ),
-                                  child: Builder(
-                                    builder: (context) {
-                                      int index = row * 3 + col;
-                                      List<int> config =
-                                          Prefs().customPageTurnConfig;
-                                      return PageTurnDropdown(
-                                        value: PageTurningType
-                                            .values[config[index]],
-                                        onChanged: (type) {
-                                          if (type != null) {
-                                            setState(() {
-                                              onCustomConfigChanged(
-                                                  index, type);
-                                            });
-                                          }
-                                        },
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                  ],
-                ),
+                for (int row = 0; row < 3; row++)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      children: [
+                        for (int col = 0; col < 3; col++)
+                          Expanded(
+                            child: Padding(
+                              padding:
+                                  EdgeInsets.only(right: col < 2 ? 8 : 0),
+                              child: Builder(builder: (context) {
+                                final index = row * 3 + col;
+                                final config = Prefs().customPageTurnConfig;
+                                return PageTurnDropdown(
+                                  value: PageTurningType
+                                      .values[config[index]],
+                                  onChanged: (type) {
+                                    if (type != null) {
+                                      setState(() =>
+                                          _onCustomConfigChanged(index, type));
+                                    }
+                                  },
+                                );
+                              }),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
               ],
             ],
           ),
-        );
-      });
-    }
-
-    Widget autoTranslateSelection() {
-      return ListTile(
-        contentPadding: EdgeInsets.zero,
-        trailing: Switch(
-          value: Prefs().autoTranslateSelection,
-          onChanged: (bool value) => setState(() {
-            Prefs().autoTranslateSelection = value;
-          }),
         ),
-        title: Text(L10n.of(context).readingPageAutoTranslateSelection),
-      );
-    }
-
-    ListTile autoSummaryPreviousContent() {
-      return ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text(L10n.of(context).readingPageAutoSummaryPreviousContent),
-        trailing: Switch(
-          value: Prefs().autoSummaryPreviousContent,
-          onChanged: (bool value) => setState(() {
-            Prefs().autoSummaryPreviousContent = value;
-          }),
-        ),
-      );
-    }
-
-    Widget autoMarkSelection() {
-      return ListTile(
-        contentPadding: EdgeInsets.zero,
-        trailing: Switch(
-          value: Prefs().autoMarkSelection,
-          onChanged: (bool value) => setState(() {
-            Prefs().autoMarkSelection = value;
-          }),
-        ),
-        title: Text(L10n.of(context).readingPageAutoMarkSelection),
-        subtitle: Text(L10n.of(context).readingPageAutoMarkSelectionTips),
-      );
-    }
-
-    ListTile autoAdjustReadingTheme() {
-      return ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text(L10n.of(context).readingPageAutoAdjustReadingTheme),
-        subtitle: Text(L10n.of(context).readingPageAutoAdjustReadingThemeTips),
-        trailing: Switch(
-          value: Prefs().autoAdjustReadingTheme,
-          onChanged: (bool value) => setState(() {
-            Prefs().autoAdjustReadingTheme = value;
-          }),
-        ),
-      );
-    }
-
-    ListTile keyboardTurnPage() {
-      return ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text(L10n.of(context).readingPageVolumeKeyTurnPage),
-        trailing: Switch(
-          value: Prefs().volumeKeyTurnPage,
-          onChanged: (bool value) => setState(() {
-            Prefs().volumeKeyTurnPage = value;
-          }),
-        ),
-      );
-    }
-
-    ListTile swapPageTurnArea() {
-      return ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text(L10n.of(context).readingPageSwapPageTurnArea),
-        subtitle: Text(L10n.of(context).readingPageSwapPageTurnAreaTips),
-        trailing: Switch(
-          value: Prefs().swapPageTurnArea,
-          onChanged: (bool value) => setState(() {
-            Prefs().swapPageTurnArea = value;
-          }),
-        ),
-      );
-    }
-
-    ListTile showMenuOnHover() {
-      return ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text(L10n.of(context).readingPageShowMenuOnHover),
-        subtitle: Text(L10n.of(context).readingPageShowMenuOnHoverTips),
-        trailing: Switch(
-          value: Prefs().showMenuOnHover,
-          onChanged: (bool value) => setState(() {
-            Prefs().showMenuOnHover = value;
-          }),
-        ),
-      );
-    }
-
-    ListTile keyboardShortcutTurnPage() {
-      return ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text(L10n.of(context).readingPageKeyboardShortcutTurnPage),
-        subtitle:
-            Text(L10n.of(context).readingPageKeyboardShortcutTurnPageTips),
-        trailing: Switch(
-          value: Prefs().keyboardShortcutTurnPage,
-          onChanged: (bool value) => setState(() {
-            Prefs().keyboardShortcutTurnPage = value;
-          }),
-        ),
-      );
-    }
-
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          fullScreen(),
-          if (AnxPlatform.isAndroid) keyboardTurnPage(),
-          // if (PageTurnMode.fromCode(Prefs().pageTurnMode) ==
-          //     PageTurnMode.simple)
-          swapPageTurnArea(),
-          showMenuOnHover(),
-          if (AnxPlatform.isDesktop) keyboardShortcutTurnPage(),
-          autoAdjustReadingTheme(),
-          autoTranslateSelection(),
-          autoMarkSelection(),
-          autoSummaryPreviousContent(),
-          screenTimeout(),
-          pageTurningControl(),
-        ],
       ),
     );
   }
