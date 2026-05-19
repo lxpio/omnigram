@@ -15,6 +15,11 @@ import 'package:omnigram/service/tts/tts_model.dart' as tts_model;
 import 'package:omnigram/service/tts/tts_service.dart' as tts_svc;
 import 'package:omnigram/service/tts/voice_id.dart';
 import 'package:omnigram/utils/log/common.dart';
+import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
+import 'package:omnigram/theme/liquid_glass/glass_surface.dart';
+import 'package:omnigram/theme/liquid_glass/glass_tokens.dart';
+import 'package:omnigram/theme/liquid_glass/performance_mode.dart';
+import 'package:omnigram/theme/typography.dart';
 import 'package:omnigram/widgets/settings/service_config_form.dart';
 import 'package:omnigram/widgets/settings/voice_section.dart';
 import 'package:flutter/material.dart';
@@ -178,47 +183,65 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings> {
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
     final voicesAsync = ref.watch(allVoicesGroupedProvider);
+    final scheme = Theme.of(context).colorScheme;
 
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        // 1. Preview
-        _buildPreviewSection(l10n),
-        const SizedBox(height: 16),
-
-        // 2. Current voice
-        _buildCurrentVoiceBanner(l10n),
-        const SizedBox(height: 24),
-
-        // 3. Voice sections
-        Text(l10n.ttsSelectVoice,
-            style: Theme.of(context).textTheme.titleLarge),
-        const SizedBox(height: 8),
-        voicesAsync.when(
-          data: (groups) => _buildVoiceSections(groups, l10n),
-          loading: () =>
-              const Center(child: CircularProgressIndicator()),
-          error: (e, _) => Text('Error: $e'),
-        ),
-
-        // Omnigram Server status banner — guides user to log in or enable TTS.
-        const SizedBox(height: 16),
-        _buildOmnigramServerStatusBanner(),
-
-        // Adaptive routing surfaces — only meaningful for server-backed voices.
-        const SizedBox(height: 16),
-        _buildCapabilityCard(l10n),
-        const SizedBox(height: 12),
-        _buildDefaultModeSegmented(l10n),
-        const SizedBox(height: 12),
-        _buildExperimentalToggle(l10n),
-
-        const SizedBox(height: 24),
-
-        // 4. Advanced settings
-        _buildAdvancedSection(l10n),
-      ],
+    return Scaffold(
+      appBar: AppGlassAppBar(title: Text(l10n.settingsNarrate)),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        children: [
+          _buildPreviewSection(l10n),
+          const SizedBox(height: 16),
+          _buildCurrentVoiceBanner(l10n),
+          const SizedBox(height: 24),
+          Padding(
+            padding: const EdgeInsets.only(left: 8, bottom: 8),
+            child: Text(
+              l10n.ttsSelectVoice,
+              style: OmnigramTypography.titleMedium(context).copyWith(
+                color: scheme.onSurface,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          voicesAsync.when(
+            data: (groups) => _buildVoiceSections(groups, l10n),
+            loading: () =>
+                const Center(child: CircularProgressIndicator()),
+            error: (e, _) => Text('Error: $e'),
+          ),
+          const SizedBox(height: 16),
+          _buildOmnigramServerStatusBanner(),
+          const SizedBox(height: 16),
+          _buildCapabilityCard(l10n),
+          const SizedBox(height: 12),
+          _buildDefaultModeSegmented(l10n),
+          const SizedBox(height: 12),
+          _buildExperimentalToggle(l10n),
+          const SizedBox(height: 24),
+          _buildAdvancedSection(l10n),
+          const SizedBox(height: 24),
+        ],
+      ),
     );
+  }
+
+  /// Glass-wrap helper used by the section cards. Used to be `Card(...)`
+  /// throughout this page; converted in P4b so the cards match the
+  /// Liquid Glass chrome instead of Material surface tint.
+  Widget _glassCard({required Widget child, Color? tint}) {
+    return Consumer(builder: (context, ref, _) {
+      final q = ref.watch(glassQualityControllerProvider).valueOrNull ??
+          GlassQuality.medium;
+      return GlassSurface(
+        quality: q,
+        borderRadius: GlassTokens.radiusBar,
+        blurSigma: GlassTokens.blurSigmaThin,
+        child: tint != null
+            ? Container(color: tint, child: child)
+            : child,
+      );
+    });
   }
 
   Widget _buildOmnigramServerStatusBanner() {
@@ -231,8 +254,8 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings> {
           case OmnigramServerTtsStatus.available:
             return const SizedBox.shrink();
           case OmnigramServerTtsStatus.notLoggedIn:
-            return Card(
-              color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.4),
+            return _glassCard(
+              tint: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
               child: ListTile(
                 leading: const Icon(Icons.cloud_off),
                 title: const Text('Omnigram Server'),
@@ -246,8 +269,8 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings> {
               ),
             );
           case OmnigramServerTtsStatus.serviceUnavailable:
-            return Card(
-              color: Theme.of(context).colorScheme.errorContainer.withValues(alpha: 0.4),
+            return _glassCard(
+              tint: Theme.of(context).colorScheme.errorContainer.withValues(alpha: 0.3),
               child: ListTile(
                 leading: const Icon(Icons.warning_amber_rounded),
                 title: const Text('Omnigram Server 未启用 TTS'),
@@ -268,7 +291,7 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings> {
   }
 
   Widget _buildPreviewSection(L10n l10n) {
-    return Card(
+    return _glassCard(
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
@@ -298,7 +321,7 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings> {
 
   Widget _buildCurrentVoiceBanner(L10n l10n) {
     if (_selectedFullId.isEmpty) {
-      return Card(
+      return _glassCard(
         child: ListTile(
           leading: const Icon(Icons.volume_off),
           title: Text(l10n.ttsNoVoiceSelected),
@@ -306,11 +329,8 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings> {
       );
     }
     final parsed = VoiceFullId.parse(_selectedFullId);
-    return Card(
-      color: Theme.of(context)
-          .colorScheme
-          .primaryContainer
-          .withValues(alpha: 0.3),
+    return _glassCard(
+      tint: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.25),
       child: ListTile(
         leading: const Icon(Icons.volume_up),
         title: Text(l10n.ttsCurrentVoice),
@@ -644,7 +664,7 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings> {
     final cap = ref.watch(ttsCapabilityCacheProvider)['$serverUrl::$voiceFullId'];
     final canProbe = serverUrl.isNotEmpty && voiceFullId.startsWith('server:');
 
-    return Card(
+    return _glassCard(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -688,7 +708,7 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings> {
 
   Widget _buildDefaultModeSegmented(L10n l10n) {
     final mode = TtsDefaultModeCodec.fromPref(Prefs().ttsDefaultMode);
-    return Card(
+    return _glassCard(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -716,7 +736,7 @@ class _NarrateSettingsState extends ConsumerState<NarrateSettings> {
   }
 
   Widget _buildExperimentalToggle(L10n l10n) {
-    return Card(
+    return _glassCard(
       child: SwitchListTile(
         title: Text(l10n.ttsExperimentalAdaptiveTitle),
         subtitle: Text(l10n.ttsExperimentalAdaptiveSubtitle),
