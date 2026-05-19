@@ -9,11 +9,17 @@ class GlassTokens {
   static const double blurSigmaUltra = 40.0;   // full-screen modal scrim
 
   // —— Tint alphas ——
+  // Light mode: white overlay simulates the bright frosted glass face.
+  // Dark mode: a thin WHITE overlay (NOT black) — the spec mimics
+  // light passing through frosted glass; tinting a dark surface with
+  // black just darkens it and makes glass cards disappear into the
+  // background. Keep alpha low (~10-14 %) to preserve "still see
+  // through" feel.
   static const double tintLightAlpha = 0.55;
-  static const double tintDarkAlpha  = 0.45;
+  static const double tintDarkAlpha  = 0.12;
 
   static Color tintLight() => Colors.white.withValues(alpha: tintLightAlpha);
-  static Color tintDark()  => Colors.black.withValues(alpha: tintDarkAlpha);
+  static Color tintDark()  => Colors.white.withValues(alpha: tintDarkAlpha);
 
   // —— Edge highlight ——
   static const double highlightWidth = 0.8;
