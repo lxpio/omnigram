@@ -22,6 +22,8 @@ Omnigram is an **AI-native, self-hosted book library and reading service**. Depl
 | `docs/superpowers/specs/2026-03-22-ambient-ai-reading-review.md` | External review of the design spec |
 | `docs/superpowers/plans/2026-03-22-sprint1-foundation-and-core-reading.md` | Sprint 1 implementation plan |
 | `docs/superpowers/plans/2026-03-22-sprint2-ai-pipeline.md` | Sprint 2 implementation plan |
+| `docs/superpowers/specs/2026-05-18-liquid-glass-ui-design.md` | Liquid Glass UI spec (iOS 26 alignment, all platforms) |
+| `docs/superpowers/plans/2026-05-18-liquid-glass-ui-implementation.md` | Liquid Glass implementation plan (19 tasks) |
 | `docs/discussions/005-ai-era-ebook-demand.md` | Strategic analysis: AI era ebook demand |
 
 ## Progress Tracking (IMPORTANT)
@@ -165,6 +167,7 @@ make app-build-apk  # Build APK
 - **Localization:** Flutter gen-l10n (ARB files in `l10n/`)
 - **EPUB engine:** InAppWebView + foliate-js (`assets/foliate-js/`)
 - **Design system:** `theme/` — colors, typography, theme tokens
+- **Liquid Glass:** `theme/liquid_glass/` — iOS 26 glass primitives (GlassSurface / GlassButton / GlassIconButton / GlassActionPill / GlassAppBar / AppGlassAppBar / GlassTabBar / GlassChip / GlassSheet / GlassMenu) + `performance_mode.dart` (auto-tier + reader step-down)
 
 ### Server API
 
@@ -239,10 +242,9 @@ func handlerName(c *gin.Context) {
 - **Sprint 1:** Foundation + Core Reading (Layer 0 + 1) — new 4-tab UI, design system, all pages
 - **Sprint 2:** AI Pipeline (Layer 2) — TARS personality, ambient pipeline, context bar, memory bridge, post-import AI, degradation
 - **Sprint 3:** Ambient AI (Layer 3) — inline glossary, bookshelf AI recommendation, insights AI narrative
-
-### In Progress
-- **Sprint 4:** Deep AI (Layer 4) — companion panel, margin notes, semantic search, TTS, knowledge network
-
-### Planned
 - **Sprint 4:** Deep AI (Layer 4) — companion panel, margin notes, semantic search, TTS, knowledge network
 - **Sprint 5:** Advanced (Layer 5) — cross-book connections, stealth reading mode
+- **Layer 6 (2026-05):** Liquid Glass UI — iOS 26 alignment across all platforms (glass tokens, performance tiers, chrome surfaces, reader auto step-down, contextual action pills)
+
+### Planned
+- Multi-device QA pass (T18 — manual real-device validation across iOS / Android / macOS / Windows)
