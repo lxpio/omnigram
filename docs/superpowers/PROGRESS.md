@@ -20,6 +20,7 @@
 | Layer 4.0 | 架构迁移（PG + 去 WebDAV + AI 缓存） | ✅ 完成 | Sprint 4 Phase 0 |
 | Layer 4.1 | 深度 AI（伴侣面板 + 边注 + 知识网络 + 语义搜索） | ✅ 完成 | Sprint 4 Phase 1 |
 | Layer 5 | 高级体验 | ✅ 完成 | Sprint 5 |
+| Layer 6 | Liquid Glass UI（iOS 26 对齐） | ✅ 完成（待真机 QA） | 单独 Sprint |
 
 ---
 
@@ -338,6 +339,43 @@
 
 ---
 
+## Layer 6 — Liquid Glass UI ✅
+
+> 2026-05-18 ~ 2026-05-19 · 17/19 task 完成（T18 真机 QA 待跑）
+>
+> 设计：`specs/2026-05-18-liquid-glass-ui-design.md` · 计划：`plans/2026-05-18-liquid-glass-ui-implementation.md`
+>
+> 全平台统一 iOS 26 Liquid Glass 风格（Flutter 自实现，不调原生）。Boundary B：chrome / settings 分组 / library chips / reader 抽屉走玻璃；内容卡片保留 FlexColorScheme 暖色。Reader 自动降一档画质保翻页流畅。
+
+| 功能 | 设计文档章节 | 状态 | 关键文件 | 提交 |
+|------|-------------|------|----------|------|
+| **基础 token + 性能层** | §3 | ✅ | `theme/liquid_glass/glass_tokens.dart`, `performance_mode.dart` | `c8dcaf0e`, `353645f6` |
+| ├─ Pure `resolveAutoQuality` (device_info_plus) | §3.2 | ✅ | `performance_mode.dart` | `353645f6` |
+| ├─ Reader scoped step-down provider | §3.3 | ✅ | `readerGlassQualityProvider` | `353645f6` |
+| └─ Settings 视觉质量覆盖（持久化） | §3.4 | ✅ | `page/settings_page/reading.dart` | `3ace3f69` |
+| **核心原语** | §4 | ✅ | | |
+| ├─ GlassSurface (ClipPath + BackdropFilter + tint + highlight) | §4.1 | ✅ | `glass_surface.dart` | `fbc46a6b` |
+| ├─ GlassButton (Morph Press + 触觉) | §4.2 | ✅ | `glass_button.dart` | `f74f164a` |
+| ├─ GlassIconButton (圆形 chrome 按钮) | §4.2 | ✅ | `glass_icon_button.dart` | `4d104bcf` |
+| ├─ GlassActionPill (上下文胶囊 + icon-only) | §4.2 | ✅ | `glass_action_pill.dart` | `ea5688a3`, `b9efde08` |
+| ├─ GlassAppBar (Scroll-edge fade) | §4.3 | ✅ | `glass_app_bar.dart` | `a15a673c` |
+| ├─ AppGlassAppBar (drop-in 包装) | §4.3 | ✅ | `app_glass_app_bar.dart` | `42d8a964` |
+| ├─ GlassTabBar (Collapse-to-capsule + 滑动 indicator) | §4.4 | ✅ | `glass_tab_bar.dart` | `b9efde08` |
+| └─ GlassChip / Sheet / Menu 工具 | §4.5 | ✅ | `glass_chip.dart`, `glass_sheet.dart`, `glass_menu.dart` | `c7c5b41f` |
+| **平台字体** | §5 | ✅ | `theme/typography.dart` 接 SF Pro / Roboto Flex / Segoe UI Variable | `34a6fc39` |
+| **底部导航迁移** | §6.1 | ✅ | `page/omnigram_home.dart` | `a4c49d73`, `ea5688a3`, `b9efde08` |
+| ├─ 4 tab 图标 + 文字 + 滑动 indicator | §6.1 | ✅ | `glass_tab_bar.dart` | `b9efde08` |
+| └─ 每 tab 上下文 action pill（继续阅读 / 搜索 / 记录想法 / 阅读伴侣） | §6.1 | ✅ | `omnigram_home.dart#_trailingForTab` | `b9efde08` |
+| **Settings 子页 AppBar 迁移**（13 个） | §6.2 | ✅ | `lib/page/settings_page/**` 全部走 `AppGlassAppBar` | `42d8a964` |
+| **Settings 分组卡片** | §6.3 | ✅ | `widgets/settings/settings_section.dart` → GlassSurface | `e5315ff2` |
+| **Reader chrome 玻璃化** | §6.5 | ✅ | `widgets/reader/reader_app_bar.dart`, `reader_bottom_bar.dart` (auto step-down) | `35690a08` |
+| **全局 Modal squircle 化** | §6.6 | ✅ | `theme/omnigram_theme.dart` Dialog/BottomSheet/PopupMenu 应用 ContinuousRectangleBorder | `5a239af2` |
+| ~~Library filter chips → GlassChip~~ | §6.4 | ⊘ N/A | 新 Library 页无 filter chips，组件保留备用 | — |
+| ~~AnxButton 玻璃化~~ | §6.7 | ⊘ 按 spec 跳过 | 内容层保留暖色，chrome 已由 GlassButton 等覆盖 | — |
+| 真机多平台 QA | §7 | ⏳ 待办 | iOS / Android / macOS / Windows 实机视觉 + 性能 | T18 |
+
+---
+
 ## Sprint 8 — TTS 自适应路由（Plan 1 of 2）✅
 
 > 设计：`specs/2026-04-27-tts-adaptive-degradation-design.md` · 计划：`plans/2026-04-27-tts-adaptive-routing.md`
@@ -543,6 +581,7 @@
 
 | 日期 | 更新内容 |
 |------|---------|
+| 2026-05-19 | **Layer 6 · Liquid Glass UI 对齐 iOS 26** ✅：全平台单一 Flutter 实现，不调原生。Boundary B 切片（chrome / settings 分组 / reader 抽屉走玻璃，内容卡保留暖色 FlexColorScheme）。新增 `theme/liquid_glass/` 12 个原语：tokens / GlassSurface / GlassButton / GlassIconButton / GlassActionPill / GlassAppBar / AppGlassAppBar / GlassTabBar / GlassChip / GlassSheet / GlassMenu / performance_mode（auto-tier + reader scoped step-down）。底部导航 GlassTabBar：4 tab 图标+小字 + 滑动 indicator + 每 tab 上下文 action pill（▶ 当前书 / 🔍 搜索 / 📝 记录想法 / 🙂 阅读伴侣）。13 个设置子页 AppBar 一行换成 AppGlassAppBar。Settings 分组卡片 FilledContainer → GlassSurface。Reader 顶/底栏接 readerGlassQualityProvider 自动降一档画质。全局 Dialog / BottomSheet / PopupMenu 应用 iOS squircle (ContinuousRectangleBorder)。Setting 页加视觉质量手动覆盖（auto/high/medium/low 持久化）。平台字体接系统：SF Pro / Roboto Flex / Segoe UI Variable。Morph press（AnimatedScale 0.96 + HapticFeedback）+ tab collapse-to-capsule + scroll-edge fade 三个 iOS 26 行为。26 个 widget 单测全绿。剩 T18 真机多平台 QA。 |
 | 2026-05-06 | **Sprint 8 · TTS 本地优先重构** ✅：章节列表 / 标题 / 正文不再依赖服务器，全部从本地 EPUB 读出。新增 Dart `sentence_splitter.dart`（Go 镜像，13 单测）+ 轻量 EPUB 解析器（archive + html，无新依赖）+ `localChaptersProvider`（keepAlive 缓存）。引入 `SentenceQueueSource` 通用逐句驱动器，LocalFallback / LiveServer 重写为薄壳，PregenServer 自带 sentenceIndex 流。`TtsAudioSource` 接口加 `sentenceIndexStream` + `seekToSentence` + `setSpeed`，三种模式统一走 sentence-driven 高亮。`TtsHandler` 加 `NowPlayingBinding` 桥接，锁屏 / 控制中心 / 蓝牙耳机 transport 接到 Now-Playing session（之前只接老 in-reader TTS）。播放速度真接到 audioplayers `setPlaybackRate`（之前只更新 state）。Now-Playing 章节抽屉用 session 权威 `chapterTitles`，server 状态点叠加。遗留：KI-7/8/9（splitter parity CI / 缓存清理 / 句间 gap） |
 | 2026-04-27 | **Sprint 8 · TTS Now-Playing Plan 2** ✅：`TtsPlayerSession` 编排器（章节边界自动升档、SSE 升档信号、句级位置追踪、二分查找句索引），`ttsPlayerSessionController` Riverpod 单例，`MiniPlayerBar` 应用全局常驻于底部导航之上，全屏 `NowPlayingPage`（封面 + 三句滚动 + 完整 transport + 速度 0.75/1.0/1.25/1.5/2.0 + 睡眠 10/15/30/45/60min），`ServerStatusPill` 周边可见（默认状态隐藏，本地兜底显示）+ Pill detail sheet plain-language 解释，`AudiobookPage` 章节点击改为内置播放器（取代下载+外部播放），i18n 全覆盖 14 keys。已知 limitation：阅读器章节抽屉的状态点未做（href↔index 映射缺失，留独立任务）。 |
 | 2026-04-27 | **Sprint 8 · TTS 自适应路由 Plan 1** ✅：登录后静默 `/tts/probe` 体检（GREEN/YELLOW/RED/NA），缓存 7 天；`TtsRouter` 纯函数决策矩阵（17 单测）；三种 `TtsAudioSource`（LiveServer / PregenServer / LocalFallback sherpa-onnx）；`ttsPlaybackMode` Provider 综合 capability + chapter status + override；设置页加"服务器声音体检"卡 + 默认模式 segmented + 实验开关；`AudiobookPage` 章节状态点 ●/◐/○/◌；`experimentalTtsAdaptiveRouting` 灰度 flag（新装 ON / 升级 OFF）。Plan 2（Now-Playing UX）待开工。 |
