@@ -17,6 +17,7 @@ class SettingsTile extends AbstractSettingsTile {
     required this.title,
     this.description,
     this.onPressed,
+    this.onLongPress,
     this.enabled = true,
     super.key,
   }) {
@@ -33,6 +34,7 @@ class SettingsTile extends AbstractSettingsTile {
     required this.title,
     this.description,
     this.onPressed,
+    this.onLongPress,
     this.enabled = true,
     super.key,
   }) {
@@ -51,6 +53,7 @@ class SettingsTile extends AbstractSettingsTile {
     required this.title,
     this.description,
     this.onPressed,
+    this.onLongPress,
     this.enabled = true,
     super.key,
   }) {
@@ -73,6 +76,9 @@ class SettingsTile extends AbstractSettingsTile {
   /// A function that is called by tap on a tile
   final Function(BuildContext context)? onPressed;
 
+  /// Long-press handler. Used by the stealth-mode entry on "About".
+  final VoidCallback? onLongPress;
+
   late final Color? activeSwitchColor;
   late final Widget? value;
   late final Function(bool value)? onToggle;
@@ -85,6 +91,7 @@ class SettingsTile extends AbstractSettingsTile {
     return AndroidSettingsTile(
       description: description,
       onPressed: onPressed,
+      onLongPress: onLongPress,
       onToggle: onToggle,
       tileType: tileType,
       value: value,
@@ -105,6 +112,7 @@ class AndroidSettingsTile extends StatelessWidget {
     required this.title,
     required this.description,
     required this.onPressed,
+    required this.onLongPress,
     required this.onToggle,
     required this.value,
     required this.initialValue,
@@ -119,6 +127,7 @@ class AndroidSettingsTile extends StatelessWidget {
   final Widget? title;
   final Widget? description;
   final Function(BuildContext context)? onPressed;
+  final VoidCallback? onLongPress;
   final Function(bool value)? onToggle;
   final Widget? value;
   final bool initialValue;
@@ -139,6 +148,7 @@ class AndroidSettingsTile extends StatelessWidget {
         trailing: trailing,
         initialValue: initialValue,
         onPressed: onPressed,
+        onLongPress: onLongPress,
         onToggle: onToggle,
         enabled: enabled,
         activeSwitchColor: activeSwitchColor,
@@ -157,6 +167,7 @@ class _GlassSettingsRow extends StatefulWidget {
     required this.trailing,
     required this.initialValue,
     required this.onPressed,
+    required this.onLongPress,
     required this.onToggle,
     required this.enabled,
     required this.activeSwitchColor,
@@ -170,6 +181,7 @@ class _GlassSettingsRow extends StatefulWidget {
   final Widget? trailing;
   final bool initialValue;
   final Function(BuildContext)? onPressed;
+  final VoidCallback? onLongPress;
   final Function(bool)? onToggle;
   final bool enabled;
   final Color? activeSwitchColor;
@@ -268,12 +280,19 @@ class _GlassSettingsRowState extends State<_GlassSettingsRow> {
       ),
     );
 
+    final hasGesture = _interactive || widget.onLongPress != null;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTapDown: _interactive ? (_) => setState(() => _pressed = true) : null,
-      onTapUp: _interactive ? (_) => setState(() => _pressed = false) : null,
-      onTapCancel: _interactive ? () => setState(() => _pressed = false) : null,
+      onTapDown: hasGesture ? (_) => setState(() => _pressed = true) : null,
+      onTapUp: hasGesture ? (_) => setState(() => _pressed = false) : null,
+      onTapCancel: hasGesture ? () => setState(() => _pressed = false) : null,
       onTap: _interactive ? _handleTap : null,
+      onLongPress: widget.onLongPress == null
+          ? null
+          : () {
+              HapticFeedback.mediumImpact();
+              widget.onLongPress!();
+            },
       child: AnimatedScale(
         scale: _pressed ? 0.985 : 1.0,
         duration: const Duration(milliseconds: 120),

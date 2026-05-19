@@ -12,7 +12,7 @@ import 'package:omnigram/page/reading_page.dart';
 import 'package:omnigram/page/settings_page/subpage/fonts.dart';
 import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 import 'package:omnigram/widgets/common/anx_segmented_button.dart';
-import 'package:omnigram/widgets/reading_page/more_settings/choice_picker_page.dart';
+import 'package:omnigram/widgets/settings/choice_picker_page.dart';
 import 'package:omnigram/widgets/settings/settings_tile.dart';
 
 /// Reader preferences — top section under "阅读" on the settings page.
