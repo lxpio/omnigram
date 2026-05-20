@@ -757,12 +757,14 @@ class ReadingPageState extends ConsumerState<ReadingPage> with WidgetsBindingObs
       resizeToAvoidBottomInset: false,
       body: Hero(
         tag: widget.heroTag ?? (Prefs().openBookAnimation ? _book.coverFullPath : heroTag),
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Scaffold(
+        // Note: previously wrapped in FittedBox(scaleDown) + SizedBox(screenSize)
+        // — an old anx_reader Hero workaround. That wrapper caused a subtle
+        // horizontal offset (FittedBox centers its child; any mismatch between
+        // MediaQuery.size and the available parent width — safe-area, gesture
+        // nav transitions, post-Hero residual rect — produced visible side
+        // margins). Flutter's Hero handles size tweening natively; remove
+        // the wrapper.
+        child: Scaffold(
               key: _scaffoldKey,
               resizeToAvoidBottomInset: false,
               drawer: PointerInterceptor(
@@ -904,8 +906,6 @@ class ReadingPageState extends ConsumerState<ReadingPage> with WidgetsBindingObs
               ),
             ),
           ),
-        ),
-      ),
     );
   }
 }
