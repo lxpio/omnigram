@@ -1,4 +1,4 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:flex_color_scheme/flex_color_patchedScheme.dart';
 import 'package:flutter/material.dart';
 import 'colors.dart';
 import 'liquid_glass/glass_tokens.dart';
@@ -70,7 +70,24 @@ class OmnigramTheme {
       borderRadius: BorderRadius.circular(GlassTokens.radiusBar * 2.2),
     );
 
+    // FlexColorScheme derives its own scaffoldBackground from the seed and
+    // ignores the `surface:` override on the input ColorScheme — in light
+    // mode it lands near-white, which collapses contrast against the glass
+    // cards (also near-white because tintLightAlpha is 0.85). Pin scaffold
+    // and the low surface containers back to our warm-grey palette so the
+    // iOS systemGroupedBackground pattern (grey page + white cards) holds.
+    final isLight = base.brightness == Brightness.light;
+    final pageBg = isLight ? OmnigramColors.surfaceLight : OmnigramColors.surfaceDark;
+    final patchedScheme = patchedScheme.copyWith(
+      surface: pageBg,
+      surfaceContainerLowest: pageBg,
+      surfaceContainerLow: pageBg,
+    );
+
     return base.copyWith(
+      scaffoldBackgroundColor: pageBg,
+      canvasColor: pageBg,
+      colorScheme: patchedScheme,
       bottomSheetTheme: base.bottomSheetTheme.copyWith(shape: squircleSheet),
       dialogTheme: base.dialogTheme.copyWith(shape: squircleDialog),
       popupMenuTheme: base.popupMenuTheme.copyWith(shape: squircleDialog),
@@ -78,12 +95,12 @@ class OmnigramTheme {
       // Thin primary-tinted track, solid thumb, soft overlay.
       sliderTheme: base.sliderTheme.copyWith(
         trackHeight: 4,
-        activeTrackColor: scheme.primary,
-        inactiveTrackColor: scheme.surfaceContainerHighest,
-        thumbColor: scheme.primary,
-        overlayColor: scheme.primary.withValues(alpha: 0.12),
-        valueIndicatorColor: scheme.primary,
-        valueIndicatorTextStyle: TextStyle(color: scheme.onPrimary),
+        activeTrackColor: patchedScheme.primary,
+        inactiveTrackColor: patchedScheme.surfaceContainerHighest,
+        thumbColor: patchedScheme.primary,
+        overlayColor: patchedScheme.primary.withValues(alpha: 0.12),
+        valueIndicatorColor: patchedScheme.primary,
+        valueIndicatorTextStyle: TextStyle(color: patchedScheme.onPrimary),
       ),
 
       // iOS-leaning Material Switch fallback (CupertinoSwitch is used
@@ -94,8 +111,8 @@ class OmnigramTheme {
           (_) => Colors.white,
         ),
         trackColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) return scheme.primary;
-          return scheme.surfaceContainerHighest;
+          if (states.contains(WidgetState.selected)) return patchedScheme.primary;
+          return patchedScheme.surfaceContainerHighest;
         }),
         trackOutlineColor:
             WidgetStateProperty.all(Colors.transparent),
@@ -106,7 +123,7 @@ class OmnigramTheme {
         menuStyle: MenuStyle(
           shape: WidgetStateProperty.all(squircleDialog),
           backgroundColor:
-              WidgetStateProperty.all(scheme.surfaceContainer),
+              WidgetStateProperty.all(patchedScheme.surfaceContainer),
           elevation: WidgetStateProperty.all(2),
         ),
       ),
@@ -114,7 +131,7 @@ class OmnigramTheme {
       // 0.5px hair-line divider in outlineVariant @ 30 % alpha. Used by
       // _GlassSettingsRow between tiles and by manual `Divider()` calls.
       dividerTheme: base.dividerTheme.copyWith(
-        color: scheme.outlineVariant.withValues(alpha: 0.3),
+        color: patchedScheme.outlineVariant.withValues(alpha: 0.3),
         thickness: 0.5,
         space: 0.5,
       ),
