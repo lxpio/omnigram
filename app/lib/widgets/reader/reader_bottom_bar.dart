@@ -60,6 +60,7 @@ class ReaderBottomBar extends ConsumerWidget {
         quality: quality,
         borderRadius: 0,
         blurSigma: GlassTokens.blurSigmaThick,
+        chrome: true,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
           child: Column(

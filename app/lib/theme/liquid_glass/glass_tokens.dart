@@ -23,6 +23,20 @@ class GlassTokens {
   static Color tintLight() => Colors.white.withValues(alpha: tintLightAlpha);
   static Color tintDark()  => Colors.white.withValues(alpha: tintDarkAlpha);
 
+  // —— Chrome tint alphas ——
+  // For small floating glass blobs (GlassIconButton, action pills,
+  // floating toolbars) where we WANT the backdrop blur to show through
+  // — the iOS "frosted jelly" feel. Much lower than the surface tint
+  // used by settings cards / app bar containers (where opacity over
+  // the page is the point).
+  static const double chromeTintLightAlpha = 0.30;
+  static const double chromeTintDarkAlpha  = 0.18;
+
+  static Color chromeTintLight() =>
+      Colors.white.withValues(alpha: chromeTintLightAlpha);
+  static Color chromeTintDark() =>
+      Colors.white.withValues(alpha: chromeTintDarkAlpha);
+
   // —— Edge highlight ——
   static const double highlightWidth = 0.8;
   static Color highlightLight = Colors.white.withValues(alpha: 0.6);

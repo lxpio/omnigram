@@ -42,12 +42,18 @@ class _GlassIconButtonState extends State<GlassIconButton> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final tint = isDark ? GlassTokens.tintDark() : GlassTokens.tintLight();
+    // Use the LIGHTER chrome tint here — a floating circular button is
+    // meant to read as frosted jelly with the page bleeding through, not
+    // as an opaque card. (Settings cards keep the heavy surface tint.)
+    final tint =
+        isDark ? GlassTokens.chromeTintDark() : GlassTokens.chromeTintLight();
     final highlight = isDark ? GlassTokens.highlightDark : GlassTokens.highlightLight;
 
+    // When the device falls back to no-blur, bump alpha so the button
+    // doesn't disappear into the page.
     final circleColor = widget.quality.hasBlur
         ? tint
-        : tint.withValues(alpha: (tint.a + 0.15).clamp(0.0, 1.0));
+        : tint.withValues(alpha: (tint.a + 0.35).clamp(0.0, 1.0));
 
     final core = Container(
       width: widget.size,

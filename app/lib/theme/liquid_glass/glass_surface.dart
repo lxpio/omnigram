@@ -11,6 +11,7 @@ class GlassSurface extends StatelessWidget {
     this.borderRadius = GlassTokens.radiusBar,
     this.blurSigma = GlassTokens.blurSigmaThick,
     this.padding = EdgeInsets.zero,
+    this.chrome = false,
   });
 
   final Widget child;
@@ -19,10 +20,19 @@ class GlassSurface extends StatelessWidget {
   final double blurSigma;
   final EdgeInsetsGeometry padding;
 
+  /// When true, use the low-alpha "chrome" tint instead of the heavy
+  /// surface tint. Pick this for floating toolbars / pills sitting on
+  /// top of page content where you WANT the backdrop blur to show
+  /// through — Apple Mail / Safari iOS 26 idiom. Leave false for
+  /// settings cards / app bar containers where opacity is the point.
+  final bool chrome;
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final tint = isDark ? GlassTokens.tintDark() : GlassTokens.tintLight();
+    final tint = chrome
+        ? (isDark ? GlassTokens.chromeTintDark() : GlassTokens.chromeTintLight())
+        : (isDark ? GlassTokens.tintDark() : GlassTokens.tintLight());
     final highlight = isDark ? GlassTokens.highlightDark : GlassTokens.highlightLight;
     final shape = ContinuousRectangleBorder(
       borderRadius: BorderRadius.circular(borderRadius * 2.2),
