@@ -87,40 +87,49 @@ class ReaderChrome extends StatelessWidget {
             ),
           ),
         ),
-        // Bottom bar + active panel
+        // Bottom bar + active panel (iOS 26 floating chrome).
         Positioned(
           bottom: 0,
           left: 0,
           right: 0,
           child: SlideTransition(
             position: bottomSlide,
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 600),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (activePanel != null)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 12,
+                right: 12,
+                bottom: MediaQuery.viewPaddingOf(context).bottom + 8,
+              ),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 600),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (activePanel != null)
+                        ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(22)),
+                          child: Container(
+                            color: Theme.of(context).colorScheme.surface,
+                            child: activePanel!,
+                          ),
                         ),
-                        child: activePanel!,
+                      ReaderBottomBar(
+                        progress: progress,
+                        currentPage: currentPage,
+                        totalPages: totalPages,
+                        onSeek: onSeek,
+                        hideProgress: activePanel != null,
+                        attachedTop: activePanel != null,
+                        onShowToc: onShowToc,
+                        onShowNotes: onShowNotes,
+                        onShowProgress: onShowProgress,
+                        onShowStyle: onShowStyle,
+                        onShowTts: onShowTts,
                       ),
-                    ReaderBottomBar(
-                      progress: progress,
-                      currentPage: currentPage,
-                      totalPages: totalPages,
-                      onSeek: onSeek,
-                      hideProgress: activePanel != null,
-                      onShowToc: onShowToc,
-                      onShowNotes: onShowNotes,
-                      onShowProgress: onShowProgress,
-                      onShowStyle: onShowStyle,
-                      onShowTts: onShowTts,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
