@@ -9,6 +9,7 @@ import 'package:omnigram/theme/liquid_glass/app_glass_app_bar.dart';
 import 'package:omnigram/theme/liquid_glass/glass_chip.dart';
 import 'package:omnigram/theme/liquid_glass/performance_mode.dart';
 import 'package:omnigram/theme/typography.dart';
+import 'package:omnigram/widgets/settings/choice_picker_page.dart';
 import 'package:omnigram/widgets/settings/settings_section.dart';
 import 'package:omnigram/widgets/settings/settings_tile.dart';
 
@@ -54,19 +55,11 @@ class _CompanionSettingsPageState extends ConsumerState<CompanionSettingsPage> {
             title: Text(l10n.companionNameLabel),
             tiles: [
               CustomSettingsTile(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  child: TextField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      labelText: l10n.companionNameLabel,
-                      hintText: 'TARS',
-                      border: const OutlineInputBorder(),
-                      isDense: true,
-                    ),
-                    onChanged: notifier.updateName,
-                  ),
+                child: _InlineTextRow(
+                  label: l10n.companionNameLabel,
+                  controller: _nameController,
+                  hint: 'TARS',
+                  onChanged: notifier.updateName,
                 ),
               ),
             ],
@@ -80,11 +73,13 @@ class _CompanionSettingsPageState extends ConsumerState<CompanionSettingsPage> {
               CustomSettingsTile(
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                   child: Text(
                     CompanionPrompt.previewText(personality),
-                    style: OmnigramTypography.bodyLarge(context)
-                        .copyWith(fontStyle: FontStyle.italic),
+                    style: OmnigramTypography.bodyLarge(context).copyWith(
+                      fontStyle: FontStyle.italic,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
               ),
@@ -99,7 +94,7 @@ class _CompanionSettingsPageState extends ConsumerState<CompanionSettingsPage> {
               CustomSettingsTile(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 12),
+                      horizontal: 20, vertical: 8),
                   child: Column(
                     children: [
                       _PersonalitySlider(
@@ -130,6 +125,7 @@ class _CompanionSettingsPageState extends ConsumerState<CompanionSettingsPage> {
                         highLabel: l10n.companionWarm,
                         value: personality.warmth,
                         onChanged: (v) => notifier.updateWarmth(v.round()),
+                        isLast: true,
                       ),
                     ],
                   ),
@@ -143,15 +139,9 @@ class _CompanionSettingsPageState extends ConsumerState<CompanionSettingsPage> {
           SettingsSection(
             title: const Text('朗读声音'),
             tiles: [
-              CustomSettingsTile(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 12),
-                  child: _VoiceSelector(
-                    currentVoice: personality.voice,
-                    onChanged: notifier.updateVoice,
-                  ),
-                ),
+              _VoiceNavTile(
+                currentVoice: personality.voice,
+                onChanged: notifier.updateVoice,
               ),
             ],
           ),
@@ -208,15 +198,15 @@ class _CompanionSettingsPageState extends ConsumerState<CompanionSettingsPage> {
               CustomSettingsTile(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 14),
+                      horizontal: 20, vertical: 16),
                   child: Consumer(builder: (context, ref, _) {
                     final q = ref
                             .watch(glassQualityControllerProvider)
                             .valueOrNull ??
                         GlassQuality.medium;
                     return Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
+                      spacing: 10,
+                      runSpacing: 10,
                       children: [
                         GlassChip(
                           quality: q,
@@ -262,12 +252,74 @@ class _CompanionSettingsPageState extends ConsumerState<CompanionSettingsPage> {
   }
 }
 
+// ---------------------------------------------------------------------------
+// iOS-style inline text row: label on left, borderless transparent input on
+// right that takes remaining width and right-aligns its text.
+// ---------------------------------------------------------------------------
+
+class _InlineTextRow extends StatelessWidget {
+  const _InlineTextRow({
+    required this.label,
+    required this.controller,
+    required this.hint,
+    required this.onChanged,
+  });
+
+  final String label;
+  final TextEditingController controller;
+  final String hint;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+      child: Row(
+        children: [
+          Text(label,
+              style: OmnigramTypography.bodyLarge(context)
+                  .copyWith(color: scheme.onSurface)),
+          const SizedBox(width: 16),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              onChanged: onChanged,
+              textAlign: TextAlign.end,
+              cursorColor: scheme.primary,
+              style: OmnigramTypography.bodyLarge(context)
+                  .copyWith(color: scheme.onSurfaceVariant),
+              decoration: InputDecoration(
+                hintText: hint,
+                hintStyle: OmnigramTypography.bodyLarge(context).copyWith(
+                  color: scheme.onSurfaceVariant.withValues(alpha: 0.5),
+                ),
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// iOS-style personality slider: label on left, muted trailing value, slider
+// below with low/high captions flanking it.
+// ---------------------------------------------------------------------------
+
 class _PersonalitySlider extends StatelessWidget {
   final String label;
   final String lowLabel;
   final String highLabel;
   final int value;
   final ValueChanged<double> onChanged;
+  final bool isLast;
 
   const _PersonalitySlider({
     required this.label,
@@ -275,20 +327,37 @@ class _PersonalitySlider extends StatelessWidget {
     required this.highLabel,
     required this.value,
     required this.onChanged,
+    this.isLast = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(top: 8, bottom: isLast ? 4 : 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('$label: $value%',
-              style: OmnigramTypography.titleMedium(context)),
           Row(
             children: [
-              Text(lowLabel, style: OmnigramTypography.caption(context)),
+              Expanded(
+                child: Text(label,
+                    style: OmnigramTypography.bodyLarge(context)
+                        .copyWith(color: scheme.onSurface)),
+              ),
+              Text('$value%',
+                  style: OmnigramTypography.bodyLarge(context).copyWith(
+                    color: scheme.onSurfaceVariant,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  )),
+            ],
+          ),
+          const SizedBox(height: 2),
+          Row(
+            children: [
+              Text(lowLabel,
+                  style: OmnigramTypography.caption(context)
+                      .copyWith(color: scheme.onSurfaceVariant)),
               Expanded(
                 child: Slider(
                   value: value.toDouble(),
@@ -298,7 +367,9 @@ class _PersonalitySlider extends StatelessWidget {
                   onChanged: onChanged,
                 ),
               ),
-              Text(highLabel, style: OmnigramTypography.caption(context)),
+              Text(highLabel,
+                  style: OmnigramTypography.caption(context)
+                      .copyWith(color: scheme.onSurfaceVariant)),
             ],
           ),
         ],
@@ -307,42 +378,78 @@ class _PersonalitySlider extends StatelessWidget {
   }
 }
 
-class _VoiceSelector extends ConsumerWidget {
+// ---------------------------------------------------------------------------
+// iOS-style voice picker tile: shows current voice name on the right; tapping
+// pushes a ChoicePicker detail page. Falls back to a disabled row with a
+// helper message when the TTS service has no voices configured.
+// ---------------------------------------------------------------------------
+
+class _VoiceNavTile extends AbstractSettingsTile {
+  const _VoiceNavTile({
+    required this.currentVoice,
+    required this.onChanged,
+  });
+
   final String currentVoice;
   final ValueChanged<String> onChanged;
-  const _VoiceSelector(
-      {required this.currentVoice, required this.onChanged});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final voicesAsync = ref.watch(ttsVoicesProvider);
-    return voicesAsync.when(
+  Widget build(BuildContext context) {
+    return Consumer(builder: (context, ref, _) {
+      final voicesAsync = ref.watch(ttsVoicesProvider);
+      return voicesAsync.when(
       data: (voices) {
         if (voices.isEmpty) {
-          return Text('未配置 TTS 服务',
-              style: OmnigramTypography.caption(context));
+          return SettingsTile.navigation(
+            leading: const Icon(Icons.record_voice_over_outlined),
+            title: const Text('朗读声音'),
+            value: const Text('未配置 TTS 服务'),
+            enabled: false,
+            onPressed: (_) {},
+          );
         }
-        return DropdownButtonFormField<String>(
-          initialValue:
-              voices.any((v) => v.shortName == currentVoice) ? currentVoice : null,
-          decoration: const InputDecoration(
-            hintText: '选择伴侣朗读声音',
-            border: OutlineInputBorder(),
-            isDense: true,
-          ),
-          items: [
-            const DropdownMenuItem(value: '', child: Text('不关联声音')),
-            ...voices.map((v) => DropdownMenuItem(
-                  value: v.shortName,
-                  child: Text(v.name),
-                )),
-          ],
-          onChanged: (v) => onChanged(v ?? ''),
+        final selected = voices.firstWhere(
+          (v) => v.shortName == currentVoice,
+          orElse: () => voices.first,
+        );
+        final hasSelection =
+            voices.any((v) => v.shortName == currentVoice) && currentVoice.isNotEmpty;
+        return SettingsTile.navigation(
+          leading: const Icon(Icons.record_voice_over_outlined),
+          title: const Text('朗读声音'),
+          value: Text(hasSelection ? selected.name : '不关联声音'),
+          onPressed: (ctx) async {
+            final picked = await pushChoicePicker<String>(
+              ctx,
+              title: '朗读声音',
+              current: currentVoice,
+              options: [
+                const ChoiceOption(value: '', label: '不关联声音'),
+                ...voices.map((v) => ChoiceOption(
+                      value: v.shortName,
+                      label: v.name,
+                      description: v.locale.isEmpty ? null : v.locale,
+                    )),
+              ],
+            );
+            if (picked != null) onChanged(picked);
+          },
         );
       },
-      loading: () => const LinearProgressIndicator(),
-      error: (_, _) =>
-          Text('加载声音列表失败', style: OmnigramTypography.caption(context)),
-    );
+      loading: () => const CustomSettingsTile(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          child: LinearProgressIndicator(),
+        ),
+      ),
+      error: (_, _) => SettingsTile.navigation(
+        leading: const Icon(Icons.record_voice_over_outlined),
+        title: const Text('朗读声音'),
+        value: const Text('加载声音列表失败'),
+        enabled: false,
+        onPressed: (_) {},
+      ),
+      );
+    });
   }
 }
