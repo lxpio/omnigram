@@ -31,51 +31,64 @@ class ReaderAppBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final quality = ref.watch(readerGlassQualityProvider);
 
+    final scheme = Theme.of(context).colorScheme;
+    const r = GlassTokens.radiusBar; // 22 — iOS 26 squircle
     return ClipRRect(
-      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
+      borderRadius: const BorderRadius.all(Radius.circular(r)),
       child: GlassSurface(
         quality: quality,
         borderRadius: 0,
         blurSigma: GlassTokens.blurSigmaThick,
-        child: SafeArea(
-          bottom: false,
-          child: SizedBox(
-            height: 56,
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: onBack,
-                  iconSize: 22,
+        child: SizedBox(
+          height: 52,
+          child: Row(
+            children: [
+              _BarIcon(
+                  icon: Icons.arrow_back, onTap: onBack, tint: scheme.onSurface),
+              Expanded(
+                child: Text(
+                  chapterTitle,
+                  style: OmnigramTypography.titleMedium(context),
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 ),
-                Expanded(
-                  child: Text(
-                    chapterTitle,
-                    style: OmnigramTypography.titleMedium(context),
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(isBookmarked ? Icons.bookmark : Icons.bookmark_border),
-                  onPressed: onToggleBookmark,
-                  iconSize: 22,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.chat_bubble_outline),
-                  onPressed: onShowCompanion,
-                  iconSize: 22,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.more_vert),
-                  onPressed: onShowMenu,
-                  iconSize: 22,
-                ),
-              ],
-            ),
+              ),
+              _BarIcon(
+                  icon: isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                  onTap: onToggleBookmark,
+                  tint: scheme.onSurface),
+              _BarIcon(
+                  icon: Icons.chat_bubble_outline,
+                  onTap: onShowCompanion,
+                  tint: scheme.onSurface),
+              _BarIcon(
+                  icon: Icons.more_vert,
+                  onTap: onShowMenu,
+                  tint: scheme.onSurface),
+            ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Thin, ripple-free icon row entry — iOS 26 tap target.
+class _BarIcon extends StatelessWidget {
+  const _BarIcon({required this.icon, required this.onTap, required this.tint});
+  final IconData icon;
+  final VoidCallback onTap;
+  final Color tint;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: SizedBox(
+        width: 44,
+        height: 44,
+        child: Icon(icon, size: 22, color: tint),
       ),
     );
   }

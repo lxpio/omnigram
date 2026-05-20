@@ -70,20 +70,27 @@ class ReaderChrome extends StatelessWidget {
               child: Container(color: Colors.black.withValues(alpha: 0.12)),
             ),
           ),
-        // Top bar
+        // Top bar (iOS 26 floating chrome).
         Positioned(
           top: 0,
           left: 0,
           right: 0,
           child: SlideTransition(
             position: topSlide,
-            child: ReaderAppBar(
-              chapterTitle: chapterTitle,
-              isBookmarked: isBookmarked,
-              onBack: onBack,
-              onToggleBookmark: onToggleBookmark,
-              onShowCompanion: onShowCompanion,
-              onShowMenu: onShowMenu,
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 12,
+                right: 12,
+                top: MediaQuery.viewPaddingOf(context).top + 6,
+              ),
+              child: ReaderAppBar(
+                chapterTitle: chapterTitle,
+                isBookmarked: isBookmarked,
+                onBack: onBack,
+                onToggleBookmark: onToggleBookmark,
+                onShowCompanion: onShowCompanion,
+                onShowMenu: onShowMenu,
+              ),
             ),
           ),
         ),
