@@ -1,4 +1,4 @@
-import 'package:flex_color_scheme/flex_color_patchedScheme.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'colors.dart';
 import 'liquid_glass/glass_tokens.dart';
@@ -78,7 +78,7 @@ class OmnigramTheme {
     // iOS systemGroupedBackground pattern (grey page + white cards) holds.
     final isLight = base.brightness == Brightness.light;
     final pageBg = isLight ? OmnigramColors.surfaceLight : OmnigramColors.surfaceDark;
-    final patchedScheme = patchedScheme.copyWith(
+    final patchedScheme = scheme.copyWith(
       surface: pageBg,
       surfaceContainerLowest: pageBg,
       surfaceContainerLow: pageBg,
