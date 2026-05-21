@@ -14,9 +14,6 @@
 // Background uses a soft solid color (NOT pure white) so glass tint +
 // edge highlight are visible in the snapshot.
 
-@Tags(['golden'])
-library;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
