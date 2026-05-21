@@ -9,6 +9,13 @@
 ///   OMNIGRAM_TEST_USER=testadmin \
 ///   OMNIGRAM_TEST_PASS=testpass123 \
 ///   flutter test test/api/api_integration_test.dart
+///
+/// Tagged 'integration' so the default unit-test CI (test-app.yaml)
+/// excludes it via --exclude-tags integration. The dedicated test-api
+/// workflow runs it explicitly after docker compose brings the server up.
+
+@Tags(['integration'])
+library;
 
 import 'dart:io';
 

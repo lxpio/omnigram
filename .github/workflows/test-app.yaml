@@ -45,4 +45,7 @@ jobs:
         run: flutter analyze --no-fatal-infos lib/
 
       - name: Test
-        run: flutter test --no-pub
+        # Skip @Tags(['integration']) — those need a real backend at
+        # localhost:8080 (run in dedicated test-api workflow with docker
+        # compose).
+        run: flutter test --no-pub --exclude-tags integration
