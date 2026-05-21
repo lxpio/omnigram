@@ -1,5 +1,6 @@
 // app/test/widgets/reader/reader_bottom_bar_test.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:omnigram/widgets/reader/reader_bottom_bar.dart';
 
@@ -9,7 +10,8 @@ void main() {
     int currentPage = 142,
     int totalPages = 208,
   }) {
-    return MaterialApp(
+    return ProviderScope(
+        child: MaterialApp(
       home: Scaffold(
         body: ReaderBottomBar(
           progress: progress,
@@ -23,7 +25,7 @@ void main() {
           onShowTts: () {},
         ),
       ),
-    );
+    ));
   }
 
   group('ReaderBottomBar', () {
@@ -47,14 +49,21 @@ void main() {
       expect(find.text('100%'), findsOneWidget);
     });
 
-    testWidgets('renders 5 action buttons', (tester) async {
+    testWidgets('renders 5 action icons', (tester) async {
       await tester.pumpWidget(buildBar());
-      expect(find.byType(IconButton), findsNWidgets(5));
+      // Bar uses lightweight ripple-free icons (not IconButton) since the
+      // iOS 26 floating chrome rewrite. Assert by the actual icon set.
+      expect(find.byIcon(Icons.list_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.edit_note_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.data_usage_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.palette_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.headphones_outlined), findsOneWidget);
     });
 
     testWidgets('calls onShowToc when toc button pressed', (tester) async {
       bool called = false;
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(ProviderScope(
+          child: MaterialApp(
         home: Scaffold(
           body: ReaderBottomBar(
             progress: 0.5,
@@ -68,7 +77,7 @@ void main() {
             onShowTts: () {},
           ),
         ),
-      ));
+      )));
       await tester.tap(find.byIcon(Icons.list_outlined));
       expect(called, true);
     });
