@@ -45,4 +45,8 @@ jobs:
         run: flutter analyze --no-fatal-infos lib/
 
       - name: Test
-        run: flutter test --no-pub
+        # Golden tests are macOS-baselined (developer machine) and pixel-diff
+        # on Linux runners due to Skia/font rendering differences. Exclude
+        # them in CI; developers refresh goldens locally with
+        # `flutter test --update-goldens test/theme/liquid_glass/golden/`.
+        run: flutter test --no-pub --exclude-tags golden
