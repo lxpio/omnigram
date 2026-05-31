@@ -179,7 +179,9 @@ jobs:
     steps:
       - uses: dessant/lock-threads@v5
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # github-token omitted on purpose: dessant/lock-threads@v5 validates
+          # the token to <=100 chars, but GITHUB_TOKEN now exceeds that. The
+          # action falls back to the runner's GITHUB_TOKEN automatically.
           issue-inactive-days: 30  # Lock issues 30 days after they're closed
           pr-inactive-days: 30     # Lock PRs 30 days after they're closed
           issue-lock-reason: 'resolved'
