@@ -2,7 +2,7 @@ name: omnigram
 description: "An e-book reader."
 publish_to: 'none'
 
-version: 1.14.0+6321
+version: 1.15.0+6321
 
 environment:
   sdk: '>=3.8.0 <4.0.0'
