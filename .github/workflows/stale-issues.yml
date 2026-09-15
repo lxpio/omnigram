@@ -177,11 +177,13 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - uses: dessant/lock-threads@v5
+      # v6 is required: GitHub's new stateless token format (mid-May 2026) makes
+      # GITHUB_TOKEN ~520 chars, and v5 rejects any token longer than 100 chars
+      # ("github-token length must be less than or equal to 100 characters long").
+      # v6.0.2 removes that validation. See dessant/lock-threads#55.
+      - uses: dessant/lock-threads@v6
         with:
-          # github-token omitted on purpose: dessant/lock-threads@v5 validates
-          # the token to <=100 chars, but GITHUB_TOKEN now exceeds that. The
-          # action falls back to the runner's GITHUB_TOKEN automatically.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           issue-inactive-days: 30  # Lock issues 30 days after they're closed
           pr-inactive-days: 30     # Lock PRs 30 days after they're closed
           issue-lock-reason: 'resolved'
